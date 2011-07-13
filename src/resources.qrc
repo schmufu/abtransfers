@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images">
+	<file alias="ueberweisungsformular">../images/uerberweisungsformular.gif</file>
+    </qresource>
+    <qresource prefix="/icons">
+	<file alias="bank-icon">../images/bank-icon.png</file>
+	<file alias="Log-Icon">../images/cabinet-icon.png</file>
+	<file alias="ueberweisung">../images/ueberweisung.png</file>
+	<file alias="dauerauftrag">../images/ueberweisung_DA.png</file>
+	<file alias="lastschrift">../images/lastschrift.png</file>
+    </qresource>
+</RCC>

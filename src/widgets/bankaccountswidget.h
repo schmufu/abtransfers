@@ -34,7 +34,7 @@
 #include <QWidget>
 #include <QTreeWidgetItem>
 
-#include "aqb_accounts.h"
+#include "../aqb_accounts.h"
 
 namespace Ui {
 	class BankAccountsWidget;

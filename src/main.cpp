@@ -45,10 +45,10 @@ int main(int argc, char *argv[])
 
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
-	#ifdef AQTRANSFER_VERSION
-		app.setApplicationVersion(AQTRANSFER_VERSION);
+	#ifdef ABTRANSFER_VERSION
+		app.setApplicationVersion(ABTRANSFER_VERSION);
 	#else
-	#warning "AQTRANSFER_VERSION not set! Compiling without version information!"
+	#warning "ABTRANSFER_VERSION not set! Compiling without version information!"
 	#endif
 	app.setOrganizationName("Patrick Wacker");
 	app.setOrganizationDomain("schmufu.dyndns.org");

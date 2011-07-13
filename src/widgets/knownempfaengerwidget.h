@@ -35,7 +35,7 @@
 #include <QList>
 #include <QTreeWidgetItem>
 
-#include "trans_empfaengerinfo.h"
+#include "../trans_empfaengerinfo.h"
 
 namespace Ui {
 	class KnownEmpfaengerWidget;
