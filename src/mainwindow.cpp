@@ -312,7 +312,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	vbox->addWidget(text1, 0, Qt::AlignLeft);
 	QLabel *author = new QLabel(QString("Author: Patrick Wacker"));
 	vbox->addWidget(author, 0, Qt::AlignCenter);
-	QLabel *version = new QLabel(QString("Version: %1").arg(ABTRANSFER_VERSION));
+	QLabel *version = new QLabel(QString("Version: %1").arg(qApp->applicationVersion()));
 	vbox->addWidget(version, 0, Qt::AlignCenter);
 #ifdef ABTRANSFER_VERSION_EXTRA
 	QLabel *versionExtra = new QLabel(QString("<b>%1</b>").arg(ABTRANSFER_VERSION_EXTRA));

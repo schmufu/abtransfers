@@ -111,7 +111,7 @@ void Page_DA_Edit_Delete::on_pushButton_Revert_clicked()
 	this->ui->groupBox_known_DAs->setDisabled(false);
 }
 
-void Page_DA_Edit_Delete::debug_Slot(const trans_EmpfaengerInfo *data)
+void Page_DA_Edit_Delete::debug_Slot(const abt_EmpfaengerInfo *data)
 {
 	qDebug() << "Signale received! Name=" << data->getName() << "Kto=" << data->getBLZ();
 }
@@ -149,7 +149,7 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 		this->ui->pushButton_DA_Delete->setDisabled(true);
 
 		//Perfekte Breite der Spalten einstellen
-		trans_settings::resizeColToContentsFor(this->ui->treeWidget);
+		abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
 		this->ui->groupBox_known_DAs->sizePolicy().setVerticalStretch(2);
 
@@ -175,7 +175,7 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 	}
 
 	//Perfekte Breite der Spalten einstellen
-	trans_settings::resizeColToContentsFor(this->ui->treeWidget);
+	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
 	this->ui->groupBox_known_DAs->sizePolicy().setVerticalStretch(ItemCount+2);
 }

@@ -66,12 +66,12 @@ protected:
 	void changeEvent(QEvent *e);
 
 private:
-	void fillKnownDAs(const QList<trans_DAInfo*> *list);
+	void fillKnownDAs(const QList<abt_DAInfo*> *list);
 
 private slots:
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 	void on_pushButton_Revert_clicked();
-	void debug_Slot(const trans_EmpfaengerInfo *data);
+	void debug_Slot(const abt_EmpfaengerInfo *data);
 	void account_selected(const aqb_AccountInfo *account);
 };
 

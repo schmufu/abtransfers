@@ -35,7 +35,7 @@
 #include <QStringList>
 #include <QDate>
 
-class trans_job
+class abt_job
 {
 private:
 	//Local Account Info
@@ -111,7 +111,7 @@ private:
 	QString Commission;
 
 public:
-    trans_job();
+    abt_job();
 };
 
 #endif // TRANS_JOB_H

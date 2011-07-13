@@ -28,27 +28,47 @@
  *
  ******************************************************************************/
 
-#include "trans_empfaengerinfo.h"
+#ifndef TRANS_SETTINGS_H
+#define TRANS_SETTINGS_H
 
-trans_EmpfaengerInfo::trans_EmpfaengerInfo()
+#include <QObject>
+#include <QFile>
+#include <QTextStream>
+#include <QSettings>
+#include <QTreeWidget>
+
+#include "abt_empfaengerinfo.h"
+#include "aqb_accountinfo.h"
+
+class abt_settings : public QObject
 {
+Q_OBJECT
+private:
+	QString knownEmpfaengerFilename;
+	//QString SettingsFilename;
+	QSettings *Settings;
+	QList<abt_EmpfaengerInfo*>* EmpfaengerList;
 
-}
+public:
+	explicit abt_settings(QObject *parent = 0);
+	~abt_settings();
 
-trans_EmpfaengerInfo::trans_EmpfaengerInfo(QString &Name, QString &Kontonummer,
-					   QString &BLZ, QString Verw1,
-					   QString Verw2, QString Verw3,
-					   QString Verw4):
-	m_Name(Name),
-	m_Kontonummer(Kontonummer),
-	m_Bankleitzahl(BLZ),
-	m_Verw1(Verw1),	m_Verw2(Verw2), m_Verw3(Verw3), m_Verw4(Verw4)
-{
+	QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
+	void saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo*> *list);
 
-}
+	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
+	//! the caller is responsible for freeing the Objects and the list!
+	static QList<abt_DAInfo*> *getDAsForAccount(QString &KtoNr, QString &BLZ);
+	//! Speichert alle Einträge der Liste für den entsprechenden Account
+	static void saveDAsForAccount(QList<abt_DAInfo*> *list, QString &KtoNr, QString &BLZ);
+	//! Löscht alle Objekte der Liste sowie die liste selbst
+	static void freeDAsList(QList<abt_DAInfo*> *list);
 
-trans_EmpfaengerInfo::~trans_EmpfaengerInfo()
-{
+	static void resizeColToContentsFor(QTreeWidget *w);
+signals:
 
-}
+public slots:
 
+};
+
+#endif // TRANS_SETTINGS_H

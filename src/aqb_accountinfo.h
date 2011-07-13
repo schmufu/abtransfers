@@ -35,14 +35,14 @@
 
 #include <aqbanking/account.h>
 
-class trans_DAInfo {
+class abt_DAInfo {
 private:
 	QString m_Kontonummer;
 	QString m_Bankleitzahl;
 	QString m_Beguenstigter;
 	QString m_Betrag;
 public:
-	trans_DAInfo(const QString &Konto, const QString &BLZ,
+	abt_DAInfo(const QString &Konto, const QString &BLZ,
 		     const QString &Name, const QString &Betrag);
 
 	const QString &getKontonummer() const { return this->m_Kontonummer; }
@@ -70,7 +70,7 @@ private:
 	QString m_Country;
 	QString m_AccountType;
 
-	QList<trans_DAInfo*> *m_KnownDAs;
+	QList<abt_DAInfo*> *m_KnownDAs;
 public:
 	aqb_AccountInfo(AB_ACCOUNT *account, int ID);
 	~aqb_AccountInfo();
@@ -87,7 +87,7 @@ public:
 	const QString& Currency() const { return this->m_Currency; }
 	const QString& Country() const { return this->m_Country; }
 	const QString& AccountType() const { return this->m_AccountType; }
-	const QList<trans_DAInfo*> *getKnownDAs() const { return this->m_KnownDAs; }
+	const QList<abt_DAInfo*> *getKnownDAs() const { return this->m_KnownDAs; }
 
 	const AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->ID; }

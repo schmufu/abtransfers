@@ -15,9 +15,9 @@ SOURCES += src/main.cpp \
     src/widgets/ueberweisungswidget.cpp \
     src/pages/page_da_edit_delete.cpp \
     src/widgets/knownempfaengerwidget.cpp \
-    src/trans_empfaengerinfo.cpp \
-    src/trans_settings.cpp \
-    src/trans_job.cpp
+    src/abt_empfaengerinfo.cpp \
+    src/abt_settings.cpp \
+    src/abt_job.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -28,9 +28,9 @@ HEADERS += src/mainwindow.h \
     src/widgets/ueberweisungswidget.h \
     src/pages/page_da_edit_delete.h \
     src/widgets/knownempfaengerwidget.h \
-    src/trans_empfaengerinfo.h \
-    src/trans_settings.h \
-    src/trans_job.h
+    src/abt_empfaengerinfo.h \
+    src/abt_settings.h \
+    src/abt_job.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \

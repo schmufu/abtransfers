@@ -28,8 +28,27 @@
  *
  ******************************************************************************/
 
-#include "trans_job.h"
+#include "abt_empfaengerinfo.h"
 
-trans_job::trans_job()
+abt_EmpfaengerInfo::abt_EmpfaengerInfo()
 {
+
 }
+
+abt_EmpfaengerInfo::abt_EmpfaengerInfo(QString &Name, QString &Kontonummer,
+					   QString &BLZ, QString Verw1,
+					   QString Verw2, QString Verw3,
+					   QString Verw4):
+	m_Name(Name),
+	m_Kontonummer(Kontonummer),
+	m_Bankleitzahl(BLZ),
+	m_Verw1(Verw1),	m_Verw2(Verw2), m_Verw3(Verw3), m_Verw4(Verw4)
+{
+
+}
+
+abt_EmpfaengerInfo::~abt_EmpfaengerInfo()
+{
+
+}
+

@@ -38,7 +38,7 @@
 /*! \brief Klasse zur beschreibung eines bekannten Empfängers
 
   */
-class trans_EmpfaengerInfo
+class abt_EmpfaengerInfo
 {
 private:
 	QString m_Name;
@@ -50,11 +50,11 @@ private:
 	QString m_Verw3;
 	QString m_Verw4;
 public:
-	trans_EmpfaengerInfo();
-	trans_EmpfaengerInfo(QString &Name, QString &Kontonummer, QString &BLZ,
+	abt_EmpfaengerInfo();
+	abt_EmpfaengerInfo(QString &Name, QString &Kontonummer, QString &BLZ,
 			     QString Verw1 = "", QString Verw2 = "",
 			     QString Verw3 = "", QString Verw4 = "");
-	~trans_EmpfaengerInfo();
+	~abt_EmpfaengerInfo();
 
 	const QString &getName() const { return this->m_Name; }
 	const QString &getKontonummer() const { return this->m_Kontonummer; }

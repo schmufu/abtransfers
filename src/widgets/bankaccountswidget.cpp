@@ -37,7 +37,7 @@
 
 #include <QDebug>
 
-#include "../trans_settings.h"
+#include "../abt_settings.h"
 
 BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) :
 	QWidget(parent),
@@ -122,7 +122,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 
 	this->ui->treeWidget->expandAll(); //Alles aufklappen
 	//Alle Spalten auf "perfekte" Breite anpassen
-	trans_settings::resizeColToContentsFor(this->ui->treeWidget);
+	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
 	//Erstes Wählbares Item auswählen
 	ui->treeWidget->setItemSelected(FirstItem, true);

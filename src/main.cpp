@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	app.setApplicationName("aqBanking Transfers");
 
 	//globale Objecte erzeugen
-	settings = new trans_settings();
+	settings = new abt_settings();
 	banking = new aqb_banking();
 
 

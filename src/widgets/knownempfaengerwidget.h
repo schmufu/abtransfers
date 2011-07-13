@@ -35,7 +35,7 @@
 #include <QList>
 #include <QTreeWidgetItem>
 
-#include "../trans_empfaengerinfo.h"
+#include "../abt_empfaengerinfo.h"
 
 namespace Ui {
 	class KnownEmpfaengerWidget;
@@ -45,10 +45,10 @@ class KnownEmpfaengerWidget : public QGroupBox {
 	Q_OBJECT
 private:
 	Ui::KnownEmpfaengerWidget *ui;
-	QList<trans_EmpfaengerInfo*> *EmpfaengerList;
+	QList<abt_EmpfaengerInfo*> *EmpfaengerList;
 
 public:
-	KnownEmpfaengerWidget(QList<trans_EmpfaengerInfo*> *list, QWidget *parent = 0);
+	KnownEmpfaengerWidget(QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
 	~KnownEmpfaengerWidget();
 
 protected:
@@ -58,7 +58,7 @@ private:
 	void DisplayEmpfaenger();
 
 signals:
-	void EmpfaengerSelected(const trans_EmpfaengerInfo *data);
+	void EmpfaengerSelected(const abt_EmpfaengerInfo *data);
 
 private slots:
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);

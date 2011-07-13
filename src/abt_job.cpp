@@ -28,47 +28,8 @@
  *
  ******************************************************************************/
 
-#ifndef TRANS_SETTINGS_H
-#define TRANS_SETTINGS_H
+#include "abt_job.h"
 
-#include <QObject>
-#include <QFile>
-#include <QTextStream>
-#include <QSettings>
-#include <QTreeWidget>
-
-#include "trans_empfaengerinfo.h"
-#include "aqb_accountinfo.h"
-
-class trans_settings : public QObject
+abt_job::abt_job()
 {
-Q_OBJECT
-private:
-	QString knownEmpfaengerFilename;
-	//QString SettingsFilename;
-	QSettings *Settings;
-	QList<trans_EmpfaengerInfo*>* EmpfaengerList;
-
-public:
-	explicit trans_settings(QObject *parent = 0);
-	~trans_settings();
-
-	QList<trans_EmpfaengerInfo*>* loadKnownEmpfaenger();
-	void saveKnownEmpfaenger(const QList<trans_EmpfaengerInfo*> *list);
-
-	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
-	//! the caller is responsible for freeing the Objects and the list!
-	static QList<trans_DAInfo*> *getDAsForAccount(QString &KtoNr, QString &BLZ);
-	//! Speichert alle Einträge der Liste für den entsprechenden Account
-	static void saveDAsForAccount(QList<trans_DAInfo*> *list, QString &KtoNr, QString &BLZ);
-	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeDAsList(QList<trans_DAInfo*> *list);
-
-	static void resizeColToContentsFor(QTreeWidget *w);
-signals:
-
-public slots:
-
-};
-
-#endif // TRANS_SETTINGS_H
+}

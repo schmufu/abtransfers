@@ -31,9 +31,9 @@
 #include "knownempfaengerwidget.h"
 #include "ui_knownempfaengerwidget.h"
 
-#include "../trans_settings.h"
+#include "../abt_settings.h"
 
-KnownEmpfaengerWidget::KnownEmpfaengerWidget(QList<trans_EmpfaengerInfo*> *list, QWidget *parent) :
+KnownEmpfaengerWidget::KnownEmpfaengerWidget(QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
     ui(new Ui::KnownEmpfaengerWidget)
 {
@@ -99,7 +99,7 @@ void KnownEmpfaengerWidget::DisplayEmpfaenger()
 
 	this->ui->treeWidget->expandAll(); //Alles aufklappen
 	//Alle Spalten auf "perfekte" Breite anpassen
-	trans_settings::resizeColToContentsFor(this->ui->treeWidget);
+	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
 	//vertical strech auf den Wert der enthaltenen Items setzen
 	this->sizePolicy().setVerticalStretch(ItemCount+2);
@@ -111,5 +111,5 @@ void KnownEmpfaengerWidget::on_treeWidget_currentItemChanged(QTreeWidgetItem* cu
 	if (!current)
 		current = previous;
 
-	emit this->EmpfaengerSelected((trans_EmpfaengerInfo*)current->data(0, Qt::UserRole).toInt());
+	emit this->EmpfaengerSelected((abt_EmpfaengerInfo*)current->data(0, Qt::UserRole).toInt());
 }

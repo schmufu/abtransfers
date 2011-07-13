@@ -34,7 +34,7 @@
 #define GLOBALVARS_H
 
 #include "aqb_banking.h"
-#include "trans_settings.h"
+#include "abt_settings.h"
 #include "widgets/debugdialogwidget.h"
 
 #ifdef DEFINEGLOBALSHERE
@@ -45,6 +45,6 @@
 
 EXTERN aqb_banking *banking;
 EXTERN DebugDialogWidget *debugDialog;
-EXTERN trans_settings *settings;
+EXTERN abt_settings *settings;
 
 #endif // GLOBALVARS_H

@@ -28,19 +28,19 @@
  *
  ******************************************************************************/
 
-#include "trans_settings.h"
+#include "abt_settings.h"
 
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
 
-trans_settings::trans_settings(QObject *parent) :
+abt_settings::abt_settings(QObject *parent) :
 	QObject(parent)
 {
 	this->Settings = new QSettings(QDir::homePath() + "/.ab_transfers/settings.ini",
 				       QSettings::IniFormat, this);
 
-	this->EmpfaengerList = new QList<trans_EmpfaengerInfo*>;
+	this->EmpfaengerList = new QList<abt_EmpfaengerInfo*>;
 
 	this->knownEmpfaengerFilename =
 		this->Settings->value("Main/EmpfaengerFileName",
@@ -49,7 +49,7 @@ trans_settings::trans_settings(QObject *parent) :
 
 }
 
-trans_settings::~trans_settings()
+abt_settings::~abt_settings()
 {
 	//Alle Empfaenger aus der EmpängerListe speichern
 	this->saveKnownEmpfaenger(this->EmpfaengerList);
@@ -67,7 +67,7 @@ trans_settings::~trans_settings()
 	delete this->Settings;
 }
 
-QList<trans_EmpfaengerInfo*>* trans_settings::loadKnownEmpfaenger()
+QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 {
 	this->EmpfaengerList->clear();
 
@@ -77,12 +77,12 @@ QList<trans_EmpfaengerInfo*>* trans_settings::loadKnownEmpfaenger()
 
 	QTextStream in(&file);
 	QStringList InfoStringList;
-	trans_EmpfaengerInfo *EmpfaengerInfo;
+	abt_EmpfaengerInfo *EmpfaengerInfo;
 	while (!in.atEnd()) {
 		QString line = in.readLine();
 		InfoStringList = line.split("\t", QString::KeepEmptyParts);
 
-		EmpfaengerInfo = new trans_EmpfaengerInfo();
+		EmpfaengerInfo = new abt_EmpfaengerInfo();
 		EmpfaengerInfo->setName(InfoStringList.at(0));
 		EmpfaengerInfo->setKontonummer(InfoStringList.at(1));
 		EmpfaengerInfo->setBLZ(InfoStringList.at(2));
@@ -98,9 +98,9 @@ QList<trans_EmpfaengerInfo*>* trans_settings::loadKnownEmpfaenger()
 	return EmpfaengerList;
 }
 
-void trans_settings::saveKnownEmpfaenger(const QList<trans_EmpfaengerInfo *> *list)
+void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)
 {
-	trans_EmpfaengerInfo *EmpfaengerInfo;
+	abt_EmpfaengerInfo *EmpfaengerInfo;
 
 	QFile file(this->knownEmpfaengerFilename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -124,7 +124,7 @@ void trans_settings::saveKnownEmpfaenger(const QList<trans_EmpfaengerInfo *> *li
 
 
 //static
-QList<trans_DAInfo*> *trans_settings::getDAsForAccount(QString &KtoNr, QString &BLZ)
+QList<abt_DAInfo*> *abt_settings::getDAsForAccount(QString &KtoNr, QString &BLZ)
 {
 	QString FileName = QDir::homePath() + "/.ab_transfers/DAs_" + KtoNr + "_" + BLZ + ".txt";
 
@@ -134,8 +134,8 @@ QList<trans_DAInfo*> *trans_settings::getDAsForAccount(QString &KtoNr, QString &
 
 	QTextStream in(&file);
 	QStringList InfoStringList;
-	trans_DAInfo *DAInfo;
-	QList<trans_DAInfo*> *List = new QList<trans_DAInfo*>;
+	abt_DAInfo *DAInfo;
+	QList<abt_DAInfo*> *List = new QList<abt_DAInfo*>;
 	int i=0;
 	while (!in.atEnd()) {
 		i++;
@@ -148,7 +148,7 @@ QList<trans_DAInfo*> *trans_settings::getDAsForAccount(QString &KtoNr, QString &
 			continue; //next line
 		}
 
-		DAInfo = new trans_DAInfo(InfoStringList.at(0),
+		DAInfo = new abt_DAInfo(InfoStringList.at(0),
 					  InfoStringList.at(1),
 					  InfoStringList.at(2),
 					  InfoStringList.at(3));
@@ -161,7 +161,7 @@ QList<trans_DAInfo*> *trans_settings::getDAsForAccount(QString &KtoNr, QString &
 }
 
 //static
-void trans_settings::saveDAsForAccount(QList<trans_DAInfo *> *list, QString &KtoNr, QString &BLZ)
+void abt_settings::saveDAsForAccount(QList<abt_DAInfo *> *list, QString &KtoNr, QString &BLZ)
 {
 	QString FileName = QDir::homePath() + "/.ab_transfers/DAs_" + KtoNr + "_" + BLZ + ".txt";
 
@@ -170,7 +170,7 @@ void trans_settings::saveDAsForAccount(QList<trans_DAInfo *> *list, QString &Kto
 		return;
 
 	QTextStream out(&file);
-	trans_DAInfo *DAInfo;
+	abt_DAInfo *DAInfo;
 
 	for (int i=0; i<list->size(); ++i) {
 		DAInfo = list->at(i);
@@ -184,7 +184,7 @@ void trans_settings::saveDAsForAccount(QList<trans_DAInfo *> *list, QString &Kto
 }
 
 //static
-void trans_settings::freeDAsList(QList<trans_DAInfo *> *list)
+void abt_settings::freeDAsList(QList<abt_DAInfo *> *list)
 {
 	while (list->size()) {
 		delete list->takeFirst();
@@ -193,7 +193,7 @@ void trans_settings::freeDAsList(QList<trans_DAInfo *> *list)
 }
 
 //static
-void trans_settings::resizeColToContentsFor(QTreeWidget *w)
+void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 {
 	for (int i=0; i<w->columnCount(); ++i) {
 		w->resizeColumnToContents(i);
