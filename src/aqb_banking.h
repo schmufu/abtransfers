@@ -35,6 +35,11 @@
 
 #include <QString>
 
+/*! \brief Main-Interface zu aqBanking
+  *
+  * enthält eine Instanz von AB_BANKING und gewährt den entsprechenden
+  * Klassen und Funktionen zugriff auf das AB_BANKING Objekt.
+  */
 class aqb_banking
 {
 private:

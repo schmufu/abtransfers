@@ -38,6 +38,12 @@
 #include <QMap>
 #include <QHash>
 
+/*! \brief Klasse für alle vorhandenen Accounts
+  *
+  * Diese Klasse verwaltet alle vorhandenen Accounts und erzeugt für jeden
+  * Account ein aqb_AccountInfo das in einem QHash verwaltet wird.
+  *
+  */
 class aqb_Accounts
 {
 private:

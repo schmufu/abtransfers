@@ -35,6 +35,13 @@
 
 #include <aqbanking/account.h>
 
+
+/*! \brief Daten von gespeicherten Daueraufträgen
+  *
+  * Diese Klasse kapselt die Daten der lokal gespeicherten Daueraufträge.
+  * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
+  * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
+  */
 class abt_DAInfo {
 private:
 	QString m_Kontonummer;
@@ -51,7 +58,13 @@ public:
 	const QString &getBetrag() const { return this->m_Betrag; }
 };
 
-
+/*! \brief Informationen über eine Account
+  *
+  * Alle relevanten Informationen für einen Account werden über diese Klasse
+  * zur Verfügung gestellt. Es wird intern einfach ein Umsetzung auf
+  * AB_AccountGet* durchgeführt.
+  * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
+  */
 class aqb_AccountInfo
 {
 private:
