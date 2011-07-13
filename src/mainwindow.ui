@@ -334,7 +334,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_DA">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="DA_Neu">
              <attribute name="title">
@@ -431,9 +431,12 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>Hilfe</string>
     </property>
     <addaction name="actionDebug_Info"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="actionAbout_abTransfers"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHelp"/>
@@ -450,6 +453,16 @@
   <action name="actionDebug_Info">
    <property name="text">
     <string>Debug-Info</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAbout_abTransfers">
+   <property name="text">
+    <string>About abTransfers</string>
    </property>
   </action>
  </widget>

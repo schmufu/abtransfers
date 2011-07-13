@@ -36,6 +36,9 @@
 #include <QStringList>
 #include <QDebug>
 
+#include <QDialog>
+#include <QPushButton>
+
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
 #include <gwenhywfar4/gwen-gui-qt4/qt4_gui.hpp>
@@ -288,4 +291,44 @@ void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current, QLis
 		current = previous;
 
 	this->ui->stackedWidget->setCurrentIndex(this->ui->listWidget->row(current));
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+	qApp->aboutQt();
+}
+
+void MainWindow::on_actionAbout_abTransfers_triggered()
+{
+	QDialog *about = new QDialog(this);
+	about->setWindowTitle("about aqBanking Transfers");
+
+	QVBoxLayout *vbox = new QVBoxLayout(about);
+	QLabel *text1 = new QLabel(QString::fromUtf8("<b>aqBanking Transfers</b><br><br>"
+			     "Dieses Programm nutzt die library aqbanking um Online-Banking<br>"
+			     "Transaktionen durchzuführen.<br><br>"
+			     "Es sind alle wesentlichen Vorgänge implementiert, u.a. auch<br>"
+			     "Überweisungen und die Verwaltung von Daueraufträgen<br>"));
+	vbox->addWidget(text1, 0, Qt::AlignLeft);
+	QLabel *author = new QLabel(QString("Author: Patrick Wacker"));
+	vbox->addWidget(author, 0, Qt::AlignCenter);
+	QLabel *version = new QLabel(QString("Version: %1").arg(ABTRANSFER_VERSION));
+	vbox->addWidget(version, 0, Qt::AlignCenter);
+#ifdef ABTRANSFER_VERSION_EXTRA
+	QLabel *versionExtra = new QLabel(QString("<b>%1</b>").arg(ABTRANSFER_VERSION_EXTRA));
+	vbox->addWidget(versionExtra, 0, Qt::AlignCenter);
+#endif
+	QLabel *versionSVN = new QLabel(QString("svn revision: %1").arg(ABTRANSFER_SVN_REVISION));
+	vbox->addWidget(versionSVN, 0, Qt::AlignCenter);
+
+	QPushButton *ok = new QPushButton("OK");
+	vbox->addWidget(ok,0,Qt::AlignRight);
+
+	connect(ok, SIGNAL(clicked()), about, SLOT(accept()));
+	//about->layout()->setSpacing(4);
+
+	about->exec();
+
+
+	delete about;
 }

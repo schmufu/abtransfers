@@ -57,7 +57,9 @@ private:
 
 
 private slots:
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void on_actionAbout_abTransfers_triggered();
+ void on_actionAbout_Qt_triggered();
+ void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionDebug_Info_triggered();
 //	void on_pushButton_2_clicked();
 //	void on_pushButton_clicked();
