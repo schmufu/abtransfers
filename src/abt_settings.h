@@ -28,8 +28,8 @@
  *
  ******************************************************************************/
 
-#ifndef TRANS_SETTINGS_H
-#define TRANS_SETTINGS_H
+#ifndef ABT_SETTINGS_H
+#define ABT_SETTINGS_H
 
 #include <QObject>
 #include <QFile>

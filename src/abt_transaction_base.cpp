@@ -28,8 +28,8 @@
  *
  ******************************************************************************/
 
-#include "abt_job.h"
+#include "abt_transaction_base.h"
 
-abt_job::abt_job()
+abt_transaction_base::abt_transaction_base()
 {
 }

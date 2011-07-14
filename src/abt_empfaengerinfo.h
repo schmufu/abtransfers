@@ -28,8 +28,8 @@
  *
  ******************************************************************************/
 
-#ifndef TRANS_EMPFAENGERINFO_H
-#define TRANS_EMPFAENGERINFO_H
+#ifndef ABT_EMPFAENGERINFO_H
+#define ABT_EMPFAENGERINFO_H
 
 //#include <QObject>
 #include <QString>

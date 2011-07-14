@@ -17,7 +17,7 @@ SOURCES += src/main.cpp \
     src/widgets/knownempfaengerwidget.cpp \
     src/abt_empfaengerinfo.cpp \
     src/abt_settings.cpp \
-    src/abt_job.cpp
+    src/abt_transaction_base.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -30,14 +30,15 @@ HEADERS += src/mainwindow.h \
     src/widgets/knownempfaengerwidget.h \
     src/abt_empfaengerinfo.h \
     src/abt_settings.h \
-    src/abt_job.h
+    src/abt_transaction_base.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
     src/widgets/ueberweisungswidget.ui \
     src/pages/page_da_edit_delete.ui \
     src/widgets/knownempfaengerwidget.ui
-OTHER_FILES += images/uerberweisungsformular.gif
+OTHER_FILES += images/uerberweisungsformular.gif \
+    documentation/Doxyfile
 RESOURCES += src/resources.qrc
 INCLUDEPATH += /usr/include/aqbanking5 \
     /usr/include/gwenhywfar4
@@ -51,8 +52,8 @@ MOC_DIR = tmp
 # This variable specifies the directory where all intermediate objects should be placed.
 OBJECTS_DIR = tmp
 UI_DIR = tmp
-
 SVN_REVISION = $$system(svnversion -n) # current repository revision (without newline)
+
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
 # MVW_VERSION=\\\"$${VERSION}\\\" \ # MVW_VERSION_EXTRA=\"\\\"'development-version-test test-test'\\\"\" #damit auch space möglich ist
