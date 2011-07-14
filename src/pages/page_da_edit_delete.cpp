@@ -68,8 +68,8 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 	this->ui->groupBox_known_DAs->setDisabled(true);
 
 	//Signals der Widgets mit den Slots dieser Page verbinden
-	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const trans_EmpfaengerInfo*)),
-		this, SLOT(debug_Slot(const trans_EmpfaengerInfo*)));
+	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
+		this, SLOT(debug_Slot(const abt_EmpfaengerInfo*)));
 
 	const aqb_AccountInfo *SelAccount = this->accountwidget->getSelectedAccount();
 	if (SelAccount != NULL) {
