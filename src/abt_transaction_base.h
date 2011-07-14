@@ -46,8 +46,9 @@
 class abt_transaction_base
 {
 private:
-	const AB_TRANSACTION* aqb_transaction;
+	AB_TRANSACTION* aqb_transaction;
 
+/* not needed any longer?
 	//Local Account Info
 	QString LocalCountry;
 	QString LocalBankCode;
@@ -96,11 +97,12 @@ private:
 	//Additional Information for Standing Orders (Daueraufträge)
 	QString Period; //!< weekly or monthly
 	QString Cycle; //!< executet every cycle * period (period=weekly and cycle=2 ==> executed every 2 weeks)
+*/
 	QString ExecutionDay; /*!< meaning depends on the content of period
 				- monthly: day of the month (starting with 1)
 				- weekly: day of the week (startin with 1=Monday)
 				*/
-	QDate FirstExecutionDate;
+/*	QDate FirstExecutionDate;
 	QDate LastExecutionDate;
 	QDate NextExecutionDate;
 	//Additional Information for Transfers (Überweisungen)
@@ -119,7 +121,7 @@ private:
 	QString Units;
 	QString UnitPrice;
 	QString Commission;
-
+*/
 public:
 	abt_transaction_base();
 	~abt_transaction_base();
@@ -258,7 +260,10 @@ public:
 	/**********************************
 	 * Additional for Standing Orders *
 	 **********************************/
-	AB_TRANSACTION_PERIOD getPeriod();
+	/* This group contains information which is used with standing orders.
+	 * It is not needed for other usage of this type.
+	 */
+	AB_TRANSACTION_PERIOD getPeriod() const;
 	void setPeriod(AB_TRANSACTION_PERIOD Period);
 
 	int getCycle() const;
@@ -327,7 +332,7 @@ public:
 	void setUnitId(const QString &UnitId);
 
 	const QString getUnitIdNameSpace() const;
-	void seUnitIdNameSpacet(const QString &UnitIdNameSpace);
+	void setUnitIdNameSpacet(const QString &UnitIdNameSpace);
 
 	const AB_VALUE* getUnits() const;
 	void setUnits(const AB_VALUE *Units);
@@ -337,6 +342,14 @@ public:
 
 	const AB_VALUE* getCommission() const;
 	void setCommission(const AB_VALUE *Commission);
+
+
+
+	/**********************************************************************
+	 * Static Helper functions for type Conversions                       *
+	 **********************************************************************/
+	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
+	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
 
 };
 
