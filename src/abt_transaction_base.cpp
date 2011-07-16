@@ -64,16 +64,46 @@ const QDate abt_transaction_base::GwenTimeToQDate(const GWEN_TIME *gwentime)
 	return date;
 }
 
+/**
+  * Gibt einen GWEN_TIME Object zurück dessen Datum dem übergebenen entspricht.
+  * Die enthaltene Uhrzeit wird auf 10:00:00 gesetzt! (in localTime, nicht UTC!)
+  */
 //static
 const GWEN_TIME* abt_transaction_base::QDateToGwenTime(const QDate &date)
 {
 	/** \todo Der Pointer zu GWEN_TIME muss bei Programmende
 		  freigegeben werden!
 	*/
-	return GWEN_Time_new(date.year(), date.month(), date.day(), 0, 0, 0, 0);
+	return GWEN_Time_new(date.year(), date.month(), date.day(), 10, 0, 0, 0);
 }
 
 
+/*****************************************************************************
+ * helper functions                                                          *
+ *****************************************************************************/
+bool abt_transaction_base::isModified() const
+{
+	return (AB_Transaction_IsModified(this->aqb_transaction) == 0);
+}
+
+void abt_transaction_base::setModified(bool mod)
+{
+	int m;
+	m = (mod) ? 1 : 0;
+
+	AB_Transaction_SetModified(this->aqb_transaction, mod);
+}
+
+void abt_transaction_base::fillLocalFromAccount(const aqb_AccountInfo *a)
+{
+	AB_Transaction_FillLocalFromAccount(this->aqb_transaction,
+					    a->get_AB_ACCOUNT());
+}
+
+const AB_TRANSACTION* abt_transaction_base::getAB_Transaction() const
+{
+	return this->aqb_transaction;
+}
 
 /**************************
  * Local Account Info     *
@@ -865,17 +895,42 @@ void abt_transaction_base::setCommission(const AB_VALUE *Commission)
 	AB_Transaction_SetCommission(this->aqb_transaction, Commission);
 }
 
+/***************************************
+ * ID functions *
+ ***************************************/
+quint32 abt_transaction_base::getUniqueId() const
+{
+	return AB_Transaction_GetUniqueId(this->aqb_transaction);
+}
+void abt_transaction_base::setUniqueId(quint32 id)
+{
+	AB_Transaction_SetUniqueId(this->aqb_transaction, id);
+}
 
+quint32 abt_transaction_base::getIdForApplication() const
+{
+	return AB_Transaction_GetIdForApplication(this->aqb_transaction);
+}
+void abt_transaction_base::setIdForApplication(quint32 id)
+{
+	AB_Transaction_SetIdForApplication(this->aqb_transaction, id);
+}
 
+quint32 abt_transaction_base::getGroupId() const
+{
+	return AB_Transaction_GetGroupId(this->aqb_transaction);
+}
+void abt_transaction_base::setGroupId(quint32 id)
+{
+	AB_Transaction_SetGroupId(this->aqb_transaction, id);
+}
 
-
-
-
-
-
-
-
-
-
-
+const AB_VALUE* abt_transaction_base::getFees() const
+{
+	return AB_Transaction_GetFees(this->aqb_transaction);
+}
+void abt_transaction_base::setFees(const AB_VALUE* value)
+{
+	AB_Transaction_SetFees(this->aqb_transaction, value);
+}
 

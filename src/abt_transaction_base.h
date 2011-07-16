@@ -36,6 +36,9 @@
 #include <QDate>
 
 #include <aqbanking/transaction.h>
+#include <aqbanking/transactionfns.h>
+
+#include "aqb_accountinfo.h"
 
 /*! simple wrapper to AB_Transaction_Set* -Get* functions
   *
@@ -343,6 +346,31 @@ public:
 	const AB_VALUE* getCommission() const;
 	void setCommission(const AB_VALUE *Commission);
 
+
+	/***************************************
+	 * ID functions *
+	 ***************************************/
+	quint32 getUniqueId() const;
+	void setUniqueId(quint32 id);
+
+	quint32 getIdForApplication() const;
+	void setIdForApplication(quint32 id);
+
+	quint32 getGroupId() const;
+	void setGroupId(quint32 id);
+
+	const AB_VALUE* getFees() const;
+	void setFees(const AB_VALUE* value);
+
+
+	/**********************************************************************
+	 * Helper Functions                                                   *
+	 **********************************************************************/
+	bool isModified() const;
+	void setModified(bool mod);
+	void fillLocalFromAccount(const aqb_AccountInfo *a);
+
+	const AB_TRANSACTION* getAB_Transaction() const;
 
 
 	/**********************************************************************
