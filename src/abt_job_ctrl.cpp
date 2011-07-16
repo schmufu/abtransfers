@@ -398,6 +398,8 @@ void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
 
 
 /******** Ausführung *******/
+
+
 //SLOT
 void abt_job_ctrl::execQueuedTransactions()
 {
@@ -416,6 +418,8 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	this->addlog(QString::fromUtf8("%1 Aufträge in die Jobliste übernommen").arg(this->jobqueue->count()));
 
+	this->checkJobStatus(jl);
+
 	ctx = AB_ImExporterContext_new();
 
 	this->addlog("Führe Job-Liste aus.");
@@ -428,6 +432,16 @@ void abt_job_ctrl::execQueuedTransactions()
 		AB_Job_List2_ClearAll(jl);
 		AB_ImExporterContext_Clear(ctx);
 		return;
+	}
+
+	if (!this->checkJobStatus(jl)) {
+		this->addlog("***********************************************");
+		this->addlog("** A C H T U N G                             **");
+		this->addlog("** Fehler bei der Ausführung der Jobs!       **");
+		this->addlog("** Momentan werden noch nicht alle Fehler    **");
+		this->addlog("** erkannt und abgefangen, Überprüfung der   **");
+		this->addlog("** Aufträge von Hand erforderlich!           **");
+		this->addlog("***********************************************");
 	}
 
 	this->parseImExporterContext(ctx);
@@ -443,6 +457,9 @@ void abt_job_ctrl::execQueuedTransactions()
 bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
 {
 	AB_IMEXPORTER_ACCOUNTINFO *ai;
+
+	QString log = AB_ImExporterContext_GetLog(ctx);
+	this->addlog(QString("CTX-LOG: ").append(log));
 
 	this->parseImExporterContext_Messages(ctx);
 	this->parseImExporterContext_Securitys(ctx);
@@ -678,6 +695,12 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
+		//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
+		this->addlog(QString(
+			"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
+			).arg(AB_Transaction_GetFiId(t)));
+		abt_transaction::saveTransaction(t);
+
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
 	return cnt;
@@ -762,7 +785,50 @@ int abt_job_ctrl::parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTI
 
 }
 
+bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
+{
+	AB_JOB *j;
+	AB_JOB_STATUS state;
+	AB_JOB_TYPE type;
+	GWEN_STRINGLIST *strl;
+	QString strState;
+	QString strType;
+	QStringList strList;
+	bool res=true;
+	static int run = 0;
+	qDebug() << "in checkJobStatus() - RUN: " << run;
 
+	AB_JOB_LIST2_ITERATOR *jli;
+	jli = AB_Job_List2Iterator_new(jl);
+	jli = AB_Job_List2_First(jl);
+	j = AB_Job_List2Iterator_Data(jli);
+	while (j) {
+		qDebug() << "in checkJobStatus()-while - RUN: " << run;
+		type = AB_Job_GetType(j);
+		strType = AB_Job_Type2Char(type);
+		this->addlog(QString("JobType: ").append(strType));
+		state = AB_Job_GetStatus(j);
+		if (state == AB_Job_StatusPending) {
+			res = false;
+		}
+		strState = AB_Job_Status2Char(state);
+		this->addlog(QString("JobState: ").append(strState));
+
+		strl = AB_Job_GetLogs(j);
+		strList = abt_transaction::GwenStringListToQStringList(strl);
+		GWEN_StringList_free(strl);
+		this->addlog(QString("JobLog: ").append(strList.join(" - ")));
+
+
+		j = AB_Job_List2Iterator_Next(jli);
+	}
+
+	AB_Job_List2Iterator_free(jli);
+
+	qDebug() << "in checkJobStatus()-end - RUN: " << run;
+
+	return res;
+}
 
 
 

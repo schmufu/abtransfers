@@ -67,6 +67,8 @@ private:
 	int parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO *ai);
 	int parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
 
+	bool checkJobStatus(AB_JOB_LIST2 *jl);
+
 public:
 	explicit abt_job_ctrl(QObject *parent = 0);
 	~abt_job_ctrl();

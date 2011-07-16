@@ -49,6 +49,7 @@
 class abt_transaction
 {
 private:
+	bool FreeTransactionOnDelete;
 
 protected:
 	AB_TRANSACTION* aqb_transaction;
@@ -128,7 +129,7 @@ protected:
 	QString Commission;
 */
 public:
-	abt_transaction();
+	abt_transaction(AB_TRANSACTION *t = NULL, bool freeOnDelete = false);
 	~abt_transaction();
 
 	/*****************************
@@ -383,6 +384,9 @@ public:
 
 	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
+
+	static void saveTransaction(const abt_transaction *t);
+	static void saveTransaction(AB_TRANSACTION *t);
 
 };
 

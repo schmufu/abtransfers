@@ -31,10 +31,16 @@
 #include "abt_transaction_base.h"
 #include <QStringList>
 #include <QString>
+#include <QSettings>
+#include <QDebug>
 
-abt_transaction::abt_transaction()
+#include "globalvars.h"
+
+
+abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 {
-	this->aqb_transaction = NULL;
+	this->aqb_transaction = t;
+	this->FreeTransactionOnDelete = freeOnDelete;
 
 	// die abgeleiteten Klassen müssen die private AB_TRANSACTION
 	// entsprechend setzen!
@@ -42,7 +48,9 @@ abt_transaction::abt_transaction()
 
 abt_transaction::~abt_transaction()
 {
-	AB_Transaction_free(this->aqb_transaction);
+	if (this->FreeTransactionOnDelete) {
+		AB_Transaction_free(this->aqb_transaction);
+	}
 }
 
 /** \todo Vielleicht diese Funktionen in ein separates Objekt
@@ -103,6 +111,103 @@ const GWEN_STRINGLIST *abt_transaction::QStringListToGwenStringList(const QStrin
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
 	}
 	return gwl;
+}
+
+//static
+void abt_transaction::saveTransaction(AB_TRANSACTION *t)
+{
+	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
+	abt_transaction *trans = new abt_transaction(t, false);
+	//und dieses dann speichern
+	abt_transaction::saveTransaction(trans);
+	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
+	delete trans;
+}
+
+//static
+void abt_transaction::saveTransaction(const abt_transaction *t)
+{
+	//! \todo Alle daten in der Datei speichern
+
+	if (t->getFiId().isEmpty()) {
+		qWarning() << t << " -- Speichern nicht möglich! Keine FiId gesetzt!";
+		return; //Abbruch
+	}
+
+	QSettings *s;
+	QString Filename;
+	Filename.append(settings->getDataDir());
+	Filename.append("Dauerauftraege.ini");
+//	Filename.append(this->getLocalAccountNumber());
+//	Filename.append("_");
+//	Filename.append(this->getLocalBankCode());
+//	Filename.append(".ini");
+
+	s = new QSettings(Filename, QSettings::IniFormat);
+
+	s->beginGroup(QString("TransFiId-%1").arg(t->getFiId()));
+	s->setValue("LocalCountry", t->getLocalCountry());
+	s->setValue("LocalBankCode", t->getLocalBankCode() );
+	s->setValue("LocalBranchId", t->getLocalBranchId() );
+	s->setValue("LocalAccountNumber", t->getLocalAccountNumber() );
+	s->setValue("LocalSuffix", t->getLocalSuffix() );
+	s->setValue("LocalIban", t->getLocalIban() );
+	s->setValue("LocalName", t->getLocalName() );
+	s->setValue("LocalBic", t->getLocalBic() );
+	s->setValue("RemoteCountry", t->getRemoteCountry() );
+	s->setValue("RemoteBankName", t->getRemoteBankName() );
+	s->setValue("RemoteBankLocation", t->getRemoteBankLocation() );
+	s->setValue("RemoteBankCode", t->getRemoteBankCode() );
+	s->setValue("RemoteBranchId", t->getRemoteBranchId() );
+	s->setValue("RemoteAccountNumber", t->getRemoteAccountNumber() );
+	s->setValue("RemoteSuffix", t->getRemoteSuffix() );
+	s->setValue("RemoteIban", t->getRemoteIban() );
+	s->setValue("RemoteName", t->getRemoteName() );
+	s->setValue("RemoteBic", t->getRemoteBic() );
+	s->setValue("ValutaDate", t->getValutaDate() );
+	s->setValue("Date", t->getDate() );
+	s->setValue("Value", t->getValue() );
+	s->setValue("TextKey", t->getTextKey() );
+	s->setValue("TextKeyExt", t->getTextKeyExt() );
+	s->setValue("TransactionKey", t->getTransactionKey() );
+	s->setValue("CustomerReference", t->getCustomerReference() );
+	s->setValue("BankReference", t->getBankReference() );
+	s->setValue("EntToEndReference", t->getEndToEndReference() );
+	s->setValue("MandateReference", t->getMandateReference() );
+	s->setValue("CretitorIdentifier", t->getCreditorIdentifier() );
+	s->setValue("OriginatorIdentifier", t->getOriginatorIdentifier() );
+	s->setValue("TransactionCode", t->getTransactionCode() );
+	s->setValue("TransactionText", t->getTransactionText() );
+	s->setValue("Primanota", t->getPrimanota() );
+	s->setValue("FiId", t->getFiId() );
+	s->setValue("Purpose", t->getPurpose() );
+	s->setValue("Category", t->getCategory() );
+	s->setValue("Period", t->getPeriod() );
+	s->setValue("Cycle", t->getCycle() );
+	s->setValue("ExecutionDay", t->getExecutionDay() );
+	s->setValue("FirstExecutionDate", t->getFirstExecutionDate() );
+	s->setValue("LastExecutionDate", t->getLastExecutionDate() );
+	s->setValue("NextExecutionDate", t->getNextExecutionDate() );
+	s->setValue("Type", t->getType() );
+	s->setValue("SubType", t->getSubType() );
+	s->setValue("Status", t->getStatus() );
+	s->setValue("Charge", t->getCharge() );
+	s->setValue("RemoteAddrStreet", t->getRemoteAddrStreet() );
+	s->setValue("RemoteAddrZipcode", t->getRemoteAddrZipcode() );
+	s->setValue("RemoteAddrCity", t->getRemoteAddrCity() );
+	s->setValue("RemotePhone", t->getRemotePhone() );
+	s->setValue("UnitId", t->getUnitId() );
+	s->setValue("UnitIdNameSpace", t->getUnitIdNameSpace() );
+	s->setValue("Units", t->getUnits() );
+	s->setValue("UnitPrice", t->getUnitPrice() );
+	s->setValue("Commission", t->getCommission() );
+	s->setValue("UniqueId", t->getUniqueId() );
+	s->setValue("IdForApplication", t->getIdForApplication() );
+	s->setValue("GroupId", t->getGroupId() );
+	s->setValue("Fees", t->getFees() );
+
+	s->endGroup();
+	delete s;
 }
 
 
