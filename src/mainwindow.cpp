@@ -59,13 +59,22 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->jobctrl = new abt_job_ctrl(this);
 	this->logw = new page_log();
+	this->outw = new Page_Ausgang();
 
 	Page_DA_Edit_Delete *page = new Page_DA_Edit_Delete(banking, this->accounts, ui->DA_Bearbeiten);
 	ui->DA_Bearbeiten->layout()->addWidget(page);
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
+	logLayout->setMargin(0);
+	logLayout->setSpacing(2);
 	ui->Log->setLayout(logLayout);
 	ui->Log->layout()->addWidget(this->logw);
+
+	QVBoxLayout *outLayout = new QVBoxLayout(ui->Ausgang);
+	outLayout->setMargin(0);
+	outLayout->setSpacing(2);
+	ui->Ausgang->setLayout(outLayout);
+	ui->Ausgang->layout()->addWidget(this->outw);
 }
 
 MainWindow::~MainWindow()

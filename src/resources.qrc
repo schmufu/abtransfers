@@ -8,5 +8,11 @@
 	<file alias="ueberweisung">../images/ueberweisung.png</file>
 	<file alias="dauerauftrag">../images/ueberweisung_DA.png</file>
 	<file alias="lastschrift">../images/lastschrift.png</file>
+	<file alias="up">../images/up-icon_16x16.png</file>
+	<file alias="down">../images/down-icon_16x16.png</file>
+	<file alias="left">../images/left-icon_16x16.png</file>
+	<file alias="right">../images/right-icon_16x16.png</file>
+	<file alias="delete">../images/delete-icon_16x16.png</file>
+	<file alias="ok">../images/ok-icon_16x16.png</file>
     </qresource>
 </RCC>

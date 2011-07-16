@@ -130,7 +130,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="Ueberweisung">
          <widget class="QTabWidget" name="tabWidget_UW">
@@ -369,26 +369,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Ausgang">
-         <widget class="QLabel" name="label_8">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>461</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>32</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Not implemented yet</string>
-          </property>
-         </widget>
-        </widget>
+        <widget class="QWidget" name="Ausgang"/>
         <widget class="QWidget" name="Log"/>
        </widget>
       </item>

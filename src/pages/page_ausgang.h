@@ -28,49 +28,26 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PAGE_AUSGANG_H
+#define PAGE_AUSGANG_H
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
-
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
-
-#include "pages/page_log.h"
-#include "pages/page_ausgang.h"
+#include <QFrame>
 
 namespace Ui {
-    class MainWindow;
+    class Page_Ausgang;
 }
 
-class MainWindow : public QMainWindow {
-	Q_OBJECT
+class Page_Ausgang : public QFrame {
+    Q_OBJECT
 public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
-
-
+    Page_Ausgang(QWidget *parent = 0);
+    ~Page_Ausgang();
 
 protected:
-	void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 private:
-	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
-	Page_Ausgang *outw;
-
-
-private slots:
-	void on_actionExecQueued_triggered();
- void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
+    Ui::Page_Ausgang *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif // PAGE_AUSGANG_H

@@ -28,49 +28,29 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "page_ausgang.h"
+#include "ui_page_ausgang.h"
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
-
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
-
-#include "pages/page_log.h"
-#include "pages/page_ausgang.h"
-
-namespace Ui {
-    class MainWindow;
+Page_Ausgang::Page_Ausgang(QWidget *parent) :
+    QFrame(parent),
+    ui(new Ui::Page_Ausgang)
+{
+    ui->setupUi(this);
 }
 
-class MainWindow : public QMainWindow {
-	Q_OBJECT
-public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
+Page_Ausgang::~Page_Ausgang()
+{
+    delete ui;
+}
 
-
-
-protected:
-	void changeEvent(QEvent *e);
-
-private:
-	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
-	Page_Ausgang *outw;
-
-
-private slots:
-	void on_actionExecQueued_triggered();
- void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
-};
-
-#endif // MAINWINDOW_H
+void Page_Ausgang::changeEvent(QEvent *e)
+{
+    QFrame::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        ui->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}
