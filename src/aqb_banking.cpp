@@ -105,12 +105,10 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 	QString Institute = "NO INFORMATION";
 	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BLZ.toUtf8());
 
-	if (!bankinfo) {
-		//Keine Informationen vorhanden
-		return Institute;
-	} else {
-		Institute = AB_BankInfo_GetBankName(bankinfo);
+	if (bankinfo) {
+		Institute = QString::fromUtf8(AB_BankInfo_GetBankName(bankinfo));
 		AB_BankInfo_free(bankinfo);
-		return Institute;
 	}
+	//wenn bankinfo == NULL bleibt Institute auf "NO INFORMATION"
+	return Institute;
 }

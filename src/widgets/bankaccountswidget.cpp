@@ -104,7 +104,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 				ItemCount++;
 				Item->setData(0, Qt::DisplayRole, i.value()->Number());
 				Item->setData(0, Qt::UserRole, i.value()->get_ID());
-				Item->setData(0, Qt::UserRole+1, i.value()->get_AB_ACCOUNT());
+				Item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
 				Item->setData(1, Qt::DisplayRole, i.value()->Name());
 				Item->setData(2, Qt::DisplayRole, i.value()->AccountType());
 				Item->setData(3, Qt::DisplayRole, i.value()->Currency());

@@ -46,9 +46,11 @@
   * betreffen zur Verfügung
   */
 
-class abt_transaction_base
+class abt_transaction
 {
 private:
+
+protected:
 	AB_TRANSACTION* aqb_transaction;
 
 /* not needed any longer?
@@ -126,8 +128,8 @@ private:
 	QString Commission;
 */
 public:
-	abt_transaction_base();
-	~abt_transaction_base();
+	abt_transaction();
+	~abt_transaction();
 
 	/*****************************
 	 * Local Account Info        *
@@ -335,7 +337,7 @@ public:
 	void setUnitId(const QString &UnitId);
 
 	const QString getUnitIdNameSpace() const;
-	void setUnitIdNameSpacet(const QString &UnitIdNameSpace);
+	void setUnitIdNameSpace(const QString &UnitIdNameSpace);
 
 	const AB_VALUE* getUnits() const;
 	void setUnits(const AB_VALUE *Units);
@@ -378,6 +380,9 @@ public:
 	 **********************************************************************/
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
 	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
+
+	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
+	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
 };
 

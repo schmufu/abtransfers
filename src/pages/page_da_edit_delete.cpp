@@ -34,6 +34,7 @@
 #include <QDebug>
 
 #include "../globalvars.h"
+#include "../abt_transactions.h"
 
 Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent):
     QWidget(parent),
@@ -109,6 +110,15 @@ void Page_DA_Edit_Delete::on_pushButton_Revert_clicked()
 	//erstmal zweckentfremdet!
 	this->ueberweisungwidget->setDisabled(false);
 	this->ui->groupBox_known_DAs->setDisabled(false);
+
+	trans_StandingOrder *so = new trans_StandingOrder(5);
+	so->setLocalName("Patrick Wacker");
+	so->setRemoteAccountNumber("1092006509");
+	const aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	if (acc)
+		so->fillLocalFromAccount(acc);
+	so->save();
+	delete so;
 }
 
 void Page_DA_Edit_Delete::debug_Slot(const abt_EmpfaengerInfo *data)

@@ -20,7 +20,7 @@
    <string notr="true">aqBanking Transfers</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
   </property>
   <property name="locale">
@@ -79,7 +79,7 @@
           <string>Überweisungen</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/ueberweisung</normaloff>:/icons/ueberweisung</iconset>
          </property>
         </item>
@@ -88,7 +88,7 @@
           <string>Lastschrift</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/lastschrift</normaloff>:/icons/lastschrift</iconset>
          </property>
         </item>
@@ -97,7 +97,7 @@
           <string>Daueraufträge</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/dauerauftrag</normaloff>:/icons/dauerauftrag</iconset>
          </property>
         </item>
@@ -106,7 +106,7 @@
           <string>Ausgang</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
          </property>
         </item>
@@ -115,7 +115,7 @@
           <string>Log</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/Log-Icon</normaloff>:/icons/Log-Icon</iconset>
          </property>
         </item>
@@ -130,7 +130,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="Ueberweisung">
          <widget class="QTabWidget" name="tabWidget_UW">
@@ -389,26 +389,7 @@
           </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="Log">
-         <widget class="QLabel" name="label_9">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>461</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>32</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Not implemented yet</string>
-          </property>
-         </widget>
-        </widget>
+        <widget class="QWidget" name="Log"/>
        </widget>
       </item>
      </layout>
@@ -438,8 +419,17 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="actionAbout_abTransfers"/>
    </widget>
+   <widget class="QMenu" name="menuTEST">
+    <property name="title">
+     <string>TEST</string>
+    </property>
+    <addaction name="actionAddGetDAs"/>
+    <addaction name="actionAddGetDated"/>
+    <addaction name="actionExecQueued"/>
+   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuTEST"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -465,10 +455,23 @@
     <string>About abTransfers</string>
    </property>
   </action>
+  <action name="actionAddGetDAs">
+   <property name="text">
+    <string>AddGetDAs</string>
+   </property>
+  </action>
+  <action name="actionAddGetDated">
+   <property name="text">
+    <string>AddGetDated</string>
+   </property>
+  </action>
+  <action name="actionExecQueued">
+   <property name="text">
+    <string>ExecQueued</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

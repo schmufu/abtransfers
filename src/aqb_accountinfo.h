@@ -102,7 +102,7 @@ public:
 	const QString& AccountType() const { return this->m_AccountType; }
 	const QList<abt_DAInfo*> *getKnownDAs() const { return this->m_KnownDAs; }
 
-	const AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
+	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->ID; }
 };
 

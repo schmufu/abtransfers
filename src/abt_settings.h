@@ -45,6 +45,7 @@ class abt_settings : public QObject
 Q_OBJECT
 private:
 	QString knownEmpfaengerFilename;
+	QString m_dataDir;
 	//QString SettingsFilename;
 	QSettings *Settings;
 	QList<abt_EmpfaengerInfo*>* EmpfaengerList;
@@ -55,6 +56,8 @@ public:
 
 	QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo*> *list);
+
+	const QString *getDataDir() const;
 
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!

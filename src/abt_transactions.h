@@ -28,47 +28,60 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ABT_TRANSACTIONS_H
+#define ABT_TRANSACTIONS_H
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
+#include "abt_transaction_base.h"
 
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
-
-#include "pages/page_log.h"
-
-namespace Ui {
-    class MainWindow;
-}
-
-class MainWindow : public QMainWindow {
-	Q_OBJECT
-public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
-
-
-
-protected:
-	void changeEvent(QEvent *e);
-
+class trans_StandingOrder : public abt_transaction
+{
 private:
-	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
+	void load(int id);
+	int id;
 
+public:
+	trans_StandingOrder(int id = 0);
 
-private slots:
-	void on_actionExecQueued_triggered();
- void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
+	void save();
+
 };
 
-#endif // MAINWINDOW_H
+
+class trans_DatedTransfer : public abt_transaction
+{
+public:
+	trans_DatedTransfer();
+};
+
+
+class trans_SingleTransfer : public abt_transaction
+{
+public:
+	trans_SingleTransfer();
+};
+
+class trans_SingleDebitNote : public abt_transaction
+{
+public:
+	trans_SingleDebitNote();
+};
+
+class trans_EuTransfer : public abt_transaction
+{
+public:
+	trans_EuTransfer();
+};
+
+class trans_InternalTransfer : public abt_transaction
+{
+public:
+	trans_InternalTransfer();
+};
+
+class trans_SepaTransfer : public abt_transaction
+{
+public:
+	trans_SepaTransfer();
+};
+
+#endif // ABT_TRANSACTIONS_H

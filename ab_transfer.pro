@@ -17,7 +17,10 @@ SOURCES += src/main.cpp \
     src/widgets/knownempfaengerwidget.cpp \
     src/abt_empfaengerinfo.cpp \
     src/abt_settings.cpp \
-    src/abt_transaction_base.cpp
+    src/abt_transaction_base.cpp \
+    src/abt_transactions.cpp \
+    src/abt_job_ctrl.cpp \
+    src/pages/page_log.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -30,13 +33,17 @@ HEADERS += src/mainwindow.h \
     src/widgets/knownempfaengerwidget.h \
     src/abt_empfaengerinfo.h \
     src/abt_settings.h \
-    src/abt_transaction_base.h
+    src/abt_transaction_base.h \
+    src/abt_transactions.h \
+    src/abt_job_ctrl.h \
+    src/pages/page_log.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
     src/widgets/ueberweisungswidget.ui \
     src/pages/page_da_edit_delete.ui \
-    src/widgets/knownempfaengerwidget.ui
+    src/widgets/knownempfaengerwidget.ui \
+    src/pages/page_log.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
     documentation/Doxyfile
 RESOURCES += src/resources.qrc

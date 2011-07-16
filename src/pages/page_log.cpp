@@ -28,47 +28,34 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "page_log.h"
+#include "ui_page_log.h"
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
-
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
-
-#include "pages/page_log.h"
-
-namespace Ui {
-    class MainWindow;
+page_log::page_log(QWidget *parent) :
+    QFrame(parent),
+    ui(new Ui::page_log)
+{
+	ui->setupUi(this);
 }
 
-class MainWindow : public QMainWindow {
-	Q_OBJECT
-public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
+page_log::~page_log()
+{
+	delete ui;
+}
 
+void page_log::changeEvent(QEvent *e)
+{
+	QFrame::changeEvent(e);
+	switch (e->type()) {
+	case QEvent::LanguageChange:
+		ui->retranslateUi(this);
+		break;
+	default:
+		break;
+	}
+}
 
-
-protected:
-	void changeEvent(QEvent *e);
-
-private:
-	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
-
-
-private slots:
-	void on_actionExecQueued_triggered();
- void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
-};
-
-#endif // MAINWINDOW_H
+void page_log::setLogText(const QStringList *strList)
+{
+	ui->plainTextEdit->setPlainText(strList->join("\n"));
+}

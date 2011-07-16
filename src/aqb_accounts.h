@@ -54,7 +54,7 @@ public:
 
 	const QHash<int, aqb_AccountInfo*>& getAccountHash() const
 		{ return this->m_accounts; }
-	const aqb_AccountInfo* getAccount(int ID) const
+	aqb_AccountInfo* getAccount(int ID) const
 		{ return this->m_accounts.value(ID, NULL); }
 //	const AB_BANKING *getBanking() const
 //		{ return this->m_ab; }

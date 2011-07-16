@@ -28,47 +28,29 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PAGE_LOG_H
+#define PAGE_LOG_H
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
-
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
-
-#include "pages/page_log.h"
+#include <QFrame>
 
 namespace Ui {
-    class MainWindow;
+    class page_log;
 }
 
-class MainWindow : public QMainWindow {
+class page_log : public QFrame {
 	Q_OBJECT
 public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
-
-
+	page_log(QWidget *parent = 0);
+	~page_log();
 
 protected:
 	void changeEvent(QEvent *e);
 
 private:
-	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
+	Ui::page_log *ui;
 
-
-private slots:
-	void on_actionExecQueued_triggered();
- void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
+public slots:
+	void setLogText(const QStringList *strList);
 };
 
-#endif // MAINWINDOW_H
+#endif // PAGE_LOG_H

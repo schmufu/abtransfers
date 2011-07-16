@@ -43,9 +43,11 @@ abt_settings::abt_settings(QObject *parent) :
 	this->EmpfaengerList = new QList<abt_EmpfaengerInfo*>;
 
 	this->knownEmpfaengerFilename =
-		this->Settings->value("Main/EmpfaengerFileName",
-				      QDir::homePath() +
+		this->Settings->value("Main/EmpfaengerFileName", QDir::homePath() +
 				      "/.ab_transfers/knownEmpfaenger.txt").toString();
+
+	this->m_dataDir = this->Settings->value("Main/DataDir", QDir::homePath() +
+						"/.ab_transfers/").toString();
 
 }
 
@@ -63,6 +65,8 @@ abt_settings::~abt_settings()
 	//Einstellungen in der ini-Datei speichern
 	this->Settings->setValue("Main/EmpfaengerFileName",
 				 this->knownEmpfaengerFilename);
+	this->Settings->setValue("Main/DataDir",
+				 this->m_dataDir);
 	//und danach das Object wieder löschen
 	delete this->Settings;
 }
@@ -121,6 +125,20 @@ void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)
 
 	file.close();
 }
+
+
+const QString *abt_settings::getDataDir() const
+{
+	return &this->m_dataDir;
+}
+
+
+
+
+
+
+
+
 
 
 //static
