@@ -51,6 +51,7 @@ private:
 
 public slots:
 	void setLogText(const QStringList *strList);
+	void appendLogText(const QString &str);
 };
 
 #endif // PAGE_LOG_H

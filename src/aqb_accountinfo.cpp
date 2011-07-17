@@ -31,16 +31,11 @@
 #include "aqb_accountinfo.h"
 #include <QObject>
 #include <QDebug>
-#include "abt_settings.h"
+#include "globalvars.h"
 
-abt_DAInfo::abt_DAInfo(const QString &Konto, const QString &BLZ,
-			   const QString &Name, const QString &Betrag)
-	:m_Kontonummer(Konto),
-	m_Bankleitzahl(BLZ),
-	m_Beguenstigter(Name),
-	m_Betrag(Betrag)
+abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
 {
-
+	this->t = transaction;
 }
 
 
@@ -86,7 +81,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID)
 	}
 
 	//alle bekannten Daueraufträge für diesen Account holen
-	this->m_KnownDAs = abt_settings::getDAsForAccount(this->m_Number, this->m_BankCode);
+	this->m_KnownDAs = settings->getDAsForAccount(this->m_Number, this->m_BankCode);
 
 	qDebug() << "AccountInfo for Account" << this->Number() << "created.";
 }
@@ -94,7 +89,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID)
 aqb_AccountInfo::~aqb_AccountInfo()
 {
 	//existierende Daueraufträge für diesen Account speichern
-	abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
+	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
 	abt_settings::freeDAsList(this->m_KnownDAs);
 }

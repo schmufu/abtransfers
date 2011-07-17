@@ -35,6 +35,7 @@
 
 #include "../globalvars.h"
 #include "../abt_transactions.h"
+#include "../abt_conv.h"
 
 Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent):
     QWidget(parent),
@@ -111,14 +112,6 @@ void Page_DA_Edit_Delete::on_pushButton_Revert_clicked()
 	this->ueberweisungwidget->setDisabled(false);
 	this->ui->groupBox_known_DAs->setDisabled(false);
 
-	trans_StandingOrder *so = new trans_StandingOrder(5);
-	so->setLocalName("Patrick Wacker");
-	so->setRemoteAccountNumber("1092006509");
-	const aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
-	if (acc)
-		so->fillLocalFromAccount(acc);
-	so->save();
-	delete so;
 }
 
 void Page_DA_Edit_Delete::debug_Slot(const abt_EmpfaengerInfo *data)
@@ -173,14 +166,18 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 	ui->treeWidget->setHeaderLabels(header);
 
 	QTreeWidgetItem *Item;
+	const AB_VALUE *v;
 	int ItemCount = 0;
 	for (int i=0; i<account->getKnownDAs()->size(); ++i) {
 		Item = new QTreeWidgetItem;
 		ItemCount++;
-		Item->setData(0, Qt::DisplayRole, account->getKnownDAs()->at(i)->getKontonummer());
-		Item->setData(1, Qt::DisplayRole, account->getKnownDAs()->at(i)->getBankleitzahl());
-		Item->setData(2, Qt::DisplayRole, account->getKnownDAs()->at(i)->getName());
-		Item->setData(3, Qt::DisplayRole, account->getKnownDAs()->at(i)->getBetrag());
+		Item->setData(0, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteAccountNumber());
+		Item->setData(1, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteBankCode());
+		Item->setData(2, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteName().at(0));
+		v = account->getKnownDAs()->at(i)->getSOT()->getValue();
+		QString Betrag = QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2);
+		Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+		Item->setData(3, Qt::DisplayRole, Betrag);
 		ui->treeWidget->addTopLevelItem(Item);
 	}
 

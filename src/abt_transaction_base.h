@@ -38,7 +38,7 @@
 #include <aqbanking/transaction.h>
 #include <aqbanking/transactionfns.h>
 
-#include "aqb_accountinfo.h"
+//#include "aqb_accountinfo.h"
 
 /*! simple wrapper to AB_Transaction_Set* -Get* functions
   *
@@ -135,7 +135,9 @@ public:
 	 * Values		     *
 	 *****************************/
 	const AB_VALUE* getValue() const;
+	//const AB::Value* getValue() const;
 	void setValue(const AB_VALUE *Value);
+	//void setValue(const AB::Value *Value);
 
 	/*********************************
 	 * Not supported by all backends *
@@ -267,13 +269,19 @@ public:
 	void setUnitIdNameSpace(const QString &UnitIdNameSpace);
 
 	const AB_VALUE* getUnits() const;
+	//const AB::Value* getUnits() const;
 	void setUnits(const AB_VALUE *Units);
+	//void setUnits(const AB::Value *Units);
 
 	const AB_VALUE* getUnitPrice() const;
+	//const AB::Value* getUnitPrice() const;
 	void setUnitPrice(const AB_VALUE *UnitPrice);
+	//void setUnitPrice(const AB::Value *UnitPrice);
 
 	const AB_VALUE* getCommission() const;
+	//const AB::Value* getCommission() const;
 	void setCommission(const AB_VALUE *Commission);
+	//void setCommission(const AB::Value *Commission);
 
 
 	/***************************************
@@ -297,7 +305,7 @@ public:
 	 **********************************************************************/
 	bool isModified() const;
 	void setModified(bool mod);
-	void fillLocalFromAccount(const aqb_AccountInfo *a);
+	void fillLocalFromAccount(const AB_ACCOUNT *a);
 
 	const AB_TRANSACTION* getAB_Transaction() const;
 
@@ -307,6 +315,8 @@ public:
 	 **********************************************************************/
 	static void saveTransaction(const abt_transaction *t);
 	static void saveTransaction(AB_TRANSACTION *t);
+
+	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
 
 };
 

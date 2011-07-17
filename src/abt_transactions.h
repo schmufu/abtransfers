@@ -35,15 +35,8 @@
 
 class trans_StandingOrder : public abt_transaction
 {
-private:
-	void load(int id);
-	int id;
-
 public:
-	trans_StandingOrder(int id = 0);
-
-	void save();
-
+	trans_StandingOrder();
 };
 
 

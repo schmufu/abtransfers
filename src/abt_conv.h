@@ -47,6 +47,7 @@ public:
 	static const QString JobTypeToQString(const AB_JOB *j);
 	static const QString JobTypeToQString(AB_JOB_TYPE type);
 	static const QString JobStatusToQString(const AB_JOB *j);
+	static const QString JobStatusToQString(AB_JOB_STATUS status);
 
 
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
@@ -55,6 +56,8 @@ public:
 	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
+	static const QString ABValueToString(const AB_VALUE *v);
+	static AB_VALUE* ABValueFromString(const QString &str);
 
 
 };

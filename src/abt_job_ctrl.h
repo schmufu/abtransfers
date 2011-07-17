@@ -59,8 +59,6 @@ Q_OBJECT
 
 private:
 	QList<abt_job_info*> *jobqueue;
-	QStringList *log;
-
 
 	void addlog(const QString &str);
 
@@ -81,13 +79,13 @@ public:
 	explicit abt_job_ctrl(QObject *parent = 0);
 	~abt_job_ctrl();
 
-	const QStringList *getLog() const { return this->log; }
 	const QList<abt_job_info*> *jobqueueList() const { return this->jobqueue; }
 
 
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);
 	void jobQueueListChanged();
+	void log(const QString &str);
 
 public slots:
 	void addNewSingleTransfer(aqb_AccountInfo *acc, const trans_SingleTransfer *t);

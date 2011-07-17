@@ -66,7 +66,7 @@ protected:
 	void changeEvent(QEvent *e);
 
 private:
-	void fillKnownDAs(const QList<abt_DAInfo*> *list);
+	//void fillKnownDAs(const QList<abt_DAInfo*> *list);
 
 private slots:
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);

@@ -61,9 +61,9 @@ public:
 
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
-	static QList<abt_DAInfo*> *getDAsForAccount(QString &KtoNr, QString &BLZ);
+	QList<abt_DAInfo*> *getDAsForAccount(const QString &KtoNr, const QString &BLZ);
 	//! Speichert alle Einträge der Liste für den entsprechenden Account
-	static void saveDAsForAccount(QList<abt_DAInfo*> *list, QString &KtoNr, QString &BLZ);
+	void saveDAsForAccount(const QStringList &DAIDs, const QString &KtoNr, const QString &BLZ);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
 	static void freeDAsList(QList<abt_DAInfo*> *list);
 

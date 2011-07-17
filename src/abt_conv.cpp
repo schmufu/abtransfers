@@ -110,7 +110,14 @@ const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
 //static
 const QString abt_conv::JobStatusToQString(const AB_JOB *j)
 {
-	switch (AB_Job_GetStatus(j)) {
+	AB_JOB_STATUS status = AB_Job_GetStatus(j);
+	return abt_conv::JobStatusToQString(status);
+}
+
+//static
+const QString abt_conv::JobStatusToQString(AB_JOB_STATUS status)
+{
+	switch (status) {
 	case AB_Job_StatusEnqueued:
 		return QObject::tr("Enqueued");
 		break;
@@ -193,3 +200,34 @@ const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &
 	}
 	return gwl;
 }
+
+/*! wird genutzt um die Werte als String in der ini-Datei zu speichern */
+//static
+const QString abt_conv::ABValueToString(const AB_VALUE *v)
+{
+	if (v == NULL) {
+		return QString();
+	}
+	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
+	AB_Value_toString(v, buf);
+	std::string result(GWEN_Buffer_GetStart(buf));
+	GWEN_Buffer_free(buf);
+	return QString::fromStdString(result);
+}
+
+/*! wird genutzt um die als String gespeicherten Werte aus der ini-Datei zu lesen
+  *
+  * This function reads a AB_VALUE from a string. Strings suitable as arguments
+  * are those created by AB_Value_toString or simple floating point string (as
+  * in "123.45" or "-123.45").
+  */
+//static
+AB_VALUE *abt_conv::ABValueFromString(const QString &str)
+{
+	if (str.isEmpty()) {
+		return NULL;
+	}
+	std::string s = str.toStdString();
+	return AB_Value_fromString(s.c_str());
+}
+

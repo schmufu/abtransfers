@@ -45,7 +45,7 @@
 #include <aqbanking/account.h>
 #include <gwenhywfar4/gwen-gui-qt4/qt4_gui.hpp>
 #include <aqbanking/jobgettransactions.h>
-
+#include <aqbanking/value.h>
 
 #include "globalvars.h"
 #include "pages/page_da_edit_delete.h"
@@ -82,6 +82,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	//Nicht mögliche Aufträge in der StatusBar anzeigen
 	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
+
+	//Logs von abt_job_ctrl in der Log-Seite anzeigen
+	connect(this->jobctrl, SIGNAL(log(QString)),
+		this->logw, SLOT(appendLogText(QString)));
+
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
@@ -189,17 +194,33 @@ void MainWindow::on_actionAddGetDAs_triggered()
 
 void MainWindow::on_actionAddGetDated_triggered()
 {
-	this->jobctrl->addGetDatedTransfers(this->accounts->getAccount(0));
-	this->ui->statusBar->showMessage("Get Dated Transfers eingefügt");
+	this->ui->statusBar->showMessage("Test mit AB_VALUE");
+
+	AB_VALUE *v = AB_Value_new();
+	AB_Value_SetValueFromDouble(v, 15.37);
+	long n,z;
+	n = AB_Value_Denom(v);
+	z = AB_Value_Num(v);
+
+	//AB::Value *VA = new AB::Value(v);
+
+	qDebug() << "Num: " << z << " - Denum: " << n;
+	qDebug() << "Num/Denum = " << z / n << "." << z % n;
+
+	//qDebug() << "ToString: " << QString::fromStdString(VA->toString());
+
+
+
+	//delete VA;
+
+	AB_Value_free(v);
 }
 
 void MainWindow::on_actionExecQueued_triggered()
 {
 	this->ui->statusBar->showMessage("Executing queued jobs");
-	this->logw->setLogText(this->jobctrl->getLog());
 	this->jobctrl->execQueuedTransactions();
 	this->ui->statusBar->showMessage("queued jobs executed");
-	this->logw->setLogText(this->jobctrl->getLog());
 }
 
 //private SLOT
@@ -207,6 +228,6 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 {
 	QString msg;
 	msg.append(abt_conv::JobTypeToQString(type));
-	msg.append(" - Auftrag wird von der Bank nicht unterstützt!");
+	msg.append(tr(" - Auftrag wird von der Bank nicht unterstützt!"));
 	ui->statusBar->showMessage(msg);
 }

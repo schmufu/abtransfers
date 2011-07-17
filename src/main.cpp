@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);

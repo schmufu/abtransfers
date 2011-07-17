@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
+#include "globalvars.h"
 
 abt_settings::abt_settings(QObject *parent) :
 	QObject(parent)
@@ -141,68 +142,39 @@ const QString *abt_settings::getDataDir() const
 
 
 
-//static
-QList<abt_DAInfo*> *abt_settings::getDAsForAccount(QString &KtoNr, QString &BLZ)
+QList<abt_DAInfo*> *abt_settings::getDAsForAccount(const QString &KtoNr,
+						   const QString &BLZ)
 {
-	QString FileName = QDir::homePath() + "/.ab_transfers/DAs_" + KtoNr + "_" + BLZ + ".txt";
+	QStringList DA_IDs;
+	this->Settings->beginGroup("Dauerauftraege");
+	QString key = KtoNr + "_" + BLZ;
+	DA_IDs = this->Settings->value(key).toStringList();
+	this->Settings->endGroup();
 
-	QFile file(FileName);
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		return NULL;
-
-	QTextStream in(&file);
-	QStringList InfoStringList;
 	abt_DAInfo *DAInfo;
 	QList<abt_DAInfo*> *List = new QList<abt_DAInfo*>;
-	int i=0;
-	while (!in.atEnd()) {
-		i++;
-		QString line = in.readLine();
-		InfoStringList = line.split("\t", QString::KeepEmptyParts);
 
-		if (InfoStringList.size() != 4) {
-			qWarning() << "getDAsForAccount: Error at parsing line "
-				   << i << "from: " << FileName;
-			continue; //next line
-		}
-
-		DAInfo = new abt_DAInfo(InfoStringList.at(0),
-					  InfoStringList.at(1),
-					  InfoStringList.at(2),
-					  InfoStringList.at(3));
-
+	for (int i=0; i<DA_IDs.size(); ++i) {
+		AB_TRANSACTION *t = abt_transaction::loadTransaction("Dauerauftraege.ini", DA_IDs.at(i));
+		abt_transaction *trans = new abt_transaction(t, true);
+		DAInfo = new abt_DAInfo(trans);
 		List->append(DAInfo);
 	}
 
-	file.close();
 	return List;
 }
 
-//static
-void abt_settings::saveDAsForAccount(QList<abt_DAInfo *> *list, QString &KtoNr, QString &BLZ)
+void abt_settings::saveDAsForAccount(const QStringList &DAIDs,
+				     const QString &KtoNr, const QString &BLZ)
 {
-	QString FileName = QDir::homePath() + "/.ab_transfers/DAs_" + KtoNr + "_" + BLZ + ".txt";
-
-	QFile file(FileName);
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-		return;
-
-	QTextStream out(&file);
-	abt_DAInfo *DAInfo;
-
-	for (int i=0; i<list->size(); ++i) {
-		DAInfo = list->at(i);
-		out << DAInfo->getKontonummer() << "\t";
-		out << DAInfo->getBankleitzahl() << "\t";
-		out << DAInfo->getName() << "\t";
-		out << DAInfo->getBetrag() << "\n";
-	}
-
-	file.close();
+	this->Settings->beginGroup("Dauerauftraege");
+	QString key = KtoNr + "_" + BLZ;
+	this->Settings->setValue(key, DAIDs);
+	this->Settings->endGroup();
 }
 
 //static
-void abt_settings::freeDAsList(QList<abt_DAInfo *> *list)
+void abt_settings::freeDAsList(QList<abt_DAInfo*> *list)
 {
 	while (list->size()) {
 		delete list->takeFirst();

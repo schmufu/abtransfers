@@ -59,3 +59,8 @@ void page_log::setLogText(const QStringList *strList)
 {
 	ui->plainTextEdit->setPlainText(strList->join("\n"));
 }
+
+void page_log::appendLogText(const QString &str)
+{
+	ui->plainTextEdit->appendPlainText(str);
+}

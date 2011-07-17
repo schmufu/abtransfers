@@ -34,6 +34,7 @@
 #include <QString>
 
 #include <aqbanking/account.h>
+#include "abt_transaction_base.h"
 
 
 /*! \brief Daten von gespeicherten Daueraufträgen
@@ -44,18 +45,11 @@
   */
 class abt_DAInfo {
 private:
-	QString m_Kontonummer;
-	QString m_Bankleitzahl;
-	QString m_Beguenstigter;
-	QString m_Betrag;
+	abt_transaction *t;
 public:
-	abt_DAInfo(const QString &Konto, const QString &BLZ,
-		     const QString &Name, const QString &Betrag);
+	abt_DAInfo(abt_transaction *transaction);
 
-	const QString &getKontonummer() const { return this->m_Kontonummer; }
-	const QString &getBankleitzahl() const { return this->m_Bankleitzahl; }
-	const QString &getName() const { return this->m_Beguenstigter; }
-	const QString &getBetrag() const { return this->m_Betrag; }
+	const abt_transaction* getSOT() const { return this->t; }
 };
 
 /*! \brief Informationen über eine Account

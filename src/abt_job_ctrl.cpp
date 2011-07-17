@@ -99,7 +99,7 @@ abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_job_info*>;
-	this->log = new QStringList("created: " + QDate::currentDate().toString(Qt::DefaultLocaleLongDate));
+	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
 
 abt_job_ctrl::~abt_job_ctrl()
@@ -116,16 +116,16 @@ abt_job_ctrl::~abt_job_ctrl()
 	}
 
 	delete this->jobqueue;
-	delete this->log;
 }
 
 void abt_job_ctrl::addlog(const QString &str)
 {
 	static QString time;
-	time = QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
+	time = QTime::currentTime().toString(Qt::DefaultLocaleLongDate);
 	time.append(": ");
 	time.append(str);
-	this->log->append(time);
+
+	emit this->log(time);
 }
 
 //SLOT
@@ -984,7 +984,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 	AB_TRANSACTION *t;
 	QString logmsg = "Recvd-StandingOrders: ";
 	QString logmsg2;
-	QStringList strList;
+	QStringList strList, DAIDs;
 	const AB_VALUE *v;
 	const GWEN_STRINGLIST *l;
 	int cnt = 0;
@@ -992,6 +992,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 	cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
 	logmsg2 = QString("Count: %1").arg(cnt);
 	this->addlog(logmsg + logmsg2);
+	DAIDs.clear();
 
 	t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
 	while (t) {
@@ -1017,9 +1018,16 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 			"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
 			).arg(AB_Transaction_GetFiId(t)));
 		abt_transaction::saveTransaction(t);
-
+		DAIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
+
+	//Die lokal gespeicherten DAs auch in den Einstellungen merken.
+	QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+
+	settings->saveDAsForAccount(DAIDs, KtoNr, BLZ);
+
 	return cnt;
 
 }
@@ -1113,14 +1121,14 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 	QStringList strList;
 	bool res=true;
 	static int run = 0;
-	qDebug() << "in checkJobStatus() - RUN: " << run;
+	qDebug() << "in checkJobStatus() - RUN: " << run++;
 
 	AB_JOB_LIST2_ITERATOR *jli;
 	jli = AB_Job_List2Iterator_new(jl);
 	jli = AB_Job_List2_First(jl);
 	j = AB_Job_List2Iterator_Data(jli);
 	while (j) {
-		qDebug() << "in checkJobStatus()-while - RUN: " << run;
+		qDebug() << "in checkJobStatus()-while - RUN: " << run++;
 		type = AB_Job_GetType(j);
 		strType = AB_Job_Type2Char(type);
 		this->addlog(QString("JobType: ").append(strType));
@@ -1142,7 +1150,7 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 
 	AB_Job_List2Iterator_free(jli);
 
-	qDebug() << "in checkJobStatus()-end - RUN: " << run;
+	qDebug() << "in checkJobStatus()-end - RUN: " << run++;
 
 	return res;
 }
