@@ -48,7 +48,6 @@
 #include <aqbanking/value.h>
 
 #include "globalvars.h"
-#include "pages/page_da_edit_delete.h"
 #include "abt_conv.h"
 
 
@@ -62,9 +61,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->jobctrl = new abt_job_ctrl(this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
+	this->daw = new Page_DA_Edit_Delete(banking, this->accounts, ui->DA_Bearbeiten);
 
-	Page_DA_Edit_Delete *page = new Page_DA_Edit_Delete(banking, this->accounts, ui->DA_Bearbeiten);
-	ui->DA_Bearbeiten->layout()->addWidget(page);
+	ui->DA_Bearbeiten->layout()->addWidget(this->daw);
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -88,15 +87,15 @@ MainWindow::MainWindow(QWidget *parent) :
 		this->logw, SLOT(appendLogText(QString)));
 
 	//Wenn ein DA gelöscht werden soll diesen in abt_job_ctrl einfügen
-	connect(page, SIGNAL(deleteDA(aqb_AccountInfo*,const abt_transaction*)),
+	connect(this->daw, SIGNAL(deleteDA(aqb_AccountInfo*,const abt_transaction*)),
 		this->jobctrl, SLOT(addDeleteStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
 
 	//Aktualisieren eines DAs
-	connect(page, SIGNAL(getAllDAs(aqb_AccountInfo*)),
+	connect(this->daw, SIGNAL(getAllDAs(aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetStandingOrders(aqb_AccountInfo*)));
 
 	//Ändern eines DAs
-	connect(page, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
+	connect(this->daw, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
 		this->jobctrl, SLOT(addModifyStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
 
 
@@ -114,10 +113,11 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->outw;
-	delete this->logw;
-	delete this->jobctrl;
-	delete this->accounts;
+	delete this->daw;	//DauerAuftragWidget löschen
+	delete this->outw;	//AusgangsWidget löschen
+	delete this->logw;	//LogWidget löschen
+	delete this->jobctrl;	//jobControl-Object löschen
+	delete this->accounts;	//account-Object löschen
 	delete ui;
 }
 

@@ -39,6 +39,7 @@
 
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
+#include "pages/page_da_edit_delete.h"
 
 namespace Ui {
     class MainWindow;
@@ -61,6 +62,7 @@ private:
 	abt_job_ctrl *jobctrl;
 	page_log *logw;
 	Page_Ausgang *outw;
+	Page_DA_Edit_Delete *daw;
 
 
 private slots:
