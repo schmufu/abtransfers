@@ -87,6 +87,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
+	//Wenn ein DA gelöscht werden soll diesen in abt_job_ctrl einfügen
+	connect(page, SIGNAL(deleteDA(aqb_AccountInfo*,const abt_transaction*)),
+		this->jobctrl, SLOT(addDeleteStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+
+	//Aktualisieren eines DAs
+	connect(page, SIGNAL(getAllDAs(aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetStandingOrders(aqb_AccountInfo*)));
+
+	//Ändern eines DAs
+	connect(page, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
+		this->jobctrl, SLOT(addModifyStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor

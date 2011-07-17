@@ -99,9 +99,9 @@ public slots:
 	void addDeleteDatedTransfer(aqb_AccountInfo *acc, const trans_DatedTransfer *t);
 	void addGetDatedTransfers(aqb_AccountInfo *acc);
 
-	void addCreateStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t);
-	void addModifyStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t);
-	void addDeleteStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t);
+	void addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addDeleteStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t);
 	void addGetStandingOrders(aqb_AccountInfo *acc);
 
 	void execQueuedTransactions();

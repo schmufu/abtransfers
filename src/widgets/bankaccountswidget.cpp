@@ -154,7 +154,7 @@ void BankAccountsWidget::changeEvent(QEvent *e)
 	}
 }
 
-const aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
+aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 {
 	if (ui->treeWidget->selectedItems().size() == 0) {
 		return NULL;

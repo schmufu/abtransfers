@@ -48,7 +48,7 @@ public:
 	BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent = 0);
 	~BankAccountsWidget();
 
-	const aqb_AccountInfo *getSelectedAccount();
+	aqb_AccountInfo *getSelectedAccount();
 
 protected:
 	void changeEvent(QEvent *e);

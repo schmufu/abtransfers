@@ -544,7 +544,7 @@ void abt_job_ctrl::addGetDatedTransfers(aqb_AccountInfo *acc)
 
 
 //SLOT
-void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t)
+void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -590,7 +590,7 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 }
 
 //SLOT
-void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t)
+void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -636,7 +636,7 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 }
 
 //SLOT
-void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const trans_StandingOrder *t)
+void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -657,13 +657,13 @@ void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 	//Create Info
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -671,7 +671,9 @@ void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 

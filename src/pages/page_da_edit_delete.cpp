@@ -32,6 +32,7 @@
 #include "ui_page_da_edit_delete.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 #include "../globalvars.h"
 #include "../abt_transactions.h"
@@ -172,6 +173,7 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 		Item = new QTreeWidgetItem;
 		ItemCount++;
 		Item->setData(0, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteAccountNumber());
+		Item->setData(0, Qt::UserRole, (quint64)account->getKnownDAs()->at(i)->getSOT());
 		Item->setData(1, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteBankCode());
 		Item->setData(2, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteName().at(0));
 		v = account->getKnownDAs()->at(i)->getSOT()->getValue();
@@ -193,4 +195,45 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	// Prüfen ob Änderungen vorhanden sind und diese nicht gespeichert wurden
 	// ansonten den neuen DA anzeigen.
 
+}
+
+void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
+{
+	//Nachfragen ob der ausgewählte DA wirklich gelöscht werden soll
+	const abt_transaction *t;
+	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+
+	QMessageBox msg;
+	msg.setIcon(QMessageBox::Question);
+	msg.setText("Dauerauftrag löschen?");
+	QString info;
+	info.append("Soll der Dauerauftrag:\n");
+	info.append("\tEmpfänger: " + t->getRemoteName().at(0) + "\n");
+	info.append("\tVerwendungzweck: " + t->getPurpose().at(0) + "\n\n");
+	info.append("Wirklich gelöscht werden?");
+	msg.setInformativeText(info);
+	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	msg.setDefaultButton(QMessageBox::No);
+	int ret = msg.exec();
+
+	if (ret == QMessageBox::Yes) {
+		aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+		emit this->deleteDA(acc, t);
+	}
+}
+
+
+void Page_DA_Edit_Delete::on_pushButton_DA_Aktualisieren_clicked()
+{
+	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	emit this->getAllDAs(acc);
+}
+
+void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
+{
+	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	const abt_transaction *t;
+	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+
+	emit this->modifyDA(acc, t);
 }

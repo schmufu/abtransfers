@@ -68,7 +68,16 @@ protected:
 private:
 	//void fillKnownDAs(const QList<abt_DAInfo*> *list);
 
+signals:
+	void deleteDA(aqb_AccountInfo *a, const abt_transaction *t);
+	void getAllDAs(aqb_AccountInfo *a);
+	void modifyDA(aqb_AccountInfo *a, const abt_transaction *t);
+	void createDA(aqb_AccountInfo *a, const abt_transaction *t);
+
 private slots:
+	void on_pushButton_Execute_clicked();
+	void on_pushButton_DA_Aktualisieren_clicked();
+	void on_pushButton_DA_Delete_clicked();
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 	void on_pushButton_Revert_clicked();
 	void debug_Slot(const abt_EmpfaengerInfo *data);
