@@ -28,41 +28,33 @@
  *
  ******************************************************************************/
 
-#ifndef PAGE_AUSGANG_H
-#define PAGE_AUSGANG_H
+#ifndef ABT_CONV_H
+#define ABT_CONV_H
 
-#include <QFrame>
-#include "../abt_job_ctrl.h"
+#include <QString>
+#include <QStringList>
+#include <QDate>
 
-namespace Ui {
-	class Page_Ausgang;
-}
+#include <aqbanking/job.h>
 
-class Page_Ausgang : public QFrame {
-	Q_OBJECT
-private:
-	abt_job_ctrl *jobctrl;
-
-	void setDefaultTreeWidgetHeader();
-	void setTreeWidgetColWidths();
-
+/*! \brief Konvertierungsfunktionen für GWEN* und AB* Typen zu Qt-Typen
+  */
+class abt_conv
+{
 public:
-	Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent = 0);
-	~Page_Ausgang();
+	abt_conv();
 
-protected:
-	void changeEvent(QEvent *e);
-	void resizeEvent(QResizeEvent *event);
+	static const QString JobTypeToQString(const AB_JOB *j);
+	static const QString JobStatusToQString(const AB_JOB *j);
 
-private:
-	Ui::Page_Ausgang *ui;
+	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
+	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
 
-signals:
-	void Execute_Clicked();
+	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
+	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
-public slots:
-	void refreshTreeWidget();
+
 
 };
 
-#endif // PAGE_AUSGANG_H
+#endif // ABT_CONV_H

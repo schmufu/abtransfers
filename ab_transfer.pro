@@ -21,7 +21,8 @@ SOURCES += src/main.cpp \
     src/abt_transactions.cpp \
     src/abt_job_ctrl.cpp \
     src/pages/page_log.cpp \
-    src/pages/page_ausgang.cpp
+    src/pages/page_ausgang.cpp \
+    src/abt_conv.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -38,7 +39,8 @@ HEADERS += src/mainwindow.h \
     src/abt_transactions.h \
     src/abt_job_ctrl.h \
     src/pages/page_log.h \
-    src/pages/page_ausgang.h
+    src/pages/page_ausgang.h \
+    src/abt_conv.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \

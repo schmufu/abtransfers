@@ -52,12 +52,53 @@
 #include <aqbanking/jobgetstandingorders.h>
 
 #include "globalvars.h"
+#include "abt_conv.h"
 
+
+/*********** abt_job_info class *******************/
+abt_job_info::abt_job_info(AB_JOB *j, const QString &Info)
+{
+	this->job = j;
+
+	//info wird als Semikolon-Getrennte Liste übergeben.
+	this->jobInfo = new QStringList(Info.split(";", QString::SkipEmptyParts));
+}
+
+abt_job_info::~abt_job_info()
+{
+	//The job is owned by aqBanking, so we dont free it!
+
+	//we created the StringList, so we delete it.
+	delete this->jobInfo;
+}
+
+const QString abt_job_info::getStatus() const
+{
+	return abt_conv::JobStatusToQString(this->job);
+}
+
+const QString abt_job_info::getType() const
+{
+	return abt_conv::JobTypeToQString(this->job);
+}
+
+const QStringList *abt_job_info::getInfo() const
+{
+	return this->jobInfo;
+}
+
+AB_JOB *abt_job_info::getJob() const
+{
+	return this->job;
+}
+
+
+/*********** abt_job_ctrl class *******************/
 
 abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
-	this->jobqueue = new QList<AB_JOB*>;
+	this->jobqueue = new QList<abt_job_info*>;
 	this->log = new QStringList("created: " + QDate::currentDate().toString(Qt::DefaultLocaleLongDate));
 }
 
@@ -69,6 +110,10 @@ abt_job_ctrl::~abt_job_ctrl()
 //	while (!this->jobqueue->isEmpty()) {
 //		AB_Job_free(this->jobqueue->takeFirst());
 //	}
+
+	while (!this->jobqueue->isEmpty()) {
+		delete this->jobqueue->takeFirst();
+	}
 
 	delete this->jobqueue;
 	delete this->log;
@@ -102,9 +147,31 @@ void abt_job_ctrl::addNewSingleTransfer(aqb_AccountInfo *acc, const trans_Single
 	//add transaction to the job
 	rv = AB_JobSingleTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for SingleTransfer
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -126,9 +193,31 @@ void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const trans_Singl
 	//add transaction to the job
 	rv = AB_JobSingleDebitNote_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for SingleDebitNote
+	QString info;
+	info.append("Zu:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Von:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -150,9 +239,33 @@ void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const trans_EuTransfer
 	//add transaction to the job
 	rv = AB_JobEuTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for EuTransfer
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + " [");
+	info.append(t->getRemoteBankLocation() + "])");
+	info.append(";");	
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -174,9 +287,32 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const trans_Inte
 	//add transaction to the job
 	rv = AB_JobInternalTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for Internal Transfer
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -198,9 +334,32 @@ void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const trans_SepaTran
 	//add transaction to the job
 	rv = AB_JobSepaTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for SingleTransfer
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 /******* Dated Transfers ********/
@@ -224,9 +383,34 @@ void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//add transaction to the job
 	rv = AB_JobCreateDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info for NewDatedTransfer
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Tag der Ausführung:;");
+	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -248,9 +432,33 @@ void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//add transaction to the job
 	rv = AB_JobModifyDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Tag der Ausführung:;");
+	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -272,9 +480,34 @@ void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//add transaction to the job
 	rv = AB_JobDeleteDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Tag der Ausführung:;");
+	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -293,9 +526,17 @@ void abt_job_ctrl::addGetDatedTransfers(aqb_AccountInfo *acc)
 		return; //Abbruch
 	}
 
+	//Create Info
+	QString info;
+	info.append("INFO: Holt alle noch nicht ausgeführten Terminüberweisungen");
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 
@@ -321,9 +562,31 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 	//add transaction to the job
 	rv = AB_JobCreateStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -345,9 +608,31 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 	//add transaction to the job
 	rv = AB_JobModifyStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -369,9 +654,31 @@ void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const trans_Stan
 	//add transaction to the job
 	rv = AB_JobDeleteStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
+	//Create Info
+	QString info;
+	info.append("Von:;");
+	info.append(t->getLocalName().at(0));
+	info.append("(" + t->getLocalAccountNumber());
+	info.append(" - " + t->getLocalBankCode() + ")");
+	info.append(";");
+	info.append("Zu:;");
+	info.append(t->getRemoteName().at(0));
+	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" - " + t->getRemoteBankCode() + ")");
+	info.append(";");
+	info.append("Verwendungszweck:;");
+	for (int i=0; i<t->getPurpose().size(); ++i) {
+		info.append(t->getPurpose().at(i) + ";");
+	}
+	info.append("Betrag: ");
+	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 //SLOT
@@ -390,9 +697,16 @@ void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
 		return; //Abbruch
 	}
 
+	//Create Info
+	QString info;
+	info.append("INFO: Holt alle bei der Bank hinterlegten Daueraufträge");
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(job);
+	this->jobqueue->append(ji);
+	emit this->jobQueueListChanged();
 }
 
 
@@ -413,7 +727,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	//Alle jobs in der reihenfolge wie der jobqueue einreihen
 	for (int i=0; i<this->jobqueue->size(); ++i) {
-		AB_Job_List2_PushBack(jl, this->jobqueue->at(i));
+		AB_Job_List2_PushBack(jl, this->jobqueue->at(i)->getJob());
 	}
 
 	this->addlog(QString::fromUtf8("%1 Aufträge in die Jobliste übernommen").arg(this->jobqueue->count()));
@@ -451,7 +765,10 @@ void abt_job_ctrl::execQueuedTransactions()
 	AB_Job_List2_ClearAll(jl);
 	AB_ImExporterContext_Clear(ctx);
 
-	this->jobqueue->clear();
+	//Alle Objecte in der jobqueue liste löschen
+	while (!this->jobqueue->isEmpty())
+		delete this->jobqueue->takeFirst();
+	emit this->jobQueueListChanged();
 }
 
 bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
@@ -490,7 +807,7 @@ int abt_job_ctrl::parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx)
 	msg = AB_ImExporterContext_GetFirstMessage(ctx);
 	while (msg) {
 		logmsg2 = QString("Empfangsdatum:\t");
-		logmsg2.append(abt_transaction::GwenTimeToQDate(
+		logmsg2.append(abt_conv::GwenTimeToQDate(
 				AB_Message_GetDateReceived(msg)).toString(
 						Qt::DefaultLocaleLongDate));
 		this->addlog(logmsg + logmsg2);
@@ -572,7 +889,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *a
 
 
 		logmsg2 = QString("Time:\t");
-		logmsg2.append(abt_transaction::GwenTimeToQDate(
+		logmsg2.append(abt_conv::GwenTimeToQDate(
 						AB_AccountStatus_GetTime(s)).toString(
 								Qt::DefaultLocaleLongDate));
 		this->addlog(logmsg + logmsg2);
@@ -602,7 +919,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -613,7 +930,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 
 		logmsg2 = QString("RemoteName:\t");
 		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -641,7 +958,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -652,7 +969,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 
 		logmsg2 = QString("RemoteName:\t");
 		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -680,7 +997,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -691,7 +1008,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 
 		logmsg2 = QString("RemoteName:\t");
 		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -725,7 +1042,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -736,7 +1053,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO
 
 		logmsg2 = QString("RemoteName:\t");
 		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -764,7 +1081,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTI
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -775,7 +1092,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTI
 
 		logmsg2 = QString("RemoteName:\t");
 		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_transaction::GwenStringListToQStringList(l);
+		strList = abt_conv::GwenStringListToQStringList(l);
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
@@ -815,7 +1132,7 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 		this->addlog(QString("JobState: ").append(strState));
 
 		strl = AB_Job_GetLogs(j);
-		strList = abt_transaction::GwenStringListToQStringList(strl);
+		strList = abt_conv::GwenStringListToQStringList(strl);
 		GWEN_StringList_free(strl);
 		this->addlog(QString("JobLog: ").append(strList.join(" - ")));
 

@@ -79,7 +79,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="pushButton_up">
          <property name="text">
           <string>Auf</string>
          </property>
@@ -90,7 +90,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="pushButton_down">
          <property name="text">
           <string>Ab</string>
          </property>
@@ -105,16 +105,19 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>18</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="pushButton_del">
          <property name="text">
           <string>Löschen</string>
          </property>
@@ -138,7 +141,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="pushButton_exec">
          <property name="text">
           <string>Ausführen</string>
          </property>

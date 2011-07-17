@@ -54,80 +54,6 @@ private:
 protected:
 	AB_TRANSACTION* aqb_transaction;
 
-/* not needed any longer?
-	//Local Account Info
-	QString LocalCountry;
-	QString LocalBankCode;
-	QString LocalBranchId;
-	QString LocalAccountNumber;
-	QString LocalSuffix;
-	QString LocalIban;
-	QString LocalName;
-	QString LocalBic;
-	//Remote Account Info
-	QString RemoteCountry;
-	QString RemoteBankName;
-	QString RemoteBankLocation;
-	QString RemoteBankCode;
-	QString RemoteBranchId;
-	QString RemoteAccountNumber;
-	QString RemoteSuffix;
-	QString RemoteIban;
-	QString RemoteName;
-	QString RemoteBic;
-	QString UniqueId;
-	QString IdForApplication; //!< Unique ID set by the Application, not changed by aqBanking
-	QString GroupId;
-	//Dates
-	QString ValutaDate; //!< Wertstellung (Datum der wirklichen Ausführung)
-	QString Date; //!< Buchungsdatum (Datum der Erstellung)
-	//Value
-	QString Value;
-	QString Fees;
-	//Info which is Not Supported by all Backends
-	QString TextKey; //!< Textschlüssel (Überweisung 51, debit note 04 or 05) [HBCI only]
-	QString TextKeyExt; //!< Textschlüsselergänzung (Überweisung 51, debit note 04 or 05) [HBCI only]
-	QString TransactionKey; //!< Buchungsschlüssel [HBCI only]
-	QString CustomerReference; //!< Kundenreferenz
-	QString BankReference; //!< Bankreferenz
-	QString EntToEndReference; //!< This is a reference provided by the issuer of a SEPA transfer.
-	QString MandateReference;
-	QString CreditorIdentifier; //!< used for SEPA transfers
-	QString OriginatorIdentifier; //!< used for SEPA transfers
-	int TransactionCode; //!< Geschäftsvorfallcode (3 digit numerical transaction code)
-	QString TransactionText;
-	QString Promanota;
-	QString FiId;
-	QStringList Purpose; //!< every entry represents a single purpose line
-	QStringList Category;
-	//Additional Information for Standing Orders (Daueraufträge)
-	QString Period; //!< weekly or monthly
-	QString Cycle; //!< executet every cycle * period (period=weekly and cycle=2 ==> executed every 2 weeks)
-*/
-	QString ExecutionDay; /*!< meaning depends on the content of period
-				- monthly: day of the month (starting with 1)
-				- weekly: day of the week (startin with 1=Monday)
-				*/
-/*	QDate FirstExecutionDate;
-	QDate LastExecutionDate;
-	QDate NextExecutionDate;
-	//Additional Information for Transfers (Überweisungen)
-	QString Type; //!< transfer, debit note etc.
-	QString SubType;
-	QString Status; //!< accepted, rejected, pending etc.
-	QString Charge;
-	//Additional Information for Foreign Transfers
-	QString RemoteAddrStreet;
-	QString RemoteAddZipcode;
-	QString RemoteAddrCity;
-	QString RemotePhone;
-	//Additional Information for Investment Transfers
-	QString UnitId;
-	QString InitIdNameSpace;
-	QString Units;
-	QString UnitPrice;
-	QString Commission;
-*/
 public:
 	abt_transaction(AB_TRANSACTION *t = NULL, bool freeOnDelete = false);
 	~abt_transaction();
@@ -377,14 +303,8 @@ public:
 
 
 	/**********************************************************************
-	 * Static Helper functions for type Conversions                       *
+	 * Static Helper functions                                            *
 	 **********************************************************************/
-	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
-	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
-
-	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
-	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
-
 	static void saveTransaction(const abt_transaction *t);
 	static void saveTransaction(AB_TRANSACTION *t);
 

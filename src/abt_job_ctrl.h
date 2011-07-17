@@ -36,25 +36,33 @@
 #include "abt_transactions.h"
 #include "aqb_accountinfo.h"
 
+class abt_job_info
+{
+private:
+	AB_JOB *job;
+	QStringList *jobInfo;
+
+public:
+	abt_job_info(AB_JOB *j, const QString &Info);
+	~abt_job_info();
+
+	const QString getStatus() const;
+	const QString getType() const;
+	const QStringList* getInfo() const;
+	AB_JOB *getJob() const;
+
+};
+
 class abt_job_ctrl : public QObject
 {
 Q_OBJECT
 
 private:
-	QList<AB_JOB*> *jobqueue;
+	QList<abt_job_info*> *jobqueue;
 	QStringList *log;
 
 
 	void addlog(const QString &str);
-
-//	AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
-//	AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
-//	AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
-//	AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
-//	AB_ImExporterAccountInfo_GetFirstTransaction(ai);
-//	AB_ImExporterAccountInfo_GetFirstTransfer(ai);
-//	AB_ImExporterContext_GetFirstMessage(ctx);
-//	AB_ImExporterContext_GetFirstSecurity(ctx);
 
 	bool parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx);
 
@@ -73,13 +81,13 @@ public:
 	explicit abt_job_ctrl(QObject *parent = 0);
 	~abt_job_ctrl();
 
-	QHash<int, QStringList*> *getAllTransactions();
-
 	const QStringList *getLog() const { return this->log; }
+	const QList<abt_job_info*> *jobqueueList() const { return this->jobqueue; }
 
 
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);
+	void jobQueueListChanged();
 
 public slots:
 	void addNewSingleTransfer(aqb_AccountInfo *acc, const trans_SingleTransfer *t);

@@ -35,6 +35,7 @@
 #include <QDebug>
 
 #include "globalvars.h"
+#include "abt_conv.h"
 
 
 abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
@@ -53,65 +54,6 @@ abt_transaction::~abt_transaction()
 	}
 }
 
-/** \todo Vielleicht diese Funktionen in ein separates Objekt
-	  z.B. aqConv::GwenTimeToQDate()
-*/
-/*****************************************************************************
- * static helper functions for type conversions                              *
- *****************************************************************************/
-//static
-const QDate abt_transaction::GwenTimeToQDate(const GWEN_TIME *gwentime)
-{
-	QDate date;
-	if (gwentime) {
-		struct tm tmtime;
-		tmtime = GWEN_Time_toTm(gwentime);
-		date.setDate(tmtime.tm_year+1900, tmtime.tm_mon+1, tmtime.tm_mday);
-	} else {
-		date.setDate(2011,2,30); //invalid Date wenn gwen_date==NULL
-	}
-
-	return date;
-}
-
-/**
-  * Gibt einen GWEN_TIME Object zurück dessen Datum dem übergebenen entspricht.
-  * Die enthaltene Uhrzeit wird auf 10:00:00 gesetzt! (in localTime, nicht UTC!)
-  */
-//static
-const GWEN_TIME* abt_transaction::QDateToGwenTime(const QDate &date)
-{
-	/** \todo Der Pointer zu GWEN_TIME muss bei Programmende
-		  freigegeben werden!
-	*/
-	return GWEN_Time_new(date.year(), date.month(), date.day(), 10, 0, 0, 0);
-}
-
-//static
-const QStringList abt_transaction::GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList)
-{
-	QStringList ret;
-	for (unsigned int i=0; i<GWEN_StringList_Count(gwenList); ++i) {
-		ret.append(QString::fromUtf8(GWEN_StringList_StringAt(gwenList, i)));
-	}
-	return ret;
-}
-
-/**
-  * Die hier erstellte GWEN_STRINGLIST muss später auch wieder freigegeben werden!
-  */
-//static
-const GWEN_STRINGLIST *abt_transaction::QStringListToGwenStringList(const QStringList &l)
-{
-	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
-
-	for (int i=0; i<l.size(); ++i) {
-		QString s = l.at(i);
-		const char *c = s.toUtf8();
-		GWEN_StringList_AppendString(gwl, c, 1, 0);
-	}
-	return gwl;
-}
 
 //static
 void abt_transaction::saveTransaction(AB_TRANSACTION *t)
@@ -492,7 +434,7 @@ void abt_transaction::setRemoteIban(const QString &Iban)
 
 const QStringList abt_transaction::getRemoteName() const
 {
-	return this->GwenStringListToQStringList(
+	return abt_conv::GwenStringListToQStringList(
 			AB_Transaction_GetRemoteName(this->aqb_transaction));
 }
 
@@ -524,13 +466,13 @@ const QDate abt_transaction::getValutaDate() const
 	const GWEN_TIME *gwen_date;
 	gwen_date = AB_Transaction_GetValutaDate(this->aqb_transaction);
 
-	return this->GwenTimeToQDate(gwen_date);
+	return abt_conv::GwenTimeToQDate(gwen_date);
 }
 
 void abt_transaction::setValutaDate(const QDate &ValutaDate)
 {
 	AB_Transaction_SetValutaDate(this->aqb_transaction,
-				     this->QDateToGwenTime(ValutaDate));
+				     abt_conv::QDateToGwenTime(ValutaDate));
 }
 
 const QDate abt_transaction::getDate() const
@@ -538,13 +480,13 @@ const QDate abt_transaction::getDate() const
 	const GWEN_TIME *gwen_date;
 	gwen_date = AB_Transaction_GetDate(this->aqb_transaction);
 
-	return this->GwenTimeToQDate(gwen_date);
+	return abt_conv::GwenTimeToQDate(gwen_date);
 }
 
 void abt_transaction::setDate(const QDate &Date)
 {
 	AB_Transaction_SetDate(this->aqb_transaction,
-			       this->QDateToGwenTime(Date));
+			       abt_conv::QDateToGwenTime(Date));
 }
 
 
@@ -764,13 +706,13 @@ void abt_transaction::setFiId(const QString &FiId)
 */
 const QStringList abt_transaction::getPurpose() const
 {
-	return this->GwenStringListToQStringList(
+	return abt_conv::GwenStringListToQStringList(
 			AB_Transaction_GetPurpose(this->aqb_transaction));
 }
 
 void abt_transaction::setPurpose(const QStringList &Purpose)
 {
-	const GWEN_STRINGLIST *gwl = this->QStringListToGwenStringList(Purpose);
+	const GWEN_STRINGLIST *gwl = abt_conv::QStringListToGwenStringList(Purpose);
 
 	AB_Transaction_SetPurpose(this->aqb_transaction, gwl);
 }
@@ -780,7 +722,7 @@ void abt_transaction::setPurpose(const QStringList &Purpose)
 */
 const QStringList abt_transaction::getCategory() const
 {
-	return this->GwenStringListToQStringList(
+	return abt_conv::GwenStringListToQStringList(
 			AB_Transaction_GetCategory(this->aqb_transaction));
 }
 
@@ -828,13 +770,13 @@ const QDate abt_transaction::getFirstExecutionDate() const
 	const GWEN_TIME *gwen_date;
 	gwen_date = AB_Transaction_GetFirstExecutionDate(this->aqb_transaction);
 
-	return this->GwenTimeToQDate(gwen_date);
+	return abt_conv::GwenTimeToQDate(gwen_date);
 }
 
 void abt_transaction::setFirstExecutionDate(const QDate &Date)
 {
 	AB_Transaction_SetFirstExecutionDate(this->aqb_transaction,
-					     this->QDateToGwenTime(Date));
+					     abt_conv::QDateToGwenTime(Date));
 }
 
 
@@ -843,13 +785,13 @@ const QDate abt_transaction::getLastExecutionDate() const
 	const GWEN_TIME *gwen_date;
 	gwen_date = AB_Transaction_GetLastExecutionDate(this->aqb_transaction);
 
-	return this->GwenTimeToQDate(gwen_date);
+	return abt_conv::GwenTimeToQDate(gwen_date);
 }
 
 void abt_transaction::setLastExecutionDate(const QDate &Date)
 {
 	AB_Transaction_SetLastExecutionDate(this->aqb_transaction,
-					    this->QDateToGwenTime(Date));
+					    abt_conv::QDateToGwenTime(Date));
 }
 
 
@@ -858,13 +800,13 @@ const QDate abt_transaction::getNextExecutionDate() const
 	const GWEN_TIME *gwen_date;
 	gwen_date = AB_Transaction_GetNextExecutionDate(this->aqb_transaction);
 
-	return this->GwenTimeToQDate(gwen_date);
+	return abt_conv::GwenTimeToQDate(gwen_date);
 }
 
 void abt_transaction::setNextExecutionDate(const QDate &Date)
 {
 	AB_Transaction_SetNextExecutionDate(this->aqb_transaction,
-					    this->QDateToGwenTime(Date));
+					    abt_conv::QDateToGwenTime(Date));
 }
 
 

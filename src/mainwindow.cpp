@@ -39,6 +39,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QItemSelectionModel>
 
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
@@ -59,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->jobctrl = new abt_job_ctrl(this);
 	this->logw = new page_log();
-	this->outw = new Page_Ausgang();
+	this->outw = new Page_Ausgang(this->jobctrl);
 
 	Page_DA_Edit_Delete *page = new Page_DA_Edit_Delete(banking, this->accounts, ui->DA_Bearbeiten);
 	ui->DA_Bearbeiten->layout()->addWidget(page);
@@ -75,13 +76,25 @@ MainWindow::MainWindow(QWidget *parent) :
 	outLayout->setSpacing(2);
 	ui->Ausgang->setLayout(outLayout);
 	ui->Ausgang->layout()->addWidget(this->outw);
+
+	/***** Signals und Slots der Objecte verbinden ******/
+
+
+	//Jede Änderung des Jobqueue dem Ausgang mitteilen
+// Jetzt im Page_Ausgang Constructor
+//	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+//		this->outw, SLOT(refreshTreeWidget()));
+
+	//Default-Entry Überweisung auswählen
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 MainWindow::~MainWindow()
 {
-	delete this->accounts;
-	delete this->jobctrl;
+	delete this->outw;
 	delete this->logw;
+	delete this->jobctrl;
+	delete this->accounts;
 	delete ui;
 }
 
@@ -96,7 +109,6 @@ void MainWindow::changeEvent(QEvent *e)
 		break;
 	}
 }
-
 
 void MainWindow::on_actionDebug_Info_triggered()
 {
