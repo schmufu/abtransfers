@@ -150,13 +150,13 @@ void abt_job_ctrl::addNewSingleTransfer(aqb_AccountInfo *acc, const trans_Single
 	//Create Info for SingleTransfer
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -164,7 +164,9 @@ void abt_job_ctrl::addNewSingleTransfer(aqb_AccountInfo *acc, const trans_Single
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -196,13 +198,13 @@ void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const trans_Singl
 	//Create Info for SingleDebitNote
 	QString info;
 	info.append("Zu:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Von:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -210,7 +212,10 @@ void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const trans_Singl
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -242,13 +247,13 @@ void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const trans_EuTransfer
 	//Create Info for EuTransfer
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + " [");
 	info.append(t->getRemoteBankLocation() + "])");
 	info.append(";");	
@@ -257,7 +262,9 @@ void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const trans_EuTransfer
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -290,13 +297,13 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const trans_Inte
 	//Create Info for Internal Transfer
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -304,7 +311,9 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const trans_Inte
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -337,13 +346,13 @@ void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const trans_SepaTran
 	//Create Info for SingleTransfer
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -351,7 +360,9 @@ void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const trans_SepaTran
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -386,13 +397,13 @@ void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//Create Info for NewDatedTransfer
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -402,7 +413,9 @@ void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	info.append("Tag der Ausführung:;");
 	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -435,13 +448,13 @@ void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//Create Info
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -451,7 +464,9 @@ void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	info.append("Tag der Ausführung:;");
 	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -483,13 +498,13 @@ void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	//Create Info
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -499,7 +514,9 @@ void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const trans_Date
 	info.append("Tag der Ausführung:;");
 	info.append(t->getDate().toString(Qt::DefaultLocaleLongDate) + ";");
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -565,13 +582,13 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transa
 	//Create Info
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -579,7 +596,9 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transa
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -611,13 +630,13 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transa
 	//Create Info
 	QString info;
 	info.append("Von:;");
-	info.append(t->getLocalName().at(0));
-	info.append("(" + t->getLocalAccountNumber());
+	info.append(t->getLocalName());
+	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
 	info.append("Zu:;");
 	info.append(t->getRemoteName().at(0));
-	info.append("(" + t->getRemoteAccountNumber());
+	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
@@ -625,7 +644,9 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transa
 		info.append(t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
-	info.append(QString("%1").arg(AB_Value_GetValueAsDouble(t->getValue())));
+	const AB_VALUE *v = t->getValue();
+	info.append(QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2));
+	info.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
