@@ -45,7 +45,9 @@ public:
 	abt_conv();
 
 	static const QString JobTypeToQString(const AB_JOB *j);
+	static const QString JobTypeToQString(AB_JOB_TYPE type);
 	static const QString JobStatusToQString(const AB_JOB *j);
+
 
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
 	static const GWEN_TIME* QDateToGwenTime(const QDate &date);

@@ -49,6 +49,7 @@
 
 #include "globalvars.h"
 #include "pages/page_da_edit_delete.h"
+#include "abt_conv.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -78,7 +79,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->Ausgang->layout()->addWidget(this->outw);
 
 	/***** Signals und Slots der Objecte verbinden ******/
-
+	//Nicht mögliche Aufträge in der StatusBar anzeigen
+	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
@@ -91,6 +94,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
+
 	delete this->outw;
 	delete this->logw;
 	delete this->jobctrl;
@@ -176,6 +182,8 @@ void MainWindow::on_actionAddGetDAs_triggered()
 {
 	this->jobctrl->addGetStandingOrders(this->accounts->getAccount(0));
 	this->ui->statusBar->showMessage("Get Daueraufträge eingefügt");
+
+	this->DisplayNotAvailableTypeAtStatusBar(AB_Job_TypeDeleteStandingOrder);
 }
 
 
@@ -192,4 +200,13 @@ void MainWindow::on_actionExecQueued_triggered()
 	this->jobctrl->execQueuedTransactions();
 	this->ui->statusBar->showMessage("queued jobs executed");
 	this->logw->setLogText(this->jobctrl->getLog());
+}
+
+//private SLOT
+void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
+{
+	QString msg;
+	msg.append(abt_conv::JobTypeToQString(type));
+	msg.append(" - Auftrag wird von der Bank nicht unterstützt!");
+	ui->statusBar->showMessage(msg);
 }

@@ -41,7 +41,13 @@ abt_conv::abt_conv()
 //static
 const QString abt_conv::JobTypeToQString(const AB_JOB *j)
 {
-	switch (AB_Job_GetType(j)) {
+	AB_JOB_TYPE type = AB_Job_GetType(j);
+	return abt_conv::JobTypeToQString(type);
+}
+
+const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
+{
+	switch (type) {
 	case AB_Job_TypeCreateDatedTransfer:
 		return (QObject::tr("Terminüberweisung anlegen"));
 		break;
