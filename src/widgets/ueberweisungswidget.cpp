@@ -33,8 +33,11 @@
 
 #include <QRegExpValidator>
 
-UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking, QWidget *parent):
+UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
+					 TransferWidgetType type,
+					 QWidget *parent) :
     QGroupBox(parent),
+    my_type(type),
     ui(new Ui::UeberweisungsWidget)
 {
 	ui->setupUi(this);
@@ -76,12 +79,13 @@ void UeberweisungsWidget::changeEvent(QEvent *e)
 void UeberweisungsWidget::on_lineEdit_Bankleitzahl_editingFinished()
 {
 	QString Institut;
-	Institut = this->m_banking->getInstituteFromBLZ(ui->lineEdit_Bankleitzahl->text());
+	Institut = this->m_banking->getInstituteFromBLZ(
+			ui->lineEdit_Bankleitzahl->text().toUtf8());
 	this->ui->lineEdit_Kredidinstitut->setText(Institut);
 }
 
 
-bool UeberweisungsWidget::hasChanges()
+bool UeberweisungsWidget::hasChanges() const
 {
 	if (ui->lineEdit_Beguenstigter->isModified() ||
 	    ui->lineEdit_Kontonummer->isModified() ||
@@ -98,7 +102,7 @@ bool UeberweisungsWidget::hasChanges()
 	}
 }
 
-QStringList UeberweisungsWidget::getPurpose()
+const QStringList UeberweisungsWidget::getPurpose() const
 {
 	QStringList purpose;
 	purpose.clear();
@@ -109,7 +113,7 @@ QStringList UeberweisungsWidget::getPurpose()
 	return purpose;
 }
 
-QString UeberweisungsWidget::getPurpose(int line)
+const QString UeberweisungsWidget::getPurpose(int line) const
 {
 	/*! \todo Noch testen ob dies so funktioniert! */
 	QString editName = QString("lineEdit_Verwendungszweck%1").arg(line);

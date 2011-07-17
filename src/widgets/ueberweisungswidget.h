@@ -38,18 +38,61 @@ namespace Ui {
     class UeberweisungsWidget;
 }
 
+/*! \todo Das ÜberweisungsWidget so gestallten das es für alle Aufträge
+  *       eingesetzt werden kann. Also auch für DAs und EU-Transfers.
+  */
+
 class UeberweisungsWidget : public QGroupBox {
 	Q_OBJECT
-private:
-	const aqb_banking *m_banking;
-
 public:
-	UeberweisungsWidget(const aqb_banking *banking, QWidget *parent = 0);
+	/** Mit diesem Typen wird definiert wie das Überweisungs-Widget aussehen
+	  * soll. Je nachdem welche Werte für einen Typ benötigt werden, werden
+	  * diese Entsprechend mit eingebunden oder nicht.
+	  * (Die zusätzlichen Eingabemöglichkeiten sind in eigenen Widgets
+	  *  implementiert und werden hier nur eingebunden)
+	  */
+	enum TransferWidgetType {
+		StandingOrder,		//!< Dauerauftrag
+		DatedTransfer,		//!< Terminüberweisung
+		Transfer,		//!< "Normale" Überweisung
+		InternatinalTransfer,	//!< Internationale Überweisung
+		SepaTransfer		//!< SEPA Überweisung
+	};
+
+	UeberweisungsWidget(const aqb_banking *banking,
+			    TransferWidgetType type=UeberweisungsWidget::Transfer,
+			    QWidget *parent = 0);
 	~UeberweisungsWidget();
 
-	bool hasChanges();
-	QStringList getPurpose();
-	QString getPurpose(int line);
+	bool hasChanges() const;
+
+	const QString getRemoteName() const;
+	void setRemoteName(const QString &str);
+
+	const QString getRemoteAccountNumber() const;
+	void setRemoteAccountNumber(const QString &str);
+
+	const QString getRemoteBankCode() const;
+	void setRemoteBankCode(const QString &str);
+
+	const QString getRemoteBankName() const;
+	void setRemoteBankName(const QString &str);
+
+	const QString getValue() const;
+	void setValue(const QString &str);
+
+	const QString getCurrency() const;
+	void setCurrency(const QString &str);
+
+
+	const QStringList getPurpose() const;
+	void setPurpose(const QStringList &strList);
+	const QString getPurpose(int line) const;
+	void setPurpose(int line, const QString &str);
+
+private:
+	const aqb_banking *m_banking;
+	UeberweisungsWidget::TransferWidgetType my_type;
 
 protected:
 	void changeEvent(QEvent *e);
@@ -60,7 +103,7 @@ private:
 
 
 private slots:
-    void on_lineEdit_Bankleitzahl_editingFinished();
+	void on_lineEdit_Bankleitzahl_editingFinished();
 };
 
 #endif // UEBERWEISUNGSWIDGET_H

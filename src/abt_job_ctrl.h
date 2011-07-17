@@ -88,15 +88,15 @@ signals:
 	void log(const QString &str);
 
 public slots:
-	void addNewSingleTransfer(aqb_AccountInfo *acc, const trans_SingleTransfer *t);
-	void addNewSingleDebitNote(aqb_AccountInfo *acc, const trans_SingleDebitNote *t);
-	void addNewEuTransfer(aqb_AccountInfo *acc, const trans_EuTransfer *t);
-	void addNewInternalTransfer(aqb_AccountInfo *acc, const trans_InternalTransfer *t);
-	void addNewSepaTransfer(aqb_AccountInfo *acc, const trans_SepaTransfer *t);
+	void addNewSingleTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addNewSingleDebitNote(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addNewEuTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addNewSepaTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
 
-	void addCreateDatedTransfer(aqb_AccountInfo *acc, const trans_DatedTransfer *t);
-	void addModifyDatedTransfer(aqb_AccountInfo *acc, const trans_DatedTransfer *t);
-	void addDeleteDatedTransfer(aqb_AccountInfo *acc, const trans_DatedTransfer *t);
+	void addCreateDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addModifyDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addDeleteDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
 	void addGetDatedTransfers(aqb_AccountInfo *acc);
 
 	void addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t);

@@ -206,26 +206,13 @@ void MainWindow::on_actionAddGetDAs_triggered()
 
 void MainWindow::on_actionAddGetDated_triggered()
 {
-	this->ui->statusBar->showMessage("Test mit AB_VALUE");
+	this->ui->statusBar->showMessage("können wir eine Lastschrift veranlassen?");
 
-	AB_VALUE *v = AB_Value_new();
-	AB_Value_SetValueFromDouble(v, 15.37);
-	long n,z;
-	n = AB_Value_Denom(v);
-	z = AB_Value_Num(v);
+	abt_transaction *t = new abt_transaction();
 
-	//AB::Value *VA = new AB::Value(v);
-
-	qDebug() << "Num: " << z << " - Denum: " << n;
-	qDebug() << "Num/Denum = " << z / n << "." << z % n;
-
-	//qDebug() << "ToString: " << QString::fromStdString(VA->toString());
+	this->jobctrl->addNewSingleDebitNote(this->accounts->getAccount(1), t);
 
 
-
-	//delete VA;
-
-	AB_Value_free(v);
 }
 
 void MainWindow::on_actionExecQueued_triggered()

@@ -59,7 +59,7 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 
 	//used widgets in this page
 	this->accountwidget = new BankAccountsWidget(this->accounts, this);
-	this->ueberweisungwidget = new UeberweisungsWidget(this->banking, this);
+	this->ueberweisungwidget = new UeberweisungsWidget(this->banking, UeberweisungsWidget::StandingOrder, this);
 	this->knownempfaengerwidget = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this);
 
 	ui->verticalLayout_Left->insertWidget(0,this->accountwidget);
@@ -200,7 +200,12 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 {
 	//Nachfragen ob der ausgewählte DA wirklich gelöscht werden soll
-	const abt_transaction *t;
+	const abt_transaction *t = NULL;
+	//QVariant var = ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole);
+//	if (t)
+//		qDebug() << "variant convert hat funktioniert!";
+//	else
+//		return; //wir dürfen den nullPtr nicht dereferenzieren
 	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
 
 	QMessageBox msg;

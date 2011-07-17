@@ -32,6 +32,7 @@
 #include <QTextCodec>
 #include "mainwindow.h"
 #include "aqb_banking.h"
+#include "abt_transaction_base.h"
 
 //global object for AqBanking Access
 #define DEFINEGLOBALSHERE
@@ -47,6 +48,8 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
+
+	qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);
