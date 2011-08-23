@@ -69,7 +69,8 @@ void abt_transaction::saveTransaction(AB_TRANSACTION *t)
 //static
 void abt_transaction::saveTransaction(const abt_transaction *t)
 {
-	//! \todo Alle daten in der Datei speichern
+	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
+	// \todo Alle daten in der Datei speichern
 
 	if (t->getFiId().isEmpty()) {
 		qWarning() << t << " -- Speichern nicht möglich! Keine FiId gesetzt!";
@@ -549,11 +550,6 @@ void abt_transaction::setRemoteIban(const QString &Iban)
 				     Iban.toUtf8());
 }
 
-
-/** \todo REMOTE_NAME
-	  HIER NOCH DIE FUNKTIONEN FÜR REMOTE_NAME EINFÜGEN!
-*/
-
 const QStringList abt_transaction::getRemoteName() const
 {
 	return abt_conv::GwenStringListToQStringList(
@@ -825,12 +821,6 @@ void abt_transaction::setFiId(const QString &FiId)
 			       FiId.toUtf8());
 }
 
-
-/** \todo GWEN_STRINGLIST to QStringList muss implementiert werden */
-
-/** \todo PURPOSE Implementieren
-	  HIER NOCH DIE FUNKTIONEN FÜR PURPOSE EINFÜGEN!
-*/
 const QStringList abt_transaction::getPurpose() const
 {
 	return abt_conv::GwenStringListToQStringList(
@@ -844,9 +834,6 @@ void abt_transaction::setPurpose(const QStringList &Purpose)
 	AB_Transaction_SetPurpose(this->aqb_transaction, gwl);
 }
 
-/** \todo Category Implementieren
-	  HIER NOCH DIE FUNKTIONEN FÜR CATEGORY EINFÜGEN!
-*/
 const QStringList abt_transaction::getCategory() const
 {
 	return abt_conv::GwenStringListToQStringList(

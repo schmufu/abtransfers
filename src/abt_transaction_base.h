@@ -114,9 +114,13 @@ public:
 
 	const QStringList getRemoteName() const;
 	void setRemoteName(const QStringList &Name);
+	//! \todo not implemented yet
 	void addRemoteName(const QString &Name, int chk);
+	//! \todo not implemented yet
 	void removeRemoteName(const QString &Name);
+	//! \todo not implemented yet
 	void clearRemoteName();
+	//! \todo not implemented yet
 	bool hasRemoteName(const QString &Name);
 
 	const QString getRemoteBic() const;
@@ -185,9 +189,13 @@ public:
 
 	const QStringList getCategory() const;
 	void setCategory(const QStringList &Category);
+	//! \todo not implemented yet
 	void addCategory(const QString &Category, int chk);
+	//! \todo not implemented yet
 	void removeCategory(const QString &Category);
+	//! \todo not implemented yet
 	void clearCategory();
+	//! \todo not implemented yet
 	bool hasCategory(const QString &Category);
 
 

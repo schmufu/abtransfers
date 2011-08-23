@@ -331,7 +331,8 @@ void UeberweisungsWidget::setPurpose(int line, const QString &str)
 
 const QString UeberweisungsWidget::getPurpose(int line) const
 {
-	/*! \todo Noch testen ob dies so funktioniert! */
+	// \todo Noch testen ob dies so funktioniert!
+	// Done: Funktioniert! (Patrick Wacker 24.08.2011)
 	QString editName = QString("lineEdit_Verwendungszweck%1").arg(line);
 	QLineEdit *edit = this->findChild<QLineEdit*>(editName);
 	if (edit == NULL)
@@ -429,36 +430,5 @@ const QDate UeberweisungsWidget::nextExecutionDate() const
 	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
 	return this->da_widget->nextExecutionDate();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
