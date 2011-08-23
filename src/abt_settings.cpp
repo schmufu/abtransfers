@@ -155,7 +155,7 @@ QList<abt_DAInfo*> *abt_settings::getDAsForAccount(const QString &KtoNr,
 	QList<abt_DAInfo*> *List = new QList<abt_DAInfo*>;
 
 	for (int i=0; i<DA_IDs.size(); ++i) {
-		AB_TRANSACTION *t = abt_transaction::loadTransaction("Dauerauftraege.ini", DA_IDs.at(i));
+		AB_TRANSACTION *t = abt_transaction::loadTransaction(DA_IDs.at(i));
 		abt_transaction *trans = new abt_transaction(t, true);
 		DAInfo = new abt_DAInfo(trans);
 		List->append(DAInfo);

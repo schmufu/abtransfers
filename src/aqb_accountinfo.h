@@ -49,7 +49,7 @@ private:
 public:
 	abt_DAInfo(abt_transaction *transaction);
 
-	const abt_transaction* getSOT() const { return this->t; }
+	abt_transaction* getSOT() const { return this->t; }
 };
 
 /*! \brief Informationen über eine Account

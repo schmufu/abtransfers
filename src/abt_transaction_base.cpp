@@ -80,10 +80,6 @@ void abt_transaction::saveTransaction(const abt_transaction *t)
 	QString Filename;
 	Filename.append(settings->getDataDir());
 	Filename.append("Dauerauftraege.ini");
-//	Filename.append(this->getLocalAccountNumber());
-//	Filename.append("_");
-//	Filename.append(this->getLocalBankCode());
-//	Filename.append(".ini");
 
 	const AB_VALUE *v;
 	s = new QSettings(Filename, QSettings::IniFormat);
@@ -171,6 +167,11 @@ void abt_transaction::saveTransaction(const abt_transaction *t)
 	delete s;
 }
 
+//static
+AB_TRANSACTION* abt_transaction::loadTransaction(const QString &id)
+{
+	return abt_transaction::loadTransaction("Dauerauftraege.ini", id);
+}
 
 //static
 AB_TRANSACTION* abt_transaction::loadTransaction(const QString &filename, const QString &id)

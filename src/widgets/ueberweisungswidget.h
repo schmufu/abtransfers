@@ -70,6 +70,8 @@ public:
 
 	bool hasChanges() const;
 
+/***** Funktionen für Alle Überweisungsarten *****/
+
 	const QString getRemoteName() const;
 	void setRemoteName(const QString &str);
 
@@ -83,16 +85,49 @@ public:
 	void setRemoteBankName(const QString &str);
 
 	const QString getValue() const;
+	AB_VALUE* getValueABV() const;
 	void setValue(const QString &str);
+	void setValue(const AB_VALUE *value);
 
 	const QString getCurrency() const;
 	void setCurrency(const QString &str);
-
 
 	const QStringList getPurpose() const;
 	void setPurpose(const QStringList &strList);
 	const QString getPurpose(int line) const;
 	void setPurpose(int line, const QString &str);
+
+/***** Funktionen für Daueraufträge *****/
+	//! wrapper to extraStandingOrdersWidget
+	void setPeriod(AB_TRANSACTION_PERIOD period);
+	//! wrapper to extraStandingOrdersWidget
+	AB_TRANSACTION_PERIOD period() const;
+
+	//! wrapper to extraStandingOrdersWidget
+	void setExecutionDay(int day);
+	//! wrapper to extraStandingOrdersWidget
+	int executionDay() const;
+
+	//! wrapper to extraStandingOrdersWidget
+	void setCycle(int cycle);
+	//! wrapper to extraStandingOrdersWidget
+	int cycle() const;
+
+	//! wrapper to extraStandingOrdersWidget
+	void setFirstExecutionDate(const QDate &date);
+	//! wrapper to extraStandingOrdersWidget
+	const QDate firstExecutionDate() const;
+
+	//! wrapper to extraStandingOrdersWidget
+	void setLastExecutionDate(const QDate &date);
+	//! wrapper to extraStandingOrdersWidget
+	const QDate lastExecutionDate() const;
+
+	//! wrapper to extraStandingOrdersWidget
+	void setNextExecutionDate(const QDate &date);
+	//! wrapper to extraStandingOrdersWidget
+	const QDate nextExecutionDate() const;
+
 
 private:
 	const aqb_banking *m_banking;

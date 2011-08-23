@@ -57,7 +57,7 @@ public:
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
 	static const QString ABValueToString(const AB_VALUE *v);
-	static AB_VALUE* ABValueFromString(const QString &str);
+	static AB_VALUE* ABValueFromString(const QString &str, const QString &currency = "EUR");
 
 
 };

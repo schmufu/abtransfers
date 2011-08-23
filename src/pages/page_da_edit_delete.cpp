@@ -181,7 +181,66 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	//Ein neuer zu Bearbeitender DA wurde gewählt.
 	// Prüfen ob Änderungen vorhanden sind und diese nicht gespeichert wurden
 	// ansonten den neuen DA anzeigen.
+	if (!current)
+		current = previous;	//Warum weiß ich nicht, ist im Beispiel so
 
+	if (this->ueberweisungwidget->hasChanges()) {
+		QMessageBox msg;
+		msg.setIcon(QMessageBox::Question);
+		msg.setText("Änderung des Dauerauftrags zur Bank senden?");
+		QString info;
+		info.append("Der Dauerauftrag für:<br />");
+		info.append("<table><tr><td>Empfänger:</td><td>" + this->ueberweisungwidget->getRemoteName() + "</td></tr>");
+		info.append("<tr><td>Verwendungzweck:</td><td> " + this->ueberweisungwidget->getPurpose(0) + "</td></tr></table><br />");
+		info.append("wurde geändert!<br /><br />");
+		info.append("Sollen die Änderungen zu Bank übertragen werden?<br />");
+		info.append("<i>(Nein verwirft die Änderungen)</i>");
+
+		msg.setInformativeText(info);
+		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+		msg.setDefaultButton(QMessageBox::No);
+		int ret = msg.exec();
+
+		if (ret == QMessageBox::Yes) {
+			//DA-Aktualisierungs-Auftrag den Jobs hinzufügen
+			this->on_pushButton_Execute_clicked();
+		} else if ((ret == QMessageBox::Cancel) ||
+			   (ret == QMessageBox::Abort)) {
+			//Abbruch wurde gewählt!
+			//den ursprünglichen DA wieder auswählen
+			this->ui->treeWidget->setCurrentItem(previous);
+			return; //Abbrechen
+		} else {
+			//must be NO, check it
+			Q_ASSERT_X(ret == QMessageBox::No,
+				   "on_treeWidget_currentItemChanged",
+				   "ret should be NO but it wasnt!");
+			//Nichts weiter machen, Änderungen sollen verworfen werden
+		}
+	}
+
+
+	//Zu bearbeitenden DA holen
+	const abt_transaction *t = NULL;
+	t = (const abt_transaction*)current->data(0, Qt::UserRole).toULongLong();
+
+	this->ueberweisungwidget->setRemoteName(t->getRemoteName().at(0));
+	this->ueberweisungwidget->setRemoteAccountNumber(t->getRemoteAccountNumber());
+	this->ueberweisungwidget->setRemoteBankCode(t->getRemoteBankCode());
+	this->ueberweisungwidget->setRemoteBankName(t->getRemoteBankName());
+
+	this->ueberweisungwidget->setValue(t->getValue());
+	this->ueberweisungwidget->setCurrency(AB_Value_GetCurrency(t->getValue()));
+	this->ueberweisungwidget->setPurpose(t->getPurpose());
+
+	this->ueberweisungwidget->setPeriod(t->getPeriod());
+	this->ueberweisungwidget->setCycle(t->getCycle());
+	this->ueberweisungwidget->setExecutionDay(t->getExecutionDay());
+	this->ueberweisungwidget->setFirstExecutionDate(t->getFirstExecutionDate());
+	this->ueberweisungwidget->setLastExecutionDate(t->getLastExecutionDate());
+	this->ueberweisungwidget->setNextExecutionDate(t->getNextExecutionDate());
+
+	this->ueberweisungwidget->setDisabled(false);
 }
 
 void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
@@ -224,8 +283,22 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Aktualisieren_clicked()
 void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 {
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
-	const abt_transaction *t;
-	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	abt_transaction *t;
+	t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+
+	t->setRemoteName(QStringList(this->ueberweisungwidget->getRemoteName()));
+	t->setRemoteAccountNumber(this->ueberweisungwidget->getRemoteAccountNumber());
+	t->setRemoteBankCode(this->ueberweisungwidget->getRemoteBankCode());
+	t->setRemoteBankName(this->ueberweisungwidget->getRemoteBankName());
+
+	t->setValue(this->ueberweisungwidget->getValueABV());
+	t->setPurpose(this->ueberweisungwidget->getPurpose());
+	t->setPeriod(this->ueberweisungwidget->period());
+	t->setCycle(this->ueberweisungwidget->cycle());
+	t->setExecutionDay(this->ueberweisungwidget->executionDay());
+	t->setFirstExecutionDate(this->ueberweisungwidget->firstExecutionDate());
+	t->setLastExecutionDate(this->ueberweisungwidget->lastExecutionDate());
+	//NextExecutionDate dient nur der Information und wird in der Transaction nicht gesetzt!
 
 	emit this->modifyDA(acc, t);
 }

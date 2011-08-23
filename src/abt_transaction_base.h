@@ -316,6 +316,7 @@ public:
 	static void saveTransaction(const abt_transaction *t);
 	static void saveTransaction(AB_TRANSACTION *t);
 
+	static AB_TRANSACTION* loadTransaction(const QString &id);
 	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
 
 };

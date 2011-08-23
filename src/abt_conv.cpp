@@ -220,14 +220,21 @@ const QString abt_conv::ABValueToString(const AB_VALUE *v)
   * This function reads a AB_VALUE from a string. Strings suitable as arguments
   * are those created by AB_Value_toString or simple floating point string (as
   * in "123.45" or "-123.45").
+  *
+  * Die Währung kann in \a currency auch mit angegeben werden (default: "EUR")
   */
 //static
-AB_VALUE *abt_conv::ABValueFromString(const QString &str)
+AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currency)
 {
 	if (str.isEmpty()) {
 		return NULL;
 	}
 	std::string s = str.toStdString();
-	return AB_Value_fromString(s.c_str());
+	AB_VALUE *val;
+	val = AB_Value_fromString(s.c_str());
+	QString cur = currency.toUtf8();
+	std::string c = cur.toStdString();
+	AB_Value_SetCurrency(val, c.c_str());
+	return val;
 }
 

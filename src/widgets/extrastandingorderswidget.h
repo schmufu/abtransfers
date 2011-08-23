@@ -75,9 +75,19 @@ private:
 	int m_cycle; //!< execution cycle
 	int m_day; //!< execution day
 
+	//Vars werden genutzt um sich den Wert der über die set* funktionen
+	//gesetzt wurde zu merken.
+	//hasChanges() kann dann prüfen ob Werte verändert wurden.
+	AB_TRANSACTION_PERIOD m_set_period;
+	int m_set_executionDay;
+	int m_set_cycle;
+	QDate m_set_firstExecutionDate, m_set_lastExecutionDate, m_set_nextExecutionDate;
+
 public:
 	extraStandingOrdersWidget(QWidget *parent = 0);
 	~extraStandingOrdersWidget();
+
+	bool hasChanges() const;
 
 	void setPeriod(AB_TRANSACTION_PERIOD period);
 	AB_TRANSACTION_PERIOD period() const { return this->m_period; }
@@ -94,14 +104,14 @@ public:
 	 */
 	int cycle() const { return this->m_cycle; }
 
-	void setFirstExecutionDay(const QDate &date);
-	const QDate firstExecutionDay() const;
+	void setFirstExecutionDate(const QDate &date);
+	const QDate firstExecutionDate() const;
 
-	void setLastExecutionDay(const QDate &date);
-	const QDate lastExecutionDay() const;
+	void setLastExecutionDate(const QDate &date);
+	const QDate lastExecutionDate() const;
 
-	void setNextExecutionDay(const QDate &date);
-	const QDate nextExecutionDay() const;
+	void setNextExecutionDate(const QDate &date);
+	const QDate nextExecutionDate() const;
 
 
 protected:

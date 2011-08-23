@@ -34,6 +34,8 @@
 #include <QRegExpValidator>
 #include <QDebug>
 
+#include "../abt_conv.h"
+
 UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
 					 TransferWidgetType type,
 					 QWidget *parent) :
@@ -183,9 +185,15 @@ void UeberweisungsWidget::on_lineEdit_Bankleitzahl_editingFinished()
 	this->ui->lineEdit_Kredidinstitut->setText(Institut);
 }
 
-
+/*! \brief gibt true zurück wenn die Daten im Widget durch den User geändert wurden */
 bool UeberweisungsWidget::hasChanges() const
 {
+	if (this->da_widget != NULL) {
+		if (this->da_widget->hasChanges()) {
+			return true; //Änderungen vorhanden
+		}
+	}
+
 	if (ui->lineEdit_Beguenstigter->isModified() ||
 	    ui->lineEdit_Kontonummer->isModified() ||
 	    ui->lineEdit_Bankleitzahl->isModified() ||
@@ -196,8 +204,101 @@ bool UeberweisungsWidget::hasChanges() const
 	    ui->lineEdit_Verwendungszweck3->isModified() ||
 	    ui->lineEdit_Verwendungszweck4->isModified()) {
 		return true;
-	} else {
-		return false;
+	}
+
+	//Wenn wir bis hierher kommen haben keine Änderungen stattgefunden
+	return false;
+}
+
+/******************************************************************************/
+/****** Funktionen zum setzen und lesen der allgemeinen Daten            ******/
+/******************************************************************************/
+
+
+const QString UeberweisungsWidget::getRemoteName() const
+{
+	return this->ui->lineEdit_Beguenstigter->text();
+}
+
+void UeberweisungsWidget::setRemoteName(const QString &str)
+{
+	this->ui->lineEdit_Beguenstigter->setText(str);
+}
+
+const QString UeberweisungsWidget::getRemoteAccountNumber() const
+{
+	return this->ui->lineEdit_Kontonummer->text();
+}
+
+void UeberweisungsWidget::setRemoteAccountNumber(const QString &str)
+{
+	this->ui->lineEdit_Kontonummer->setText(str);
+}
+
+const QString UeberweisungsWidget::getRemoteBankCode() const
+{
+	return this->ui->lineEdit_Bankleitzahl->text();
+}
+
+void UeberweisungsWidget::setRemoteBankCode(const QString &str)
+{
+	this->ui->lineEdit_Bankleitzahl->setText(str);
+}
+
+const QString UeberweisungsWidget::getRemoteBankName() const
+{
+	return this->ui->lineEdit_Kredidinstitut->text();
+}
+
+void UeberweisungsWidget::setRemoteBankName(const QString &str)
+{
+	this->ui->lineEdit_Kredidinstitut->setText(str);
+}
+
+const QString UeberweisungsWidget::getValue() const
+{
+	return this->ui->lineEdit_Betrag->text();
+}
+
+//! Gibt den Wert und die Währung als AB_VALUE zurück
+AB_VALUE* UeberweisungsWidget::getValueABV() const
+{
+	QString text = this->ui->lineEdit_Betrag->text();
+	text.replace(",",".",Qt::CaseSensitive);
+	return abt_conv::ABValueFromString(text, this->ui->lineEdit_Waehrung->text());
+}
+
+void UeberweisungsWidget::setValue(const QString &str)
+{
+	this->ui->lineEdit_Betrag->setText(str);
+}
+
+void UeberweisungsWidget::setValue(const AB_VALUE *value)
+{
+	this->ui->lineEdit_Betrag->setText(abt_conv::ABValueToString(value));
+}
+
+const QString UeberweisungsWidget::getCurrency() const
+{
+	return this->ui->lineEdit_Waehrung->text();
+}
+
+void UeberweisungsWidget::setCurrency(const QString &str)
+{
+	this->ui->lineEdit_Waehrung->setText(str);
+}
+
+void UeberweisungsWidget::setPurpose(const QStringList &strList)
+{
+	QLineEdit *edit;
+	for (int i=0; i<strList.count(); ++i) {
+		edit = this->findChild<QLineEdit*>(
+				QString("lineEdit_Verwendungszweck%1").arg(i+1));
+		if (edit) {
+			edit->setText(strList.at(i));
+		} else {
+			qWarning() << "setPurpose(QStringList): lineEdit_Verwendungszweck" << i+1 << " not found";
+		}
 	}
 }
 
@@ -212,6 +313,17 @@ const QStringList UeberweisungsWidget::getPurpose() const
 	return purpose;
 }
 
+void UeberweisungsWidget::setPurpose(int line, const QString &str)
+{
+	QLineEdit *edit = this->findChild<QLineEdit*>(
+				QString("lineEdit_Verwendungszweck%1").arg(line));
+	if (edit) {
+		edit->setText(str);
+	} else {
+		qWarning() << "setPurpose(int, QString): lineEdit_Verwendungszweck" << line << " not found";
+	}
+}
+
 const QString UeberweisungsWidget::getPurpose(int line) const
 {
 	/*! \todo Noch testen ob dies so funktioniert! */
@@ -221,3 +333,127 @@ const QString UeberweisungsWidget::getPurpose(int line) const
 		return QString("EDIT %1 NOT FOUND").arg(line);
 	return edit->text().toUtf8();
 }
+
+
+
+/******************************************************************************/
+/****** Wrapper Funktionen die die Daten in this->da_widget setzen       ******/
+/****** bzw. die dort eingegebenen Daten abfragen                        ******/
+/******************************************************************************/
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setPeriod(AB_TRANSACTION_PERIOD period)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setPeriod(period);
+}
+
+//! wrapper to extraStandingOrdersWidget
+AB_TRANSACTION_PERIOD UeberweisungsWidget::period() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->period();
+}
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setExecutionDay(int day)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setExecutionDay(day);
+}
+
+//! wrapper to extraStandingOrdersWidget
+int UeberweisungsWidget::executionDay() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->executionDay();
+}
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setCycle(int cycle)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setCycle(cycle);
+}
+
+//! wrapper to extraStandingOrdersWidget
+int UeberweisungsWidget::cycle() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->cycle();
+}
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setFirstExecutionDate(const QDate &date)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setFirstExecutionDate(date);
+}
+
+//! wrapper to extraStandingOrdersWidget
+const QDate UeberweisungsWidget::firstExecutionDate() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->firstExecutionDate();
+}
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setLastExecutionDate(const QDate &date)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setLastExecutionDate(date);
+}
+
+//! wrapper to extraStandingOrdersWidget
+const QDate UeberweisungsWidget::lastExecutionDate() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->lastExecutionDate();
+}
+
+//! wrapper to extraStandingOrdersWidget
+void UeberweisungsWidget::setNextExecutionDate(const QDate &date)
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	this->da_widget->setNextExecutionDate(date);
+}
+
+//! wrapper to extraStandingOrdersWidget
+const QDate UeberweisungsWidget::nextExecutionDate() const
+{
+	Q_ASSERT_X(this->da_widget != NULL, "UeberweisungsWidget", "extraStandingOrdersWidget called without object");
+	return this->da_widget->nextExecutionDate();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

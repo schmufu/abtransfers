@@ -722,7 +722,10 @@ void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
 
 	//Create Info
 	QString info;
-	info.append("INFO: Holt alle bei der Bank hinterlegten Daueraufträge");
+	info.append("Holt alle bei der Bank hinterlegten Daueraufträge;");
+	info.append("Für das Konto ");
+	info.append(acc->Number());
+	info.append(" (" + acc->Name() + ")");
 
 	abt_job_info *ji = new abt_job_info(job, info);
 

@@ -76,7 +76,6 @@ void extraStandingOrdersWidget::changeEvent(QEvent *e)
 	}
 }
 
-
 //private slot
 /*! \brief Slot is called when the cycle selection changed
  *
@@ -184,6 +183,23 @@ void extraStandingOrdersWidget::on_comboBox_day_currentIndexChanged(int index)
 
 
 //public
+/*! \brief gibt true zurück wenn die Daten im Widget durch den User geändert wurden */
+bool extraStandingOrdersWidget::hasChanges() const
+{
+	if ( ( this->m_set_cycle == this->m_cycle ) &&
+	     ( this->m_set_period == this->m_period ) &&
+	     ( this->m_set_executionDay == this->m_day ) &&
+	     ( this->m_set_firstExecutionDate == this->ui->dateEdit_firstExecDay->date() ) &&
+	     ( this->m_set_lastExecutionDate == this->ui->dateEdit_lastExecDay->date() ) &&
+	     ( this->m_set_nextExecutionDate == this->ui->dateEdit_nextExecDay->date() ) ) {
+		//Keine Änderungen gegenüber den gesetzten Werten vorhanden.
+		return false;
+	} else {
+		return true; //Werte wurden geändert.
+	}
+}
+
+//public
 /*! \brief setzt die Ausführung auf den übergebenen wert
  *
  * Es wird nur Zwischen AB_Transaction_PeriodWeekly und AB_Transaction_PeriodMonthly
@@ -192,6 +208,7 @@ void extraStandingOrdersWidget::on_comboBox_day_currentIndexChanged(int index)
  */
 void extraStandingOrdersWidget::setPeriod(AB_TRANSACTION_PERIOD period)
 {
+	this->m_set_period = period; //gesetzten Zustand merken
 	QRadioButton *btn = NULL;
 	switch (period) {
 	case AB_Transaction_PeriodWeekly:
@@ -223,15 +240,16 @@ void extraStandingOrdersWidget::setPeriod(AB_TRANSACTION_PERIOD period)
  * bei period = Weekly:\n
  * entspricht der \a day dem Wochentag (mit 1=Montag und 7=Sonntag).
  *
- * \warning Wenn der Wert für die eingestellte Period zu hoch ist wird er
- *	    einfach verworfen und executionDay() gibt den alten Wert zurück!
+ * \warning Wenn der Wert von \a day für die eingestellte Period zu hoch ist wird
+ *          er einfach verworfen und executionDay() gibt den alten Wert zurück!
  */
 void extraStandingOrdersWidget::setExecutionDay(int day)
 {
-	if (this->ui->comboBox_day->count() > day) {
-		this->ui->comboBox_day->setCurrentIndex(day);
+	this->m_set_executionDay = day; //gesetzten Zustand merken (m_day = index+1!)
+	if (this->ui->comboBox_day->count() > day-1) {
+		this->ui->comboBox_day->setCurrentIndex(day-1);
 	} else {
-		qWarning() << this << "Cant set day to " << day
+		qWarning() << this << "Cant set day to " << day-1
 			   << "beause the combobox has only "
 			   << this->ui->comboBox_day->count() << "items!";
 	}
@@ -246,42 +264,46 @@ void extraStandingOrdersWidget::setExecutionDay(int day)
  */
 void extraStandingOrdersWidget::setCycle(int cycle)
 {
+	this->m_set_cycle = cycle; //gesetzten Zustand merken
 	this->ui->spinBox_cycle->setValue(cycle);
 	//führt automatisch auch SpinBox_valueChanged aus
 }
 
 //public
-void extraStandingOrdersWidget::setFirstExecutionDay(const QDate &date)
+void extraStandingOrdersWidget::setFirstExecutionDate(const QDate &date)
 {
+	this->m_set_firstExecutionDate = date; //gesetzten Zustand merken
 	this->ui->dateEdit_firstExecDay->setDate(date);
 }
 
 //public
-void extraStandingOrdersWidget::setLastExecutionDay(const QDate &date)
+void extraStandingOrdersWidget::setLastExecutionDate(const QDate &date)
 {
+	this->m_set_lastExecutionDate = date; //gesetzten Zustand merken
 	this->ui->dateEdit_lastExecDay->setDate(date);
 }
 
 //public
-void extraStandingOrdersWidget::setNextExecutionDay(const QDate &date)
+void extraStandingOrdersWidget::setNextExecutionDate(const QDate &date)
 {
+	this->m_set_nextExecutionDate = date; //gesetzten Zustand merken
 	this->ui->dateEdit_nextExecDay->setDate(date);
 }
 
 //public
-const QDate extraStandingOrdersWidget::firstExecutionDay() const
+const QDate extraStandingOrdersWidget::firstExecutionDate() const
 {
 	return this->ui->dateEdit_firstExecDay->date();
 }
 
 //public
-const QDate extraStandingOrdersWidget::lastExecutionDay() const
+const QDate extraStandingOrdersWidget::lastExecutionDate() const
 {
 	return this->ui->dateEdit_lastExecDay->date();
 }
 
 //public
-const QDate extraStandingOrdersWidget::nextExecutionDay() const
+const QDate extraStandingOrdersWidget::nextExecutionDate() const
 {
 	return this->ui->dateEdit_nextExecDay->date();
 }
