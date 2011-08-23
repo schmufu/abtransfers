@@ -33,6 +33,7 @@
 
 #include <QGroupBox>
 #include <QAbstractButton>
+#include <QDate>
 
 #include <aqbanking/transaction.h>
 
@@ -81,16 +82,36 @@ public:
 	void setPeriod(AB_TRANSACTION_PERIOD period);
 	AB_TRANSACTION_PERIOD period() const { return this->m_period; }
 
+	void setExecutionDay(int day);
+	//! gibt den gewählten AusführungsTag zurück
+	int executionDay() const { return this->m_day; }
+
+	void setCycle(int cycle);
+	/*! \brief gibt den Zyklus zurück
+	 *
+	 * Gibt zurück wie oft der DA ausgeführt wird. (Abhängig von period()!
+	 * wenn period=weekly und cycle=2 wird der DA alle 2 Wochen ausgeführt)
+	 */
+	int cycle() const { return this->m_cycle; }
+
+	void setFirstExecutionDay(const QDate &date);
+	const QDate firstExecutionDay() const;
+
+	void setLastExecutionDay(const QDate &date);
+	const QDate lastExecutionDay() const;
+
+	void setNextExecutionDay(const QDate &date);
+	const QDate nextExecutionDay() const;
+
+
 protected:
 	void changeEvent(QEvent *e);
 
 private:
 	Ui::extraStandingOrdersWidget *ui;
 
-
-
-
 private slots:
+	void on_comboBox_day_currentIndexChanged(int index);
 	void on_spinBox_cycle_valueChanged(int );
 	void onButtonGroupClicked(QAbstractButton *button);
 	//! wird ausgeführt um alle Änderungen an den Widgets vorzunehmen.

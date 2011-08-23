@@ -72,7 +72,7 @@ abt_settings::~abt_settings()
 	delete this->Settings;
 }
 
-QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
+const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 {
 	this->EmpfaengerList->clear();
 
@@ -100,7 +100,7 @@ QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 	}
 
 	file.close();
-	return EmpfaengerList;
+	return this->EmpfaengerList;
 }
 
 void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)

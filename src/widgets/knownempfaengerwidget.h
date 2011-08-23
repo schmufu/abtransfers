@@ -45,10 +45,10 @@ class KnownEmpfaengerWidget : public QGroupBox {
 	Q_OBJECT
 private:
 	Ui::KnownEmpfaengerWidget *ui;
-	QList<abt_EmpfaengerInfo*> *EmpfaengerList;
+	const QList<abt_EmpfaengerInfo*> *EmpfaengerList;
 
 public:
-	KnownEmpfaengerWidget(QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
+	KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
 	~KnownEmpfaengerWidget();
 
 protected:

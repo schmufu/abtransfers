@@ -54,7 +54,7 @@ public:
 	explicit abt_settings(QObject *parent = 0);
 	~abt_settings();
 
-	QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
+	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo*> *list);
 
 	const QString *getDataDir() const;

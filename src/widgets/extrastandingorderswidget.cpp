@@ -38,12 +38,22 @@ extraStandingOrdersWidget::extraStandingOrdersWidget(QWidget *parent) :
 	ui(new Ui::extraStandingOrdersWidget)
 {
 	ui->setupUi(this);
+	this->m_period = AB_Transaction_PeriodUnknown;
+	this->m_cycle = 1;
+	this->m_day = 1;
+
+	this->ui->spinBox_cycle->setValue(this->m_cycle);
 
 	connect(this->ui->buttonGroup_period, SIGNAL(buttonClicked(QAbstractButton*)),
 		this, SLOT(onButtonGroupClicked(QAbstractButton*)));
 
 	//Default Werte
-	this->ui->label_week_month->setText(tr("Monat"));
+	//this->ui->label_week_month->setText(tr("Monat"));
+	this->ui->radioButton_monthly->setChecked(true);
+
+	//Sicherstellen das die changed funktion ausgeführt wird, da der
+	//monthly radioButton im UI bereits als standart gesetzt ist.
+	this->onButtonGroupClicked(this->ui->radioButton_monthly);
 
 	qDebug() << "extraStandingOrdersWidget created" << this;
 }
@@ -94,24 +104,6 @@ void extraStandingOrdersWidget::onButtonGroupClicked(QAbstractButton *button)
 
 }
 
-//public
-/*! \brief setzt die Ausführung auf den übergebenen wert
- */
-void extraStandingOrdersWidget::setPeriod(AB_TRANSACTION_PERIOD period)
-{
-	switch (period) {
-	case AB_Transaction_PeriodWeekly:
-		this->ui->radioButton_weekly->setChecked(true);
-		break;
-	case AB_Transaction_PeriodMonthly:
-		this->ui->radioButton_monthly->setChecked(true);
-		break;
-	default:
-		this->ui->radioButton_monthly->setChecked(true);
-		break;
-	}
-}
-
 //private slot
 /*!
  * Nachdem sich Werte geändert haben müssen bestimmte defaults neu gesetzt
@@ -158,6 +150,8 @@ void extraStandingOrdersWidget::doUpdateAfterChange()
 		qWarning() << "period == UNKOWN!";
 	}
 
+	//Update der Texte durch den SpinBox Slot
+	on_spinBox_cycle_valueChanged(this->ui->spinBox_cycle->value());
 }
 
 //! Der Wert der Spinbox hat sich geändert, wir müssen den Text updaten
@@ -173,4 +167,122 @@ void extraStandingOrdersWidget::on_spinBox_cycle_valueChanged(int c)
 		LabelText = tr("???");
 	}
 	this->ui->label_week_month->setText(LabelText);
+	//Cycle merken
+	this->m_cycle = c;
 }
+
+//private slot
+/*!
+ * Wenn sich der Index der ComboBox_day Ändert merken wir uns den index+1
+ * in m_day.
+ */
+void extraStandingOrdersWidget::on_comboBox_day_currentIndexChanged(int index)
+{
+	//Aktuelle Auswahl merken
+	this->m_day = index+1;
+}
+
+
+//public
+/*! \brief setzt die Ausführung auf den übergebenen wert
+ *
+ * Es wird nur Zwischen AB_Transaction_PeriodWeekly und AB_Transaction_PeriodMonthly
+ * unterschieden, wenn ein anderer Wert übergeben wird, wird
+ * AB_Transaction_PeriodMonthly als Default gesetzt.
+ */
+void extraStandingOrdersWidget::setPeriod(AB_TRANSACTION_PERIOD period)
+{
+	QRadioButton *btn = NULL;
+	switch (period) {
+	case AB_Transaction_PeriodWeekly:
+		btn = this->ui->radioButton_weekly;
+		break;
+	case AB_Transaction_PeriodMonthly:
+		btn = this->ui->radioButton_monthly;
+		break;
+	default:
+		btn = this->ui->radioButton_monthly;
+		break;
+	}
+
+	//Den radioButton entsprechend setzen
+	btn->setChecked(true);
+	//Status könnte sich geändert haben, dies aktualisieren
+	this->onButtonGroupClicked(btn);
+}
+
+//public
+/*! \brief Setzt den Tag der Ausführung auf \a day
+ *
+ * Abhängig davon ob Wochen oder Monate als Period ausgewählt sind wird der
+ * Wert von \a day anders interpretiert.
+ *
+ * bei period = Monthly:\n
+ * entspricht der \a day dem Monatstag.
+ *
+ * bei period = Weekly:\n
+ * entspricht der \a day dem Wochentag (mit 1=Montag und 7=Sonntag).
+ *
+ * \warning Wenn der Wert für die eingestellte Period zu hoch ist wird er
+ *	    einfach verworfen und executionDay() gibt den alten Wert zurück!
+ */
+void extraStandingOrdersWidget::setExecutionDay(int day)
+{
+	if (this->ui->comboBox_day->count() > day) {
+		this->ui->comboBox_day->setCurrentIndex(day);
+	} else {
+		qWarning() << this << "Cant set day to " << day
+			   << "beause the combobox has only "
+			   << this->ui->comboBox_day->count() << "items!";
+	}
+}
+
+//public
+/*! \brief Setzt den cycle auf \a cycle.
+ *
+ * The standing order is executed every \a cycle x period. So if period
+ * is weekly and \a cycle is 2 then the standing order is executed every 2
+ * weeks.
+ */
+void extraStandingOrdersWidget::setCycle(int cycle)
+{
+	this->ui->spinBox_cycle->setValue(cycle);
+	//führt automatisch auch SpinBox_valueChanged aus
+}
+
+//public
+void extraStandingOrdersWidget::setFirstExecutionDay(const QDate &date)
+{
+	this->ui->dateEdit_firstExecDay->setDate(date);
+}
+
+//public
+void extraStandingOrdersWidget::setLastExecutionDay(const QDate &date)
+{
+	this->ui->dateEdit_lastExecDay->setDate(date);
+}
+
+//public
+void extraStandingOrdersWidget::setNextExecutionDay(const QDate &date)
+{
+	this->ui->dateEdit_nextExecDay->setDate(date);
+}
+
+//public
+const QDate extraStandingOrdersWidget::firstExecutionDay() const
+{
+	return this->ui->dateEdit_firstExecDay->date();
+}
+
+//public
+const QDate extraStandingOrdersWidget::lastExecutionDay() const
+{
+	return this->ui->dateEdit_lastExecDay->date();
+}
+
+//public
+const QDate extraStandingOrdersWidget::nextExecutionDay() const
+{
+	return this->ui->dateEdit_nextExecDay->date();
+}
+

@@ -33,7 +33,7 @@
 
 #include "../abt_settings.h"
 
-KnownEmpfaengerWidget::KnownEmpfaengerWidget(QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
+KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
     ui(new Ui::KnownEmpfaengerWidget)
 {

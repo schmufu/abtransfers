@@ -203,7 +203,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QDateEdit" name="dateEdit">
+      <widget class="QDateEdit" name="dateEdit_firstExecDay">
        <property name="displayFormat">
         <string>ddd dd.MM.yyyy</string>
        </property>
@@ -217,7 +217,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDateEdit" name="dateEdit_2">
+      <widget class="QDateEdit" name="dateEdit_lastExecDay">
        <property name="displayFormat">
         <string>ddd dd.MM.yyyy</string>
        </property>
@@ -231,7 +231,7 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QDateEdit" name="dateEdit_3">
+      <widget class="QDateEdit" name="dateEdit_nextExecDay">
        <property name="readOnly">
         <bool>true</bool>
        </property>
