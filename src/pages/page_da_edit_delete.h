@@ -32,7 +32,6 @@
 #define PAGE_DA_EDIT_DELETE_H
 
 #include <QWidget>
-#include <QCalendarWidget>
 #include <QTreeWidgetItem>
 
 #include "../aqb_accounts.h"
@@ -56,8 +55,6 @@ private:
 	UeberweisungsWidget *ueberweisungwidget;
 	KnownEmpfaengerWidget *knownempfaengerwidget;
 
-	QCalendarWidget *cal1,*cal2;
-
 public:
 	Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
 	~Page_DA_Edit_Delete();
@@ -72,7 +69,7 @@ signals:
 	void deleteDA(aqb_AccountInfo *a, const abt_transaction *t);
 	void getAllDAs(aqb_AccountInfo *a);
 	void modifyDA(aqb_AccountInfo *a, const abt_transaction *t);
-	void createDA(aqb_AccountInfo *a, const abt_transaction *t);
+	//void createDA(aqb_AccountInfo *a, const abt_transaction *t);
 
 private slots:
 	void on_pushButton_Execute_clicked();

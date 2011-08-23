@@ -46,17 +46,6 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 	this->accounts = acc;
 	this->banking = banking;
 
-	//Calender Widgets for the First- and LastDate
-	this->cal1 = new QCalendarWidget(ui->dateEdit_First);
-	this->cal1->setFirstDayOfWeek(Qt::Monday);
-	this->cal2 = new QCalendarWidget(ui->dateEdit_Last);
-	this->cal2->setFirstDayOfWeek(Qt::Monday);
-
-	ui->dateEdit_First->setCalendarWidget(this->cal1);
-	ui->dateEdit_Last->setCalendarWidget(this->cal2);
-	ui->dateEdit_Last->setSpecialValueText(tr("Endlos"));
-	ui->dateEdit_Last->setMinimumDate(QDate::currentDate().addDays(-1));
-
 	//used widgets in this page
 	this->accountwidget = new BankAccountsWidget(this->accounts, this);
 	this->ueberweisungwidget = new UeberweisungsWidget(this->banking, UeberweisungsWidget::StandingOrder, this);
@@ -87,8 +76,6 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 
 Page_DA_Edit_Delete::~Page_DA_Edit_Delete()
 {
-	delete this->cal1;
-	delete this->cal2;
 	delete this->accountwidget;
 	delete this->ueberweisungwidget;
 	delete ui;

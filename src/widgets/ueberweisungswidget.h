@@ -33,6 +33,7 @@
 
 #include <QGroupBox>
 #include "../aqb_banking.h"
+#include "extrastandingorderswidget.h"
 
 namespace Ui {
     class UeberweisungsWidget;
@@ -44,6 +45,9 @@ namespace Ui {
 
 class UeberweisungsWidget : public QGroupBox {
 	Q_OBJECT
+private:
+	extraStandingOrdersWidget *da_widget;
+
 public:
 	/** Mit diesem Typen wird definiert wie das Überweisungs-Widget aussehen
 	  * soll. Je nachdem welche Werte für einen Typ benötigt werden, werden
@@ -94,12 +98,22 @@ private:
 	const aqb_banking *m_banking;
 	UeberweisungsWidget::TransferWidgetType my_type;
 
+	//! Erstellt die Widgets die für Daueraufträge nötig sind
+	void createStandingOrderWidgets();
+	//! Erstellt die Widgets die für Terminüberweisungen nötig sind
+	void createDatedTransferWidgets();
+	//! Erstellt die Widgets die für "Normale" Überweisungen nötig sind
+	void createTransferWidgets();
+	//! Erstellt die Widgets die für Internationale Überweisungen nötig sind
+	void createInternationalTransferWidgets();
+	//! Erstellt die Widgets die für SEPA Überweisungen nötig sind
+	void createSepaTransferWidgets();
+
 protected:
 	void changeEvent(QEvent *e);
 
 private:
 	Ui::UeberweisungsWidget *ui;
-
 
 
 private slots:
