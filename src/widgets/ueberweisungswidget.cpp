@@ -273,9 +273,11 @@ void UeberweisungsWidget::setValue(const QString &str)
 	this->ui->lineEdit_Betrag->setText(str);
 }
 
+//! sets the value AND currency from the AB_VALUE* \a value
 void UeberweisungsWidget::setValue(const AB_VALUE *value)
 {
-	this->ui->lineEdit_Betrag->setText(abt_conv::ABValueToString(value));
+	this->ui->lineEdit_Betrag->setText(abt_conv::ABValueToString(value, true));
+	this->ui->lineEdit_Waehrung->setText(AB_Value_GetCurrency(value));
 }
 
 const QString UeberweisungsWidget::getCurrency() const
@@ -283,6 +285,7 @@ const QString UeberweisungsWidget::getCurrency() const
 	return this->ui->lineEdit_Waehrung->text();
 }
 
+//! if you habe a AB_VALUE use setValue(const AB_VALUE*) to set the value and currency
 void UeberweisungsWidget::setCurrency(const QString &str)
 {
 	this->ui->lineEdit_Waehrung->setText(str);
@@ -292,12 +295,13 @@ void UeberweisungsWidget::setPurpose(const QStringList &strList)
 {
 	QLineEdit *edit;
 	for (int i=0; i<strList.count(); ++i) {
-		edit = this->findChild<QLineEdit*>(
-				QString("lineEdit_Verwendungszweck%1").arg(i+1));
+		QString editName = QString("lineEdit_Verwendungszweck%1").arg(i+1);
+		edit = this->findChild<QLineEdit*>(editName);
 		if (edit) {
 			edit->setText(strList.at(i));
 		} else {
-			qWarning() << "setPurpose(QStringList): lineEdit_Verwendungszweck" << i+1 << " not found";
+			qWarning() << "setPurpose(QStringList): "
+					<< editName << " not found";
 		}
 	}
 }
@@ -315,12 +319,13 @@ const QStringList UeberweisungsWidget::getPurpose() const
 
 void UeberweisungsWidget::setPurpose(int line, const QString &str)
 {
-	QLineEdit *edit = this->findChild<QLineEdit*>(
-				QString("lineEdit_Verwendungszweck%1").arg(line));
+	QString editName = QString("lineEdit_Verwendungszweck%1").arg(line);
+	QLineEdit *edit = this->findChild<QLineEdit*>(editName);
 	if (edit) {
 		edit->setText(str);
 	} else {
-		qWarning() << "setPurpose(int, QString): lineEdit_Verwendungszweck" << line << " not found";
+		qWarning() << "setPurpose(int, QString): "
+				<< editName << " not found";
 	}
 }
 
@@ -330,7 +335,7 @@ const QString UeberweisungsWidget::getPurpose(int line) const
 	QString editName = QString("lineEdit_Verwendungszweck%1").arg(line);
 	QLineEdit *edit = this->findChild<QLineEdit*>(editName);
 	if (edit == NULL)
-		return QString("EDIT %1 NOT FOUND").arg(line);
+		return QString("EDIT \"%1\" NOT FOUND").arg(editName);
 	return edit->text().toUtf8();
 }
 

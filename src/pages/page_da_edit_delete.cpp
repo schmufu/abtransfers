@@ -164,7 +164,7 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 		Item->setData(1, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteBankCode());
 		Item->setData(2, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteName().at(0));
 		v = account->getKnownDAs()->at(i)->getSOT()->getValue();
-		QString Betrag = QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2);
+		QString Betrag = abt_conv::ABValueToString(v, true);
 		Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 		Item->setData(3, Qt::DisplayRole, Betrag);
 		ui->treeWidget->addTopLevelItem(Item);
@@ -181,8 +181,23 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	//Ein neuer zu Bearbeitender DA wurde gewählt.
 	// Prüfen ob Änderungen vorhanden sind und diese nicht gespeichert wurden
 	// ansonten den neuen DA anzeigen.
-	if (!current)
+
+	static bool doWork = true; //wenn in dieser funktion der Index des aktuellen
+				   //Items geändert werden soll muss vorher doWork
+				   //auf false gesetzt werden, damit nicht eine
+				   //doppelte Änderung stattfindet.
+
+	if (!current) {
+		if (!previous) {
+			return; // do nothing
+		}
 		current = previous;	//Warum weiß ich nicht, ist im Beispiel so
+	}
+
+	if (!doWork) {
+		doWork = true; //Beim nächsten mal wieder arbeiten
+		return; //Diesmal ohne was zu machen abbrechen
+	}
 
 	if (this->ueberweisungwidget->hasChanges()) {
 		QMessageBox msg;
@@ -191,7 +206,7 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 		QString info;
 		info.append("Der Dauerauftrag für:<br />");
 		info.append("<table><tr><td>Empfänger:</td><td>" + this->ueberweisungwidget->getRemoteName() + "</td></tr>");
-		info.append("<tr><td>Verwendungzweck:</td><td> " + this->ueberweisungwidget->getPurpose(0) + "</td></tr></table><br />");
+		info.append("<tr><td>Verwendungzweck:</td><td> " + this->ueberweisungwidget->getPurpose(1) + "</td></tr></table><br />");
 		info.append("wurde geändert!<br /><br />");
 		info.append("Sollen die Änderungen zu Bank übertragen werden?<br />");
 		info.append("<i>(Nein verwirft die Änderungen)</i>");
@@ -208,7 +223,11 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 			   (ret == QMessageBox::Abort)) {
 			//Abbruch wurde gewählt!
 			//den ursprünglichen DA wieder auswählen
+			doWork=false; //damit beim nächsten Aufruf nicht gearbeitet wird
+			this->ui->treeWidget->setItemSelected(current, false);
+			this->ui->treeWidget->setItemSelected(previous, true);
 			this->ui->treeWidget->setCurrentItem(previous);
+
 			return; //Abbrechen
 		} else {
 			//must be NO, check it
@@ -229,8 +248,9 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	this->ueberweisungwidget->setRemoteBankCode(t->getRemoteBankCode());
 	this->ueberweisungwidget->setRemoteBankName(t->getRemoteBankName());
 
+	//setzt den Wert und die Währung aus dem AB_VALUE*
 	this->ueberweisungwidget->setValue(t->getValue());
-	this->ueberweisungwidget->setCurrency(AB_Value_GetCurrency(t->getValue()));
+
 	this->ueberweisungwidget->setPurpose(t->getPurpose());
 
 	this->ueberweisungwidget->setPeriod(t->getPeriod());

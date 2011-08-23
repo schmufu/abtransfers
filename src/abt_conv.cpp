@@ -201,18 +201,26 @@ const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &
 	return gwl;
 }
 
-/*! wird genutzt um die Werte als String in der ini-Datei zu speichern */
+/*! wird genutzt um die Werte als String in der ini-Datei zu speichern
+ *
+ * wenn der String als Decimal-Wert dargestellt werden soll muss \a asDecimal
+ * = true übergeben werden.
+ */
 //static
-const QString abt_conv::ABValueToString(const AB_VALUE *v)
+const QString abt_conv::ABValueToString(const AB_VALUE *v, bool asDecimal)
 {
 	if (v == NULL) {
 		return QString();
 	}
-	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
-	AB_Value_toString(v, buf);
-	std::string result(GWEN_Buffer_GetStart(buf));
-	GWEN_Buffer_free(buf);
-	return QString::fromStdString(result);
+	if (asDecimal) {
+		return QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2);
+	} else {
+		GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
+		AB_Value_toString(v, buf);
+		std::string result(GWEN_Buffer_GetStart(buf));
+		GWEN_Buffer_free(buf);
+		return QString::fromStdString(result);
+	}
 }
 
 /*! wird genutzt um die als String gespeicherten Werte aus der ini-Datei zu lesen

@@ -38,9 +38,25 @@ extraStandingOrdersWidget::extraStandingOrdersWidget(QWidget *parent) :
 	ui(new Ui::extraStandingOrdersWidget)
 {
 	ui->setupUi(this);
+	//Initialisierung
+	 //muss unknown sein, damit das unten folgende Aktualisieren funktioniert
 	this->m_period = AB_Transaction_PeriodUnknown;
 	this->m_cycle = 1;
 	this->m_day = 1;
+
+	//Die m_set_* variablen auch initialisieren
+	//m_period wird durch das aktualisieren auf Monthly gesetzt!
+	this->m_set_period = AB_Transaction_PeriodMonthly;
+	this->m_set_cycle = 1;
+	this->m_set_executionDay = 1;
+	QDate currentDate = QDate::currentDate();
+	this->m_set_firstExecutionDate = currentDate;
+	this->m_set_lastExecutionDate = currentDate;
+	this->m_set_nextExecutionDate = currentDate;
+	this->ui->dateEdit_firstExecDay->setDate(currentDate);
+	this->ui->dateEdit_lastExecDay->setDate(currentDate);
+	this->ui->dateEdit_nextExecDay->setDate(currentDate);
+	//Ende Initialisierung
 
 	this->ui->spinBox_cycle->setValue(this->m_cycle);
 
@@ -53,6 +69,7 @@ extraStandingOrdersWidget::extraStandingOrdersWidget(QWidget *parent) :
 
 	//Sicherstellen das die changed funktion ausgeführt wird, da der
 	//monthly radioButton im UI bereits als standart gesetzt ist.
+	//und der m_period Parameter Aktualisiert werden muss.
 	this->onButtonGroupClicked(this->ui->radioButton_monthly);
 
 	qDebug() << "extraStandingOrdersWidget created" << this;
@@ -113,7 +130,7 @@ void extraStandingOrdersWidget::doUpdateAfterChange()
 	if (this->m_period == AB_Transaction_PeriodMonthly) {
 		//Maximal alle 12 Monate (1x Jährlich)
 		this->ui->spinBox_cycle->setMaximum(12);
-		//Anstelle von 1 wird jeden
+		//Anstelle von 1 wird 'jeden' angezeigt
 		this->ui->spinBox_cycle->setSpecialValueText("jeden");
 
 		int oldValue = this->ui->comboBox_day->currentIndex();
@@ -129,14 +146,13 @@ void extraStandingOrdersWidget::doUpdateAfterChange()
 	} else if (this->m_period == AB_Transaction_PeriodWeekly) {
 		//Maximal alle 52 Wochen (1x Jährlich)
 		this->ui->spinBox_cycle->setMaximum(52);
-		//Anstelle von 1 wird jede angezeigt
+		//Anstelle von 1 wird 'jede' angezeigt
 		this->ui->spinBox_cycle->setSpecialValueText("jede");
 
 		int oldValue = this->ui->comboBox_day->currentIndex();
 		this->ui->comboBox_day->clear();
 		for (int i=1; i<=7; ++i) {
 			QString ItemText = this->locale().standaloneDayName(i, QLocale::LongFormat);
-			//QString ItemText = QDate::longDayName(i, QDate::StandaloneFormat);
 			this->ui->comboBox_day->addItem(ItemText);
 		}
 
@@ -195,6 +211,7 @@ bool extraStandingOrdersWidget::hasChanges() const
 		//Keine Änderungen gegenüber den gesetzten Werten vorhanden.
 		return false;
 	} else {
+		qDebug() << this << "has Changes!";
 		return true; //Werte wurden geändert.
 	}
 }
