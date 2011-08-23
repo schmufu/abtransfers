@@ -181,21 +181,35 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	//Ein neuer zu Bearbeitender DA wurde gewählt.
 	// Prüfen ob Änderungen vorhanden sind und diese nicht gespeichert wurden
 	// ansonten den neuen DA anzeigen.
-
+	static int cnt = 0; //Aufrufzählen
 	static bool doWork = true; //wenn in dieser funktion der Index des aktuellen
 				   //Items geändert werden soll muss vorher doWork
 				   //auf false gesetzt werden, damit nicht eine
 				   //doppelte Änderung stattfindet.
+	cnt++;
 
 	if (!current) {
 		if (!previous) {
+			qDebug() << "cnt" << cnt << " - DOING NOTHING, neither current nor previous set";
 			return; // do nothing
 		}
 		current = previous;	//Warum weiß ich nicht, ist im Beispiel so
 	}
 
+	if (current == previous) {
+		qDebug() << "cnt" << cnt << " - DOING NOTHING, current == previous, no change";
+		return;
+	}
+
+	if (current)
+		qDebug() << "cnt" << cnt << " - start - doWork: " << doWork <<  "current: " << current->data(2, Qt::DisplayRole).toString();
+	if (previous)
+		qDebug() << "cnt" << cnt << " - start - doWork: " << doWork <<  "previous: " << previous->data(2, Qt::DisplayRole).toString();
+
 	if (!doWork) {
 		doWork = true; //Beim nächsten mal wieder arbeiten
+		current->setSelected(true);
+		previous->setSelected(false);
 		return; //Diesmal ohne was zu machen abbrechen
 	}
 
@@ -208,7 +222,7 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 		info.append("<table><tr><td>Empfänger:</td><td>" + this->ueberweisungwidget->getRemoteName() + "</td></tr>");
 		info.append("<tr><td>Verwendungzweck:</td><td> " + this->ueberweisungwidget->getPurpose(1) + "</td></tr></table><br />");
 		info.append("wurde geändert!<br /><br />");
-		info.append("Sollen die Änderungen zu Bank übertragen werden?<br />");
+		info.append("Sollen die Änderungen zur Bank übertragen werden?<br />");
 		info.append("<i>(Nein verwirft die Änderungen)</i>");
 
 		msg.setInformativeText(info);
@@ -224,8 +238,10 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 			//Abbruch wurde gewählt!
 			//den ursprünglichen DA wieder auswählen
 			doWork=false; //damit beim nächsten Aufruf nicht gearbeitet wird
-			this->ui->treeWidget->setItemSelected(current, false);
-			this->ui->treeWidget->setItemSelected(previous, true);
+			current->setSelected(false);
+			previous->setSelected(false);
+			qDebug() << "cnt" << cnt << " - doWork: " << doWork <<  "current: " << current->data(2, Qt::DisplayRole).toString();
+			qDebug() << "cnt" << cnt << " - doWork: " << doWork <<  "previous: " << previous->data(2, Qt::DisplayRole).toString();
 			this->ui->treeWidget->setCurrentItem(previous);
 
 			return; //Abbrechen
