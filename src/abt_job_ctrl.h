@@ -85,6 +85,7 @@ public:
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);
 	void jobQueueListChanged();
+	void jobAdded(const abt_job_info *jobInfo);
 	void log(const QString &str);
 
 public slots:

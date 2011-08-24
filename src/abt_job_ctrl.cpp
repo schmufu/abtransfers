@@ -173,6 +173,7 @@ void abt_job_ctrl::addNewSingleTransfer(aqb_AccountInfo *acc, const abt_transact
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -222,6 +223,7 @@ void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const abt_transac
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -272,6 +274,7 @@ void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const abt_transaction 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -321,6 +324,7 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -370,6 +374,7 @@ void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const abt_transactio
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -423,6 +428,7 @@ void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -473,6 +479,7 @@ void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -524,6 +531,7 @@ void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -553,6 +561,7 @@ void abt_job_ctrl::addGetDatedTransfers(aqb_AccountInfo *acc)
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -605,6 +614,7 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -653,6 +663,7 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -701,6 +712,7 @@ void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const abt_transa
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -732,6 +744,7 @@ void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
+	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
@@ -769,6 +782,7 @@ void abt_job_ctrl::execQueuedTransactions()
 		qWarning() << this << "Error on execQueuedTransactions ("
 				<< rv << ")";
 		//cleanup
+		this->addlog(QString("** ERROR ** Fehler bei AB_Baning_ExecuteJobs(). return value = %1 ** ABBRUCH **").arg(rv));
 		AB_Job_List2_ClearAll(jl);
 		AB_ImExporterContext_Clear(ctx);
 		return;

@@ -74,6 +74,8 @@ private slots:
 	void on_actionAbout_Qt_triggered();
 	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionDebug_Info_triggered();
+
+	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
 };
 
 #endif // MAINWINDOW_H

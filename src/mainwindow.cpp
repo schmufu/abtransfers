@@ -40,6 +40,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QItemSelectionModel>
+#include <QMessageBox>
 
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
@@ -81,6 +82,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	//Nicht mögliche Aufträge in der StatusBar anzeigen
 	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
+
+	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
+	connect(this->jobctrl, SIGNAL(jobAdded(const abt_job_info*)),
+		this, SLOT(onJobAddedToJobCtrlList(const abt_job_info*)));
 
 	//Logs von abt_job_ctrl in der Log-Seite anzeigen
 	connect(this->jobctrl, SIGNAL(log(QString)),
@@ -142,6 +147,28 @@ void MainWindow::on_actionDebug_Info_triggered()
 	}
 }
 
+/*!
+ * Slot is called when a job is added to the jobctrl
+ */
+void MainWindow::onJobAddedToJobCtrlList(const abt_job_info* ji) const
+{
+	QMessageBox *msg = new QMessageBox();
+	msg->setIcon(QMessageBox::Information);
+	msg->setWindowTitle("Job zum Ausgang hinzugefügt");
+	QString text = "\"" + ji->getType() + "\" wurde erfolgreich\n";
+	text.append("zum Ausgangskorb hinzugefügt.");
+	msg->setText(text);
+	msg->setStandardButtons(QMessageBox::Ok);
+	msg->setDefaultButton(QMessageBox::Ok);
+
+	int ret = msg->exec();
+
+	if (ret != QMessageBox::Ok) {
+		qWarning() << "onJobAddedToJobCtrlList(): not handling return != OK, yet";
+	}
+
+	delete msg;
+}
 
 /*!
  * Item des Listwidget hat sich geändert, die entsprechende Seite des
