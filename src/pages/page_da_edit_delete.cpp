@@ -304,6 +304,7 @@ void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 {
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
 	abt_transaction *t;
+	//! \todo selectedItems() stimmt nicht wenn dieser Slot über die Abfrage ob Änderungen übertragen werden sollen aufgerufen wird
 	t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
 
 	t->setRemoteName(QStringList(this->ueberweisungwidget->getRemoteName()));

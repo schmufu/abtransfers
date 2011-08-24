@@ -124,8 +124,10 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	//Alle Spalten auf "perfekte" Breite anpassen
 	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
-	//Erstes Wählbares Item auswählen
-	ui->treeWidget->setItemSelected(FirstItem, true);
+	//Erstes Wählbares Item auswählen, wenn vorhanden
+	if (FirstItem) {
+		ui->treeWidget->setItemSelected(FirstItem, true);
+	}
 
 	//int ItemHeight = FirstItem->sizeHint(0).height();
 	int ItemHeight = this->ui->treeWidget->fontMetrics().height()+4;
