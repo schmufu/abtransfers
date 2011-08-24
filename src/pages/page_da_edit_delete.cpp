@@ -176,44 +176,25 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 	this->ui->groupBox_known_DAs->sizePolicy().setVerticalStretch(ItemCount+2);
 }
 
-void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 {
-	//Ein neuer zu Bearbeitender DA wurde gewählt.
-	// Prüfen ob Änderungen vorhanden sind und diese nicht gespeichert wurden
-	// ansonten den neuen DA anzeigen.
-	static int cnt = 0; //Aufrufzählen
-	static bool doWork = true; //wenn in dieser funktion der Index des aktuellen
-				   //Items geändert werden soll muss vorher doWork
-				   //auf false gesetzt werden, damit nicht eine
-				   //doppelte Änderung stattfindet.
-	cnt++;
+	//damit wir uns das item welches in Bearbeitung ist merken können
+	static QTreeWidgetItem *lastItem = NULL;
 
-	if (!current) {
-		if (!previous) {
-			qDebug() << "cnt" << cnt << " - DOING NOTHING, neither current nor previous set";
-			return; // do nothing
-		}
-		current = previous;	//Warum weiß ich nicht, ist im Beispiel so
+	if (this->ui->treeWidget->selectedItems().count() != 1) {
+		qWarning() << "on_treeWidget_itemSelectionChanged(): more than one item selected! Canceling!";
+		return; //Abbruch, wir behandeln nur 1 Item!
 	}
 
-	if (current == previous) {
-		qDebug() << "cnt" << cnt << " - DOING NOTHING, current == previous, no change";
-		return;
-	}
+	QTreeWidgetItem *currItem;
+	currItem = this->ui->treeWidget->selectedItems()[0];
+	Q_ASSERT(currItem != NULL);
 
-	if (current)
-		qDebug() << "cnt" << cnt << " - start - doWork: " << doWork <<  "current: " << current->data(2, Qt::DisplayRole).toString();
-	if (previous)
-		qDebug() << "cnt" << cnt << " - start - doWork: " << doWork <<  "previous: " << previous->data(2, Qt::DisplayRole).toString();
-
-	if (!doWork) {
-		doWork = true; //Beim nächsten mal wieder arbeiten
-		current->setSelected(true);
-		previous->setSelected(false);
-		return; //Diesmal ohne was zu machen abbrechen
-	}
+	qDebug() << "on_treeWidget_itemSelectionChanged() selected: " << currItem->data(2, Qt::DisplayRole).toString();
 
 	if (this->ueberweisungwidget->hasChanges()) {
+		//Wenn ein ueberweisungwidget gefüllt ist muss es auch ein lastItem geben
+		Q_ASSERT(lastItem != NULL);
 		QMessageBox msg;
 		msg.setIcon(QMessageBox::Question);
 		msg.setText("Änderung des Dauerauftrags zur Bank senden?");
@@ -237,14 +218,13 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 			   (ret == QMessageBox::Abort)) {
 			//Abbruch wurde gewählt!
 			//den ursprünglichen DA wieder auswählen
-			doWork=false; //damit beim nächsten Aufruf nicht gearbeitet wird
-			current->setSelected(false);
-			previous->setSelected(false);
-			qDebug() << "cnt" << cnt << " - doWork: " << doWork <<  "current: " << current->data(2, Qt::DisplayRole).toString();
-			qDebug() << "cnt" << cnt << " - doWork: " << doWork <<  "previous: " << previous->data(2, Qt::DisplayRole).toString();
-			this->ui->treeWidget->setCurrentItem(previous);
-
-			return; //Abbrechen
+			//Signals über Änderungen der SelectedItems unterbinden
+			this->ui->treeWidget->blockSignals(true);
+			currItem->setSelected(false);
+			lastItem->setSelected(true);
+			//Signals wieder akzeptieren
+			this->ui->treeWidget->blockSignals(false);
+			return; //Abbrechen (lastItem bleibt unverändert)
 		} else {
 			//must be NO, check it
 			Q_ASSERT_X(ret == QMessageBox::No,
@@ -257,7 +237,7 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 
 	//Zu bearbeitenden DA holen
 	const abt_transaction *t = NULL;
-	t = (const abt_transaction*)current->data(0, Qt::UserRole).toULongLong();
+	t = (const abt_transaction*)currItem->data(0, Qt::UserRole).toULongLong();
 
 	this->ueberweisungwidget->setRemoteName(t->getRemoteName().at(0));
 	this->ueberweisungwidget->setRemoteAccountNumber(t->getRemoteAccountNumber());
@@ -277,7 +257,11 @@ void Page_DA_Edit_Delete::on_treeWidget_currentItemChanged(QTreeWidgetItem* curr
 	this->ueberweisungwidget->setNextExecutionDate(t->getNextExecutionDate());
 
 	this->ueberweisungwidget->setDisabled(false);
+
+	//Wir merken uns das jetzige item als lastItem für den nächsten Durchlauf
+	lastItem = currItem;
 }
+
 
 void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 {
