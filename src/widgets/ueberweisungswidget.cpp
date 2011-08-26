@@ -302,7 +302,6 @@ void UeberweisungsWidget::setCurrency(const QString &str)
 
 void UeberweisungsWidget::setPurpose(const QStringList &strList)
 {
-	QLineEdit *edit;
 	QString text;
 	for (int i=0; i<4; ++i) {
 		if (strList.count() > i) {

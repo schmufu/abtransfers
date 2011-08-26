@@ -33,6 +33,10 @@
 #include <string>
 #include <stdio.h>
 
+//initialize static member variables
+QList<GWEN_STRINGLIST*> *abt_conv::gwen_lists = new QList<GWEN_STRINGLIST*>;
+
+
 abt_conv::abt_conv()
 {
 }
@@ -190,28 +194,27 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
 }
 
 /**
-  * Die hier erstellte GWEN_STRINGLIST muss später auch wieder freigegeben werden!
+  * Die hier erstellte GWEN_STRINGLIST wird später durch freeAllGwenStringLists()
+  * wieder freigegeben!
   */
 //static
 const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &l)
 {
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
-//	qDebug() << "StrList ist:" << l;
 	for (int i=0; i<l.size(); ++i) {
 		QString s = l.at(i);
-		QByteArray *arr = new QByteArray(s.toUtf8());
-		const char *c = *arr;
+		//wir reservieren Speicher für einen "normalen" C-String, damit
+		//GWEN_StringList_free diesen auch wieder freigeben kann.
+		char *c = (char*)malloc(sizeof(char)*s.toStdString().length()+1);
+		//unseren String in den erstellten Speicherbereich kopieren
+		strcpy(c, s.toStdString().c_str());
+		//und der GWEN_Liste hinzufügen. Das Löschen der GWEN_Liste
+		//gibt später auch den C-String wieder frei.
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
-		fprintf(stderr, "String *c = %s\n", c);
-
-//		QString str = l.at(i);
-//		qDebug() << "Str = " << str;
-////		const char *cstr = str.toStdString().c_str();
-////		qDebug() << "*cstr = " << cstr;
-//		//GWEN_StringList_AppendString(gwl, cstr, 1, 0);
-//		GWEN_StringList_AppendString(gwl, str.toStdString().c_str(), 1, 0);
 	}
-//	qDebug() << "StrList war:" << l;
+	//Die erstellte GWEN_Stringlist in unserer globalen Liste aufbewahren
+	Q_ASSERT(abt_conv::gwen_lists != NULL);
+	abt_conv::gwen_lists->append(gwl);
 	return gwl;
 }
 
@@ -260,3 +263,20 @@ AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	return val;
 }
 
+/*! löscht alle erstelten GWEN_STRINGLISTs wieder aus dem speicher
+ *
+ * Dies darf erst am Ende des Programms erfolgen, ansonsten werden Speicherbereiche
+ * gelöscht die noch in verwendung sind!
+ */
+//static
+void abt_conv::freeAllGwenStringLists()
+{
+	GWEN_STRINGLIST *list;
+	while (!abt_conv::gwen_lists->isEmpty()) {
+		list = abt_conv::gwen_lists->takeFirst();
+		qDebug() << "freeing GWEN_StringList: " << list;
+		GWEN_StringList_free(list);
+	}
+
+	delete abt_conv::gwen_lists; //Globale Liste auch löschen
+}

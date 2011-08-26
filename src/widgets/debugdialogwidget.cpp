@@ -30,6 +30,7 @@
 
 #include "debugdialogwidget.h"
 #include "ui_debugdialogwidget.h"
+#include <QDebug>
 
 DebugDialogWidget::DebugDialogWidget(QWidget *parent) :
     QDialog(parent),
@@ -41,6 +42,7 @@ DebugDialogWidget::DebugDialogWidget(QWidget *parent) :
 DebugDialogWidget::~DebugDialogWidget()
 {
     delete ui;
+    qDebug() << this << "deleted";
 }
 
 void DebugDialogWidget::changeEvent(QEvent *e)

@@ -33,6 +33,7 @@
 #include "mainwindow.h"
 #include "aqb_banking.h"
 #include "abt_transaction_base.h"
+#include "abt_conv.h"
 
 //global object for AqBanking Access
 #define DEFINEGLOBALSHERE
@@ -64,7 +65,6 @@ int main(int argc, char *argv[])
 	settings = new abt_settings();
 	banking = new aqb_banking();
 
-
 	MainWindow w;
 	debugDialog = new DebugDialogWidget(&w);
 	w.show();
@@ -73,5 +73,9 @@ int main(int argc, char *argv[])
 
 	delete banking;
 	delete settings;
+
+	//Alle erstellten GWEN_STRINGLIST Objecte wieder löschen
+	abt_conv::freeAllGwenStringLists();
+
 	return apprv;
 }

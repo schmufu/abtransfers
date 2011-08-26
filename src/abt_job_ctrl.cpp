@@ -866,6 +866,10 @@ int abt_job_ctrl::parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx)
 		msg = AB_ImExporterContext_GetNextMessage(ctx);
 		msgcnt++;
 	}
+
+	logmsg2 = QString("Count: %1").arg(msgcnt);
+	this->addlog(logmsg + logmsg2);
+
 	return msgcnt;
 }
 
@@ -891,6 +895,10 @@ int abt_job_ctrl::parseImExporterContext_Securitys(AB_IMEXPORTER_CONTEXT *ctx)
 		s = AB_ImExporterContext_GetNextSecurity(ctx);
 		seccnt++;
 	}
+
+	logmsg2 = QString("Count: %1").arg(seccnt);
+	this->addlog(logmsg + logmsg2);
+
 	return seccnt;
 }
 
@@ -943,6 +951,10 @@ int abt_job_ctrl::parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *a
 		s = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
 		cnt++;
 	}
+
+	logmsg2 = QString("Count: %1").arg(cnt);
+	this->addlog(logmsg + logmsg2);
+
 	return cnt;
 
 }
