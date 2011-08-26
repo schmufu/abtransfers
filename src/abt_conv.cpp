@@ -174,12 +174,12 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
   * Die enthaltene Uhrzeit wird auf 10:00:00 gesetzt! (in localTime, nicht UTC!)
   */
 //static
-const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
+GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
 	/** \todo Der Pointer zu GWEN_TIME muss bei Programmende
 		  freigegeben werden!
 	*/
-	return GWEN_Time_new(date.year(), date.month(), date.day(), 10, 0, 0, 0);
+	return GWEN_Time_new(date.year(), date.month()-1, date.day(), 10, 0, 0, 0);
 }
 
 //static

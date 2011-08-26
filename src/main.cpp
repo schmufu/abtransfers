@@ -34,6 +34,7 @@
 #include "aqb_banking.h"
 #include "abt_transaction_base.h"
 #include "abt_conv.h"
+#include <QDebug>
 
 //global object for AqBanking Access
 #define DEFINEGLOBALSHERE
@@ -65,6 +66,13 @@ int main(int argc, char *argv[])
 	settings = new abt_settings();
 	banking = new aqb_banking();
 
+	qDebug() << "CONVERSION TEST";
+	QDate date(2011, 1, 10);
+	GWEN_TIME *gwt = abt_conv::QDateToGwenTime(date);
+	qDebug() << date;
+	qDebug() << gwt;
+	qDebug() << abt_conv::GwenTimeToQDate(gwt);
+	GWEN_Time_free(gwt);
 	MainWindow w;
 	debugDialog = new DebugDialogWidget(&w);
 	w.show();

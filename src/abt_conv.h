@@ -58,7 +58,7 @@ public:
 
 
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
-	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
+	static GWEN_TIME* QDateToGwenTime(const QDate &date);
 
 	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);

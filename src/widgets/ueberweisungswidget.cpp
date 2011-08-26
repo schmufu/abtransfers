@@ -210,6 +210,24 @@ bool UeberweisungsWidget::hasChanges() const
 	return false;
 }
 
+/*! \brief löscht alle Eingabefelder bzw. setzt Sie auf defaultwerte */
+//public slot
+void UeberweisungsWidget::clearAllEdits()
+{
+	if (this->da_widget != NULL) {
+		this->da_widget->clearAllEdits();
+	}
+	ui->lineEdit_Beguenstigter->clear();
+	ui->lineEdit_Kontonummer->clear();
+	ui->lineEdit_Bankleitzahl->clear();
+	ui->lineEdit_Betrag->clear();
+	ui->lineEdit_Kredidinstitut->clear();
+	ui->lineEdit_Verwendungszweck1->clear();
+	ui->lineEdit_Verwendungszweck2->clear();
+	ui->lineEdit_Verwendungszweck3->clear();
+	ui->lineEdit_Verwendungszweck4->clear();
+}
+
 /******************************************************************************/
 /****** Funktionen zum setzen und lesen der allgemeinen Daten            ******/
 /******************************************************************************/
@@ -315,12 +333,22 @@ void UeberweisungsWidget::setPurpose(const QStringList &strList)
 
 const QStringList UeberweisungsWidget::getPurpose() const
 {
+	//Alle Verwendungszeckzeilen durchgehen und wenn nicht leer diese
+	//der StringListe hinzufügen.
 	QStringList purpose;
+	QString editName;
+	QLineEdit *edit = NULL;
 	purpose.clear();
-	purpose << (ui->lineEdit_Verwendungszweck1->text().toUtf8());
-	purpose << (ui->lineEdit_Verwendungszweck2->text().toUtf8());
-	purpose << (ui->lineEdit_Verwendungszweck3->text().toUtf8());
-	purpose << (ui->lineEdit_Verwendungszweck4->text().toUtf8());
+
+	for (int i=1; i<5; ++i) {
+		editName = QString("lineEdit_Verwendungszweck%1").arg(i);
+		edit = this->findChild<QLineEdit*>(editName);
+		Q_ASSERT(edit != NULL);
+		if ( ! edit->text().isEmpty()) {
+			purpose.append(edit->text().toUtf8());
+		}
+	}
+
 	qDebug() << "returned StringList:" << purpose;
 	return purpose;
 }

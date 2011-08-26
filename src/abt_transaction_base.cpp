@@ -54,6 +54,38 @@ abt_transaction::~abt_transaction()
 	}
 }
 
+//static
+void abt_transaction::removeTransaction(AB_TRANSACTION *t)
+{
+	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
+	abt_transaction *trans = new abt_transaction(t, false);
+	//und dieses dann löschen
+	abt_transaction::saveTransaction(trans);
+	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
+	delete trans;
+}
+
+//static
+void abt_transaction::removeTransaction(const abt_transaction *t)
+{
+	if (t->getFiId().isEmpty()) {
+		qWarning() << t << " -- Löschen nicht möglich! Keine FiId gesetzt!";
+		return; //Abbruch
+	}
+
+	QString Filename;
+	Filename.append(settings->getDataDir());
+	Filename.append("Dauerauftraege.ini");
+
+	QSettings *s;
+	s = new QSettings(Filename, QSettings::IniFormat);
+
+	QString key = QString("TransFiId-%1").arg(t->getFiId());
+
+	s->remove(key);
+
+	delete s;
+}
 
 //static
 void abt_transaction::saveTransaction(AB_TRANSACTION *t)

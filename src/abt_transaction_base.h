@@ -324,6 +324,11 @@ public:
 	static void saveTransaction(const abt_transaction *t);
 	static void saveTransaction(AB_TRANSACTION *t);
 
+	//! löscht die Transaction aus der ini-Datei
+	static void removeTransaction(const abt_transaction *t);
+	//! \overload
+	static void removeTransaction(AB_TRANSACTION *t);
+
 	static AB_TRANSACTION* loadTransaction(const QString &id);
 	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
 

@@ -97,11 +97,14 @@ void Page_DA_Edit_Delete::changeEvent(QEvent *e)
 
 void Page_DA_Edit_Delete::on_pushButton_Revert_clicked()
 {
-	//erstmal zweckentfremdet!
-	this->ueberweisungwidget->setDisabled(false);
-	this->ui->groupBox_known_DAs->setDisabled(false);
-
+	//Das Überweisungswidget mit der aktuellen Transaction einfach neu
+	//füllen
+	if ((this->editing_transaction != NULL) &&
+	    (this->ueberweisungwidget->isEnabled())) {
+		this->fillUeberweisungsWidgetFromAbtTransaction(this->editing_transaction);
+	}
 }
+
 
 void Page_DA_Edit_Delete::debug_Slot(const abt_EmpfaengerInfo *data)
 {
@@ -117,6 +120,16 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 	/*! \todo Prüfen ob Änderungen im aktuellen ÜberweisungsForm gemacht wurden.
 	 *	  und nachfragen ob diese verworfen werden sollen.
 	 */
+	if (this->ueberweisungwidget->hasChanges()) {
+
+		int ret = this->ValuesChangedAskForAction();
+
+		if (ret == QMessageBox::Yes) {
+			//DA-Aktualisierungs-Auftrag den Jobs hinzufügen
+			this->on_pushButton_Execute_clicked();
+			//und danach hier weiter machen ;)
+		}
+	}
 
 
 	//Alle bisherigen Verbindungen zu unserem Anzeige Slot entfernen
@@ -228,25 +241,13 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 	if (this->ueberweisungwidget->hasChanges()) {
 		//Wenn ein ueberweisungwidget gefüllt ist muss es auch ein lastItem geben
 		Q_ASSERT(lastItem != NULL);
-		QMessageBox msg;
-		msg.setIcon(QMessageBox::Question);
-		msg.setText("Änderung des Dauerauftrags zur Bank senden?");
-		QString info;
-		info.append("Der Dauerauftrag für:<br />");
-		info.append("<table><tr><td>Empfänger:</td><td>" + this->ueberweisungwidget->getRemoteName() + "</td></tr>");
-		info.append("<tr><td>Verwendungzweck:</td><td> " + this->ueberweisungwidget->getPurpose(1) + "</td></tr></table><br />");
-		info.append("wurde geändert!<br /><br />");
-		info.append("Sollen die Änderungen zur Bank übertragen werden?<br />");
-		info.append("<i>(Nein verwirft die Änderungen)</i>");
 
-		msg.setInformativeText(info);
-		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-		msg.setDefaultButton(QMessageBox::No);
-		int ret = msg.exec();
+		int ret = this->ValuesChangedAskForAction();
 
 		if (ret == QMessageBox::Yes) {
 			//DA-Aktualisierungs-Auftrag den Jobs hinzufügen
 			this->on_pushButton_Execute_clicked();
+			//und danach hier weiter machen ;)
 		} else if ((ret == QMessageBox::Cancel) ||
 			   (ret == QMessageBox::Abort)) {
 			//Abbruch wurde gewählt!
@@ -272,8 +273,19 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 	abt_transaction *t = NULL;
 	t = (abt_transaction*)currItem->data(0, Qt::UserRole).toULongLong();
 
+	this->fillUeberweisungsWidgetFromAbtTransaction(t);
+
+	//Wir merken uns das jetzige item als lastItem für den nächsten Durchlauf
+	lastItem = currItem;
+}
+
+//private
+void Page_DA_Edit_Delete::fillUeberweisungsWidgetFromAbtTransaction(abt_transaction *t)
+{
 	this->ueberweisungwidget->setRemoteName(t->getRemoteName().at(0));
 	this->ueberweisungwidget->setRemoteAccountNumber(t->getRemoteAccountNumber());
+	//bankCode muss zuerst gesetzt werden, da wenn Bankname nicht vorhanden
+	//ist, er automatisch durch die BLZ ermittelt wird (in UeberweisungsWidget)
 	this->ueberweisungwidget->setRemoteBankCode(t->getRemoteBankCode());
 	this->ueberweisungwidget->setRemoteBankName(t->getRemoteBankName());
 
@@ -295,11 +307,40 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 
 	//in bearbeitung befindliche Transaction merken
 	this->editing_transaction = t;
-
-	//Wir merken uns das jetzige item als lastItem für den nächsten Durchlauf
-	lastItem = currItem;
 }
 
+/*! \brief Nachfrage beim User ob Änderungen verworfen oder zur Bank gesendet werden sollen
+ *
+ * Diese Funktion fragt beim Benutzer nach ob die gemachten Änderungen im
+ * UeberweisungsWidget verworfen werden sollen oder ob Sie zur Bank übertragen
+ * werden sollen.
+ *
+ * Rückgabe ist dieselbe wie von QMessageBox::exec() wobei ein Abort wie Cancel
+ * zurückgegeben wird.
+ */
+//private
+int Page_DA_Edit_Delete::ValuesChangedAskForAction()
+{
+	QMessageBox msg;
+	msg.setIcon(QMessageBox::Question);
+	msg.setWindowTitle("Änderung speichern?");
+	msg.setText("Änderung des Dauerauftrags zur Bank senden?");
+	QString info;
+	info.append("Der Dauerauftrag für:<br />");
+	info.append("<table><tr><td>Empfänger:</td><td>");
+	info.append(this->ueberweisungwidget->getRemoteName() + "</td></tr>");
+	info.append("<tr><td>Verwendungzweck:</td><td>");
+	info.append(this->ueberweisungwidget->getPurpose(1) + "</td></tr>");
+	info.append("</table><br /><br />");
+	info.append("wurde geändert!<br /><br />");
+	info.append("Sollen die Änderungen zur Bank übertragen werden?<br />");
+	info.append("<i>(Nein verwirft die Änderungen)</i>");
+
+	msg.setInformativeText(info);
+	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+	msg.setDefaultButton(QMessageBox::No);
+	return msg.exec();
+}
 
 void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 {
@@ -311,11 +352,14 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);
-	msg.setText("Dauerauftrag löschen?");
+	msg.setWindowTitle("Dauerauftrag löschen?");
 	QString info;
-	info.append("Soll der Dauerauftrag:\n");
-	info.append("\tEmpfänger: " + t->getRemoteName().at(0) + "\n");
-	info.append("\tVerwendungzweck: " + t->getPurpose().at(0) + "\n\n");
+	info.append("Soll der Dauerauftrag für:<br />");
+	info.append("<table><tr><td>Empfänger:</td><td>");
+	info.append(this->ueberweisungwidget->getRemoteName() + "</td></tr>");
+	info.append("<tr><td>Verwendungzweck:</td><td>");
+	info.append(this->ueberweisungwidget->getPurpose(1) + "</td></tr>");
+	info.append("</table><br /><br />");
 	info.append("Wirklich gelöscht werden?");
 	msg.setInformativeText(info);
 	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -337,11 +381,24 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Aktualisieren_clicked()
 
 void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 {
+	if (!this->ueberweisungwidget->hasChanges()) {
+		QMessageBox err(this);
+		err.setWindowTitle(tr("Keine Änderungen"));
+		err.setText(tr("Die Daten des Dauerauftrages wurden nicht\n"
+			       "geändert.\n"
+			       "Ein Übertragen zur Bank ist nicht nötig"));
+		err.setIcon(QMessageBox::Critical);
+		err.setStandardButtons(QMessageBox::Ok);
+		err.setDefaultButton(QMessageBox::Ok);
+		err.exec();
+		return;
+	}
+
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
 	abt_transaction *t;
 	//selectedItems() stimmt nicht wenn dieser Slot über die Abfrage ob Änderungen
 	//übertragen werden sollen aufgerufen wird. (in on_treeWidget_itemSelectionChanged())
-//	t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	//t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
 	t = this->editing_transaction; //Wird gesetzt sobald ein DA bearbeitet wird
 
 	t->setRemoteName(QStringList(this->ueberweisungwidget->getRemoteName()));
@@ -359,4 +416,22 @@ void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 	//NextExecutionDate dient nur der Information und wird in der Transaction nicht gesetzt!
 
 	emit this->modifyDA(acc, t);
+
+	//die gerade geänderten Daten nochmals setzen damit hasChanges() nicht
+	//mehr true zurückgibt.
+	this->fillUeberweisungsWidgetFromAbtTransaction(t);
+
+//	//Der Auftrag wurde abgesetzt, Alle Eingaben löschen und DA selection entfernen
+//	this->ueberweisungwidget->clearAllEdits();
+//	this->editing_transaction = NULL;
+//	//Alle Selectionen ausschalten
+//	this->blockSignals(true);
+//	foreach (QTreeWidgetItem *item, this->ui->treeWidget->selectedItems()) {
+//		item->setSelected(false);
+//	}
+//	this->blockSignals(false);
+//	this->ueberweisungwidget->setDisabled(true);
+//	this->ui->pushButton_Execute->setDisabled(true);
+//	this->ui->pushButton_DA_Aktualisieren->setDisabled(true);
+
 }

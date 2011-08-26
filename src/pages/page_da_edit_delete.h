@@ -66,6 +66,8 @@ protected:
 
 private:
 	//void fillKnownDAs(const QList<abt_DAInfo*> *list);
+	void fillUeberweisungsWidgetFromAbtTransaction(abt_transaction *t);
+	int ValuesChangedAskForAction();
 
 signals:
 	void deleteDA(aqb_AccountInfo *a, const abt_transaction *t);

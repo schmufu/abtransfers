@@ -325,3 +325,15 @@ const QDate extraStandingOrdersWidget::nextExecutionDate() const
 	return this->ui->dateEdit_nextExecDay->date();
 }
 
+/*! \brief löscht alle Eingabefelder bzw. setzt Sie auf defaultwerte */
+//public slot
+void extraStandingOrdersWidget::clearAllEdits()
+{
+	QDate currentDate = QDate::currentDate();
+	this->setPeriod(AB_Transaction_PeriodMonthly);
+	this->setCycle(1);
+	this->setExecutionDay(1);
+	this->setFirstExecutionDate(currentDate);
+	this->setLastExecutionDate(currentDate);
+	this->setNextExecutionDate(currentDate);
+}

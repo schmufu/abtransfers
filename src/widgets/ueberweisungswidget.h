@@ -70,6 +70,7 @@ public:
 
 	bool hasChanges() const;
 
+
 /***** Funktionen für Alle Überweisungsarten *****/
 
 	const QString getRemoteName() const;
@@ -153,6 +154,9 @@ private:
 
 private slots:
 	void on_lineEdit_Bankleitzahl_editingFinished();
+
+public slots:
+	void clearAllEdits();
 };
 
 #endif // UEBERWEISUNGSWIDGET_H

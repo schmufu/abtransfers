@@ -126,6 +126,9 @@ private slots:
 	void onButtonGroupClicked(QAbstractButton *button);
 	//! wird ausgeführt um alle Änderungen an den Widgets vorzunehmen.
 	void doUpdateAfterChange();
+
+public slots:
+	void clearAllEdits();
 };
 
 #endif // EXTRASTANDINGORDERSWIDGET_H
