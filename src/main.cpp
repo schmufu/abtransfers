@@ -66,13 +66,6 @@ int main(int argc, char *argv[])
 	settings = new abt_settings();
 	banking = new aqb_banking();
 
-	qDebug() << "CONVERSION TEST";
-	QDate date(2011, 1, 10);
-	GWEN_TIME *gwt = abt_conv::QDateToGwenTime(date);
-	qDebug() << date;
-	qDebug() << gwt;
-	qDebug() << abt_conv::GwenTimeToQDate(gwt);
-	GWEN_Time_free(gwt);
 	MainWindow w;
 	debugDialog = new DebugDialogWidget(&w);
 	w.show();
@@ -82,8 +75,8 @@ int main(int argc, char *argv[])
 	delete banking;
 	delete settings;
 
-	//Alle erstellten GWEN_STRINGLIST Objecte wieder löschen
-	abt_conv::freeAllGwenStringLists();
+	//Alle erstellten GWEN_STRINGLIST und GWEN_TIME Objecte wieder löschen
+	abt_conv::freeAllGwenLists();
 
 	return apprv;
 }

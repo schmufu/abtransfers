@@ -35,6 +35,7 @@
 
 //initialize static member variables
 QList<GWEN_STRINGLIST*> *abt_conv::gwen_lists = new QList<GWEN_STRINGLIST*>;
+QList<GWEN_TIME*> *abt_conv::gwen_timelist = new QList<GWEN_TIME*>;
 
 
 abt_conv::abt_conv()
@@ -176,10 +177,10 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 //static
 GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
-	/** \todo Der Pointer zu GWEN_TIME muss bei Programmende
-		  freigegeben werden!
-	*/
-	return GWEN_Time_new(date.year(), date.month()-1, date.day(), 10, 0, 0, 0);
+	GWEN_TIME *gwt;
+	gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 10, 0, 0, 0);
+	abt_conv::gwen_timelist->append(gwt);
+	return gwt;
 }
 
 //static
@@ -263,13 +264,13 @@ AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	return val;
 }
 
-/*! löscht alle erstelten GWEN_STRINGLISTs wieder aus dem speicher
+/*! löscht alle erstelten GWEN_STRINGLISTs und GWEN_TIMEs wieder aus dem speicher
  *
  * Dies darf erst am Ende des Programms erfolgen, ansonsten werden Speicherbereiche
  * gelöscht die noch in verwendung sind!
  */
 //static
-void abt_conv::freeAllGwenStringLists()
+void abt_conv::freeAllGwenLists()
 {
 	GWEN_STRINGLIST *list;
 	while (!abt_conv::gwen_lists->isEmpty()) {
@@ -278,5 +279,13 @@ void abt_conv::freeAllGwenStringLists()
 		GWEN_StringList_free(list);
 	}
 
-	delete abt_conv::gwen_lists; //Globale Liste auch löschen
+	GWEN_TIME *gwt;
+	while (!abt_conv::gwen_timelist->isEmpty()) {
+		gwt = abt_conv::gwen_timelist->takeFirst();
+		GWEN_Time_free(gwt);
+	}
+
+	//Globale Listes auch löschen
+	delete abt_conv::gwen_lists;
+	delete abt_conv::gwen_timelist;
 }
