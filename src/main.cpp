@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
 
-	qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
+	//qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);

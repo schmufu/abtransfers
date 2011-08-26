@@ -59,6 +59,8 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 	//disable all until a account is selected
 	this->ueberweisungwidget->setDisabled(true);
 	this->ui->groupBox_known_DAs->setDisabled(true);
+	this->ui->pushButton_DA_Delete->setDisabled(true);
+	this->ui->pushButton_Execute->setDisabled(true);
 
 	//Signals der Widgets mit den Slots dieser Page verbinden
 	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
@@ -304,6 +306,7 @@ void Page_DA_Edit_Delete::fillUeberweisungsWidgetFromAbtTransaction(abt_transact
 	this->ueberweisungwidget->setDisabled(false);
 	this->ui->pushButton_DA_Delete->setDisabled(false);
 	this->knownempfaengerwidget->setDisabled(false);
+	this->ui->pushButton_Execute->setDisabled(false);
 
 	//in bearbeitung befindliche Transaction merken
 	this->editing_transaction = t;
