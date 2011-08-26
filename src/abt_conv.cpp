@@ -196,7 +196,7 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
 const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &l)
 {
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
-	qDebug() << "StrList ist:" << l;
+//	qDebug() << "StrList ist:" << l;
 	for (int i=0; i<l.size(); ++i) {
 		QString s = l.at(i);
 		QByteArray *arr = new QByteArray(s.toUtf8());
@@ -211,7 +211,7 @@ const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &
 //		//GWEN_StringList_AppendString(gwl, cstr, 1, 0);
 //		GWEN_StringList_AppendString(gwl, str.toStdString().c_str(), 1, 0);
 	}
-	qDebug() << "StrList war:" << l;
+//	qDebug() << "StrList war:" << l;
 	return gwl;
 }
 

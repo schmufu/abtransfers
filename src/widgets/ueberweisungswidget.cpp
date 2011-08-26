@@ -303,16 +303,14 @@ void UeberweisungsWidget::setCurrency(const QString &str)
 void UeberweisungsWidget::setPurpose(const QStringList &strList)
 {
 	QLineEdit *edit;
-	for (int i=0; i<strList.count(); ++i) {
-		QString editName = QString("lineEdit_Verwendungszweck%1").arg(i+1);
-		edit = this->findChild<QLineEdit*>(editName);
-		if (edit) {
-			edit->setText(strList.at(i));
-			qDebug() << edit << " - Text (" << i << "):" << strList.at(i);
+	QString text;
+	for (int i=0; i<4; ++i) {
+		if (strList.count() > i) {
+			text = strList.at(i);
 		} else {
-			qWarning() << "setPurpose(QStringList): "
-					<< editName << " not found";
+			text.clear();
 		}
+		this->setPurpose(i+1, text);
 	}
 }
 
