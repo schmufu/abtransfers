@@ -54,6 +54,8 @@ private:
 	BankAccountsWidget *accountwidget;
 	UeberweisungsWidget *ueberweisungwidget;
 	KnownEmpfaengerWidget *knownempfaengerwidget;
+	//! zum merken der aktuell in Bearbeitung befindlichen Transaction
+	abt_transaction *editing_transaction;
 
 public:
 	Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);

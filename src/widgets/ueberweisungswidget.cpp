@@ -308,6 +308,7 @@ void UeberweisungsWidget::setPurpose(const QStringList &strList)
 		edit = this->findChild<QLineEdit*>(editName);
 		if (edit) {
 			edit->setText(strList.at(i));
+			qDebug() << edit << " - Text (" << i << "):" << strList.at(i);
 		} else {
 			qWarning() << "setPurpose(QStringList): "
 					<< editName << " not found";
@@ -319,10 +320,11 @@ const QStringList UeberweisungsWidget::getPurpose() const
 {
 	QStringList purpose;
 	purpose.clear();
-	purpose.append(ui->lineEdit_Verwendungszweck1->text().toUtf8());
-	purpose.append(ui->lineEdit_Verwendungszweck2->text().toUtf8());
-	purpose.append(ui->lineEdit_Verwendungszweck3->text().toUtf8());
-	purpose.append(ui->lineEdit_Verwendungszweck4->text().toUtf8());
+	purpose << (ui->lineEdit_Verwendungszweck1->text().toUtf8());
+	purpose << (ui->lineEdit_Verwendungszweck2->text().toUtf8());
+	purpose << (ui->lineEdit_Verwendungszweck3->text().toUtf8());
+	purpose << (ui->lineEdit_Verwendungszweck4->text().toUtf8());
+	qDebug() << "returned StringList:" << purpose;
 	return purpose;
 }
 

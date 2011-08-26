@@ -45,6 +45,7 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 	ui->setupUi(this);
 	this->accounts = acc;
 	this->banking = banking;
+	this->editing_transaction = NULL;
 
 	//used widgets in this page
 	this->accountwidget = new BankAccountsWidget(this->accounts, this);
@@ -168,6 +169,9 @@ void Page_DA_Edit_Delete::showKnownDAs(const aqb_AccountInfo *account)
 		this->ueberweisungwidget->setDisabled(true);
 		this->ui->pushButton_DA_Delete->setDisabled(true);
 
+		//keine Transaction in Bearbeitung
+		this->editing_transaction = NULL;
+
 		//Perfekte Breite der Spalten einstellen
 		abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
@@ -265,8 +269,8 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 
 
 	//Zu bearbeitenden DA holen
-	const abt_transaction *t = NULL;
-	t = (const abt_transaction*)currItem->data(0, Qt::UserRole).toULongLong();
+	abt_transaction *t = NULL;
+	t = (abt_transaction*)currItem->data(0, Qt::UserRole).toULongLong();
 
 	this->ueberweisungwidget->setRemoteName(t->getRemoteName().at(0));
 	this->ueberweisungwidget->setRemoteAccountNumber(t->getRemoteAccountNumber());
@@ -289,6 +293,9 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 	this->ui->pushButton_DA_Delete->setDisabled(false);
 	this->knownempfaengerwidget->setDisabled(false);
 
+	//in bearbeitung befindliche Transaction merken
+	this->editing_transaction = t;
+
 	//Wir merken uns das jetzige item als lastItem für den nächsten Durchlauf
 	lastItem = currItem;
 }
@@ -297,12 +304,8 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 {
 	//Nachfragen ob der ausgewählte DA wirklich gelöscht werden soll
+
 	const abt_transaction *t = NULL;
-	//QVariant var = ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole);
-//	if (t)
-//		qDebug() << "variant convert hat funktioniert!";
-//	else
-//		return; //wir dürfen den nullPtr nicht dereferenzieren
 	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
 	Q_ASSERT(t != NULL);
 
@@ -336,8 +339,10 @@ void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 {
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
 	abt_transaction *t;
-	//! \todo selectedItems() stimmt nicht wenn dieser Slot über die Abfrage ob Änderungen übertragen werden sollen aufgerufen wird
-	t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	//selectedItems() stimmt nicht wenn dieser Slot über die Abfrage ob Änderungen
+	//übertragen werden sollen aufgerufen wird. (in on_treeWidget_itemSelectionChanged())
+//	t = (abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	t = this->editing_transaction; //Wird gesetzt sobald ein DA bearbeitet wird
 
 	t->setRemoteName(QStringList(this->ueberweisungwidget->getRemoteName()));
 	t->setRemoteAccountNumber(this->ueberweisungwidget->getRemoteAccountNumber());

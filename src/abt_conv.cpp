@@ -29,6 +29,9 @@
  ******************************************************************************/
 
 #include "abt_conv.h"
+#include <QDebug>
+#include <string>
+#include <stdio.h>
 
 abt_conv::abt_conv()
 {
@@ -179,6 +182,7 @@ const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList)
 {
 	QStringList ret;
+	ret.clear();
 	for (unsigned int i=0; i<GWEN_StringList_Count(gwenList); ++i) {
 		ret.append(QString::fromUtf8(GWEN_StringList_StringAt(gwenList, i)));
 	}
@@ -192,12 +196,22 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
 const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &l)
 {
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
-
+	qDebug() << "StrList ist:" << l;
 	for (int i=0; i<l.size(); ++i) {
 		QString s = l.at(i);
-		const char *c = s.toUtf8();
+		QByteArray *arr = new QByteArray(s.toUtf8());
+		const char *c = *arr;
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
+		fprintf(stderr, "String *c = %s\n", c);
+
+//		QString str = l.at(i);
+//		qDebug() << "Str = " << str;
+////		const char *cstr = str.toStdString().c_str();
+////		qDebug() << "*cstr = " << cstr;
+//		//GWEN_StringList_AppendString(gwl, cstr, 1, 0);
+//		GWEN_StringList_AppendString(gwl, str.toStdString().c_str(), 1, 0);
 	}
+	qDebug() << "StrList war:" << l;
 	return gwl;
 }
 

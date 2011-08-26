@@ -36,6 +36,8 @@
 #include <QDate>
 
 #include <aqbanking/job.h>
+#include <gwenhywfar/stringlist.h>
+
 
 /*! \brief Konvertierungsfunktionen für GWEN* und AB* Typen zu Qt-Typen
   */
