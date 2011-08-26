@@ -176,7 +176,9 @@ void abt_settings::saveDAsForAccount(const QStringList &DAIDs,
 //static
 void abt_settings::freeDAsList(QList<abt_DAInfo*> *list)
 {
-	while (list->size()) {
+	if (list == NULL) return; //Liste ist schon leer
+
+	while (list->size() != 0) {
 		delete list->takeFirst();
 	}
 	delete list;

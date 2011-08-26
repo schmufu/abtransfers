@@ -117,11 +117,40 @@ void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 	 *	  und nachfragen ob diese verworfen werden sollen.
 	 */
 
-	//Alle bekannten DAs des alten Accounts aus dem treeWidget entfernen
+
+	//Alle bisherigen Verbindungen zu unserem Anzeige Slot entfernen
+	disconnect(this, SLOT(showKnownDAs(const aqb_AccountInfo*)));
+
+	//Bekannte DAs anzeigen
+	this->showKnownDAs(account);
+
+	//Wir wollen über Änderungen der DAs des Accounts informiert werden
+	connect(account, SIGNAL(knownDAsChanged(const aqb_AccountInfo*)),
+		this, SLOT(showKnownDAs(const aqb_AccountInfo*)));
+
+}
+
+/*!
+ * Slot wird aufgerufen wenn sich die DAs für den übergebenen Account
+ * geändert haben bzw. wenn das Lesen aus der ini-Datei abgeschlossen ist.
+ */
+void Page_DA_Edit_Delete::showKnownDAs(const aqb_AccountInfo *account)
+{
+//	//Wir behandeln nur Änderungen wenn diese von dem gerade ausgewählten
+//	//Account ausgehen (Sollte auch durch die connect und disconnect
+//	//anweisungen in account_selected() geschehen, aber sicher ist sicher.
+//	if (this->accountwidget->getSelectedAccount() != account) {
+//		//nicht der aktuell gewählte Account
+//		qDebug() << this << "account != gewähltem - mache nichts";
+//		return; //nichts ändern
+//	}
+
+	//Alle bekannten DAs des Accounts aus dem treeWidget entfernen
 	this->ui->treeWidget->clear(); //löscht auch die Objecte!
 
-	//Alle bekannten DAs des neuen Accounts im treeWidget anzeigen
-	if (account->getKnownDAs() == NULL) {
+	//Alle bekannten DAs des Accounts im treeWidget anzeigen
+	if ((account->getKnownDAs() == NULL) ||
+	    (account->getKnownDAs()->size() == 0)) {
 		//wir brauchen nichts erstellen da nichts existiert!
 
 		/* Anzeigen das keine DAs existieren */
@@ -257,6 +286,8 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 	this->ueberweisungwidget->setNextExecutionDate(t->getNextExecutionDate());
 
 	this->ueberweisungwidget->setDisabled(false);
+	this->ui->pushButton_DA_Delete->setDisabled(false);
+	this->knownempfaengerwidget->setDisabled(false);
 
 	//Wir merken uns das jetzige item als lastItem für den nächsten Durchlauf
 	lastItem = currItem;
@@ -273,6 +304,7 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 //	else
 //		return; //wir dürfen den nullPtr nicht dereferenzieren
 	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	Q_ASSERT(t != NULL);
 
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);

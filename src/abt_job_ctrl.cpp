@@ -107,6 +107,7 @@ abt_job_ctrl::~abt_job_ctrl()
 	//Free all queued jobs
 	// AB_Banking_free() aus aqb_banking löscht alle jobs!
 	// deswegen laufen wir hier in einen segFault!
+	//! \todo hier fehlt ein ->getJob()! evt. damit nochmal testen
 //	while (!this->jobqueue->isEmpty()) {
 //		AB_Job_free(this->jobqueue->takeFirst());
 //	}
@@ -746,6 +747,11 @@ void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
 	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
+
+	//Das zuständige AccountInfo Object darüber informieren wenn wir
+	//mit dem parsen fertig sind (damit dies die DAs neu laden kann)
+	connect(this, SIGNAL(datedTransfersParsed()),
+		acc, SLOT(loadKnownDAs()));
 }
 
 
@@ -1067,6 +1073,8 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
 
 	settings->saveDAsForAccount(DAIDs, KtoNr, BLZ);
+
+	emit this->datedTransfersParsed();
 
 	return cnt;
 

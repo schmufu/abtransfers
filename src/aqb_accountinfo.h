@@ -32,6 +32,7 @@
 #define AQB_ACCOUNTINFO_H
 
 #include <QString>
+#include <QObject>
 
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
@@ -59,8 +60,8 @@ public:
   * AB_AccountGet* durchgeführt.
   * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
   */
-class aqb_AccountInfo
-{
+class aqb_AccountInfo : public QObject {
+	Q_OBJECT
 private:
 	int ID;
 	AB_ACCOUNT *m_account;
@@ -79,7 +80,7 @@ private:
 
 	QList<abt_DAInfo*> *m_KnownDAs;
 public:
-	aqb_AccountInfo(AB_ACCOUNT *account, int ID);
+	aqb_AccountInfo(AB_ACCOUNT *account, int ID, QObject *parent = 0);
 	~aqb_AccountInfo();
 
 	const QString& BankCode() const { return this->m_BankCode; }
@@ -98,6 +99,13 @@ public:
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->ID; }
+
+public slots:
+	void loadKnownDAs();
+
+signals:
+	//! \brief wird gesendet wenn die DAs neu geladen wurden.
+	void knownDAsChanged(const aqb_AccountInfo *account);
 };
 
 #endif // AQB_ACCOUNTINFO_H

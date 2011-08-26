@@ -79,6 +79,7 @@ private slots:
 	void on_pushButton_Revert_clicked();
 	void debug_Slot(const abt_EmpfaengerInfo *data);
 	void account_selected(const aqb_AccountInfo *account);
+	void showKnownDAs(const aqb_AccountInfo *account);
 };
 
 #endif // PAGE_DA_EDIT_DELETE_H

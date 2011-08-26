@@ -252,7 +252,16 @@ const QString UeberweisungsWidget::getRemoteBankName() const
 
 void UeberweisungsWidget::setRemoteBankName(const QString &str)
 {
-	this->ui->lineEdit_Kredidinstitut->setText(str);
+	if (!str.isEmpty()) {
+		//Übergebenen Namen anzeigen
+		this->ui->lineEdit_Kredidinstitut->setText(str);
+	} else if (!this->ui->lineEdit_Bankleitzahl->text().isEmpty()) {
+		//Bankleitzahl wurde gesetzt, zu dieser den Banknamen holen
+		this->on_lineEdit_Bankleitzahl_editingFinished();
+	} else {
+		this->ui->lineEdit_Kredidinstitut->setText(str);
+	}
+
 }
 
 const QString UeberweisungsWidget::getValue() const

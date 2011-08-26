@@ -40,10 +40,12 @@ abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
 
 
 
-aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID)
+aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID, QObject *parent) :
+	QObject(parent)
 {
 	this->m_account = account;
 	this->ID = ID;
+	this->m_KnownDAs = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
 	this->m_BankName = QString::fromUtf8(AB_Account_GetBankName(this->m_account));
@@ -81,7 +83,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID)
 	}
 
 	//alle bekannten Daueraufträge für diesen Account holen
-	this->m_KnownDAs = settings->getDAsForAccount(this->m_Number, this->m_BankCode);
+	this->loadKnownDAs();
 
 	qDebug() << "AccountInfo for Account" << this->Number() << "created.";
 }
@@ -92,4 +94,16 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
 	abt_settings::freeDAsList(this->m_KnownDAs);
+}
+
+//public slot
+/*! \brief lädt die Bekannten Daueraufträge für den übergebenen account */
+void aqb_AccountInfo::loadKnownDAs()
+{
+	//Alle DAs löschen
+	abt_settings::freeDAsList(this->m_KnownDAs);
+	//und neu laden
+	this->m_KnownDAs = settings->getDAsForAccount(this->m_Number, this->m_BankCode);
+
+	emit knownDAsChanged(this);
 }

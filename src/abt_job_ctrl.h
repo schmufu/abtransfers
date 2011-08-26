@@ -87,6 +87,8 @@ signals:
 	void jobQueueListChanged();
 	void jobAdded(const abt_job_info *jobInfo);
 	void log(const QString &str);
+	//! wird gesendet wenn das parsen der Daueraufträge abgeschlossen ist
+	void datedTransfersParsed();
 
 public slots:
 	void addNewSingleTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
