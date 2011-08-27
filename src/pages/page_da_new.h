@@ -64,8 +64,12 @@ public:
 	Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
 	~Page_DA_New();
 
+signals:
+	void createDA(aqb_AccountInfo *a, const abt_transaction *t);
+
 private slots:
 	void account_selected(const aqb_AccountInfo *account);
+	void on_EmpfaengerSelected(const abt_EmpfaengerInfo* empfaenger);
 
 	void pushButton_Execute_clicked();
 	void pushButton_Revert_clicked();

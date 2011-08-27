@@ -52,8 +52,10 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 	this->pushButton_Revert = new QPushButton(tr("Rückgängig"), this);
 
 	//disable all until a account is selected
-	this->ueberweisungwidget->setDisabled(true);
-	this->knownempfaengerwidget->setDisabled(true);
+//	this->ueberweisungwidget->setDisabled(true);
+//	this->knownempfaengerwidget->setDisabled(true);
+//	this->pushButton_Execute->setDisabled(true);
+//	this->pushButton_Revert->setDisabled(true);
 
 	this->main_layout = new QVBoxLayout();
 
@@ -77,8 +79,14 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 
 
 	//Signals der Widgets mit den Slots dieser Page verbinden
+	connect(this->pushButton_Execute, SIGNAL(clicked()),
+		this, SLOT(pushButton_Execute_clicked()));
+
+	connect(this->pushButton_Revert, SIGNAL(clicked()),
+		this, SLOT(pushButton_Revert_clicked()));
+
 	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
-		this, SLOT(debug_Slot(const abt_EmpfaengerInfo*)));
+		this, SLOT(on_EmpfaengerSelected(const abt_EmpfaengerInfo*)));
 
 	const aqb_AccountInfo *SelAccount = this->accountwidget->getSelectedAccount();
 	if (SelAccount != NULL) {
@@ -134,11 +142,48 @@ void Page_DA_New::account_selected(const aqb_AccountInfo *account)
 //private slot
 void Page_DA_New::pushButton_Execute_clicked()
 {
-	//Neue Transaction erstellen und diese dem jobctrl übergeben
+	//Aktuell ausgewählten Account holen
+	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+
+	//Neue Transaction erstellen
+	abt_transaction *t = new abt_transaction();
+
+	//Den Localen Part (Absender) füllen
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteName(QStringList(this->ueberweisungwidget->getRemoteName()));
+	t->setRemoteAccountNumber(this->ueberweisungwidget->getRemoteAccountNumber());
+	t->setRemoteBankCode(this->ueberweisungwidget->getRemoteBankCode());
+	t->setRemoteBankName(this->ueberweisungwidget->getRemoteBankName());
+
+	t->setValue(this->ueberweisungwidget->getValueABV());
+	t->setPurpose(this->ueberweisungwidget->getPurpose());
+	t->setPeriod(this->ueberweisungwidget->period());
+	t->setCycle(this->ueberweisungwidget->cycle());
+	t->setExecutionDay(this->ueberweisungwidget->executionDay());
+	t->setFirstExecutionDate(this->ueberweisungwidget->firstExecutionDate());
+	t->setLastExecutionDate(this->ueberweisungwidget->lastExecutionDate());
+	//NextExecutionDate dient nur der Information und wird in der Transaction nicht gesetzt!
+
+	//Diese Daten als Signal senden (werden dann vom jobctrl bearbeitet)
+	emit this->createDA(acc, t);
+
+	//Formular wieder löschen
+	this->pushButton_Revert_clicked();
 }
 
 //private slot
 void Page_DA_New::pushButton_Revert_clicked()
 {
 	this->ueberweisungwidget->clearAllEdits();
+}
+
+//private slot
+void Page_DA_New::on_EmpfaengerSelected(const abt_EmpfaengerInfo* empf)
+{
+	this->ueberweisungwidget->setRemoteName(empf->getName());
+	this->ueberweisungwidget->setRemoteAccountNumber(empf->getKontonummer());
+	this->ueberweisungwidget->setRemoteBankCode(empf->getBLZ());
+	//Bankname auf "" setzen damit dieser automatisch ermittelt wird
+	this->ueberweisungwidget->setRemoteBankName(QString(""));
 }

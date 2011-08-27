@@ -73,7 +73,6 @@ signals:
 	void deleteDA(aqb_AccountInfo *a, const abt_transaction *t);
 	void getAllDAs(aqb_AccountInfo *a);
 	void modifyDA(aqb_AccountInfo *a, const abt_transaction *t);
-	//void createDA(aqb_AccountInfo *a, const abt_transaction *t);
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();

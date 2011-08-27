@@ -468,3 +468,73 @@ const QDate UeberweisungsWidget::nextExecutionDate() const
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/******************************************************************************
+  Methods and Event handling for Drag'n'Drop
+*******************************************************************************/
+
+void UeberweisungsWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+	//qDebug() << "dragEnterEvent: Format =" << event->mimeData()->formats();
+	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist") &&
+	    event->possibleActions() & Qt::CopyAction) {
+		event->setDropAction(Qt::CopyAction);
+		event->accept();
+	}
+}
+
+
+void UeberweisungsWidget::dropEvent(QDropEvent *event)
+{
+//	QString dropText = event->mimeData()->data(event->mimeData()->formats().at(0));
+//	qDebug() << "dropped: " << dropText;
+
+	QByteArray encoded = event->mimeData()->data("application/x-qabstractitemmodeldatalist");
+	QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+	while (!stream.atEnd())
+	{
+		int row, col;
+		QMap<int,  QVariant> roleDataMap;
+		stream >> row >> col >> roleDataMap;
+
+		//enable the debug line to see whats in the data
+		//qDebug() << "row:" << row << "col:" << col << "roleDataMap" << roleDataMap;
+		switch (col) {
+		case 0: //Name in Qt::DisplayRole und ptr zu abt_EmpfaengerInfo in Qt::userRole
+			this->setRemoteName(roleDataMap.value(Qt::DisplayRole).toString());
+			break;
+		case 1: //KontoNummer
+			this->setRemoteAccountNumber(roleDataMap.value(Qt::DisplayRole).toString());
+			break;
+		case 2: //BankCode
+			this->setRemoteBankCode(roleDataMap.value(Qt::DisplayRole).toString());
+			break;
+		default:
+			break;
+		}
+	}
+
+	//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
+	//gesetzt so belassen (siehe inhalt der Funktion!)
+	this->setRemoteBankName(QString(""));
+
+	event->setDropAction(Qt::CopyAction);
+	event->accept();
+}

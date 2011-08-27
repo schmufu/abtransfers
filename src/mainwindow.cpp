@@ -107,6 +107,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->da_edit_del, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
 		this->jobctrl, SLOT(addModifyStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
 
+	//Neuen DA erstellen
+	connect(this->da_new, SIGNAL(createDA(aqb_AccountInfo*,const abt_transaction*)),
+		this->jobctrl, SLOT(addCreateStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
@@ -239,11 +243,6 @@ void MainWindow::on_actionAddGetDAs_triggered()
 void MainWindow::on_actionAddGetDated_triggered()
 {
 	this->ui->statusBar->showMessage("können wir eine Lastschrift veranlassen?");
-
-	abt_transaction *t = new abt_transaction();
-
-	this->jobctrl->addNewSingleDebitNote(this->accounts->getAccount(1), t);
-
 
 }
 

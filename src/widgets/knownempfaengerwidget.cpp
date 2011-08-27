@@ -33,6 +33,9 @@
 
 #include "../abt_settings.h"
 
+#include <QMouseEvent>
+#include <QDebug>
+
 KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
     ui(new Ui::KnownEmpfaengerWidget)
@@ -40,6 +43,8 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 	ui->setupUi(this);
 	this->EmpfaengerList = list; //could be NULL!
 	this->DisplayEmpfaenger();
+
+	this->ui->treeWidget->setDragEnabled(true);
 }
 
 KnownEmpfaengerWidget::~KnownEmpfaengerWidget()
@@ -111,5 +116,5 @@ void KnownEmpfaengerWidget::on_treeWidget_currentItemChanged(QTreeWidgetItem* cu
 	if (!current)
 		current = previous;
 
-	emit this->EmpfaengerSelected((abt_EmpfaengerInfo*)current->data(0, Qt::UserRole).toInt());
+	//emit this->EmpfaengerSelected((abt_EmpfaengerInfo*)current->data(0, Qt::UserRole).toInt());
 }

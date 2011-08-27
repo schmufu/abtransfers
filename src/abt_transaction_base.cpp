@@ -40,11 +40,17 @@
 
 abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 {
-	this->aqb_transaction = t;
-	this->FreeTransactionOnDelete = freeOnDelete;
-
-	// die abgeleiteten Klassen müssen die private AB_TRANSACTION
-	// entsprechend setzen!
+	if (t == NULL) {
+		//Keine Transaction übergeben, wir erstellen uns selber eine
+		this->aqb_transaction = AB_Transaction_new();
+		//Diese muss zum Schluss durch uns auch wieder gelöscht werden
+		this->FreeTransactionOnDelete = true;
+	} else {
+		//Übergebene Transaction nutzen
+		this->aqb_transaction = t;
+		//Löschen nur auf Aufforderung;
+		this->FreeTransactionOnDelete = freeOnDelete;
+	}
 }
 
 abt_transaction::~abt_transaction()

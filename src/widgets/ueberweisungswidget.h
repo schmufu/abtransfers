@@ -32,6 +32,8 @@
 #define UEBERWEISUNGSWIDGET_H
 
 #include <QGroupBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include "../aqb_banking.h"
 #include "extrastandingorderswidget.h"
 
@@ -147,6 +149,8 @@ private:
 
 protected:
 	void changeEvent(QEvent *e);
+	void dragEnterEvent(QDragEnterEvent *event);
+	void dropEvent(QDropEvent *event);
 
 private:
 	Ui::UeberweisungsWidget *ui;
