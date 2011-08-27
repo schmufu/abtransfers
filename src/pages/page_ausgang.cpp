@@ -117,9 +117,8 @@ void Page_Ausgang::refreshTreeWidget()
 	QTreeWidgetItem *item, *topItem;
 	const QStringList *JobInfo;
 
-	ui->treeWidget->clear();
-
 	if (this->jobctrl->jobqueueList()->size() == 0) {
+		this->ui->treeWidget->clear(); //Alle Items löschen
 		this->ui->treeWidget->setColumnCount(1);
 		this->ui->treeWidget->setHeaderHidden(true);
 		this->ui->treeWidget->header()->setStretchLastSection(true);
@@ -133,6 +132,8 @@ void Page_Ausgang::refreshTreeWidget()
 		return; //fertig
 	}
 
+	//! \todo der Status des Items sollte erhalten bleiben (expanded/selected)
+	this->ui->treeWidget->clear(); //erstmal alle löschen
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 
 	for (int i=0; i<this->jobctrl->jobqueueList()->size(); ++i) {
