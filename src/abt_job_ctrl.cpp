@@ -1216,8 +1216,48 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 }
 
 
+/** verschiebt den Job von \a jobListPost um \a updown nach oben oder unten */
+//public slot
+void abt_job_ctrl::moveJob(int JobListPos, int updown)
+{
+	if (JobListPos >= this->jobqueue->size()) {
+		qWarning().nospace() << "abt_job_ctrl::moveJob - JobListPos ["
+				<< JobListPos << "] is greater than the jobqueue->size() ["
+				<< this->jobqueue->size() << "]";
+		return; //Abbruch
+	}
 
+	int newPos = JobListPos + updown;
+	if ((newPos < 0) || (newPos >= this->jobqueue->size())) {
+		qWarning().nospace() << "abt_job_ctrl::moveJob - new position ["
+				<< newPos << "] is not reachable! size() ["
+				<< this->jobqueue->size() << "]";
+		return; //Abbruch
+	}
 
+	this->jobqueue->move(JobListPos, newPos);
+
+	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
+	emit this->jobQueueListChanged();
+}
+
+/** löscht den Job von \a jobListPost */
+//public slot
+void abt_job_ctrl::deleteJob(int JobListPos)
+{
+	if ((JobListPos >= this->jobqueue->size()) ||
+	    (JobListPos < 0)) {
+		qWarning().nospace() << "abt_job_ctrl::deleteJob - JobListPos ["
+				<< JobListPos << "] is greater than the jobqueue->size() ["
+				<< this->jobqueue->size() << "] (or less than zero)";
+	}
+
+	abt_job_info *jobinfo;
+	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
+	delete jobinfo; // und löschen
+
+	emit this->jobQueueListChanged();
+}
 
 
 

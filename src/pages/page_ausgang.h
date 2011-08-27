@@ -42,6 +42,7 @@ class Page_Ausgang : public QFrame {
 	Q_OBJECT
 private:
 	abt_job_ctrl *jobctrl;
+	int selectedItem; //!< temporaly var for the currently selected item
 
 	void setDefaultTreeWidgetHeader();
 	void setTreeWidgetColWidths();
@@ -63,6 +64,12 @@ signals:
 public slots:
 	void refreshTreeWidget();
 
+
+private slots:
+	void on_pushButton_del_clicked();
+	void on_pushButton_down_clicked();
+	void on_pushButton_up_clicked();
+	void on_treeWidget_itemSelectionChanged();
 };
 
 #endif // PAGE_AUSGANG_H

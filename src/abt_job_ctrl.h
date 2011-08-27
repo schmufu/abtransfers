@@ -108,6 +108,10 @@ public slots:
 	void addGetStandingOrders(aqb_AccountInfo *acc);
 
 	void execQueuedTransactions();
+
+	void moveJob(int JobListPos, int updown);
+	void deleteJob(int JobListPos);
+
 };
 
 #endif // ABT_JOB_CTRL_H
