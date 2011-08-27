@@ -141,7 +141,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_Revert">
        <property name="text">
-        <string>Rückgänging</string>
+        <string>Rückgängig</string>
        </property>
       </widget>
      </item>
