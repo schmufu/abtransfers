@@ -28,56 +28,48 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PAGE_DA_NEW_H
+#define PAGE_DA_NEW_H
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
+#include <QWidget>
+#include <QPushButton>
+#include <QLayout>
 
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
+#include "../aqb_accounts.h"
+#include "../aqb_banking.h"
+#include "../abt_transaction_base.h"
 
-#include "pages/page_log.h"
-#include "pages/page_ausgang.h"
-#include "pages/page_da_edit_delete.h"
-#include "pages/page_da_new.h"
+#include "../widgets/bankaccountswidget.h"
+#include "../widgets/ueberweisungswidget.h"
+#include "../widgets/knownempfaengerwidget.h"
 
-namespace Ui {
-    class MainWindow;
-}
 
-class MainWindow : public QMainWindow {
+class Page_DA_New : public QWidget {
 	Q_OBJECT
-public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
-
-
-
-protected:
-	void changeEvent(QEvent *e);
-
 private:
-	Ui::MainWindow *ui;
 	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
-	Page_Ausgang *outw;
-	Page_DA_Edit_Delete *da_edit_del;
-	Page_DA_New *da_new;
+	const aqb_banking *banking;
+	BankAccountsWidget *accountwidget;
+	UeberweisungsWidget *ueberweisungwidget;
+	KnownEmpfaengerWidget *knownempfaengerwidget;
+	//! zum merken der aktuell in Bearbeitung befindlichen Transaction
+	abt_transaction *editing_transaction;
 
+	QPushButton *pushButton_Execute;
+	QPushButton *pushButton_Revert;
+
+	QVBoxLayout *main_layout;
+
+public:
+	Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
+	~Page_DA_New();
 
 private slots:
-	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
-	void on_actionExecQueued_triggered();
-	void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
+	void account_selected(const aqb_AccountInfo *account);
 
-	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
+	void pushButton_Execute_clicked();
+	void pushButton_Revert_clicked();
+
 };
 
-#endif // MAINWINDOW_H
+#endif // PAGE_DA_NEW_H

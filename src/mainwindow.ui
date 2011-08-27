@@ -334,37 +334,8 @@
           <item>
            <widget class="QTabWidget" name="tabWidget_DA">
             <property name="currentIndex">
-             <number>1</number>
+             <number>-1</number>
             </property>
-            <widget class="QWidget" name="DA_Neu">
-             <attribute name="title">
-              <string>Neu</string>
-             </attribute>
-             <widget class="QLabel" name="label_10">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>30</y>
-                <width>461</width>
-                <height>61</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>32</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Not implemented yet</string>
-              </property>
-             </widget>
-            </widget>
-            <widget class="QWidget" name="DA_Bearbeiten">
-             <attribute name="title">
-              <string>Bearbeiten</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout"/>
-            </widget>
            </widget>
           </item>
          </layout>
