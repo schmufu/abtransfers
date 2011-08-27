@@ -210,6 +210,49 @@ bool UeberweisungsWidget::hasChanges() const
 	return false;
 }
 
+//public
+bool UeberweisungsWidget::isInputOK(QString &ErrorMsg) const
+{
+	bool ret = true; //default return value
+
+	ErrorMsg.clear();
+
+	if (this->ui->lineEdit_Beguenstigter->text().isEmpty()) {
+		ret = false;
+		ErrorMsg.append(tr("- Begünstiger\n"));
+	}
+
+	if (this->ui->lineEdit_Kontonummer->text().isEmpty()) {
+		ret = false;
+		ErrorMsg.append(tr("- Kontonummer\n"));
+	}
+
+	if (this->ui->lineEdit_Bankleitzahl->text().isEmpty()) {
+		ret = false;
+		ErrorMsg.append(tr("- Bankleitzahl\n"));
+	}
+
+	if (this->ui->lineEdit_Betrag->text().isEmpty()) {
+		ret = false;
+		ErrorMsg.append(tr("- Betrag\n"));
+	}
+
+	//getPurpose liefert alle 4 Verwendungszweckzeilen als Stringliste!
+	if (this->getPurpose().size() == 0) {
+		ret = false;
+		ErrorMsg.append(tr("- Verwendungszweck\n"));
+	}
+
+	if (!ret) {
+		ErrorMsg.prepend(tr("Folgende Eingaben wurden nicht getätigt:\n"));
+		ErrorMsg.append(tr("\nBitte tätigen Sie diese Eingaben noch."));
+	}
+
+	/** \todo noch Prüfungen für die extraWidgets (DA, Termin, etc) hinzufügen */
+
+	return ret;
+}
+
 /*! \brief löscht alle Eingabefelder bzw. setzt Sie auf defaultwerte */
 //public slot
 void UeberweisungsWidget::clearAllEdits()

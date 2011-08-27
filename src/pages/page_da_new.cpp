@@ -142,6 +142,15 @@ void Page_DA_New::account_selected(const aqb_AccountInfo *account)
 //private slot
 void Page_DA_New::pushButton_Execute_clicked()
 {
+	QString errorText;
+	if ( ! this->ueberweisungwidget->isInputOK(errorText)) {
+		QMessageBox::critical(this,
+				      tr("Eingaben fehlen"),
+				      errorText,
+				      QMessageBox::Ok);
+		return; //Fehler aufgetreten, Abbrechen
+	}
+
 	//Aktuell ausgewählten Account holen
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
 

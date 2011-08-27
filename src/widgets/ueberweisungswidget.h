@@ -71,6 +71,8 @@ public:
 	~UeberweisungsWidget();
 
 	bool hasChanges() const;
+	//! \brief liefert true wenn alles i.O., ansonsten false und einen Fehlertext in \a ErrorMsg
+	bool isInputOK(QString &ErrorMsg) const;
 
 
 /***** Funktionen für Alle Überweisungsarten *****/

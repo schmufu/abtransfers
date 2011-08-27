@@ -384,7 +384,7 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Aktualisieren_clicked()
 
 void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 {
-	if (!this->ueberweisungwidget->hasChanges()) {
+	if ( ! this->ueberweisungwidget->hasChanges()) {
 		QMessageBox err(this);
 		err.setWindowTitle(tr("Keine Änderungen"));
 		err.setText(tr("Die Daten des Dauerauftrages wurden nicht\n"
@@ -396,6 +396,16 @@ void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 		err.exec();
 		return;
 	}
+
+	QString errorText;
+	if ( ! this->ueberweisungwidget->isInputOK(errorText)) {
+		QMessageBox::critical(this,
+				      tr("Eingaben fehlen"),
+				      errorText,
+				      QMessageBox::Ok);
+		return; //Fehler aufgetreten, Abbrechen
+	}
+
 
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
 	abt_transaction *t;
