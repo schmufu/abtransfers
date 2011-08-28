@@ -165,6 +165,13 @@ void Page_Ueberweisung_New::pushButton_Execute_clicked()
 	t->setPurpose(this->ueberweisungwidget->getPurpose());
 
 	/** \todo Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
+	//wir setzen erstmal standarts für "Überweisung"
+	t->setTextKey(51); //Normale Überweisung
+	t->setTextKeyExt(000); //lt aqbanking doxy doku 51, aber lt http://www.zahlungsverkehrsfragen.de/textsl_dta.html wohl '000'
+	//t->setTransactionKey(""); //Buchungsschlüssel
+	t->setType(AB_Transaction_TypeTransfer);
+
+	//AB_Banking_GatherResponses
 
 	//Diese Daten als Signal senden (werden dann vom jobctrl bearbeitet)
 	emit this->createTransfer(acc, t);
