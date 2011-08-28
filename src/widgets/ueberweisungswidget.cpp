@@ -57,9 +57,23 @@ UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
 	validatorBLZ->setRegExp(QRegExp("[0-9]*", Qt::CaseSensitive));
 	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
 
+	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen
+//	UppercaseValidator *validatorText = new UppercaseValidator(this);
+//	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Z]*", Qt::CaseSensitive));
+
+	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
+	QRegExpValidator *validatorText = new QRegExpValidator(this);
+	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Za-z]*", Qt::CaseSensitive));
+
 	ui->lineEdit_Kontonummer->setValidator(validatorKTO);
 	ui->lineEdit_Bankleitzahl->setValidator(validatorBLZ);
 	ui->lineEdit_Betrag->setValidator(validatorBetrag);
+
+	ui->lineEdit_Beguenstigter->setValidator(validatorText);
+	ui->lineEdit_Verwendungszweck1->setValidator(validatorText);
+	ui->lineEdit_Verwendungszweck2->setValidator(validatorText);
+	ui->lineEdit_Verwendungszweck3->setValidator(validatorText);
+	ui->lineEdit_Verwendungszweck4->setValidator(validatorText);
 
 	//je nachdem was wir sind müssen wir noch weitere Widgets anzeigen
 	switch (this->my_type) {

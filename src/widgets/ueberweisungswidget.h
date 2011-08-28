@@ -34,6 +34,7 @@
 #include <QGroupBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QRegExpValidator>
 #include "../aqb_banking.h"
 #include "extrastandingorderswidget.h"
 
@@ -163,6 +164,29 @@ private slots:
 
 public slots:
 	void clearAllEdits();
+};
+
+
+/*! abgeleiteter QRegExpValidator der vorher in Grossbuchstaben wandelt
+ *
+ * Wenn ein String mit diesem Validator überprüft wird, wird der zu Prüfende
+ * String zuerst in UpperCase gewandelt und danach geprüft!
+ *
+ * auch fixup() wurde implementiert (wandelt den String in UpperCase)
+ */
+class UppercaseValidator : public QRegExpValidator
+{
+	Q_OBJECT
+public:
+	UppercaseValidator(QObject *parent=0) :
+		QRegExpValidator(parent) { }
+	virtual QValidator::State validate(QString &input, int &pos) const {
+		input = input.toUpper();
+		return QRegExpValidator::validate(input, pos);
+	}
+	virtual void fixup(QString &input) {
+		input = input.toUpper();
+	}
 };
 
 #endif // UEBERWEISUNGSWIDGET_H
