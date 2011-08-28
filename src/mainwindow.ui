@@ -130,88 +130,107 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="Ueberweisung">
-         <widget class="QTabWidget" name="tabWidget_UW">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>701</width>
-            <height>501</height>
-           </rect>
-          </property>
-          <property name="currentIndex">
-           <number>3</number>
-          </property>
-          <widget class="QWidget" name="UW_National">
-           <attribute name="title">
-            <string>National</string>
-           </attribute>
-           <widget class="QLabel" name="label">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>461</width>
-              <height>61</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>32</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Not implemented yet</string>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="UW_International">
-           <attribute name="title">
-            <string>International</string>
-           </attribute>
-           <widget class="QLabel" name="label_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>461</width>
-              <height>61</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>32</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Not implemented yet</string>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="UW_Terminiert">
-           <attribute name="title">
-            <string>Terminiert</string>
-           </attribute>
-           <widget class="QTabWidget" name="tabWidget_TM">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>671</width>
-              <height>451</height>
-             </rect>
-            </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QTabWidget" name="tabWidget_UW">
             <property name="currentIndex">
              <number>0</number>
             </property>
-            <widget class="QWidget" name="TM_Neu">
+            <widget class="QWidget" name="UW_International">
              <attribute name="title">
-              <string>Tab 1</string>
+              <string>International</string>
              </attribute>
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="label_2">
+              <property name="geometry">
+               <rect>
+                <x>4</x>
+                <y>4</y>
+                <width>455</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Not implemented yet</string>
+              </property>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="UW_Terminiert">
+             <attribute name="title">
+              <string>Terminiert</string>
+             </attribute>
+             <widget class="QTabWidget" name="tabWidget_TM">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>671</width>
+                <height>451</height>
+               </rect>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="TM_Neu">
+               <attribute name="title">
+                <string>Tab 1</string>
+               </attribute>
+               <widget class="QLabel" name="label_3">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>461</width>
+                  <height>61</height>
+                 </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>32</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Not implemented yet</string>
+                </property>
+               </widget>
+              </widget>
+              <widget class="QWidget" name="TM_Bearbeiten">
+               <attribute name="title">
+                <string>Tab 2</string>
+               </attribute>
+               <widget class="QLabel" name="label_4">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>461</width>
+                  <height>61</height>
+                 </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>32</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Not implemented yet</string>
+                </property>
+               </widget>
+              </widget>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="UW_Umbuchung">
+             <attribute name="title">
+              <string>Umbuchung</string>
+             </attribute>
+             <widget class="QLabel" name="label_5">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -230,11 +249,11 @@
               </property>
              </widget>
             </widget>
-            <widget class="QWidget" name="TM_Bearbeiten">
+            <widget class="QWidget" name="UW_Sepa">
              <attribute name="title">
-              <string>Tab 2</string>
+              <string>SEPA</string>
              </attribute>
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="label_6">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -254,74 +273,24 @@
              </widget>
             </widget>
            </widget>
-          </widget>
-          <widget class="QWidget" name="UW_Umbuchung">
-           <attribute name="title">
-            <string>Umbuchung</string>
-           </attribute>
-           <widget class="QLabel" name="label_5">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>461</width>
-              <height>61</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>32</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Not implemented yet</string>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="UW_Sepa">
-           <attribute name="title">
-            <string>SEPA</string>
-           </attribute>
-           <widget class="QLabel" name="label_6">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>461</width>
-              <height>61</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>32</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Not implemented yet</string>
-            </property>
-           </widget>
-          </widget>
-         </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="Lastschrift">
-         <widget class="QLabel" name="label_7">
-          <property name="geometry">
-           <rect>
-            <x>120</x>
-            <y>240</y>
-            <width>461</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>32</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Not implemented yet</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <pointsize>32</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Not implemented yet</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="Dauerauftrag">
          <layout class="QVBoxLayout" name="verticalLayout_3">

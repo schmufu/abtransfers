@@ -1201,7 +1201,7 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 
 		strl = AB_Job_GetLogs(j);
 		strList = abt_conv::GwenStringListToQStringList(strl);
-		GWEN_StringList_free(strl);
+		GWEN_StringList_free(strl); //! \todo macht jetzt abt_conv selbst oder?
 		this->addlog(QString("JobLog: ").append(strList.join(" - ")));
 
 
@@ -1216,7 +1216,7 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 }
 
 
-/** verschiebt den Job von \a jobListPost um \a updown nach oben oder unten */
+/** verschiebt den Job von \a jobListPos um \a updown nach oben oder unten */
 //public slot
 void abt_job_ctrl::moveJob(int JobListPos, int updown)
 {
@@ -1241,7 +1241,7 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
 	emit this->jobQueueListChanged();
 }
 
-/** löscht den Job von \a jobListPost */
+/** löscht den Job von \a jobListPos */
 //public slot
 void abt_job_ctrl::deleteJob(int JobListPos)
 {
@@ -1256,6 +1256,7 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
 	delete jobinfo; // und löschen
 
+	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
 	emit this->jobQueueListChanged();
 }
 

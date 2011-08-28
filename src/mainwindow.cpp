@@ -64,11 +64,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->da_edit_del = new Page_DA_Edit_Delete(banking, this->accounts, ui->tabWidget_DA);
 	this->da_new = new Page_DA_New(banking, this->accounts, ui->tabWidget_DA);
+	this->page_transfer_new = new Page_Ueberweisung_New(banking, this->accounts, ui->tabWidget_UW);
 
 	//ui->tabWidget_DA->clear();
 	ui->tabWidget_DA->addTab(this->da_new, tr("Neu"));
 	ui->tabWidget_DA->addTab(this->da_edit_del, tr("Bearbeiten"));
 
+	ui->tabWidget_UW->insertTab(0, this->page_transfer_new, tr("National"));
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -111,6 +113,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->da_new, SIGNAL(createDA(aqb_AccountInfo*,const abt_transaction*)),
 		this->jobctrl, SLOT(addCreateStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
 
+	//Neue "Nationale Überweisung" anlegen
+	connect(this->page_transfer_new, SIGNAL(createTransfer(aqb_AccountInfo*,const abt_transaction*)),
+		this->jobctrl, SLOT(addNewSingleTransfer(aqb_AccountInfo*,const abt_transaction*)));
+
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
@@ -126,8 +132,9 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->da_edit_del;	//DauerAuftragWidget löschen
-	delete this->da_new;
+	delete this->page_transfer_new;	//SingleTransfer löschen
+	delete this->da_edit_del;	//DauerAufträge ändern löschen
+	delete this->da_new;		//DauerAufträge neu erstellen löschen
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen

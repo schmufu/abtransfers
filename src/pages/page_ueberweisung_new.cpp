@@ -28,16 +28,14 @@
  *
  ******************************************************************************/
 
-#include "page_da_new.h"
-
-#include <QDebug>
+#include "page_ueberweisung_new.h"
 #include <QMessageBox>
 
 #include "../globalvars.h"
 #include "../abt_conv.h"
 
 
-Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent) :
+Page_Ueberweisung_New::Page_Ueberweisung_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent) :
 	QWidget(parent)
 {
 	this->accounts = acc;
@@ -45,7 +43,7 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 
 	//used widgets in this page
 	this->accountwidget = new BankAccountsWidget(this->accounts, this);
-	this->ueberweisungwidget = new UeberweisungsWidget(this->banking, UeberweisungsWidget::StandingOrder, this);
+	this->ueberweisungwidget = new UeberweisungsWidget(this->banking, UeberweisungsWidget::Transfer, this);
 	this->knownempfaengerwidget = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this);
 	this->pushButton_Execute = new QPushButton(tr("Ausführen"), this);
 	this->pushButton_Revert = new QPushButton(tr("Rückgängig"), this);
@@ -84,7 +82,7 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 	connect(this->pushButton_Revert, SIGNAL(clicked()),
 		this, SLOT(pushButton_Revert_clicked()));
 
-//Wird jetzt per dragdrop gemacht
+// geht jetzt per DragDrop
 //	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
 //		this, SLOT(on_EmpfaengerSelected(const abt_EmpfaengerInfo*)));
 
@@ -98,9 +96,8 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 
 }
 
-Page_DA_New::~Page_DA_New()
+Page_Ueberweisung_New::~Page_Ueberweisung_New()
 {
-	//delete ui;
 	//Alle erstellten Objecte wieder löschen
 	delete this->accountwidget;
 	delete this->ueberweisungwidget;
@@ -110,9 +107,8 @@ Page_DA_New::~Page_DA_New()
 	delete this->main_layout;
 }
 
-
 /*! Slot wird aufgerufen wenn ein neuer Account gewählt wurde */
-void Page_DA_New::account_selected(const aqb_AccountInfo *account)
+void Page_Ueberweisung_New::account_selected(const aqb_AccountInfo *account)
 {
 	//Ein neuer Account wurde gewählt,
 
@@ -140,7 +136,7 @@ void Page_DA_New::account_selected(const aqb_AccountInfo *account)
 }
 
 //private slot
-void Page_DA_New::pushButton_Execute_clicked()
+void Page_Ueberweisung_New::pushButton_Execute_clicked()
 {
 	QString errorText;
 	if ( ! this->ueberweisungwidget->isInputOK(errorText)) {
@@ -167,33 +163,18 @@ void Page_DA_New::pushButton_Execute_clicked()
 
 	t->setValue(this->ueberweisungwidget->getValueABV());
 	t->setPurpose(this->ueberweisungwidget->getPurpose());
-	t->setPeriod(this->ueberweisungwidget->period());
-	t->setCycle(this->ueberweisungwidget->cycle());
-	t->setExecutionDay(this->ueberweisungwidget->executionDay());
-	t->setFirstExecutionDate(this->ueberweisungwidget->firstExecutionDate());
-	t->setLastExecutionDate(this->ueberweisungwidget->lastExecutionDate());
-	//NextExecutionDate dient nur der Information und wird in der Transaction nicht gesetzt!
+
+	/** \todo Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
 
 	//Diese Daten als Signal senden (werden dann vom jobctrl bearbeitet)
-	emit this->createDA(acc, t);
+	emit this->createTransfer(acc, t);
 
 	//Formular wieder löschen
 	this->pushButton_Revert_clicked();
 }
 
 //private slot
-void Page_DA_New::pushButton_Revert_clicked()
+void Page_Ueberweisung_New::pushButton_Revert_clicked()
 {
 	this->ueberweisungwidget->clearAllEdits();
 }
-
-//WIRD JETZT PER DRAGDROP GEMACHT
-//private slot
-//void Page_DA_New::on_EmpfaengerSelected(const abt_EmpfaengerInfo* empf)
-//{
-//	this->ueberweisungwidget->setRemoteName(empf->getName());
-//	this->ueberweisungwidget->setRemoteAccountNumber(empf->getKontonummer());
-//	this->ueberweisungwidget->setRemoteBankCode(empf->getBLZ());
-//	//Bankname auf "" setzen damit dieser automatisch ermittelt wird
-//	this->ueberweisungwidget->setRemoteBankName(QString(""));
-//}

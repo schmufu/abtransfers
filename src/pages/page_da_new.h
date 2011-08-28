@@ -52,8 +52,6 @@ private:
 	BankAccountsWidget *accountwidget;
 	UeberweisungsWidget *ueberweisungwidget;
 	KnownEmpfaengerWidget *knownempfaengerwidget;
-	//! zum merken der aktuell in Bearbeitung befindlichen Transaction
-	abt_transaction *editing_transaction;
 
 	QPushButton *pushButton_Execute;
 	QPushButton *pushButton_Revert;
@@ -69,7 +67,6 @@ signals:
 
 private slots:
 	void account_selected(const aqb_AccountInfo *account);
-	void on_EmpfaengerSelected(const abt_EmpfaengerInfo* empfaenger);
 
 	void pushButton_Execute_clicked();
 	void pushButton_Revert_clicked();

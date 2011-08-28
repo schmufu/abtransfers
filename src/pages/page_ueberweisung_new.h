@@ -28,58 +28,52 @@
  *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PAGE_UEBERWEISUNG_NEW_H
+#define PAGE_UEBERWEISUNG_NEW_H
 
-#include <QMainWindow>
-#include <QtGui/QListWidgetItem>
+#include <QWidget>
+#include <QPushButton>
+#include <QLayout>
 
-#include "aqb_accounts.h"
-#include "abt_job_ctrl.h"
+#include "../aqb_accounts.h"
+#include "../aqb_banking.h"
+#include "../abt_transaction_base.h"
 
-#include "pages/page_log.h"
-#include "pages/page_ausgang.h"
-#include "pages/page_da_edit_delete.h"
-#include "pages/page_da_new.h"
-#include "pages/page_ueberweisung_new.h"
+#include "../widgets/bankaccountswidget.h"
+#include "../widgets/ueberweisungswidget.h"
+#include "../widgets/knownempfaengerwidget.h"
 
-namespace Ui {
-    class MainWindow;
-}
-
-class MainWindow : public QMainWindow {
-	Q_OBJECT
-public:
-	MainWindow(QWidget *parent = 0);
-	~MainWindow();
-
-
-
-protected:
-	void changeEvent(QEvent *e);
-
+class Page_Ueberweisung_New : public QWidget
+{
+Q_OBJECT
 private:
-	Ui::MainWindow *ui;
 	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	page_log *logw;
-	Page_Ausgang *outw;
-	Page_DA_Edit_Delete *da_edit_del;
-	Page_DA_New *da_new;
-	Page_Ueberweisung_New *page_transfer_new;
+	const aqb_banking *banking;
+	BankAccountsWidget *accountwidget;
+	UeberweisungsWidget *ueberweisungwidget;
+	KnownEmpfaengerWidget *knownempfaengerwidget;
+
+	QPushButton *pushButton_Execute;
+	QPushButton *pushButton_Revert;
+
+	QVBoxLayout *main_layout;
 
 
-private slots:
-	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
-	void on_actionExecQueued_triggered();
-	void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
-	void on_actionAbout_abTransfers_triggered();
-	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void on_actionDebug_Info_triggered();
+public:
+	explicit Page_Ueberweisung_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
+	~Page_Ueberweisung_New();
 
-	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
+signals:
+	void createTransfer(aqb_AccountInfo *a, const abt_transaction *t);
+
+
+public slots:
+	void account_selected(const aqb_AccountInfo *account);
+
+	void pushButton_Execute_clicked();
+	void pushButton_Revert_clicked();
+
+
 };
 
-#endif // MAINWINDOW_H
+#endif // PAGE_UEBERWEISUNG_NEW_H
