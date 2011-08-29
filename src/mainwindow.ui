@@ -134,6 +134,12 @@
         </property>
         <widget class="QWidget" name="Ueberweisung">
          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QTabWidget" name="tabWidget_UW">
             <property name="currentIndex">
