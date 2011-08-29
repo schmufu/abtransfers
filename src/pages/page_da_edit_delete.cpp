@@ -33,6 +33,7 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <QVariant>
 
 #include "../globalvars.h"
 #include "../abt_transactions.h"
@@ -208,7 +209,8 @@ void Page_DA_Edit_Delete::showKnownDAs(const aqb_AccountInfo *account)
 		Item = new QTreeWidgetItem;
 		ItemCount++;
 		Item->setData(0, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteAccountNumber());
-		Item->setData(0, Qt::UserRole, (quint64)account->getKnownDAs()->at(i)->getSOT());
+		QVariant abt = QVariant::fromValue(account->getKnownDAs()->at(i)->getSOT());
+		Item->setData(0, Qt::UserRole, abt);
 		Item->setData(1, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteBankCode());
 		Item->setData(2, Qt::DisplayRole, account->getKnownDAs()->at(i)->getSOT()->getRemoteName().at(0));
 		v = account->getKnownDAs()->at(i)->getSOT()->getValue();
@@ -273,7 +275,7 @@ void Page_DA_Edit_Delete::on_treeWidget_itemSelectionChanged()
 
 	//Zu bearbeitenden DA holen
 	abt_transaction *t = NULL;
-	t = (abt_transaction*)currItem->data(0, Qt::UserRole).toULongLong();
+	t = currItem->data(0, Qt::UserRole).value<abt_transaction*>();
 
 	this->fillUeberweisungsWidgetFromAbtTransaction(t);
 
@@ -350,7 +352,7 @@ void Page_DA_Edit_Delete::on_pushButton_DA_Delete_clicked()
 	//Nachfragen ob der ausgewählte DA wirklich gelöscht werden soll
 
 	const abt_transaction *t = NULL;
-	t = (const abt_transaction*)ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toULongLong();
+	t = ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_transaction*>(); // toULongLong();
 	Q_ASSERT(t != NULL);
 
 	QMessageBox msg;

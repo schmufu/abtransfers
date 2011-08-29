@@ -34,6 +34,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDate>
+#include <QMetaType>
 
 #include <aqbanking/transaction.h>
 #include <aqbanking/transactionfns.h>
@@ -333,5 +334,8 @@ public:
 	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
 
 };
+
+Q_DECLARE_METATYPE(abt_transaction);
+Q_DECLARE_METATYPE(abt_transaction*);
 
 #endif // TRANS_JOB_H
