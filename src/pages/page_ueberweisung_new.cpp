@@ -167,9 +167,10 @@ void Page_Ueberweisung_New::pushButton_Execute_clicked()
 	/** \todo Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
 	//wir setzen erstmal standarts für "Überweisung"
 	t->setTextKey(51); //Normale Überweisung
-	t->setTextKeyExt(000); //lt aqbanking doxy doku 51, aber lt http://www.zahlungsverkehrsfragen.de/textsl_dta.html wohl '000'
+	//folgende 3 Zeilen werden in mkTransfer aus util.c in aqbanking-cli auch nicht gesetzt!
+	//t->setTextKeyExt(000); //lt aqbanking doxy doku 51, aber lt http://www.zahlungsverkehrsfragen.de/textsl_dta.html wohl '000'
 	//t->setTransactionKey(""); //Buchungsschlüssel
-	t->setType(AB_Transaction_TypeTransfer);
+	//t->setType(AB_Transaction_TypeTransfer);
 
 	//AB_Banking_GatherResponses
 
