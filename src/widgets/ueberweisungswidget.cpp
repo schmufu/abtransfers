@@ -592,6 +592,10 @@ void UeberweisungsWidget::dropEvent(QDropEvent *event)
 	//gesetzt so belassen (siehe inhalt der Funktion!)
 	this->setRemoteBankName(QString(""));
 
+	//Es wurden Änderungen durchgeführt, dies beim Beguenstigten setzen
+	//(damit hasChanges() true zurückgibt!)
+	this->ui->lineEdit_Beguenstigter->setModified(true);
+
 	event->setDropAction(Qt::CopyAction);
 	event->accept();
 }
