@@ -50,6 +50,9 @@ protected:
 	/*! speichert alle erstellten GWEN_TIME Objecte, damit sie am
 	    Ende wieder gelöscht werden können. */
 	static QList<GWEN_TIME*> *gwen_timelist;
+	/*! speichert alle erstellten AB_VALUE Objecte, damit sie am
+	    Ende wieder gelöscht werden können. */
+	static QList<AB_VALUE*> *gwen_abvlist;
 
 
 public:
@@ -66,12 +69,12 @@ public:
 
 	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
-	//! Muss am Ende Aufgerufen werden um ALLE Listen wieder zu löschen!
-	static void freeAllGwenLists();
 
 	static const QString ABValueToString(const AB_VALUE *v, bool asDecimal=false);
 	static AB_VALUE* ABValueFromString(const QString &str, const QString &currency = "EUR");
 
+	//! Muss am Ende Aufgerufen werden um ALLE Listen wieder zu löschen!
+	static void freeAllGwenLists();
 
 };
 

@@ -36,7 +36,7 @@
 //initialize static member variables
 QList<GWEN_STRINGLIST*> *abt_conv::gwen_lists = new QList<GWEN_STRINGLIST*>;
 QList<GWEN_TIME*> *abt_conv::gwen_timelist = new QList<GWEN_TIME*>;
-
+QList<AB_VALUE*> *abt_conv::gwen_abvlist = new QList<AB_VALUE*>;
 
 abt_conv::abt_conv()
 {
@@ -262,6 +262,9 @@ AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	QString cur = currency.toUtf8();
 	std::string c = cur.toStdString();
 	AB_Value_SetCurrency(val, c.c_str());
+	//Das erstellte AB_VALUE object in unserer internen Liste aufbewahren
+	//damit es bei Programm-Ende wieder gelöscht werden kann
+	abt_conv::gwen_abvlist->append(val);
 	return val;
 }
 
@@ -286,7 +289,15 @@ void abt_conv::freeAllGwenLists()
 		GWEN_Time_free(gwt);
 	}
 
+	AB_VALUE *v;
+	while (!abt_conv::gwen_abvlist->isEmpty()) {
+		v = abt_conv::gwen_abvlist->takeFirst();
+		qDebug() << "freeing AB_VALUE: " << v;
+		AB_Value_free(v);
+	}
+
 	//Globale Listen auch löschen
 	delete abt_conv::gwen_lists;
 	delete abt_conv::gwen_timelist;
+	delete abt_conv::gwen_abvlist;
 }
