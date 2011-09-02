@@ -113,7 +113,9 @@ abt_job_ctrl::~abt_job_ctrl()
 //	}
 
 	while (!this->jobqueue->isEmpty()) {
-		delete this->jobqueue->takeFirst();
+		abt_job_info *j = this->jobqueue->takeFirst();
+		//AB_Job_free(j->getJob());
+		delete j;
 	}
 
 	delete this->jobqueue;
@@ -812,8 +814,11 @@ void abt_job_ctrl::execQueuedTransactions()
 	AB_ImExporterContext_Clear(ctx);
 
 	//Alle Objecte in der jobqueue liste löschen
-	while (!this->jobqueue->isEmpty())
-		delete this->jobqueue->takeFirst();
+	while (!this->jobqueue->isEmpty()) {
+		abt_job_info *j = this->jobqueue->takeFirst();
+		//AB_Job_free(j->getJob());
+		delete j;
+	}
 	emit this->jobQueueListChanged();
 }
 
