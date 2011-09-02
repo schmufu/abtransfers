@@ -1186,14 +1186,15 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 	QStringList strList;
 	bool res=true;
 	static int run = 0;
-	qDebug() << "in checkJobStatus() - RUN: " << run++;
+	run++;
+	qDebug() << "in checkJobStatus() - RUN: " << run;
 
 	AB_JOB_LIST2_ITERATOR *jli;
 	jli = AB_Job_List2Iterator_new(jl);
 	jli = AB_Job_List2_First(jl);
 	j = AB_Job_List2Iterator_Data(jli);
 	while (j) {
-		qDebug() << "in checkJobStatus()-while - RUN: " << run++;
+		qDebug() << "in checkJobStatus()-while - RUN: " << run;
 		type = AB_Job_GetType(j);
 		strType = AB_Job_Type2Char(type);
 		this->addlog(QString("JobType: ").append(strType));
@@ -1206,16 +1207,44 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 
 		strl = AB_Job_GetLogs(j);
 		strList = abt_conv::GwenStringListToQStringList(strl);
-		GWEN_StringList_free(strl); //! \todo macht jetzt abt_conv selbst oder?
-		this->addlog(QString("JobLog: ").append(strList.join(" - ")));
+		GWEN_StringList_free(strl); // \done macht jetzt abt_conv selbst oder?
+					    //NEIN! QStringlistToGwenStringList löscht sich selbst!
+					    //GwenToQ macht dies nicht!
+		//die logs von aqBanking ein wenig aufbereiten
+		// %22 durch " ersetzen
+		strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
+		// %28 durch ( ersetzen
+		strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
+		// %29 durch ) ersetzen
+		strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
+		// %3A durch : ersetzen
+		strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
+		// %C3%A4 durch ä ersetzen
+		strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
+		// %C3%84 durch Ä ersetzen
+		strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
+		// %C3%BC durch ü ersetzen
+		strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
+		// %C3%9C durch Ü ersetzen
+		strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
+		// %C3%B6 durch ö ersetzen
+		strList.replaceInStrings("%C3%BC", "ö", Qt::CaseSensitive);
+		// %C3%96 durch Ö ersetzen
+		strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
+		// %3D durch = ersetzen
+		strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
 
+		//Alle Strings der StringListe zum Log hinzufügen
+		for (int i=0; i<strList.count(); ++i) {
+			this->addlog(QString("JobLog: ").append(strList.at(i)));
+		}
 
 		j = AB_Job_List2Iterator_Next(jli);
 	}
 
 	AB_Job_List2Iterator_free(jli);
 
-	qDebug() << "in checkJobStatus()-end - RUN: " << run++;
+	qDebug() << "in checkJobStatus()-end - RUN: " << run;
 
 	return res;
 }
