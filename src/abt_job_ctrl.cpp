@@ -1259,7 +1259,8 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 
 	abt_job_info *jobinfo;
 	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
-	delete jobinfo; // und löschen
+	AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
+	delete jobinfo; // und jobinfo löschen
 
 	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
 	emit this->jobQueueListChanged();

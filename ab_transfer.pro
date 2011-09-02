@@ -25,7 +25,8 @@ SOURCES += src/main.cpp \
     src/abt_conv.cpp \
     src/widgets/extrastandingorderswidget.cpp \
     src/pages/page_da_new.cpp \
-    src/pages/page_ueberweisung_new.cpp
+    src/pages/page_ueberweisung_new.cpp \
+    src/widgets/extratransferwidget.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -46,7 +47,8 @@ HEADERS += src/mainwindow.h \
     src/abt_conv.h \
     src/widgets/extrastandingorderswidget.h \
     src/pages/page_da_new.h \
-    src/pages/page_ueberweisung_new.h
+    src/pages/page_ueberweisung_new.h \
+    src/widgets/extratransferwidget.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
@@ -55,7 +57,8 @@ FORMS += src/mainwindow.ui \
     src/widgets/knownempfaengerwidget.ui \
     src/pages/page_log.ui \
     src/pages/page_ausgang.ui \
-    src/widgets/extrastandingorderswidget.ui
+    src/widgets/extrastandingorderswidget.ui \
+    src/widgets/extratransferwidget.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
     documentation/Doxyfile
 RESOURCES += src/resources.qrc

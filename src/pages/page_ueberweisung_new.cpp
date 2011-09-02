@@ -30,6 +30,7 @@
 
 #include "page_ueberweisung_new.h"
 #include <QMessageBox>
+#include <QDebug>
 
 #include "../globalvars.h"
 #include "../abt_conv.h"
@@ -164,9 +165,9 @@ void Page_Ueberweisung_New::pushButton_Execute_clicked()
 	t->setValue(this->ueberweisungwidget->getValueABV());
 	t->setPurpose(this->ueberweisungwidget->getPurpose());
 
-	/** \todo Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
-	//wir setzen erstmal standarts für "Überweisung"
-	t->setTextKey(51); //Normale Überweisung
+	/* \done_PW Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
+	t->setTextKey(this->ueberweisungwidget->textKey());
+	qDebug() << "TextSchlüssel = " << t->getTextKey();
 	//folgende 3 Zeilen werden in mkTransfer aus util.c in aqbanking-cli auch nicht gesetzt!
 	//t->setTextKeyExt(000); //lt aqbanking doxy doku 51, aber lt http://www.zahlungsverkehrsfragen.de/textsl_dta.html wohl '000'
 	//t->setTransactionKey(""); //Buchungsschlüssel

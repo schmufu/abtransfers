@@ -37,6 +37,7 @@
 #include <QRegExpValidator>
 #include "../aqb_banking.h"
 #include "extrastandingorderswidget.h"
+#include "extratransferwidget.h"
 
 namespace Ui {
     class UeberweisungsWidget;
@@ -50,6 +51,7 @@ class UeberweisungsWidget : public QGroupBox {
 	Q_OBJECT
 private:
 	extraStandingOrdersWidget *da_widget;
+	extraTransferWidget *transfer_widget;
 
 public:
 	/** Mit diesem Typen wird definiert wie das Überweisungs-Widget aussehen
@@ -102,6 +104,10 @@ public:
 	void setPurpose(const QStringList &strList);
 	const QString getPurpose(int line) const;
 	void setPurpose(int line, const QString &str);
+
+/***** zusätzliche Funktionen für Überweisungen *****/
+	void setTextKey(int key);
+	int textKey() const;
 
 /***** Funktionen für Daueraufträge *****/
 	//! wrapper to extraStandingOrdersWidget

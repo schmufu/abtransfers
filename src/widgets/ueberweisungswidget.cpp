@@ -47,6 +47,7 @@ UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
 
 	this->m_banking = banking;
 	this->da_widget = NULL;
+	this->transfer_widget = NULL;
 
 	//Create Validators for Critical Numbers
 	QRegExpValidator *validatorKTO = new QRegExpValidator(this->ui->lineEdit_Kontonummer);
@@ -175,7 +176,10 @@ void UeberweisungsWidget::createDatedTransferWidgets()
  */
 void UeberweisungsWidget::createTransferWidgets()
 {
-
+	QVBoxLayout *vl = new QVBoxLayout();
+	this->transfer_widget = new extraTransferWidget(this);
+	vl->addWidget(this->transfer_widget);
+	this->ui->verticalLayout_11->addLayout(vl);
 }
 
 void UeberweisungsWidget::createInternationalTransferWidgets()
@@ -431,6 +435,25 @@ const QString UeberweisungsWidget::getPurpose(int line) const
 	if (edit == NULL)
 		return QString("EDIT \"%1\" NOT FOUND").arg(editName);
 	return edit->text().toUtf8();
+}
+
+
+/******************************************************************************/
+/****** Funktionen die die Daten in this->transfer_widget setzen         ******/
+/****** bzw. die dort eingegebenen Daten abfragen                        ******/
+/******************************************************************************/
+/*! setzt den Textschlüssel entsprechend der Übergabe */
+void UeberweisungsWidget::setTextKey(int key)
+{
+	Q_ASSERT_X(this->transfer_widget != NULL, "UeberweisungsWidget", "extraTransferWidget called without object");
+	this->transfer_widget->setTextKey(key);
+}
+
+/*! gibt den aktuell ausgewählten Textschlüssel zurück */
+int UeberweisungsWidget::textKey() const
+{
+	Q_ASSERT_X(this->transfer_widget != NULL, "UeberweisungsWidget", "extraTransferWidget called without object");
+	return this->transfer_widget->getTextKey();
 }
 
 
