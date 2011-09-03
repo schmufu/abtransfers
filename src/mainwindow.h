@@ -43,6 +43,7 @@
 #include "pages/page_da_edit_delete.h"
 #include "pages/page_da_new.h"
 #include "pages/page_ueberweisung_new.h"
+#include "pages/page_internaltransfer_new.h"
 
 namespace Ui {
     class MainWindow;
@@ -68,6 +69,7 @@ private:
 	Page_DA_Edit_Delete *da_edit_del;
 	Page_DA_New *da_new;
 	Page_Ueberweisung_New *page_transfer_new;
+	Page_InternalTransfer_New *page_internaltransfer_new;
 
 	QDockWidget *dock_KnownEmpfaenger;
 

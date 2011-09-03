@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->da_edit_del = new Page_DA_Edit_Delete(banking, this->accounts, ui->tabWidget_DA);
 	this->da_new = new Page_DA_New(banking, this->accounts, ui->tabWidget_DA);
 	this->page_transfer_new = new Page_Ueberweisung_New(banking, this->accounts, ui->tabWidget_UW);
+	this->page_internaltransfer_new = new Page_InternalTransfer_New(banking, this->accounts, ui->tabWidget_UW);
 	this->dock_KnownEmpfaenger = NULL;
 
 	//ui->tabWidget_DA->clear();
@@ -75,6 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->tabWidget_DA->addTab(this->da_edit_del, tr("Bearbeiten"));
 
 	ui->tabWidget_UW->insertTab(0, this->page_transfer_new, tr("National"));
+	ui->tabWidget_UW->insertTab(1, this->page_internaltransfer_new, tr("Umbuchung"));
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -121,6 +123,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->page_transfer_new, SIGNAL(createTransfer(aqb_AccountInfo*,const abt_transaction*)),
 		this->jobctrl, SLOT(addNewSingleTransfer(aqb_AccountInfo*,const abt_transaction*)));
 
+	//Neue "Umbuchung" anlegen
+	connect(this->page_internaltransfer_new, SIGNAL(createInternalTransfer(aqb_AccountInfo*,const abt_transaction*)),
+		this->jobctrl, SLOT(addNewInternalTransfer(aqb_AccountInfo*,const abt_transaction*)));
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
