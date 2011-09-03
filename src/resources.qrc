@@ -14,5 +14,6 @@
 	<file alias="right">../images/right-icon_16x16.png</file>
 	<file alias="delete">../images/delete-icon_16x16.png</file>
 	<file alias="ok">../images/ok-icon_16x16.png</file>
+	<file alias="knownEmpfaenger">../images/system-users.png</file>
     </qresource>
 </RCC>

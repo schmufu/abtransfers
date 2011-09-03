@@ -45,11 +45,13 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 	this->DisplayEmpfaenger();
 
 	this->ui->treeWidget->setDragEnabled(true);
+	qDebug() << this << "created";
 }
 
 KnownEmpfaengerWidget::~KnownEmpfaengerWidget()
 {
 	delete ui;
+	qDebug() << this << "deleted";
 }
 
 void KnownEmpfaengerWidget::changeEvent(QEvent *e)

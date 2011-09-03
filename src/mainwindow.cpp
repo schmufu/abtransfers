@@ -41,6 +41,9 @@
 #include <QVBoxLayout>
 #include <QItemSelectionModel>
 #include <QMessageBox>
+#include <QAction>
+#include <QIcon>
+#include <QTimer>
 
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
@@ -65,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->da_edit_del = new Page_DA_Edit_Delete(banking, this->accounts, ui->tabWidget_DA);
 	this->da_new = new Page_DA_New(banking, this->accounts, ui->tabWidget_DA);
 	this->page_transfer_new = new Page_Ueberweisung_New(banking, this->accounts, ui->tabWidget_UW);
+	this->dock_KnownEmpfaenger = NULL;
 
 	//ui->tabWidget_DA->clear();
 	ui->tabWidget_DA->addTab(this->da_new, tr("Neu"));
@@ -125,6 +129,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//Default-Entry Überweisung auswählen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
+
+	//DockWidget erstellen
+	this->dock_KnownEmpfaenger = new QDockWidget(tr("Bekannte Empfänger"),this);
+	qDebug() << "creating knownEmpfaengerWidget";
+	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownEmpfaenger);
+	this->dock_KnownEmpfaenger->setWidget(kew);
+	this->dock_KnownEmpfaenger->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	this->dock_KnownEmpfaenger->setFloating(false);
+	this->dock_KnownEmpfaenger->hide();
+	this->dock_KnownEmpfaenger->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownEmpfaenger);
+
+
+	QTimer *timer = new QTimer(this);
+	timer->setSingleShot(true);
+	timer->start(10);
+	connect(timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
 }
 
 MainWindow::~MainWindow()
@@ -144,6 +165,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeEvent(QEvent *e)
 {
+	qDebug() << "changeEvent called with: " << e;
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -152,6 +174,15 @@ void MainWindow::changeEvent(QEvent *e)
 	default:
 		break;
 	}
+}
+
+//private Slot
+void MainWindow::TimerTimeOut()
+{
+	//Actions können zur mainToolBar wohl erst hinzugefügt werden wenn die
+	//execLoop läuft, deswegen erst hier nach ablauf des Timers.
+	//(Der Timer läuft erst ab wenn die execLoop gestartet ist)
+	this->ui->mainToolBar->addAction(this->dock_KnownEmpfaenger->toggleViewAction());
 }
 
 void MainWindow::on_actionDebug_Info_triggered()
@@ -249,8 +280,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 
 void MainWindow::on_actionAddGetDated_triggered()
 {
-	this->ui->statusBar->showMessage("können wir eine Lastschrift veranlassen?");
-
+	this->ui->statusBar->showMessage("Action zur MainBar hinzugefügt");
 }
 
 void MainWindow::on_actionExecQueued_triggered()

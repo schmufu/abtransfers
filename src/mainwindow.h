@@ -33,6 +33,7 @@
 
 #include <QMainWindow>
 #include <QtGui/QListWidgetItem>
+#include <QtGui/QDockWidget>
 
 #include "aqb_accounts.h"
 #include "abt_job_ctrl.h"
@@ -68,8 +69,10 @@ private:
 	Page_DA_New *da_new;
 	Page_Ueberweisung_New *page_transfer_new;
 
+	QDockWidget *dock_KnownEmpfaenger;
 
 private slots:
+	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
 	void on_actionExecQueued_triggered();
 	void on_actionAddGetDated_triggered();
