@@ -62,17 +62,25 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	QRegExpValidator *validatorText = new QRegExpValidator(this);
 	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Za-z]*", Qt::CaseSensitive));
 
-	this->verw1 = new QLineEdit(this);
-	this->verw2 = new QLineEdit(this);
-	this->verw3 = new QLineEdit(this);
-	this->verw4 = new QLineEdit(this);
+	this->currency = new QLineEdit("EUR", this);
+	this->currency->setReadOnly(true);
+	this->currency->setMaximumSize(45,25);
+	this->betrag = new QLineEdit(this);
+	this->betrag->setMinimumWidth(125);
+	this->betrag->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+	this->betrag->setValidator(validatorBetrag);
+	this->betrag->setAlignment(Qt::AlignRight);
 
+	this->verw1 = new QLineEdit(this);
 	this->verw1->setMaxLength(27);
 	this->verw1->setValidator(validatorText);
+	this->verw2 = new QLineEdit(this);
 	this->verw2->setMaxLength(27);
 	this->verw2->setValidator(validatorText);
+	this->verw3 = new QLineEdit(this);
 	this->verw3->setMaxLength(27);
 	this->verw3->setValidator(validatorText);
+	this->verw4 = new QLineEdit(this);
 	this->verw4->setMaxLength(27);
 	this->verw4->setValidator(validatorText);
 
@@ -89,12 +97,6 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	QHBoxLayout *layoutBetrag = new QHBoxLayout();
 	layoutBetrag->addSpacerItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed));
 	layoutBetrag->addWidget(new QLabel(tr("Betrag: (Euro, Cent)"), groupBox));
-	this->currency = new QLineEdit("EUR", groupBox);
-	this->currency->setReadOnly(true);
-	this->currency->setMaximumSize(45,25);
-	this->betrag = new QLineEdit(groupBox);
-	this->betrag->setValidator(validatorBetrag);
-	this->betrag->setAlignment(Qt::AlignRight);
 	layoutBetrag->addWidget(this->currency);
 	layoutBetrag->addWidget(this->betrag);
 	QHBoxLayout *layoutVerw1 = new QHBoxLayout();
