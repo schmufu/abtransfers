@@ -40,8 +40,6 @@
 Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent) :
 	QWidget(parent)
 {
-	qDebug() << "internalTransfer" << "Constructor START";
-
 	this->accounts = acc;
 	this->banking = banking;
 
@@ -79,19 +77,11 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 
 	this->main_layout = new QVBoxLayout();
 
-	qDebug() << "internalTransfer" << 1;
-
-//	QVBoxLayout *layoutLeft = new QVBoxLayout();
-//	layoutLeft->addWidget(this->accountwidget);
-//	layoutLeft->addWidget(this->knownempfaengerwidget);
-
 	//unterste Ebene (Ausführen/Rückgängig)
 	QHBoxLayout *layoutBottom = new QHBoxLayout();
 	layoutBottom->addSpacerItem(new QSpacerItem(10,1,QSizePolicy::Expanding, QSizePolicy::Fixed));
 	layoutBottom->addWidget(this->pushButton_Revert);
 	layoutBottom->addWidget(this->pushButton_Execute);
-
-	qDebug() << "internalTransfer" << 2;
 
 	QGroupBox *groupBox = new QGroupBox(tr("Umbuchungs-Daten"), this);
 
@@ -117,8 +107,6 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	layoutVerw4->addWidget(new QLabel(tr("Zeile 4:"), groupBox));
 	layoutVerw4->addWidget(this->verw4);
 
-	qDebug() << "internalTransfer" << 3;
-
 	QVBoxLayout *layoutGrpBox = new QVBoxLayout();
 	layoutGrpBox->addLayout(layoutBetrag);
 	layoutGrpBox->addLayout(layoutVerw1);
@@ -126,12 +114,6 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	layoutGrpBox->addLayout(layoutVerw3);
 	layoutGrpBox->addLayout(layoutVerw4);
 	groupBox->setLayout(layoutGrpBox);
-
-	qDebug() << "internalTransfer" << 4;
-
-//	QHBoxLayout *layoutTop = new QHBoxLayout();
-//	layoutTop->addLayout(layoutLeft);
-//	layoutTop->addWidget(this->ueberweisungwidget);
 
 	QLabel *label_von = new QLabel(tr("Von Konto:"), this);
 	QLabel *label_zu = new QLabel(tr("Zu Konto:"), this);
@@ -141,12 +123,8 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	this->main_layout->addWidget(label_zu);
 	this->main_layout->addWidget(this->accountwidget_2);
 	this->main_layout->addWidget(groupBox, 4);
-	qDebug() << "internalTransfer" << 5;
 	this->main_layout->addLayout(layoutBottom);
-
 	this->setLayout(this->main_layout);
-
-	qDebug() << "internalTransfer" << 6;
 
 	//Ausgangssituation wie nach einem rückgängig machen
 	this->pushButton_Revert_clicked();
@@ -164,7 +142,6 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	connect(this->accountwidget_2, SIGNAL(Account_Changed(const aqb_AccountInfo*)),
 		this, SLOT(account2_selected(const aqb_AccountInfo*)));
 
-	qDebug() << "internalTransfer" << "Constructor DONE";
 }
 
 Page_InternalTransfer_New::~Page_InternalTransfer_New()
@@ -211,25 +188,6 @@ void Page_InternalTransfer_New::account1_selected(const aqb_AccountInfo *account
 
 	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
 	// und nachfragen ob diese verworfen werden sollen.
-//	if (this->ueberweisungwidget->hasChanges()) {
-//		QMessageBox msg;
-//		msg.setWindowTitle(tr("Überweisung ausführen?"));
-//		msg.setIcon(QMessageBox::Question);
-//		msg.setText(tr("Die aktuelle Eingegebenen Überweisungsdaten wurden noch nicht<br />"
-//			       "in den Ausgangskorb gestellt!<br /><br />"
-//			       "Soll die Überweisung durchgeführt werden?<br />"
-//			       "<i>(bei Nein gehen die Eingaben verloren!)</i>"));
-//		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-//		msg.setDefaultButton(QMessageBox::Yes);
-//
-//		int ret = msg.exec();
-//
-//		if (ret == QMessageBox::Yes) {
-//			//Überweisung den Jobs hinzufügen
-//			this->pushButton_Execute_clicked();
-//			//und danach hier weiter machen ;)
-//		}
-//	}
 }
 
 /*! Slot wird aufgerufen wenn ein neuer Account_2 gewählt wurde */
@@ -252,25 +210,6 @@ void Page_InternalTransfer_New::account2_selected(const aqb_AccountInfo *account
 
 	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
 	// und nachfragen ob diese verworfen werden sollen.
-//	if (this->ueberweisungwidget->hasChanges()) {
-//		QMessageBox msg;
-//		msg.setWindowTitle(tr("Überweisung ausführen?"));
-//		msg.setIcon(QMessageBox::Question);
-//		msg.setText(tr("Die aktuelle Eingegebenen Überweisungsdaten wurden noch nicht<br />"
-//			       "in den Ausgangskorb gestellt!<br /><br />"
-//			       "Soll die Überweisung durchgeführt werden?<br />"
-//			       "<i>(bei Nein gehen die Eingaben verloren!)</i>"));
-//		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-//		msg.setDefaultButton(QMessageBox::Yes);
-//
-//		int ret = msg.exec();
-//
-//		if (ret == QMessageBox::Yes) {
-//			//Überweisung den Jobs hinzufügen
-//			this->pushButton_Execute_clicked();
-//			//und danach hier weiter machen ;)
-//		}
-//	}
 }
 
 //private slot
