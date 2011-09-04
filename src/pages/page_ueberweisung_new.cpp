@@ -83,10 +83,6 @@ Page_Ueberweisung_New::Page_Ueberweisung_New(const aqb_banking *banking, aqb_Acc
 	connect(this->pushButton_Revert, SIGNAL(clicked()),
 		this, SLOT(pushButton_Revert_clicked()));
 
-// geht jetzt per DragDrop
-//	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
-//		this, SLOT(on_EmpfaengerSelected(const abt_EmpfaengerInfo*)));
-
 	const aqb_AccountInfo *SelAccount = this->accountwidget->getSelectedAccount();
 	if (SelAccount != NULL) {
 		this->account_selected(SelAccount);
@@ -111,7 +107,14 @@ Page_Ueberweisung_New::~Page_Ueberweisung_New()
 /*! Slot wird aufgerufen wenn ein neuer Account gewählt wurde */
 void Page_Ueberweisung_New::account_selected(const aqb_AccountInfo *account)
 {
-	//Ein neuer Account wurde gewählt,
+	//Ein neuer Account wurde gewählt
+	this->ueberweisungwidget->setDisabled(account == NULL);
+	this->pushButton_Execute->setDisabled(account == NULL);
+	this->pushButton_Revert->setDisabled(account == NULL);
+
+	if (account == NULL) {
+		return; //Abbruch, wenn kein gültiger Account gewählt ist
+	}
 
 	// Prüfen ob Änderungen im aktuellen ÜberweisungsForm gemacht wurden.
 	// und nachfragen ob diese verworfen werden sollen.
@@ -150,6 +153,15 @@ void Page_Ueberweisung_New::pushButton_Execute_clicked()
 
 	//Aktuell ausgewählten Account holen
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	if (acc == NULL) {
+		QMessageBox::critical(this,
+				      tr("Senden nicht möglich"),
+				      tr("Es ist kein Account ausgewählt von dem "
+					 "diese Überweisung ausgeführt werden "
+					 "soll."),
+				      QMessageBox::Ok);
+		return; //Fehler aufgetreten, Abbruch
+	}
 
 	//Neue Transaction erstellen
 	abt_transaction *t = new abt_transaction();

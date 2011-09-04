@@ -1085,6 +1085,11 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
 
+	/*! \todo Das Speichern wird auch ausgeführt wenn keine DAs empfangen
+		  wurden. Somit werden alle vorhandenen DAs gelöscht!
+		  Es muss nur gespeichert werden wenn auch DAs empfangen wurden!
+	*/
+
 	//Die lokal gespeicherten DAs auch in den Einstellungen merken.
 	QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
 	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));

@@ -50,12 +50,6 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 	this->pushButton_Execute = new QPushButton(tr("Ausführen"), this);
 	this->pushButton_Revert = new QPushButton(tr("Rückgängig"), this);
 
-	//disable all until a account is selected
-//	this->ueberweisungwidget->setDisabled(true);
-//	this->knownempfaengerwidget->setDisabled(true);
-//	this->pushButton_Execute->setDisabled(true);
-//	this->pushButton_Revert->setDisabled(true);
-
 	this->main_layout = new QVBoxLayout();
 
 	QVBoxLayout *layoutLeft = new QVBoxLayout();
@@ -84,10 +78,6 @@ Page_DA_New::Page_DA_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget 
 	connect(this->pushButton_Revert, SIGNAL(clicked()),
 		this, SLOT(pushButton_Revert_clicked()));
 
-//Wird jetzt per dragdrop gemacht
-//	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
-//		this, SLOT(on_EmpfaengerSelected(const abt_EmpfaengerInfo*)));
-
 	const aqb_AccountInfo *SelAccount = this->accountwidget->getSelectedAccount();
 	if (SelAccount != NULL) {
 		this->account_selected(SelAccount);
@@ -114,17 +104,23 @@ Page_DA_New::~Page_DA_New()
 /*! Slot wird aufgerufen wenn ein neuer Account gewählt wurde */
 void Page_DA_New::account_selected(const aqb_AccountInfo *account)
 {
-	//Ein neuer Account wurde gewählt,
+	//Ein neuer Account wurde gewählt
+
+	this->ueberweisungwidget->setDisabled(account == NULL);
+	this->pushButton_Execute->setDisabled(account == NULL);
+	this->pushButton_Revert->setDisabled(account == NULL);
+
+	if (account == NULL) return; //Abbruch, wenn kein account gewählt.
 
 	// Prüfen ob Änderungen im aktuellen ÜberweisungsForm gemacht wurden.
 	// und nachfragen ob diese verworfen werden sollen.
 	if (this->ueberweisungwidget->hasChanges()) {
 		QMessageBox msg;
-		msg.setWindowTitle(tr("Überweisung ausführen?"));
+		msg.setWindowTitle(tr("Dauerauftrag anlegen?"));
 		msg.setIcon(QMessageBox::Question);
-		msg.setText(tr("Die aktuelle Eingegebenen Überweisungsdaten wurden noch nicht<br />"
+		msg.setText(tr("Die aktuell eingegebenen Daten wurden noch nicht<br />"
 			       "in den Ausgangskorb gestellt!<br /><br />"
-			       "Soll die Überweisung durchgeführt werden?<br />"
+			       "Soll das Anlegen des Dauerauftrages durchgeführt werden?<br />"
 			       "<i>(bei Nein gehen die Eingaben verloren!)</i>"));
 		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		msg.setDefaultButton(QMessageBox::Yes);
@@ -153,6 +149,15 @@ void Page_DA_New::pushButton_Execute_clicked()
 
 	//Aktuell ausgewählten Account holen
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	if (acc == NULL) {
+		QMessageBox::critical(this,
+				      tr("Senden nicht möglich"),
+				      tr("Es ist kein Account ausgewählt von dem "
+					 "dieser Dauerauftrag ausgeführt werden "
+					 "soll."),
+				      QMessageBox::Ok);
+		return; //Fehler aufgetreten, Abbruch
+	}
 
 	//Neue Transaction erstellen
 	abt_transaction *t = new abt_transaction();

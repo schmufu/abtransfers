@@ -64,9 +64,6 @@ Page_DA_Edit_Delete::Page_DA_Edit_Delete(const aqb_banking *banking, aqb_Account
 	this->ui->pushButton_Execute->setDisabled(true);
 
 	//Signals der Widgets mit den Slots dieser Page verbinden
-	connect(this->knownempfaengerwidget, SIGNAL(EmpfaengerSelected(const abt_EmpfaengerInfo*)),
-		this, SLOT(debug_Slot(const abt_EmpfaengerInfo*)));
-
 	const aqb_AccountInfo *SelAccount = this->accountwidget->getSelectedAccount();
 	if (SelAccount != NULL) {
 		this->account_selected(SelAccount);
@@ -108,17 +105,19 @@ void Page_DA_Edit_Delete::on_pushButton_Revert_clicked()
 	}
 }
 
-
-void Page_DA_Edit_Delete::debug_Slot(const abt_EmpfaengerInfo *data)
-{
-	qDebug() << "Signale received! Name=" << data->getName() << "Kto=" << data->getBLZ();
-}
-
 /*! Slot wird aufgerufen wenn ein neuer Account gewählt wurde */
 void Page_DA_Edit_Delete::account_selected(const aqb_AccountInfo *account)
 {
 	//Ein neuer Account wurde gewählt,
-	this->ui->groupBox_known_DAs->setDisabled(false);
+	if (account == NULL) {
+		//account-Auswahl eines nicht vorhandenen Accounts
+		this->ui->groupBox_known_DAs->setDisabled(true);
+		this->ueberweisungwidget->setDisabled(true);
+		return; //Abbruch, kein Account gewählt
+	} else {
+		this->ui->groupBox_known_DAs->setDisabled(false);
+		this->ueberweisungwidget->setDisabled(false);
+	}
 
 	/*! \todo Prüfen ob Änderungen im aktuellen ÜberweisungsForm gemacht wurden.
 	 *	  und nachfragen ob diese verworfen werden sollen.
@@ -410,6 +409,15 @@ void Page_DA_Edit_Delete::on_pushButton_Execute_clicked()
 
 
 	aqb_AccountInfo *acc = this->accountwidget->getSelectedAccount();
+	if (acc == NULL) {
+		QMessageBox::critical(this,
+				      tr("Senden nicht möglich"),
+				      tr("Es ist kein Account ausgewählt von dem "
+					 "dieser Dauerauftrag ausgeführt werden "
+					 "soll."),
+				      QMessageBox::Ok);
+		return; //Fehler aufgetreten, Abbruch
+	}
 	abt_transaction *t;
 	//selectedItems() stimmt nicht wenn dieser Slot über die Abfrage ob Änderungen
 	//übertragen werden sollen aufgerufen wird. (in on_treeWidget_itemSelectionChanged())

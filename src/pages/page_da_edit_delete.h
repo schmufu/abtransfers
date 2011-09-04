@@ -80,7 +80,6 @@ private slots:
 	void on_pushButton_DA_Aktualisieren_clicked();
 	void on_pushButton_DA_Delete_clicked();
 	void on_pushButton_Revert_clicked();
-	void debug_Slot(const abt_EmpfaengerInfo *data);
 	void account_selected(const aqb_AccountInfo *account);
 	void showKnownDAs(const aqb_AccountInfo *account);
 };
