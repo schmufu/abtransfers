@@ -89,9 +89,11 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	layoutBetrag->addSpacerItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed));
 	layoutBetrag->addWidget(new QLabel(tr("Betrag: (Euro, Cent)"), groupBox));
 	this->currency = new QLineEdit("EUR", groupBox);
-	this->currency->setDisabled(true);
+	this->currency->setReadOnly(true);
+	this->currency->setMaximumSize(45,25);
 	this->betrag = new QLineEdit(groupBox);
 	this->betrag->setValidator(validatorBetrag);
+	this->betrag->setAlignment(Qt::AlignRight);
 	layoutBetrag->addWidget(this->currency);
 	layoutBetrag->addWidget(this->betrag);
 	QHBoxLayout *layoutVerw1 = new QHBoxLayout();
@@ -163,6 +165,7 @@ Page_InternalTransfer_New::~Page_InternalTransfer_New()
 void Page_InternalTransfer_New::setEditsDisabled(bool disable)
 {
 	this->betrag->setDisabled(disable);
+	this->currency->setDisabled(disable);
 	this->verw1->setDisabled(disable);
 	this->verw2->setDisabled(disable);
 	this->verw3->setDisabled(disable);
@@ -174,7 +177,6 @@ void Page_InternalTransfer_New::setEditsDisabled(bool disable)
 void Page_InternalTransfer_New::account1_selected(const aqb_AccountInfo *account)
 {
 	//Ein neuer Account1 wurde gewählt
-	qDebug() << "New Account1 Selected";
 	if (account == NULL) { 	//kein account gewählt --> alles deaktivieren
 		this->setEditsDisabled(true);
 		this->accountwidget_2->setSelectedAccount(NULL);
@@ -182,19 +184,20 @@ void Page_InternalTransfer_New::account1_selected(const aqb_AccountInfo *account
 		return;
 	}
 
+	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
+	// und nachfragen ob diese verworfen werden sollen.
+	//Machen wir nicht, wir lassen einfach die ausgefüllten Felder so,
+	//wenn jemand alles löschen möchte kann er "Rückgängig" anklicken.
+
 	this->setEditsDisabled(true);
 	this->accountwidget_2->setDisabled(false);
 	this->accountwidget_2->setSelectedAccount(NULL);
-
-	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
-	// und nachfragen ob diese verworfen werden sollen.
 }
 
 /*! Slot wird aufgerufen wenn ein neuer Account_2 gewählt wurde */
 void Page_InternalTransfer_New::account2_selected(const aqb_AccountInfo *account)
 {
 	//Ein neuer Account2 wurde gewählt
-	qDebug() << "New Account2 Selected";
 	if (account == NULL) { 	//kein account gewählt --> edits deaktivieren
 		this->setEditsDisabled(true);
 		return;
@@ -207,9 +210,6 @@ void Page_InternalTransfer_New::account2_selected(const aqb_AccountInfo *account
 	}
 
 	this->setEditsDisabled(false);
-
-	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
-	// und nachfragen ob diese verworfen werden sollen.
 }
 
 //private slot
@@ -230,6 +230,22 @@ void Page_InternalTransfer_New::pushButton_Execute_clicked()
 		return;
 	}
 
+	QStringList purpose;
+	if (!this->verw1->text().isEmpty()) purpose.append(this->verw1->text());
+	if (!this->verw2->text().isEmpty()) purpose.append(this->verw2->text());
+	if (!this->verw3->text().isEmpty()) purpose.append(this->verw3->text());
+	if (!this->verw4->text().isEmpty()) purpose.append(this->verw4->text());
+
+	//Prüfen ob alle benötigten Eingaben vorhanden sind
+	if ((purpose.size() == 0) || this->betrag->text().isEmpty()) {
+		QMessageBox::critical(this, tr("Eingaben fehlen"),
+				      tr("Betrag und/oder Verwendungszweck fehlt\n\n"
+					 "Bitte geben Sie diese Angaben ein"),
+				      QMessageBox::Ok);
+		return;
+	}
+
+
 
 	//Neue Transaction erstellen
 	abt_transaction *t = new abt_transaction();
@@ -237,16 +253,11 @@ void Page_InternalTransfer_New::pushButton_Execute_clicked()
 	//Den Localen Part (Absender) füllen
 	t->fillLocalFromAccount(acc1->get_AB_ACCOUNT());
 	//und die Empfänger-Daten setzen
-	t->setRemoteName(QStringList(acc2->Name()));
+	t->setRemoteName(QStringList(acc2->OwnerName()));
 	t->setRemoteAccountNumber(acc2->Number());
 	t->setRemoteBankCode(acc2->BankCode());
 	t->setRemoteBankName(acc2->BankName());
 	t->setValue(abt_conv::ABValueFromString(this->betrag->text(), this->currency->text()));
-	QStringList purpose;
-	if (!this->verw1->text().isEmpty()) purpose.append(this->verw1->text());
-	if (!this->verw2->text().isEmpty()) purpose.append(this->verw2->text());
-	if (!this->verw3->text().isEmpty()) purpose.append(this->verw3->text());
-	if (!this->verw4->text().isEmpty()) purpose.append(this->verw4->text());
 	t->setPurpose(purpose);
 
 	//Diese Daten als Signal senden (werden dann vom jobctrl bearbeitet)

@@ -302,19 +302,19 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transa
 
 	//Create Info for Internal Transfer
 	QString info;
-	info.append("Von:;");
+	info.append("Von: ");
 	info.append(t->getLocalName());
 	info.append(" (" + t->getLocalAccountNumber());
 	info.append(" - " + t->getLocalBankCode() + ")");
 	info.append(";");
-	info.append("Zu:;");
+	info.append("Zu: ");
 	info.append(t->getRemoteName().at(0));
 	info.append(" (" + t->getRemoteAccountNumber());
 	info.append(" - " + t->getRemoteBankCode() + ")");
 	info.append(";");
 	info.append("Verwendungszweck:;");
 	for (int i=0; i<t->getPurpose().size(); ++i) {
-		info.append(t->getPurpose().at(i) + ";");
+		info.append("   " + t->getPurpose().at(i) + ";");
 	}
 	info.append("Betrag: ");
 	const AB_VALUE *v = t->getValue();
