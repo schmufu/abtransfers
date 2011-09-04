@@ -36,6 +36,7 @@
 
 #include "../globalvars.h"
 #include "../abt_conv.h"
+#include "../abt_validators.h"
 
 Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent) :
 	QWidget(parent)
@@ -50,7 +51,7 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	this->pushButton_Revert = new QPushButton(tr("Rückgängig"), this);
 
 
-	QRegExpValidator *validatorBetrag = new QRegExpValidator(this);
+	BetragValidator *validatorBetrag = new BetragValidator(this);
 	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
 
 	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen

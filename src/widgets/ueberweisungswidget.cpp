@@ -35,6 +35,7 @@
 #include <QDebug>
 
 #include "../abt_conv.h"
+#include "../abt_validators.h"
 
 UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
 					 TransferWidgetType type,
@@ -52,7 +53,7 @@ UeberweisungsWidget::UeberweisungsWidget(const aqb_banking *banking,
 	//Create Validators for Critical Numbers
 	QRegExpValidator *validatorKTO = new QRegExpValidator(this->ui->lineEdit_Kontonummer);
 	QRegExpValidator *validatorBLZ = new QRegExpValidator(this->ui->lineEdit_Bankleitzahl);
-	QRegExpValidator *validatorBetrag = new QRegExpValidator(this->ui->lineEdit_Betrag);
+	BetragValidator *validatorBetrag = new BetragValidator(this->ui->lineEdit_Betrag);
 
 	validatorKTO->setRegExp(QRegExp("[0-9]*", Qt::CaseSensitive));
 	validatorBLZ->setRegExp(QRegExp("[0-9]*", Qt::CaseSensitive));
