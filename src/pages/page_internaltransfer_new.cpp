@@ -148,6 +148,9 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 
 	qDebug() << "internalTransfer" << 6;
 
+	//Ausgangssituation wie nach einem rückgängig machen
+	this->pushButton_Revert_clicked();
+
 	//Signals der Widgets mit den Slots dieser Page verbinden
 	connect(this->pushButton_Execute, SIGNAL(clicked()),
 		this, SLOT(pushButton_Execute_clicked()));
@@ -155,13 +158,9 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	connect(this->pushButton_Revert, SIGNAL(clicked()),
 		this, SLOT(pushButton_Revert_clicked()));
 
-	this->accountwidget_1->setSelectedAccount(NULL);
-	this->accountwidget_2->setSelectedAccount(NULL);
-	this->setEditsDisabled(true);
-	this->accountwidget_2->setDisabled(true);
-
 	connect(this->accountwidget_1, SIGNAL(Account_Changed(const aqb_AccountInfo*)),
 		this, SLOT(account1_selected(const aqb_AccountInfo*)));
+
 	connect(this->accountwidget_2, SIGNAL(Account_Changed(const aqb_AccountInfo*)),
 		this, SLOT(account2_selected(const aqb_AccountInfo*)));
 
@@ -280,6 +279,18 @@ void Page_InternalTransfer_New::pushButton_Execute_clicked()
 	//Aktuell ausgewählte Accounts holen
 	aqb_AccountInfo *acc1 = this->accountwidget_1->getSelectedAccount();
 	aqb_AccountInfo *acc2 = this->accountwidget_2->getSelectedAccount();
+
+	//Sicherheitshalber prüfen ob beide Accounts gewählt sind
+	if ((acc1 == NULL) || (acc2 == NULL)) {
+		qWarning("Accounts not selected, abort");
+		return;
+	}
+	//Accounts müssen unterschiedlich sein
+	if (acc1 == acc2) {
+		qWarning("Accounts are the same, abort");
+		return;
+	}
+
 
 	//Neue Transaction erstellen
 	abt_transaction *t = new abt_transaction();
