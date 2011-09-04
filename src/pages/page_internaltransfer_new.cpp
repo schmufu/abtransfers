@@ -51,10 +51,31 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	this->pushButton_Execute = new QPushButton(tr("Ausführen"), this);
 	this->pushButton_Revert = new QPushButton(tr("Rückgängig"), this);
 
+
+	QRegExpValidator *validatorBetrag = new QRegExpValidator(this);
+	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
+
+	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen
+//	UppercaseValidator *validatorText = new UppercaseValidator(this);
+//	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Z]*", Qt::CaseSensitive));
+
+	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
+	QRegExpValidator *validatorText = new QRegExpValidator(this);
+	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Za-z]*", Qt::CaseSensitive));
+
 	this->verw1 = new QLineEdit(this);
 	this->verw2 = new QLineEdit(this);
 	this->verw3 = new QLineEdit(this);
 	this->verw4 = new QLineEdit(this);
+
+	this->verw1->setMaxLength(27);
+	this->verw1->setValidator(validatorText);
+	this->verw2->setMaxLength(27);
+	this->verw2->setValidator(validatorText);
+	this->verw3->setMaxLength(27);
+	this->verw3->setValidator(validatorText);
+	this->verw4->setMaxLength(27);
+	this->verw4->setValidator(validatorText);
 
 	this->main_layout = new QVBoxLayout();
 
@@ -80,6 +101,7 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	this->currency = new QLineEdit("EUR", groupBox);
 	this->currency->setDisabled(true);
 	this->betrag = new QLineEdit(groupBox);
+	this->betrag->setValidator(validatorBetrag);
 	layoutBetrag->addWidget(this->currency);
 	layoutBetrag->addWidget(this->betrag);
 	QHBoxLayout *layoutVerw1 = new QHBoxLayout();
@@ -133,13 +155,15 @@ Page_InternalTransfer_New::Page_InternalTransfer_New(const aqb_banking *banking,
 	connect(this->pushButton_Revert, SIGNAL(clicked()),
 		this, SLOT(pushButton_Revert_clicked()));
 
-	const aqb_AccountInfo *SelAccount = this->accountwidget_1->getSelectedAccount();
-	if (SelAccount != NULL) {
-		this->account_selected(SelAccount);
-	}
+	this->accountwidget_1->setSelectedAccount(NULL);
+	this->accountwidget_2->setSelectedAccount(NULL);
+	this->setEditsDisabled(true);
+	this->accountwidget_2->setDisabled(true);
 
 	connect(this->accountwidget_1, SIGNAL(Account_Changed(const aqb_AccountInfo*)),
-		this, SLOT(account_selected(const aqb_AccountInfo*)));
+		this, SLOT(account1_selected(const aqb_AccountInfo*)));
+	connect(this->accountwidget_2, SIGNAL(Account_Changed(const aqb_AccountInfo*)),
+		this, SLOT(account2_selected(const aqb_AccountInfo*)));
 
 	qDebug() << "internalTransfer" << "Constructor DONE";
 }
@@ -151,13 +175,81 @@ Page_InternalTransfer_New::~Page_InternalTransfer_New()
 	delete this->accountwidget_2;
 	delete this->pushButton_Execute;
 	delete this->pushButton_Revert;
+	delete this->betrag;
+	delete this->verw1;
+	delete this->verw2;
+	delete this->verw3;
+	delete this->verw4;
 	delete this->main_layout;
 }
 
-/*! Slot wird aufgerufen wenn ein neuer Account gewählt wurde */
-void Page_InternalTransfer_New::account_selected(const aqb_AccountInfo *account)
+//private
+void Page_InternalTransfer_New::setEditsDisabled(bool disable)
 {
-	//Ein neuer Account wurde gewählt,
+	this->betrag->setDisabled(disable);
+	this->verw1->setDisabled(disable);
+	this->verw2->setDisabled(disable);
+	this->verw3->setDisabled(disable);
+	this->verw4->setDisabled(disable);
+	this->pushButton_Execute->setDisabled(disable);
+}
+
+/*! Slot wird aufgerufen wenn ein neuer Account_1 gewählt wurde */
+void Page_InternalTransfer_New::account1_selected(const aqb_AccountInfo *account)
+{
+	//Ein neuer Account1 wurde gewählt
+	qDebug() << "New Account1 Selected";
+	if (account == NULL) { 	//kein account gewählt --> alles deaktivieren
+		this->setEditsDisabled(true);
+		this->accountwidget_2->setSelectedAccount(NULL);
+		this->accountwidget_2->setDisabled(true);
+		return;
+	}
+
+	this->setEditsDisabled(true);
+	this->accountwidget_2->setDisabled(false);
+	this->accountwidget_2->setSelectedAccount(NULL);
+
+	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
+	// und nachfragen ob diese verworfen werden sollen.
+//	if (this->ueberweisungwidget->hasChanges()) {
+//		QMessageBox msg;
+//		msg.setWindowTitle(tr("Überweisung ausführen?"));
+//		msg.setIcon(QMessageBox::Question);
+//		msg.setText(tr("Die aktuelle Eingegebenen Überweisungsdaten wurden noch nicht<br />"
+//			       "in den Ausgangskorb gestellt!<br /><br />"
+//			       "Soll die Überweisung durchgeführt werden?<br />"
+//			       "<i>(bei Nein gehen die Eingaben verloren!)</i>"));
+//		msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+//		msg.setDefaultButton(QMessageBox::Yes);
+//
+//		int ret = msg.exec();
+//
+//		if (ret == QMessageBox::Yes) {
+//			//Überweisung den Jobs hinzufügen
+//			this->pushButton_Execute_clicked();
+//			//und danach hier weiter machen ;)
+//		}
+//	}
+}
+
+/*! Slot wird aufgerufen wenn ein neuer Account_2 gewählt wurde */
+void Page_InternalTransfer_New::account2_selected(const aqb_AccountInfo *account)
+{
+	//Ein neuer Account2 wurde gewählt
+	qDebug() << "New Account2 Selected";
+	if (account == NULL) { 	//kein account gewählt --> edits deaktivieren
+		this->setEditsDisabled(true);
+		return;
+	}
+
+	if (this->accountwidget_1->getSelectedAccount() == account) {
+		//Umbuchungen von ein auf dasselbe Konto sind nicht möglich
+		this->accountwidget_2->setSelectedAccount(NULL);
+		return;
+	}
+
+	this->setEditsDisabled(false);
 
 	// Prüfen ob Änderungen im aktuellen Form gemacht wurden.
 	// und nachfragen ob diese verworfen werden sollen.
@@ -185,7 +277,7 @@ void Page_InternalTransfer_New::account_selected(const aqb_AccountInfo *account)
 //private slot
 void Page_InternalTransfer_New::pushButton_Execute_clicked()
 {
-	//Aktuell ausgewählten Account holen
+	//Aktuell ausgewählte Accounts holen
 	aqb_AccountInfo *acc1 = this->accountwidget_1->getSelectedAccount();
 	aqb_AccountInfo *acc2 = this->accountwidget_2->getSelectedAccount();
 
@@ -194,24 +286,18 @@ void Page_InternalTransfer_New::pushButton_Execute_clicked()
 
 	//Den Localen Part (Absender) füllen
 	t->fillLocalFromAccount(acc1->get_AB_ACCOUNT());
-	qDebug() << "SubAccountID acc1:" << acc1->SubAccountId();
-	qDebug() << "SubAccountID acc2:" << acc2->SubAccountId();
-
+	//und die Empfänger-Daten setzen
 	t->setRemoteName(QStringList(acc2->Name()));
 	t->setRemoteAccountNumber(acc2->Number());
 	t->setRemoteBankCode(acc2->BankCode());
 	t->setRemoteBankName(acc2->BankName());
-
-	t->setValue(abt_conv::ABValueFromString("1,00", "EUR"));
-	t->setPurpose(QStringList("Umbuchung"));
-
-	/* \done_PW Was ist mit den verschiedenen TextSchlüsseln und Geschäftsvorfällen? */
-	//t->setTextKey(this->ueberweisungwidget->textKey());
-	qDebug() << "TextSchlüssel InternalTransfer = " << t->getTextKey();
-	//folgende 3 Zeilen werden in mkTransfer aus util.c in aqbanking-cli auch nicht gesetzt!
-	//t->setTextKeyExt(000); //lt aqbanking doxy doku 51, aber lt http://www.zahlungsverkehrsfragen.de/textsl_dta.html wohl '000'
-	//t->setTransactionKey(""); //Buchungsschlüssel
-	//t->setType(AB_Transaction_TypeTransfer);
+	t->setValue(abt_conv::ABValueFromString(this->betrag->text(), this->currency->text()));
+	QStringList purpose;
+	if (!this->verw1->text().isEmpty()) purpose.append(this->verw1->text());
+	if (!this->verw2->text().isEmpty()) purpose.append(this->verw2->text());
+	if (!this->verw3->text().isEmpty()) purpose.append(this->verw3->text());
+	if (!this->verw4->text().isEmpty()) purpose.append(this->verw4->text());
+	t->setPurpose(purpose);
 
 	//Diese Daten als Signal senden (werden dann vom jobctrl bearbeitet)
 	emit this->createInternalTransfer(acc1, t);
@@ -223,6 +309,13 @@ void Page_InternalTransfer_New::pushButton_Execute_clicked()
 //private slot
 void Page_InternalTransfer_New::pushButton_Revert_clicked()
 {
-	//Felder löschen und 2te AccountAnzeige so einstellen das nichts
-	//ausgewählt ist.
+	this->accountwidget_1->setSelectedAccount(NULL);
+	this->accountwidget_2->setSelectedAccount(NULL);
+	this->accountwidget_2->setDisabled(true);
+	this->betrag->clear();
+	this->verw1->clear();
+	this->verw2->clear();
+	this->verw3->clear();
+	this->verw4->clear();
+	this->setEditsDisabled(true);
 }

@@ -59,8 +59,12 @@ private:
 signals:
 	void Account_Changed(const aqb_AccountInfo *new_account);
 
+public slots:
+	void setSelectedAccount(const aqb_AccountInfo* account);
+
 private slots:
-	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void on_treeWidget_itemSelectionChanged();
+ void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 };
 
 #endif // BANKACCOUNTSWIDGET_H

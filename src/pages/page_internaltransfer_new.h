@@ -64,6 +64,9 @@ private:
 
 	QVBoxLayout *main_layout;
 
+
+	void setEditsDisabled(bool disable);
+
 public:
 	explicit Page_InternalTransfer_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
 	~Page_InternalTransfer_New();
@@ -71,8 +74,9 @@ public:
 signals:
 	void createInternalTransfer(aqb_AccountInfo *a, const abt_transaction *t);
 
-public slots:
-	void account_selected(const aqb_AccountInfo *account);
+private slots:
+	void account1_selected(const aqb_AccountInfo *account);
+	void account2_selected(const aqb_AccountInfo *account);
 
 	void pushButton_Execute_clicked();
 	void pushButton_Revert_clicked();

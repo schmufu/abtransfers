@@ -104,7 +104,8 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 				ItemCount++;
 				Item->setData(0, Qt::DisplayRole, i.value()->Number());
 				Item->setData(0, Qt::UserRole, i.value()->get_ID());
-				Item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
+				//wird anscheinen nirgends verwendet!
+				//Item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
 				Item->setData(1, Qt::DisplayRole, i.value()->Name());
 				Item->setData(2, Qt::DisplayRole, i.value()->AccountType());
 				Item->setData(3, Qt::DisplayRole, i.value()->Currency());
@@ -167,12 +168,50 @@ aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 
 void BankAccountsWidget::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
-	if (!current)
-		current = previous;
+//	if (!current)
+//		current = previous;
+//
+//	int AccountID = current->data(0, Qt::UserRole).toInt();
+//
+//	aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(AccountID, NULL);
+//
+//	emit this->Account_Changed(acc);
+}
 
-	int AccountID = current->data(0, Qt::UserRole).toInt();
+/** setzt den aktuell ausgewählten Account auf \a account */
+void BankAccountsWidget::setSelectedAccount(const aqb_AccountInfo *account)
+{
+	//Alle Items durchgehen und wenn wir das Item mit derselben ID gefunden
+	//haben dieses Auswählen.
 
-	aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(AccountID, NULL);
+	int selectID = -1;
+	if (account != NULL) { //wenn Account übergeben, dessen ID selectieren
+		selectID = account->get_ID();
+	}
 
-	emit this->Account_Changed(acc);
+	//alle Selectionen neu setzen
+	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
+		QTreeWidgetItem *topItem = this->ui->treeWidget->topLevelItem(i);
+		for (int j=0; j<topItem->childCount(); ++j) {
+			QTreeWidgetItem *childItem = topItem->child(j);
+			//Prüfen ob dieser Eintrag ausgewählt werden soll, und
+			//entsprechend setzen
+			bool sel = childItem->data(0, Qt::UserRole).toInt() == selectID;
+			childItem->setSelected(sel);
+		}
+		//TopItems sind immer deselectet!
+		topItem->setSelected(false);
+	}
+}
+
+void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
+{
+	if (this->ui->treeWidget->selectedItems().size() > 0) {
+		QTreeWidgetItem *selItem = this->ui->treeWidget->selectedItems().at(0);
+		int accountID = selItem->data(0, Qt::UserRole).toInt();
+		aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(accountID, NULL);
+		emit this->Account_Changed(acc);
+	} else {
+		emit this->Account_Changed(NULL);
+	}
 }
