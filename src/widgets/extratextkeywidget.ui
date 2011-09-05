@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>extraTransferWidget</class>
- <widget class="QFrame" name="extraTransferWidget">
+ <class>extraTextKeyWidget</class>
+ <widget class="QFrame" name="extraTextKeyWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

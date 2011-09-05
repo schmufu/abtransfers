@@ -28,20 +28,20 @@
  *
  ******************************************************************************/
 
-#ifndef EXTRATRANSFERWIDGET_H
-#define EXTRATRANSFERWIDGET_H
+#ifndef EXTRATEXTKEYWIDGET_H
+#define EXTRATEXTKEYWIDGET_H
 
 #include <QFrame>
 
 namespace Ui {
-	class extraTransferWidget;
+	class extraTextKeyWidget;
 }
 
-class extraTransferWidget : public QFrame {
+class extraTextKeyWidget : public QFrame {
 	Q_OBJECT
 public:
-	extraTransferWidget(const QList<int> *keys = NULL, QWidget *parent = 0);
-	~extraTransferWidget();
+	extraTextKeyWidget(const QList<int> *keys = NULL, QWidget *parent = 0);
+	~extraTextKeyWidget();
 
 	int getTextKey() const;
 
@@ -49,7 +49,7 @@ protected:
 	void changeEvent(QEvent *e);
 
 private:
-	Ui::extraTransferWidget *ui;
+	Ui::extraTextKeyWidget *ui;
 
 public slots:
 	void setTextKey(int key);

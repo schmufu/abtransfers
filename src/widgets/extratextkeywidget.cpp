@@ -28,28 +28,28 @@
  *
  ******************************************************************************/
 
-#include "extratransferwidget.h"
-#include "ui_extratransferwidget.h"
+#include "extratextkeywidget.h"
+#include "ui_extratextkeywidget.h"
 
 #include <QDebug>
 #include "../globalvars.h"
 
-extraTransferWidget::extraTransferWidget(const QList<int> *keys, QWidget *parent) :
+extraTextKeyWidget::extraTextKeyWidget(const QList<int> *keys, QWidget *parent) :
 	QFrame(parent),
-	ui(new Ui::extraTransferWidget)
+	ui(new Ui::extraTextKeyWidget)
 {
 	ui->setupUi(this);
 	this->fillTextKeys(keys);
 	qDebug() << this << "created";
 }
 
-extraTransferWidget::~extraTransferWidget()
+extraTextKeyWidget::~extraTextKeyWidget()
 {
 	delete ui;
 	qDebug() << this << "deleted";
 }
 
-void extraTransferWidget::changeEvent(QEvent *e)
+void extraTextKeyWidget::changeEvent(QEvent *e)
 {
 	QFrame::changeEvent(e);
 	switch (e->type()) {
@@ -62,7 +62,7 @@ void extraTransferWidget::changeEvent(QEvent *e)
 }
 
 /** Setzt alle Textschlüssel der ComboBox */
-void extraTransferWidget::fillTextKeys(const QList<int> *keys)
+void extraTextKeyWidget::fillTextKeys(const QList<int> *keys)
 {
 	QComboBox *cb = this->ui->comboBox;
 	cb->clear();
@@ -81,7 +81,7 @@ void extraTransferWidget::fillTextKeys(const QList<int> *keys)
 }
 
 /** Den übergebenen Key setzen */
-void extraTransferWidget::setTextKey(int key)
+void extraTextKeyWidget::setTextKey(int key)
 {
 	QComboBox *cb = this->ui->comboBox;
 
@@ -100,7 +100,7 @@ void extraTransferWidget::setTextKey(int key)
 }
 
 /** liefert den aktuell gewählten TextKey zurück */
-int extraTransferWidget::getTextKey() const
+int extraTextKeyWidget::getTextKey() const
 {
 	int idx = this->ui->comboBox->currentIndex();
 	if (idx == -1) {

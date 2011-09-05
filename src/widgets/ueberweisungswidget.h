@@ -37,7 +37,7 @@
 #include <QRegExpValidator>
 #include "../aqb_banking.h"
 #include "extrastandingorderswidget.h"
-#include "extratransferwidget.h"
+#include "extratextkeywidget.h"
 #include "../abt_job_ctrl.h"
 
 namespace Ui {
@@ -52,7 +52,7 @@ class UeberweisungsWidget : public QGroupBox {
 	Q_OBJECT
 private:
 	extraStandingOrdersWidget *da_widget;
-	extraTransferWidget *transfer_widget;
+	extraTextKeyWidget *transfer_widget;
 
 public:
 	/** Mit diesem Typen wird definiert wie das Überweisungs-Widget aussehen

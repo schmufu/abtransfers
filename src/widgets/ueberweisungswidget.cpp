@@ -178,7 +178,7 @@ void UeberweisungsWidget::createDatedTransferWidgets()
 void UeberweisungsWidget::createTransferWidgets()
 {
 	QVBoxLayout *vl = new QVBoxLayout();
-	this->transfer_widget = new extraTransferWidget(NULL, this);
+	this->transfer_widget = new extraTextKeyWidget(NULL, this);
 	vl->addWidget(this->transfer_widget);
 	this->ui->verticalLayout_11->addLayout(vl);
 }
