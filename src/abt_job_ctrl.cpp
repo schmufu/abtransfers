@@ -53,7 +53,7 @@
 
 #include "globalvars.h"
 #include "abt_conv.h"
-#include "abt_transactionlimits.h"
+
 
 
 /*********** abt_job_info class *******************/
@@ -100,6 +100,8 @@ abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_job_info*>;
+	this->m_transLimits = NULL;
+	this->createAllTransactionLimits();
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
 
@@ -120,7 +122,189 @@ abt_job_ctrl::~abt_job_ctrl()
 	}
 
 	delete this->jobqueue;
+
+	abt_transactionLimits *l = NULL;
+	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
+	QList<int> allKeys = this->m_transLimits->keys();
+	for (int i=0; i<allKeys.size(); ++i) {
+		ah = m_transLimits->take(allKeys.at(i));
+
+		QList<AB_JOB_TYPE> keys = ah->keys();
+		for (int j=0; j<keys.size(); ++j) {
+			l = ah->take(keys.at(j));
+			delete l;
+		}
+		delete ah;
+	}
+
+	//Alle Elemente gelöscht, jetzt auch das oberste löschen
+	delete this->m_transLimits;
 }
+
+void abt_job_ctrl::createAllTransactionLimits()
+{
+	this->m_transLimits = new QHash<int, QHash<AB_JOB_TYPE, abt_transactionLimits*>*>;
+	this->m_transLimits->clear();
+	AB_ACCOUNT_LIST2 *accs;
+	accs=AB_Banking_GetAccounts(banking->getAqBanking());
+	if (accs) {
+	       AB_ACCOUNT_LIST2_ITERATOR *it;
+	       it=AB_Account_List2_First(accs);
+	       if (it) {
+		       AB_ACCOUNT *a;
+		       a=AB_Account_List2Iterator_Data(it);
+		       while(a) {
+				this->createTransactionLimitsFor(a);
+				a=AB_Account_List2Iterator_Next(it);
+		       }
+
+		       /* the iterator must be freed after using it */
+		       AB_Account_List2Iterator_free(it);
+	       } else {
+		       qWarning() << this << ": No iterator created!";
+	       }
+	       AB_Account_List2_free(accs);
+       } else {
+	       qWarning() << this << ": No Accounts from aqBanking found!";
+       }
+}
+
+void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
+{
+	//AccountHash
+	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
+	int accountID = AB_Account_GetUniqueId(a);
+
+	AB_TRANSACTION *t = AB_Transaction_new();
+	const AB_TRANSACTION_LIMITS *tl = NULL;
+	AB_JOB *j = NULL;
+
+
+	j = AB_JobSingleTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SingleTransfer not available");
+	} else {
+		AB_JobSingleTransfer_SetTransaction(j, t);
+		tl = AB_JobSingleTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobSingleDebitNote_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SingleDebitNote not available");
+	} else {
+		AB_JobSingleDebitNote_SetTransaction(j, t);
+		tl = AB_JobSingleDebitNote_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeDebitNote, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobCreateDatedTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job CreateDatedTransfer not available");
+	} else {
+		AB_JobCreateDatedTransfer_SetTransaction(j, t);
+		tl = AB_JobCreateDatedTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeCreateDatedTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobCreateStandingOrder_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job CreateStandingOrder not available");
+	} else {
+		AB_JobCreateStandingOrder_SetTransaction(j, t);
+		tl = AB_JobCreateStandingOrder_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeCreateStandingOrder, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobModifyStandingOrder_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job ModifyStandingOrder not available");
+	} else {
+		AB_JobModifyStandingOrder_SetTransaction(j, t);
+		tl = AB_JobModifyStandingOrder_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeModifyStandingOrder, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobModifyDatedTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job ModifyDatedTransfer not available");
+	} else {
+		AB_JobModifyDatedTransfer_SetTransaction(j, t);
+		tl = AB_JobModifyDatedTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeModifyDatedTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	AB_Transaction_free(t);
+
+	this->m_transLimits->insert(accountID, ah);
+}
+
+void abt_job_ctrl::printAllLimits() const
+{
+	abt_transactionLimits *l = NULL;
+	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
+	QList<int> allKeys = this->m_transLimits->keys();
+	for (int i=0; i<allKeys.size(); ++i) {
+		ah = m_transLimits->value(allKeys.at(i));
+
+		qDebug() << "##################################################\n"
+			 << "#### Limits für Account " << allKeys.at(i) << "\n";
+
+		QList<AB_JOB_TYPE> keys = ah->keys();
+		for (int j=0; j<keys.size(); ++j) {
+			l = ah->value(keys.at(j));
+			qDebug() << "*** TYPE: " << abt_conv::JobTypeToQString(keys.at(j))
+					<< "*** \n";
+			l->printAllAsDebug();
+		}
+	}
+}
+
+
+
+
 
 void abt_job_ctrl::addlog(const QString &str)
 {

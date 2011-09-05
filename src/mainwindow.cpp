@@ -287,28 +287,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 void MainWindow::on_actionAddGetDated_triggered()
 {
 	this->ui->statusBar->showMessage("DebugOut Limits Transaction");
-	abt_transaction *t = new abt_transaction();
-	//t->fillLocalFromAccount(accounts->getAccount(0)->get_AB_ACCOUNT());
-	//t->setRemoteAccountNumber("12596391");
-	//t->setRemoteBankCode("29050101");
-	//t->setValue(abt_conv::ABValueFromString("2,00", "EUR"));
-	const AB_TRANSACTION_LIMITS *tl = NULL;//AB_TransactionLimits_new();
-	AB_JOB *j = AB_JobSingleTransfer_new(accounts->getAccount(0)->get_AB_ACCOUNT());
-	if (AB_Job_CheckAvailability(j)) {
-		qDebug("Job not available");
-	}
-	AB_JobSingleTransfer_SetTransaction(j, t->getAB_Transaction());
-	tl = AB_JobSingleTransfer_GetFieldLimits(j);
-	if (tl) {
-		abt_transactionLimits limits = abt_transactionLimits(tl);
-		limits.printAllAsDebug();
-	} else {
-		qDebug("tl not set!");
-	}
-
-	AB_Job_free(j);
-	delete t;
-
+	this->jobctrl->printAllLimits();
 }
 
 void MainWindow::on_actionExecQueued_triggered()
