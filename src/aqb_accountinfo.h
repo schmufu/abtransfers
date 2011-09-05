@@ -63,7 +63,7 @@ public:
 class aqb_AccountInfo : public QObject {
 	Q_OBJECT
 private:
-	int ID;
+	int m_ID;
 	AB_ACCOUNT *m_account;
 	QString m_BankCode;
 	QString m_BankName;
@@ -80,7 +80,7 @@ private:
 
 	QList<abt_DAInfo*> *m_KnownDAs;
 public:
-	aqb_AccountInfo(AB_ACCOUNT *account, int ID, QObject *parent = 0);
+	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
 	~aqb_AccountInfo();
 
 	const QString& BankCode() const { return this->m_BankCode; }
@@ -98,7 +98,7 @@ public:
 	const QList<abt_DAInfo*> *getKnownDAs() const { return this->m_KnownDAs; }
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
-	int get_ID() const { return this->ID; }
+	int get_ID() const { return this->m_ID; }
 
 public slots:
 	void loadKnownDAs();

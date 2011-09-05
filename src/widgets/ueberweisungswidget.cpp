@@ -178,7 +178,7 @@ void UeberweisungsWidget::createDatedTransferWidgets()
 void UeberweisungsWidget::createTransferWidgets()
 {
 	QVBoxLayout *vl = new QVBoxLayout();
-	this->transfer_widget = new extraTransferWidget(this);
+	this->transfer_widget = new extraTransferWidget(NULL, this);
 	vl->addWidget(this->transfer_widget);
 	this->ui->verticalLayout_11->addLayout(vl);
 }
@@ -443,6 +443,13 @@ const QString UeberweisungsWidget::getPurpose(int line) const
 /****** Funktionen die die Daten in this->transfer_widget setzen         ******/
 /****** bzw. die dort eingegebenen Daten abfragen                        ******/
 /******************************************************************************/
+/*! setzt die möglichen TextKeys und füllt die ComboBox */
+void UeberweisungsWidget::setPossibleTextKeys(const QList<int> *keys)
+{
+	Q_ASSERT_X(this->transfer_widget != NULL, "UeberweisungsWidget", "extraTransferWidget called without object");
+	this->transfer_widget->fillTextKeys(keys);
+}
+
 /*! setzt den Textschlüssel entsprechend der Übergabe */
 void UeberweisungsWidget::setTextKey(int key)
 {

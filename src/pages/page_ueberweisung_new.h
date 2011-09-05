@@ -38,6 +38,7 @@
 #include "../aqb_accounts.h"
 #include "../aqb_banking.h"
 #include "../abt_transaction_base.h"
+#include "../abt_job_ctrl.h"
 
 #include "../widgets/bankaccountswidget.h"
 #include "../widgets/ueberweisungswidget.h"
@@ -49,6 +50,7 @@ Q_OBJECT
 private:
 	aqb_Accounts *accounts;
 	const aqb_banking *banking;
+	const abt_job_ctrl *jobctrl;
 	BankAccountsWidget *accountwidget;
 	UeberweisungsWidget *ueberweisungwidget;
 	KnownEmpfaengerWidget *knownempfaengerwidget;
@@ -60,7 +62,9 @@ private:
 
 
 public:
-	explicit Page_Ueberweisung_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent = 0);
+	explicit Page_Ueberweisung_New(const aqb_banking *banking,
+				       const abt_job_ctrl *jobctrl,
+				       aqb_Accounts *acc, QWidget *parent = 0);
 	~Page_Ueberweisung_New();
 
 signals:

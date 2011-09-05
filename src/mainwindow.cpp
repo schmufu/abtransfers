@@ -65,10 +65,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->jobctrl = new abt_job_ctrl(this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
-	this->da_edit_del = new Page_DA_Edit_Delete(banking, this->accounts, ui->tabWidget_DA);
-	this->da_new = new Page_DA_New(banking, this->accounts, ui->tabWidget_DA);
-	this->page_transfer_new = new Page_Ueberweisung_New(banking, this->accounts, ui->tabWidget_UW);
-	this->page_internaltransfer_new = new Page_InternalTransfer_New(banking, this->accounts, ui->tabWidget_UW);
+	this->da_edit_del = new Page_DA_Edit_Delete(banking,
+						    this->accounts,
+						    ui->tabWidget_DA);
+	this->da_new = new Page_DA_New(banking,
+				       this->accounts,
+				       ui->tabWidget_DA);
+	this->page_transfer_new = new Page_Ueberweisung_New(banking,
+							    this->jobctrl,
+							    this->accounts,
+							    ui->tabWidget_UW);
+	this->page_internaltransfer_new = new Page_InternalTransfer_New(
+				banking, this->accounts, ui->tabWidget_UW);
 	this->dock_KnownEmpfaenger = NULL;
 
 	//ui->tabWidget_DA->clear();
@@ -276,10 +284,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 
 void MainWindow::on_actionAddGetDAs_triggered()
 {
-	this->jobctrl->addGetStandingOrders(this->accounts->getAccount(0));
-	this->ui->statusBar->showMessage("Get Daueraufträge eingefügt");
-
-	this->DisplayNotAvailableTypeAtStatusBar(AB_Job_TypeDeleteStandingOrder);
+	qDebug() << "Nothing to do here";
 }
 
 void MainWindow::on_actionAddGetDated_triggered()

@@ -49,6 +49,9 @@ private:
 	//QString SettingsFilename;
 	QSettings *Settings;
 	QList<abt_EmpfaengerInfo*>* EmpfaengerList;
+	QHash<int, QString> *m_textKeyDescr;
+
+	void loadTextKeyDescriptions();
 
 public:
 	explicit abt_settings(QObject *parent = 0);
@@ -58,6 +61,8 @@ public:
 	void saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo*> *list);
 
 	const QString *getDataDir() const;
+
+	const QHash<int, QString> *getTextKeyDescriptions() const;
 
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!

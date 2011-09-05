@@ -62,7 +62,6 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 		it=AB_Account_List2_First(accs);
 		if (it) {
 			AB_ACCOUNT *a;
-			int i=0;
 
 			/* this function returns a pointer to the element of the list to
 			 * which the iterator currently points to */
@@ -72,9 +71,9 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 				/* we create a aqb_AccountInfo Object for every Account
 				 * and store the pointer to it in the Hash
 				 */
-				aqb_AccountInfo *accInfo = new aqb_AccountInfo(a, i);
-				this->m_accounts.insert(i, accInfo);
-				++i;
+				aqb_AccountInfo *accInfo = new aqb_AccountInfo(a);
+				this->m_accounts.insert(AB_Account_GetUniqueId(a),
+							accInfo);
 
 				/* this function lets the iterator advance to the next element in
 				 * the list, so a following call to AB_Account_List2Iterator_Data()

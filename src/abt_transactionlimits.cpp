@@ -129,6 +129,13 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 	this->AllowChangeCycle = AB_TransactionLimits_GetAllowChangeCycle(el);
 	this->AllowChangePeriod = AB_TransactionLimits_GetAllowChangePeriod(el);
 	this->AllowChangeExecutionDay = AB_TransactionLimits_GetAllowChangeExecutionDay(el);
+
+	qDebug() << this << "created";
+}
+
+abt_transactionLimits::~abt_transactionLimits()
+{
+	qDebug() << this << "deleted";
 }
 
 //public

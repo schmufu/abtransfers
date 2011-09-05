@@ -49,7 +49,8 @@ abt_settings::abt_settings(QObject *parent) :
 
 	this->m_dataDir = this->Settings->value("Main/DataDir", QDir::homePath() +
 						"/.ab_transfers/").toString();
-
+	this->m_textKeyDescr = NULL;
+	this->loadTextKeyDescriptions();
 }
 
 abt_settings::~abt_settings()
@@ -63,6 +64,22 @@ abt_settings::~abt_settings()
 	//sowie die Liste an sich
 	delete this->EmpfaengerList;
 
+	delete this->m_textKeyDescr;
+
+	this->Settings->beginGroup("TextKeyDescriptionsDEFAULT");
+	this->Settings->setValue("hint", "Dies kann kopiert werden um vernuenftige Eintraege zu erstellen");
+	this->Settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
+	this->Settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
+	this->Settings->setValue("51", "Überweisung");
+	this->Settings->setValue("52", "Dauerauftrags-Überweisung");
+	this->Settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
+	this->Settings->setValue("54", "Vermögenswirksame Leistung (VL)");
+	this->Settings->setValue("56", "Überweisung öffentlicher Kassen");
+	this->Settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
+	this->Settings->setValue("69", "Spendenüberweisung");
+	this->Settings->endGroup();
+
+
 	//Einstellungen in der ini-Datei speichern
 	this->Settings->setValue("Main/EmpfaengerFileName",
 				 this->knownEmpfaengerFilename);
@@ -70,6 +87,27 @@ abt_settings::~abt_settings()
 				 this->m_dataDir);
 	//und danach das Object wieder löschen
 	delete this->Settings;
+}
+
+void abt_settings::loadTextKeyDescriptions()
+{
+	if (this->m_textKeyDescr != NULL) {
+		this->m_textKeyDescr->clear();
+	} else {
+		this->m_textKeyDescr = new QHash<int, QString>;
+	}
+	this->Settings->beginGroup("TextKeyDescriptions");
+	QStringList all = this->Settings->allKeys();
+	foreach (QString key, all) { //for (int i=0; i<all.size(); ++i) {
+		QString text = this->Settings->value(key, tr("Unbekannt")).toString();
+		this->m_textKeyDescr->insert(key.toInt(), text);
+	}
+	this->Settings->endGroup();
+}
+
+const QHash<int, QString> *abt_settings::getTextKeyDescriptions() const
+{
+	return this->m_textKeyDescr;
 }
 
 const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()

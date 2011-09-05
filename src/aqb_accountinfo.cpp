@@ -40,11 +40,11 @@ abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
 
 
 
-aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, int ID, QObject *parent) :
+aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	QObject(parent)
 {
 	this->m_account = account;
-	this->ID = ID;
+	this->m_ID = AB_Account_GetUniqueId(this->m_account);
 	this->m_KnownDAs = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));

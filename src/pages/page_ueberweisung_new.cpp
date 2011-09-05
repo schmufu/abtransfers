@@ -36,11 +36,15 @@
 #include "../abt_conv.h"
 
 
-Page_Ueberweisung_New::Page_Ueberweisung_New(const aqb_banking *banking, aqb_Accounts *acc, QWidget *parent) :
+Page_Ueberweisung_New::Page_Ueberweisung_New(const aqb_banking *banking,
+					     const abt_job_ctrl *jobctrl,
+					     aqb_Accounts *acc,
+					     QWidget *parent) :
 	QWidget(parent)
 {
 	this->accounts = acc;
 	this->banking = banking;
+	this->jobctrl = jobctrl;
 
 	//used widgets in this page
 	this->accountwidget = new BankAccountsWidget(this->accounts, this);
@@ -137,6 +141,18 @@ void Page_Ueberweisung_New::account_selected(const aqb_AccountInfo *account)
 			//und danach hier weiter machen ;)
 		}
 	}
+
+	//Alle zugelassenen TextSchlüssel holen und diese in der ComboBox
+	//des ÜberweisungsWidgets darstellen
+
+	const abt_transactionLimits *li = this->jobctrl->limits(account->get_ID(), AB_Job_TypeTransfer);
+	if (li == NULL) return; //Abbruch;
+	QList<int> keys;
+	QStringList possibleKeys = li->ValuesTextKey;
+	foreach(QString key, possibleKeys) {
+		keys.append(key.toInt());
+	}
+	this->ueberweisungwidget->setPossibleTextKeys(&keys);
 }
 
 //private slot

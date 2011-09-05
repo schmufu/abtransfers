@@ -32,13 +32,14 @@
 #include "ui_extratransferwidget.h"
 
 #include <QDebug>
+#include "../globalvars.h"
 
-extraTransferWidget::extraTransferWidget(QWidget *parent) :
+extraTransferWidget::extraTransferWidget(const QList<int> *keys, QWidget *parent) :
 	QFrame(parent),
 	ui(new Ui::extraTransferWidget)
 {
 	ui->setupUi(this);
-	this->fillTextKeys();
+	this->fillTextKeys(keys);
 	qDebug() << this << "created";
 }
 
@@ -61,14 +62,22 @@ void extraTransferWidget::changeEvent(QEvent *e)
 }
 
 /** Setzt alle Textschlüssel der ComboBox */
-void extraTransferWidget::fillTextKeys()
+void extraTransferWidget::fillTextKeys(const QList<int> *keys)
 {
 	QComboBox *cb = this->ui->comboBox;
 	cb->clear();
-	cb->addItem(tr("%1 - Überweisung").arg(51), 51);
-	cb->addItem(tr("%1 - Lohn/Gehalt").arg(53), 53);
-	cb->addItem(tr("%1 - Vermögenswirksame Leistung (VL)").arg(54), 54);
-	cb->setCurrentIndex(0); //Überweisung als Default
+	if (keys == NULL) {
+		return; //Abbruch, keine Keys setzen und ComboBox leer lassen
+	}
+
+	const QHash<int, QString> *desc = settings->getTextKeyDescriptions();
+
+	//Alle Testschlüssel mit Bezeichnung in der ComboBox darstellen, wenn
+	//zu einem Schlüssel kein Text existiert wird unbekannt angezeigt.
+	foreach (int i, *keys) {
+		cb->addItem(tr("%1 - %2").arg(i).arg(desc->value(i,tr("Unbekannt"))), i);
+	}
+	cb->setCurrentIndex(0); //Erster Eintrag als Default
 }
 
 /** Den übergebenen Key setzen */
@@ -86,14 +95,17 @@ void extraTransferWidget::setTextKey(int key)
 	}
 
 	//Wenn wir hierher kommen wurde ein nicht in der ComboBox vorhandener
-	//key übergeben, wir setzen einfach 0 als default
+	//key übergeben, wir setzen einfach den ersten
 	cb->setCurrentIndex(0);
 }
 
-/** liefert den aktuell gewählten TextKey zurücl */
+/** liefert den aktuell gewählten TextKey zurück */
 int extraTransferWidget::getTextKey() const
 {
 	int idx = this->ui->comboBox->currentIndex();
+	if (idx == -1) {
+		return idx; //Kein Eintrag gewählt, -1 wird als Fehler zurückgegeben
+	}
 	int ret = this->ui->comboBox->itemData(idx, Qt::UserRole).toInt();
 	return ret;
 }

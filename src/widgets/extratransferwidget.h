@@ -40,7 +40,7 @@ namespace Ui {
 class extraTransferWidget : public QFrame {
 	Q_OBJECT
 public:
-	extraTransferWidget(QWidget *parent = 0);
+	extraTransferWidget(const QList<int> *keys = NULL, QWidget *parent = 0);
 	~extraTransferWidget();
 
 	int getTextKey() const;
@@ -51,10 +51,9 @@ protected:
 private:
 	Ui::extraTransferWidget *ui;
 
-	void fillTextKeys();
-
 public slots:
 	void setTextKey(int key);
+	void fillTextKeys(const QList<int> *keys);
 
 };
 

@@ -38,6 +38,7 @@
 #include "../aqb_banking.h"
 #include "extrastandingorderswidget.h"
 #include "extratransferwidget.h"
+#include "../abt_job_ctrl.h"
 
 namespace Ui {
     class UeberweisungsWidget;
@@ -106,6 +107,7 @@ public:
 	void setPurpose(int line, const QString &str);
 
 /***** zusätzliche Funktionen für Überweisungen *****/
+	void setPossibleTextKeys(const QList<int> *keys);
 	void setTextKey(int key);
 	int textKey() const;
 

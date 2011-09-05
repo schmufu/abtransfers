@@ -139,6 +139,8 @@ abt_job_ctrl::~abt_job_ctrl()
 
 	//Alle Elemente gelöscht, jetzt auch das oberste löschen
 	delete this->m_transLimits;
+
+	qDebug() << this << "deleted";
 }
 
 void abt_job_ctrl::createAllTransactionLimits()
@@ -211,6 +213,39 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
 	}
 	AB_Job_free(j);
 
+	//AB_JobEuTransfer_GetFieldLimits existiert nicht!
+
+	j = AB_JobInternalTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job InternalTransfer not available");
+	} else {
+		AB_JobInternalTransfer_SetTransaction(j, t);
+		tl = AB_JobInternalTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeInternalTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobSepaTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SepaTransfer not available");
+	} else {
+		AB_JobSepaTransfer_SetTransaction(j, t);
+		tl = AB_JobSepaTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeSepaTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
 
 	j = AB_JobCreateDatedTransfer_new(a);
 	if (AB_Job_CheckAvailability(j)) {
@@ -221,6 +256,22 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeCreateDatedTransfer, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobModifyDatedTransfer_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job ModifyDatedTransfer not available");
+	} else {
+		AB_JobModifyDatedTransfer_SetTransaction(j, t);
+		tl = AB_JobModifyDatedTransfer_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeModifyDatedTransfer, limits);
 		} else {
 			qDebug("tl not set!");
 		}
@@ -253,22 +304,6 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeModifyStandingOrder, limits);
-		} else {
-			qDebug("tl not set!");
-		}
-	}
-	AB_Job_free(j);
-
-
-	j = AB_JobModifyDatedTransfer_new(a);
-	if (AB_Job_CheckAvailability(j)) {
-		qDebug("Job ModifyDatedTransfer not available");
-	} else {
-		AB_JobModifyDatedTransfer_SetTransaction(j, t);
-		tl = AB_JobModifyDatedTransfer_GetFieldLimits(j);
-		if (tl) {
-			abt_transactionLimits *limits = new abt_transactionLimits(tl);
-			ah->insert(AB_Job_TypeModifyDatedTransfer, limits);
 		} else {
 			qDebug("tl not set!");
 		}

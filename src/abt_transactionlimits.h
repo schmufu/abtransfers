@@ -53,6 +53,7 @@ class abt_transactionLimits
 public:
 	/*! Sets all fields with the approprirate Value for the given TransactionLimits */
 	abt_transactionLimits(const AB_TRANSACTION_LIMITS *el);
+	~abt_transactionLimits();
 
 	/** \name Issuer Name
 	    Limits for the issuer name. */
