@@ -53,6 +53,7 @@
 
 #include "globalvars.h"
 #include "abt_conv.h"
+#include "abt_transactionlimits.h"
 
 
 /*********** abt_job_info class *******************/
