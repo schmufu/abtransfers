@@ -66,7 +66,35 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 	this->MinLenTextKey = AB_TransactionLimits_GetMinLenTextKey(el);
 	this->ValuesTextKey = abt_conv::GwenStringListToQStringList(
 					AB_TransactionLimits_GetValuesTextKey(el));
-//	this->TextKeys = AB_TransactionLimits_GetTextKeys(el);
+
+	//TextKeys werden anscheinend von der Sparkasse Bremen nicht unterstützt
+	//oder das HBCI Backend setzt diese nicht, deswegen könnte der folgende
+	//Code nicht getestet werden!
+	AB_TEXTKEY_DESCR_LIST *dl = AB_TransactionLimits_GetTextKeys(el);
+	int lc = AB_TextKeyDescr_List_GetCount(dl); //ListCount
+	qDebug() << this << "GetCount = " << lc;
+	if (lc > 0) {
+		QString text;
+		AB_TEXTKEY_DESCR *descr = AB_TextKeyDescr_List_First(dl);
+		for (int i=0; i<lc; ++i) {
+			text.append("Value: ");
+			text.append(AB_TextKeyDescr_GetValue(descr));
+			text.append(" Name: ");
+			text.append(AB_TextKeyDescr_GetName(descr));
+			text.append(" Descr: ");
+			text.append(AB_TextKeyDescr_GetDescr(descr));
+			text.append("\n");
+			descr = AB_TextKeyDescr_List_Next(descr);
+			if (descr == NULL) {
+				qDebug() << "AB_TEXTKEY_DESCR_LIST ZÄHLER ZU WEIT!"
+						<< " -- lc=" <<lc<<" -- i="<<i;
+				break;
+			}
+		}
+		this->TextKeys = text;
+	} else {
+		this->TextKeys = "Not available";
+	}
 
 	this->MaxLenCustomerReference = AB_TransactionLimits_GetMaxLenCustomerReference(el);
 	this->MinLenCustomerReference = AB_TransactionLimits_GetMinLenCustomerReference(el);
@@ -129,7 +157,8 @@ void abt_transactionLimits::printAllAsDebug()
 	<< "MinLenRemoteIban" << this->MinLenRemoteIban << "\n"
 	<< "MaxLenTextKey" << this->MaxLenTextKey << "\n"
 	<< "MinLenTextKey" << this->MinLenTextKey << "\n"
-	<< "ValuesTextKey" << this->ValuesTextKey
+	<< "ValuesTextKey" << this->ValuesTextKey << "\n"
+	<< "TextKeys" << this->TextKeys << "\n"
 	<< "MaxLenCustomerReference" << this->MaxLenCustomerReference << "\n"
 	<< "MinLenCustomerReference" << this->MinLenCustomerReference << "\n"
 	<< "MaxLenBankReference" << this->MaxLenBankReference << "\n"

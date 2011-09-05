@@ -182,9 +182,9 @@ public:
 	/** This string list contains one entry for every supported text key. The values must be positive integers in decimal form (no leading zero, no comma or decimal point). */
 	QStringList ValuesTextKey;
 
-	////! Set this property with AB_TransactionLimits_SetTextKeys, get it with AB_TransactionLimits_GetTextKeys
-	///* This list of text key descriptions may contain an entry for every supported text key. However, not all backends fill this list and this list does not have to be complete. If you want to know which textkeys are supported please use valuesTextKey instead. */
-	//int TextKeys;
+	//! Set this property with AB_TransactionLimits_SetTextKeys, get it with AB_TransactionLimits_GetTextKeys
+	/** This list of text key descriptions may contain an entry for every supported text key. However, not all backends fill this list and this list does not have to be complete. If you want to know which textkeys are supported please use valuesTextKey instead. */
+	QString TextKeys;
 
 
 	/// @}

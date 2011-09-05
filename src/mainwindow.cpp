@@ -282,8 +282,6 @@ void MainWindow::on_actionAddGetDAs_triggered()
 	this->DisplayNotAvailableTypeAtStatusBar(AB_Job_TypeDeleteStandingOrder);
 }
 
-#include <aqbanking/jobsingletransfer.h>
-
 void MainWindow::on_actionAddGetDated_triggered()
 {
 	this->ui->statusBar->showMessage("DebugOut Limits Transaction");
