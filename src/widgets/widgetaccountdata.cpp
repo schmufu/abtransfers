@@ -157,6 +157,15 @@ void widgetAccountData::setReadOnly(bool b)
 }
 
 //public slot
+void widgetAccountData::clearAllEdits()
+{
+	this->llName->lineEdit->clear();
+	this->llAccountNumber->lineEdit->clear();
+	this->llBankCode->lineEdit->clear();
+	this->llBankName->lineEdit->clear();
+}
+
+//public slot
 void widgetAccountData::setLimitMaxLenName(int maxLen)
 {
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
@@ -199,6 +208,31 @@ void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 	this->llBankName->setEnabled(allowed);
 	this->llBankName->lineEdit->setMaxLength(maxLen);
 }
+
+//public slot
+void widgetAccountData::setLimitAllowChangeName(bool b)
+{
+	this->llName->lineEdit->setReadOnly(!b);
+}
+
+//public slot
+void widgetAccountData::setLimitAllowChangeBankCode(bool b)
+{
+	this->llBankCode->lineEdit->setReadOnly(!b);
+}
+
+//public slot
+void widgetAccountData::setLimitAllowChangeBankName(bool b)
+{
+	this->llBankName->lineEdit->setReadOnly(!b);
+}
+
+//public slot
+void widgetAccountData::setLimitAllowChangeAccountNumber(bool b)
+{
+	this->llAccountNumber->lineEdit->setReadOnly(!b);
+}
+
 
 //public slot
 void widgetAccountData::setName(const QString &text)
@@ -290,6 +324,19 @@ QString widgetAccountData::getBankName() const
 	}
 }
 
+//public
+bool widgetAccountData::hasChanges() const
+{
+	if (this->llName->lineEdit->isModified() ||
+	    this->llAccountNumber->lineEdit->isModified() ||
+	    this->llBankCode->lineEdit->isModified() ||
+	    this->llBankName->lineEdit->isModified()) {
+		return true;
+	}
+
+	//Wenn wir bis hierher kommen haben keine Änderungen stattgefunden
+	return false;
+}
 
 /******************************************************************************
   Methods and Event handling for Drag'n'Drop
@@ -297,6 +344,12 @@ QString widgetAccountData::getBankName() const
 
 void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 {
+	/*! \todo Hier muss noch zwischen Account und KnownRecipient
+	 *	  unterschieden werden.
+	 *	  Auch der Drag-Event der Auslösenden Stelle muss dies
+	 *	  dann entsprechend setzen (am besten ein Pointer auf
+	 *	  aqb_accountInfo oder aqb_knownRecipient)
+	 */
 	//qDebug() << "dragEnterEvent: Format =" << event->mimeData()->formats();
 	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist") &&
 	    event->possibleActions() & Qt::CopyAction) {

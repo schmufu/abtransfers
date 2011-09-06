@@ -71,6 +71,7 @@ public:
 	QString getAccountNumber() const;
 	QString getBankCode() const;
 	QString getBankName() const;
+	bool hasChanges() const;
 
 signals:
 
@@ -81,6 +82,7 @@ public slots:
 	void setAllowDropAccount(bool b);
 	void setAllowDropKnownRecipient(bool b);
 	void setReadOnly(bool b);
+	void clearAllEdits();
 
 	void setName(const QString &text);
 	void setAccountNumber(const QString &text);
@@ -91,6 +93,11 @@ public slots:
 	void setLimitMaxLenAccountNumber(int maxLen);
 	void setLimitMaxLenBankCode(int maxLen);
 	void setLimitMaxLenBankName(int maxLen);
+	void setLimitAllowChangeName(bool b);
+	void setLimitAllowChangeAccountNumber(bool b);
+	void setLimitAllowChangeBankCode(bool b);
+	void setLimitAllowChangeBankName(bool b);
+
 
 };
 
