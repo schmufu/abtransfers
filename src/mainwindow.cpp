@@ -287,12 +287,17 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 void MainWindow::on_actionAddGetDAs_triggered()
 {
 	qDebug() << "Nothing to do here";
-	QDialog *d = new QDialog(this);
-	pageWidgetTests *testw = new pageWidgetTests(d);
-	d->exec();
+	static QDialog *d = NULL;
 
-	delete testw;
-	delete d;
+	if (d == NULL) {
+		d = new QDialog(this);
+		QVBoxLayout *vb = new QVBoxLayout();
+		pageWidgetTests *testw = new pageWidgetTests(d);
+		vb->addWidget(testw);
+		d->setLayout(vb);
+	}
+	d->showNormal();
+
 }
 
 void MainWindow::on_actionAddGetDated_triggered()

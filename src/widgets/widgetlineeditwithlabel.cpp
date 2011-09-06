@@ -30,7 +30,6 @@
 
 #include "widgetlineeditwithlabel.h"
 
-#include <QtGui/QLineEdit>
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtCore/QDebug>
@@ -45,6 +44,7 @@ widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
 	this->label = new QLabel(labelText, this);
 	//layout anlegen und lineEdit sowie label ausrichten
 	this->alignEditAndLabel(labelAt);
+	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 

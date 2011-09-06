@@ -31,6 +31,9 @@
 #include "pagewidgettests.h"
 #include <QtGui/QLayout>
 
+#include "../widgets/widgetaccountdata.h"
+
+
 pageWidgetTests::pageWidgetTests(QWidget *parent) :
     QWidget(parent)
 {
@@ -41,11 +44,19 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	this->lineEdit3->layout()->setContentsMargins(18,18,18,18);
 	this->lineEdit3->layout()->setSpacing(18);
 
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	widgetAccountData *accData = new widgetAccountData(this);
+	accData->setAllowDropKnownRecipient(false);
+	accData->setAllowDropAccount(true);
+
+	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(this->lineEdit1);
 	layout->addWidget(this->lineEdit2);
 	layout->addWidget(this->lineEdit3);
 	layout->addWidget(this->lineEdit4);
+	layout->addWidget(accData);
+
+	this->setLayout(layout);
+	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 pageWidgetTests::~pageWidgetTests()
