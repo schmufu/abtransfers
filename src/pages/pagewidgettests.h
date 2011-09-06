@@ -22,45 +22,34 @@
  * $Rev$
  *
  * description:
- *
+ *	Nur ein TestWidget um die wiget... klassen zu testen
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#ifndef WIDGETLINEEDITWITHLABEL_H
-#define WIDGETLINEEDITWITHLABEL_H
+#ifndef PAGEWIDGETTESTS_H
+#define PAGEWIDGETTESTS_H
 
 #include <QWidget>
+#include "../widgets/widgetlineeditwithlabel.h"
 
-class QLineEdit;
-class QLabel;
-class QLayout;
-
-/*! \brief ein QLineEdit mit einem beschreibenden QLabel
+/*! \brief NUR FÜR TESTZECKE!
  *
- * Das QLabel kann Links/Rechts/Oben/Unten vom Edit angezeigt werden.
+ * Diese Klasse wird nur genutzt um widgets zu testen, im eigentlichen
+ * Programm wird Sie nicht verwendet!
  */
-
-class widgetLineEditWithLabel : public QWidget
+class pageWidgetTests : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetLineEditWithLabel(const QString &labelText,
-					 const QString &editText = "",
-					 Qt::Alignment labelAt = Qt::AlignTop,
-					 QWidget *parent = 0);
-	~widgetLineEditWithLabel();
+	explicit pageWidgetTests(QWidget *parent = 0);
+	~pageWidgetTests();
 
-public:
-	QLineEdit *lineEdit;
-	QLabel *label;
-
-private:
-	QLayout *mainLayout;
-
-
-	void alignEditAndLabel(Qt::Alignment align);
+	widgetLineEditWithLabel *lineEdit1;
+	widgetLineEditWithLabel *lineEdit2;
+	widgetLineEditWithLabel *lineEdit3;
+	widgetLineEditWithLabel *lineEdit4;
 
 signals:
 
@@ -68,4 +57,4 @@ public slots:
 
 };
 
-#endif // WIDGETLINEEDITWITHLABEL_H
+#endif // PAGEWIDGETTESTS_H

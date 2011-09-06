@@ -22,50 +22,36 @@
  * $Rev$
  *
  * description:
- *
+ *	Nur ein TestWidget um die wiget... klassen zu testen
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#ifndef WIDGETLINEEDITWITHLABEL_H
-#define WIDGETLINEEDITWITHLABEL_H
+#include "pagewidgettests.h"
+#include <QtGui/QLayout>
 
-#include <QWidget>
-
-class QLineEdit;
-class QLabel;
-class QLayout;
-
-/*! \brief ein QLineEdit mit einem beschreibenden QLabel
- *
- * Das QLabel kann Links/Rechts/Oben/Unten vom Edit angezeigt werden.
- */
-
-class widgetLineEditWithLabel : public QWidget
+pageWidgetTests::pageWidgetTests(QWidget *parent) :
+    QWidget(parent)
 {
-	Q_OBJECT
-public:
-	explicit widgetLineEditWithLabel(const QString &labelText,
-					 const QString &editText = "",
-					 Qt::Alignment labelAt = Qt::AlignTop,
-					 QWidget *parent = 0);
-	~widgetLineEditWithLabel();
+	this->lineEdit1 = new widgetLineEditWithLabel("Label 1", "", Qt::AlignBottom, this);
+	this->lineEdit2 = new widgetLineEditWithLabel("Label 2", "", Qt::AlignLeft, this);
+	this->lineEdit3 = new widgetLineEditWithLabel("Label 3", "", Qt::AlignTop, this);
+	this->lineEdit4 = new widgetLineEditWithLabel("Label 4", "", Qt::AlignRight, this);
+	this->lineEdit3->layout()->setContentsMargins(18,18,18,18);
+	this->lineEdit3->layout()->setSpacing(18);
 
-public:
-	QLineEdit *lineEdit;
-	QLabel *label;
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(this->lineEdit1);
+	layout->addWidget(this->lineEdit2);
+	layout->addWidget(this->lineEdit3);
+	layout->addWidget(this->lineEdit4);
+}
 
-private:
-	QLayout *mainLayout;
-
-
-	void alignEditAndLabel(Qt::Alignment align);
-
-signals:
-
-public slots:
-
-};
-
-#endif // WIDGETLINEEDITWITHLABEL_H
+pageWidgetTests::~pageWidgetTests()
+{
+	delete this->lineEdit1;
+	delete this->lineEdit2;
+	delete this->lineEdit3;
+	delete this->lineEdit4;
+}

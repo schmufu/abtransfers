@@ -32,19 +32,75 @@
 
 #include <QtGui/QLineEdit>
 #include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtCore/QDebug>
 
-widgetLineEditWithLabel::widgetLineEditWithLabel(QWidget *parent) :
+widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
+						 const QString &editText,
+						 Qt::Alignment labelAt,
+						 QWidget *parent) :
     QWidget(parent)
 {
-	this->edit = new QLineEdit(this);
-	this->label = new QLabel(this);
+	this->lineEdit = new QLineEdit(editText, this);
+	this->label = new QLabel(labelText, this);
+	//layout anlegen und lineEdit sowie label ausrichten
+	this->alignEditAndLabel(labelAt);
 }
 
 
 widgetLineEditWithLabel::~widgetLineEditWithLabel()
 {
-	delete this->edit;
+	delete this->lineEdit;
 	delete this->label;
+	delete this->mainLayout;
 }
+
+/*! erstellt das mainLayout diese Widgets und ordnet das Label entsprechend
+ *  der Vorgabe an.
+ */
+void widgetLineEditWithLabel::alignEditAndLabel(Qt::Alignment align)
+{
+	//Prüfen ob nur 1 Alignment vorkommt!
+	if ( ! ( ((align ^ Qt::AlignTop) == 0) || ((align ^ Qt::AlignBottom) == 0) ||
+		 ((align ^ Qt::AlignLeft) == 0) || ((align ^ Qt::AlignRight) == 0)
+	       )
+	   ) { //Alignment Angabe wird nicht unterstüzt, default setzen;
+		qWarning() << this << "ERROR: alignment of labelAt not"
+				<< "supported, using default Qt::AlignTop!";
+		align = Qt::AlignTop;
+	}
+
+	if ((align & Qt::AlignTop) || (align & Qt::AlignBottom)) {
+		//Wir benötigen ein vertikales Layout
+		this->mainLayout = new QVBoxLayout();
+		if (align & Qt::AlignTop) {
+			this->mainLayout->addWidget(this->label);
+			this->mainLayout->addWidget(this->lineEdit);
+		} else {
+			this->mainLayout->addWidget(this->lineEdit);
+			this->mainLayout->addWidget(this->label);
+		}
+		this->setLayout(this->mainLayout);
+		return;
+	}
+
+	if ((align & Qt::AlignLeft) || (align & Qt::AlignRight)) {
+		//Wir benötigen ein horizontales Layout
+		this->mainLayout = new QHBoxLayout();
+		if (align & Qt::AlignLeft) {
+			this->mainLayout->addWidget(this->label);
+			this->mainLayout->addWidget(this->lineEdit);
+		} else {
+			this->mainLayout->addWidget(this->lineEdit);
+			this->mainLayout->addWidget(this->label);
+		}
+		this->setLayout(this->mainLayout);
+		return;
+	}
+}
+
+
+
+
 
 

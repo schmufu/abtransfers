@@ -282,9 +282,17 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	delete about;
 }
 
+#include "pages/pagewidgettests.h"
+
 void MainWindow::on_actionAddGetDAs_triggered()
 {
 	qDebug() << "Nothing to do here";
+	QDialog *d = new QDialog(this);
+	pageWidgetTests *testw = new pageWidgetTests(d);
+	d->exec();
+
+	delete testw;
+	delete d;
 }
 
 void MainWindow::on_actionAddGetDated_triggered()
