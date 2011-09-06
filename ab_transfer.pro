@@ -29,7 +29,8 @@ SOURCES += src/main.cpp \
     src/widgets/extratextkeywidget.cpp \
     src/pages/page_internaltransfer_new.cpp \
     src/abt_validators.cpp \
-    src/abt_transactionlimits.cpp
+    src/abt_transactionlimits.cpp \
+    src/widgets/widgetlineeditwithlabel.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -54,7 +55,8 @@ HEADERS += src/mainwindow.h \
     src/widgets/extratextkeywidget.h \
     src/pages/page_internaltransfer_new.h \
     src/abt_validators.h \
-    src/abt_transactionlimits.h
+    src/abt_transactionlimits.h \
+    src/widgets/widgetlineeditwithlabel.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
