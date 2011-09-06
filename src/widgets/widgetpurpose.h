@@ -34,6 +34,7 @@
 #include <QWidget>
 
 #include <QtGui/QPlainTextEdit>
+#include <QtGui/QTextEdit>
 #include <QtGui/QLabel>
 
 
@@ -45,7 +46,8 @@ public:
 	~widgetPurpose();
 
 private:
-	QPlainTextEdit *plainEdit;
+	//QPlainTextEdit *plainEdit;
+	QTextEdit *textEdit;
 	const QString *statusString;
 	QLabel *statusLabel;
 

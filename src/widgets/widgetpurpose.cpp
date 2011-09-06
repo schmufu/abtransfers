@@ -32,29 +32,29 @@
 
 #include <QtCore/QDebug>
 #include <QtGui/QLayout>
+#include <QtGui/QTextBlock>
 
 widgetPurpose::widgetPurpose(QWidget *parent) :
 	QWidget(parent)
 {
-	this->plainEdit = new QPlainTextEdit(this);
-	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen übrig]"));
+	this->textEdit = new QTextEdit(this);
+	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen in %4 Zeilen übrig]"));
 	this->statusLabel = new QLabel(this);
 	QFont labelFont(this->statusLabel->font());
 	labelFont.setPointSize(7);
 	this->statusLabel->setFont(labelFont);
-	this->plainEdit->setReadOnly(false);
-	this->plainEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
+	this->textEdit->setReadOnly(false);
+	this->textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	this->maxLength = 27;
 	this->maxLines = 4;
 	this->updateStatusLabel();
-	this->plainEdit->document()->setUseDesignMetrics(true);
-	this->plainEdit->document()->setTextWidth(10);
-	//this->plainEdit->document()->setPageSize();
+	this->textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
+	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
+	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(this->plainEdit);
+	layout->addWidget(this->textEdit);
 	layout->addWidget(this->statusLabel);
 	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(0);
@@ -62,13 +62,13 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	this->setLayout(layout);
 	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	connect(this->plainEdit, SIGNAL(textChanged()),
+	connect(this->textEdit, SIGNAL(textChanged()),
 		this, SLOT(plainTextEdit_TextChanged()));
 }
 
 widgetPurpose::~widgetPurpose()
 {
-	delete this->plainEdit;
+	delete this->textEdit;
 	delete this->statusString;
 	delete this->statusLabel;
 	qDebug() << this << "deleted";
@@ -82,28 +82,50 @@ void widgetPurpose::updateStatusLabel()
 				this->maxLines).arg(
 				this->maxLength).arg(
 				(this->maxLines*this->maxLength)-
-				this->plainEdit->toPlainText().length()));
+				this->textEdit->toPlainText().length()));
 
 }
 
 //public
 QStringList widgetPurpose::getPurpose() const
 {
-	return this->plainEdit->toPlainText().split("\n", QString::SkipEmptyParts, Qt::CaseSensitive);
+	//Wir benötigen die einzelnen Zeilen des QTextEdits, so wie sie auch
+	//dargestellt werden!
+	// Ein Block beginnt nach einem Manuellen Zeilenumbruch (Enter) und die
+	// einzelnen Zeilen in jedem Block beginnen wenn eine Zeile mehr als
+	// this->maxLength Zeichen enthält.
+
+	QStringList purposeLines;
+
+	int blockCnt = this->textEdit->document()->blockCount();
+	//qDebug() << "blockCnt:" << blockCnt;
+	for (int block=0; block<blockCnt; ++block) {
+		//qDebug() << "block:" << block;
+		QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
+		int lineCnt = textBlock->layout()->lineCount();
+		//qDebug() << "lineCnt:" << lineCnt;
+		for (int line=0; line<lineCnt; ++line) {
+			int start = textBlock->layout()->lineAt(line).textStart();
+			int len = textBlock->layout()->lineAt(line).textLength();
+			//qDebug() << "line:" << line << "\t" << "start:" << start << " len:" << len;
+			purposeLines << textBlock->text().mid(start, len).trimmed();
+		}
+	}
+
+	qDebug() << "Purpose: " << purposeLines;
+	return purposeLines;
 }
 
 //private slot
 void widgetPurpose::plainTextEdit_TextChanged()
 {
-	qDebug() << this << "PlainTextLength:" << this->plainEdit->toPlainText().length();
-	qDebug() << this << "Blocks:" << this->plainEdit->document()->blockCount();
 	this->updateStatusLabel();
 }
 
 //public slot
 void widgetPurpose::setPurpose(const QString &text)
 {
-	this->plainEdit->setPlainText(text);
+	this->textEdit->setPlainText(text);
 }
 
 //public slot
@@ -127,11 +149,11 @@ void widgetPurpose::setLimitMaxLines(int lines)
 //public slot
 void widgetPurpose::setLimitAllowChange(bool b)
 {
-	this->plainEdit->setReadOnly(!b);
+	this->setDisabled(!b);
 }
 
 //public slot
 void widgetPurpose::clearAll()
 {
-	this->plainEdit->clear();
+	this->textEdit->clear();
 }

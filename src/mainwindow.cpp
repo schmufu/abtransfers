@@ -298,6 +298,8 @@ void MainWindow::on_actionAddGetDAs_triggered()
 	}
 	d->showNormal();
 
+	pageWidgetTests *t = d->findChild<pageWidgetTests*>();
+	if (t) qDebug() << "Purpose in Main:" << t->getPurpose();
 }
 
 void MainWindow::on_actionAddGetDated_triggered()

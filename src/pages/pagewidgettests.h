@@ -33,6 +33,7 @@
 
 #include <QWidget>
 #include "../widgets/widgetlineeditwithlabel.h"
+#include "../widgets/widgetpurpose.h"
 
 /*! \brief NUR FÜR TESTZECKE!
  *
@@ -51,9 +52,15 @@ public:
 	widgetLineEditWithLabel *lineEdit3;
 	widgetLineEditWithLabel *lineEdit4;
 
+	QStringList getPurpose();
+
+private:
+	widgetPurpose *purpose;
+
 signals:
 
 public slots:
+
 
 };
 

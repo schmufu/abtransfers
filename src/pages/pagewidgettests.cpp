@@ -30,10 +30,11 @@
 
 #include "pagewidgettests.h"
 #include <QtGui/QLayout>
+#include <QtCore/QDebug>
 
 #include "../widgets/widgetaccountdata.h"
 #include "../widgets/widgettextkey.h"
-#include "../widgets/widgetpurpose.h"
+
 
 
 pageWidgetTests::pageWidgetTests(QWidget *parent) :
@@ -48,8 +49,8 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
 	textKey->setTextKey(54);
 
-	widgetPurpose *purpose = new widgetPurpose(this);
-	purpose->setPurpose("Nur Nen Test");
+	this->purpose = new widgetPurpose(this);
+	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
 
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(accData);
@@ -58,9 +59,17 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 
 	this->setLayout(layout);
 	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	qDebug() << "PURPOSE: " << purpose->getPurpose();
 }
 
 pageWidgetTests::~pageWidgetTests()
 {
 
+}
+
+
+QStringList pageWidgetTests::getPurpose()
+{
+	return this->purpose->getPurpose();
 }
