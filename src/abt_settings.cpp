@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
+#include <QTextCodec>
 #include "globalvars.h"
 
 abt_settings::abt_settings(QObject *parent) :
@@ -40,6 +41,7 @@ abt_settings::abt_settings(QObject *parent) :
 {
 	this->Settings = new QSettings(QDir::homePath() + "/.ab_transfers/settings.ini",
 				       QSettings::IniFormat, this);
+	this->Settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
 
 	this->EmpfaengerList = new QList<abt_EmpfaengerInfo*>;
 

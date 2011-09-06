@@ -53,6 +53,7 @@ public:
 	const QStringList* getInfo() const;
 	AB_JOB *getJob() const;
 
+	static QString createJobInfoString(const abt_transaction *t);
 };
 
 class abt_job_ctrl : public QObject
@@ -81,6 +82,7 @@ private:
 	QHash<int, QHash<AB_JOB_TYPE, abt_transactionLimits*>*> *m_transLimits;
 	void createAllTransactionLimits();
 	void createTransactionLimitsFor(AB_ACCOUNT *a);
+
 
 public:
 	explicit abt_job_ctrl(QObject *parent = 0);
