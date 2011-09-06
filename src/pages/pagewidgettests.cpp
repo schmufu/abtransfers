@@ -32,6 +32,7 @@
 #include <QtGui/QLayout>
 
 #include "../widgets/widgetaccountdata.h"
+#include "../widgets/widgettextkey.h"
 
 
 pageWidgetTests::pageWidgetTests(QWidget *parent) :
@@ -48,12 +49,18 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	accData->setAllowDropKnownRecipient(false);
 	accData->setAllowDropAccount(true);
 
+	QList<int> intlist;
+	intlist << 51 << 53 << 54;
+	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
+	textKey->setTextKey(53);
+
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(this->lineEdit1);
 	layout->addWidget(this->lineEdit2);
 	layout->addWidget(this->lineEdit3);
 	layout->addWidget(this->lineEdit4);
 	layout->addWidget(accData);
+	layout->addWidget(textKey);
 
 	this->setLayout(layout);
 	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
