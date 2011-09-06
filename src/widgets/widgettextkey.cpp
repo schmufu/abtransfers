@@ -89,7 +89,7 @@ void widgetTextKey::setTextKey(int key)
 	for (int i=0; i<cb->count(); ++i) {
 		if (cb->itemData(i, Qt::UserRole).toInt() == key) {
 			cb->setCurrentIndex(i);
-			break;
+			return; //Gefunden und gesetzt, wieder zurück
 		}
 	}
 

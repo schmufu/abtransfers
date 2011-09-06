@@ -22,45 +22,56 @@
  * $Rev$
  *
  * description:
- *	Nur ein TestWidget um die wiget... klassen zu testen
+ *
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#include "pagewidgettests.h"
-#include <QtGui/QLayout>
+#ifndef WIDGETPURPOSE_H
+#define WIDGETPURPOSE_H
 
-#include "../widgets/widgetaccountdata.h"
-#include "../widgets/widgettextkey.h"
-#include "../widgets/widgetpurpose.h"
+#include <QWidget>
+
+#include <QtGui/QPlainTextEdit>
+#include <QtGui/QLabel>
 
 
-pageWidgetTests::pageWidgetTests(QWidget *parent) :
-    QWidget(parent)
+class widgetPurpose : public QWidget
 {
-	widgetAccountData *accData = new widgetAccountData(this);
-	accData->setAllowDropKnownRecipient(false);
-	accData->setAllowDropAccount(true);
+	Q_OBJECT
+public:
+	explicit widgetPurpose(QWidget *parent = 0);
+	~widgetPurpose();
 
-	QList<int> intlist;
-	intlist << 51 << 53 << 54;
-	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
-	textKey->setTextKey(54);
+private:
+	QPlainTextEdit *plainEdit;
+	const QString *statusString;
+	QLabel *statusLabel;
 
-	widgetPurpose *purpose = new widgetPurpose(this);
-	purpose->setPurpose("Nur Nen Test");
+	int maxLines;
+	int maxLength;
 
-	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(accData);
-	layout->addWidget(purpose);
-	layout->addWidget(textKey);
 
-	this->setLayout(layout);
-	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-}
+	void updateStatusLabel();
 
-pageWidgetTests::~pageWidgetTests()
-{
+public:
+	QStringList getPurpose() const;
 
-}
+signals:
+
+private slots:
+	void plainTextEdit_TextChanged();
+
+public slots:
+	void setPurpose(const QString &text);
+	void setPurpose(const QStringList &text);
+
+	void setLimitMaxLen(int maxLen);
+	void setLimitMaxLines(int lines);
+	void setLimitAllowChange(bool b);
+
+	void clearAll();
+};
+
+#endif // WIDGETPURPOSE_H
