@@ -35,7 +35,8 @@ SOURCES += src/main.cpp \
     src/widgets/widgetaccountdata.cpp \
     src/widgets/widgettextkey.cpp \
     src/widgets/widgetpurpose.cpp \
-    src/widgets/widgetvalue.cpp
+    src/widgets/widgetvalue.cpp \
+    src/widgets/widgetdate.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -66,7 +67,8 @@ HEADERS += src/mainwindow.h \
     src/widgets/widgetaccountdata.h \
     src/widgets/widgettextkey.h \
     src/widgets/widgetpurpose.h \
-    src/widgets/widgetvalue.h
+    src/widgets/widgetvalue.h \
+    src/widgets/widgetdate.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \

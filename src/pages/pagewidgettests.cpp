@@ -35,6 +35,7 @@
 #include "../widgets/widgetaccountdata.h"
 #include "../widgets/widgettextkey.h"
 #include "../widgets/widgetvalue.h"
+#include "../widgets/widgetdate.h"
 
 
 
@@ -46,6 +47,11 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	accData->setAllowDropAccount(true);
 
 	widgetValue *value = new widgetValue(this);
+
+	widgetDate *date = new widgetDate("Datum", Qt::AlignTop, this);
+	date->setLimitMaxValueSetupTime(60);
+	date->setLimitValuesExecutionDayWeek(QString("1,2,3,4").split(","));
+	date->setLimitValuesExecutionDayMonth(QString("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,98").split(","));
 
 	QList<int> intlist;
 	intlist << 51 << 53 << 54;
@@ -60,6 +66,7 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	layout->addWidget(value);
 	layout->addWidget(purpose);
 	layout->addWidget(textKey);
+	layout->addWidget(date, 0, Qt::AlignCenter);
 
 	this->setLayout(layout);
 	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
