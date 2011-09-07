@@ -22,58 +22,49 @@
  * $Rev$
  *
  * description:
- *	Nur ein TestWidget um die wiget... klassen zu testen
+ *
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#include "pagewidgettests.h"
-#include <QtGui/QLayout>
+#ifndef WIDGETVALUE_H
+#define WIDGETVALUE_H
+
+#include <QWidget>
+#include <QtGui/QLineEdit>
 #include <QtCore/QDebug>
 
-#include "../widgets/widgetaccountdata.h"
-#include "../widgets/widgettextkey.h"
-#include "../widgets/widgetvalue.h"
+#include "../abt_conv.h"
 
-
-
-pageWidgetTests::pageWidgetTests(QWidget *parent) :
-    QWidget(parent)
+class widgetValue : public QWidget
 {
-	widgetAccountData *accData = new widgetAccountData(this);
-	accData->setAllowDropKnownRecipient(false);
-	accData->setAllowDropAccount(true);
+	Q_OBJECT
+public:
+	explicit widgetValue(QWidget *parent = 0);
+	~widgetValue();
 
-	widgetValue *value = new widgetValue(this);
-
-	QList<int> intlist;
-	intlist << 51 << 53 << 54;
-	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
-	textKey->setTextKey(54);
-
-	this->purpose = new widgetPurpose(this);
-	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
-
-	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(accData);
-	layout->addWidget(value);
-	layout->addWidget(purpose);
-	layout->addWidget(textKey);
-
-	this->setLayout(layout);
-	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-	qDebug() << "PURPOSE: " << purpose->getPurpose();
-}
-
-pageWidgetTests::~pageWidgetTests()
-{
-
-}
+private:
+	QLineEdit *value;
+	QLineEdit *currency;
 
 
-QStringList pageWidgetTests::getPurpose()
-{
-	return this->purpose->getPurpose();
-}
+public:
+	QString getValue() const;
+	QString getCurrency() const;
+	const AB_VALUE* getValueABV() const;
+
+signals:
+
+public slots:
+	void setValue(const QString &value);
+	void setValue(const AB_VALUE *abv);
+	void setCurrency(const QString &currency);
+	//void setValueCurrency(const AB_VALUE *abv);
+	void setValueCurrency(const QString &value, const QString &currency = "EUR");
+
+	void setLimitAllowChange(bool b);
+
+};
+
+#endif // WIDGETVALUE_H

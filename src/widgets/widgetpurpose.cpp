@@ -149,7 +149,7 @@ void widgetPurpose::setLimitMaxLines(int lines)
 //public slot
 void widgetPurpose::setLimitAllowChange(bool b)
 {
-	this->setDisabled(!b);
+	this->setEnabled(b);
 }
 
 //public slot

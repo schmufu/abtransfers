@@ -58,6 +58,8 @@ public slots:
 	void setTextKey(int key);
 	void fillTextKeys(const QList<int> *keys);
 
+	void setLimitAllowChange(bool b);
+
 };
 
 #endif // WIDGETTEXTKEY_H

@@ -33,6 +33,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
+#include <QtCore/QDebug>
 
 #include "../globalvars.h"
 
@@ -44,8 +45,10 @@ widgetTextKey::widgetTextKey(const QList<int> *keys, QWidget *parent) :
 
 	this->fillTextKeys(keys);
 
+	this->comboBox->setMaximumWidth(320);
+
 	QHBoxLayout *layout = new QHBoxLayout();
-	layout->addWidget(this->label);
+	layout->addWidget(this->label, 0, Qt::AlignRight);
 	layout->addWidget(this->comboBox);
 	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(2);
@@ -56,8 +59,9 @@ widgetTextKey::widgetTextKey(const QList<int> *keys, QWidget *parent) :
 
 widgetTextKey::~widgetTextKey()
 {
+	//qDebug() << "ComboBoxWidth =" << this->comboBox->width();
 	delete this->comboBox;
-	delete this->label;
+	delete this->label;	
 }
 
 /** Setzt alle Textschlüssel der ComboBox */
@@ -109,3 +113,8 @@ int widgetTextKey::getTextKey() const
 	return ret;
 }
 
+//public slot
+void widgetTextKey::setLimitAllowChange(bool b)
+{
+	this->setEnabled(b);
+}
