@@ -252,7 +252,6 @@ const QString abt_conv::ABValueToString(const AB_VALUE *v, bool asDecimal)
 //static
 AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currency)
 {
-	//! \todo Die hier erstellen AB_VALUE Objekte müssen am Ende wieder freigegeben werden!
 	if (str.isEmpty()) {
 		return NULL;
 	}
