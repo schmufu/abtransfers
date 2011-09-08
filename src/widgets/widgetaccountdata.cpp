@@ -368,6 +368,14 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 		}
 	}
 
+	if (event->mimeData()->hasFormat("application/x-abBaning_AccountInfo") &&
+	    event->possibleActions() & Qt::CopyAction) {
+		//Sollen wir Drops von Accounts engegennehmen?
+		if (this->allowDropAccount) {
+			event->acceptProposedAction();
+		}
+	}
+
 }
 
 
@@ -376,24 +384,50 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 //	QString dropText = event->mimeData()->data(event->mimeData()->formats().at(0));
 //	qDebug() << "dropped: " << dropText;
 
-	QByteArray encoded = event->mimeData()->data("application/x-abBaning_KnownRecipient");
-	qulonglong a = encoded.toULongLong();
-	abt_EmpfaengerInfo *info = (abt_EmpfaengerInfo*)a;
+	if (event->mimeData()->hasFormat("application/x-abBaning_KnownRecipient")) {
+		QByteArray encoded = event->mimeData()->data("application/x-abBaning_KnownRecipient");
+		qulonglong a = encoded.toULongLong();
+		const abt_EmpfaengerInfo *info = (abt_EmpfaengerInfo*)a;
 
-	this->setName(info->getName());
-	this->setAccountNumber(info->getKontonummer());
-	this->setBankCode(info->getBLZ());
+		this->setName(info->getName());
+		this->setAccountNumber(info->getKontonummer());
+		this->setBankCode(info->getBLZ());
 
-	//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
-	//gesetzt so belassen (siehe inhalt der Funktion!)
-	this->setBankName(QString(""));
+		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
+		//gesetzt so belassen (siehe inhalt der Funktion!)
+		this->setBankName(QString(""));
 
-	//Es wurden Änderungen durchgeführt, dies beim Namen setzen
-	//(damit hasChanges() true zurückgibt!)
-	this->llName->lineEdit->setModified(true);
+		//Es wurden Änderungen durchgeführt, dies beim Namen setzen
+		//(damit hasChanges() true zurückgibt!)
+		this->llName->lineEdit->setModified(true);
 
-	event->setDropAction(Qt::CopyAction);
-	event->accept();
+		event->setDropAction(Qt::CopyAction);
+		event->accept();
+		return;
+	}
+
+	if (event->mimeData()->hasFormat("application/x-abBaning_AccountInfo")) {
+		QByteArray encoded = event->mimeData()->data("application/x-abBaning_AccountInfo");
+		qulonglong a = encoded.toULongLong();
+		const aqb_AccountInfo *info = (aqb_AccountInfo*)a;
+
+		this->setName(info->OwnerName());
+		this->setAccountNumber(info->Number());
+		this->setBankCode(info->BankCode());
+
+		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
+		//gesetzt so belassen (siehe inhalt der Funktion!)
+		this->setBankName(QString(""));
+
+		//Es wurden Änderungen durchgeführt, dies beim Namen setzen
+		//(damit hasChanges() true zurückgibt!)
+		this->llName->lineEdit->setModified(true);
+
+		event->setDropAction(Qt::CopyAction);
+		event->accept();
+		return;
+	}
+
 
 /****** OLD VERSION *******
 	QByteArray encoded = event->mimeData()->data("application/x-qabstractitemmodeldatalist");

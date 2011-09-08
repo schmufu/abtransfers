@@ -51,7 +51,14 @@ public:
 	aqb_AccountInfo *getSelectedAccount();
 
 protected:
+	QPoint dragStartPos;
+	aqb_AccountInfo *dragObj;
+
 	void changeEvent(QEvent *e);
+	bool eventFilter(QObject *obj, QEvent *event);
+	void twMouseMoveEvent(QMouseEvent *event);
+	void twMousePressEvent(QMouseEvent *event);
+
 
 private:
 	Ui::BankAccountsWidget *ui;

@@ -43,8 +43,12 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
     QWidget(parent)
 {
 	widgetAccountData *accData = new widgetAccountData(this);
-	accData->setAllowDropKnownRecipient(true);
-	accData->setAllowDropAccount(false);
+	accData->setAllowDropKnownRecipient(false);
+	accData->setAllowDropAccount(true);
+
+	widgetAccountData *recData = new widgetAccountData(this);
+	recData->setAllowDropKnownRecipient(true);
+	recData->setAllowDropAccount(false);
 
 	widgetValue *value = new widgetValue(this);
 
@@ -63,6 +67,7 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(accData);
+	layout->addWidget(recData);
 	layout->addWidget(value);
 	layout->addWidget(purpose);
 	layout->addWidget(textKey);

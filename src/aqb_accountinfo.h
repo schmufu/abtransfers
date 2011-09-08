@@ -33,6 +33,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QMetaType>
 
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
@@ -107,5 +108,8 @@ signals:
 	//! \brief wird gesendet wenn die DAs neu geladen wurden.
 	void knownDAsChanged(const aqb_AccountInfo *account);
 };
+
+//Q_DECLARE_METATYPE(aqb_AccountInfo);
+Q_DECLARE_METATYPE(aqb_AccountInfo*);
 
 #endif // AQB_ACCOUNTINFO_H

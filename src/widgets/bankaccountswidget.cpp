@@ -34,6 +34,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QStringList>
+#include <QMouseEvent>
 
 #include <QDebug>
 
@@ -45,6 +46,9 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 {
 	ui->setupUi(this);
 	this->m_accounts = accounts;
+	this->dragStartPos = QPoint(0,0);
+	this->dragObj = NULL;
+
 
 	QStringList headerlist;
 	headerlist.clear();
@@ -104,6 +108,8 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 				ItemCount++;
 				Item->setData(0, Qt::DisplayRole, i.value()->Number());
 				Item->setData(0, Qt::UserRole, i.value()->get_ID());
+				//pointer zum aqb_AccountInfo Object
+				Item->setData(0, Qt::UserRole+1, QVariant::fromValue(i.value()));
 				//wird anscheinen nirgends verwendet!
 				//Item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
 				Item->setData(1, Qt::DisplayRole, i.value()->Name());
@@ -138,6 +144,8 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	//eine horizontale Scrollbar vorhanden ist.
 	this->setMinimumHeight(ItemHeight*(ItemCount+2) + 8);
 
+	this->ui->treeWidget->viewport()->installEventFilter(this);
+
 }
 
 BankAccountsWidget::~BankAccountsWidget()
@@ -156,6 +164,77 @@ void BankAccountsWidget::changeEvent(QEvent *e)
 		break;
 	}
 }
+
+bool BankAccountsWidget::eventFilter(QObject *obj, QEvent *event)
+{
+	//qDebug() << this << "eventFilter()";
+	if (obj != this->ui->treeWidget->viewport()) {
+		//standard event processing
+		return QWidget::eventFilter(obj, event);
+	}
+
+	if (event->type() == QEvent::MouseButtonPress) {
+		this->twMousePressEvent(dynamic_cast<QMouseEvent*>(event));
+		return QWidget::eventFilter(obj, event);
+	}
+
+	if (event->type() == QEvent::MouseMove) {
+		this->twMouseMoveEvent(dynamic_cast<QMouseEvent*>(event));
+		return QWidget::eventFilter(obj, event);
+	}
+
+	//qDebug() << this << "eventFilter() nothing! type:" << event->type();
+	return QWidget::eventFilter(obj, event);
+}
+
+void BankAccountsWidget::twMousePressEvent(QMouseEvent *event)
+{
+	//qDebug() << this << "twMousePressEvent()";
+	if (event->button() == Qt::LeftButton) {
+		QTreeWidgetItem *item = this->ui->treeWidget->itemAt(event->pos());
+		if (item) {
+			//Qt::UserRole+1 enthält einen Pointer zum aqb_AccountInfo
+			this->dragObj = item->data(0, Qt::UserRole+1).value<aqb_AccountInfo*>();
+			this->dragStartPos = event->pos();
+		} else {
+			this->dragObj = NULL;
+			this->dragStartPos = QPoint(0,0);
+		}
+	}
+}
+
+void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
+{
+	//qDebug() << this << "twMouseMoveEvent()";
+	if (!(event->buttons() & Qt::LeftButton)) {
+		return;
+	}
+	if (this->dragObj == NULL) {
+		return; //no object to Drag set!
+	}
+	if ((event->pos() - this->dragStartPos).manhattanLength()
+		< QApplication::startDragDistance()) {
+		return;
+	}
+
+
+	QDrag *drag = new QDrag(this);
+	QMimeData *mimeData = new QMimeData;
+	aqb_AccountInfo* info = this->dragObj;
+
+	qulonglong a = (qulonglong)info;
+	QString result;
+	QTextStream(&result) << a;
+	qDebug() << result;
+	mimeData->setData("application/x-abBaning_AccountInfo", QByteArray(result.toAscii()));
+	drag->setMimeData(mimeData);
+	drag->setPixmap(QPixmap(":/icons/bank-icon"));
+
+	Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+
+	//qDebug() << this << "dropAction" << dropAction;
+}
+
 
 aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 {
@@ -215,3 +294,4 @@ void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 		emit this->Account_Changed(NULL);
 	}
 }
+
