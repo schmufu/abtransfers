@@ -42,6 +42,7 @@
 pageWidgetTests::pageWidgetTests(QWidget *parent) :
     QWidget(parent)
 {
+
 	widgetAccountData *accData = new widgetAccountData(this);
 	accData->setAllowDropKnownRecipient(false);
 	accData->setAllowDropAccount(true);
@@ -65,9 +66,12 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	this->purpose = new widgetPurpose(this);
 	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
 
+	QHBoxLayout *hl = new QHBoxLayout();
+	hl->addWidget(accData);
+	hl->addWidget(recData);
+
 	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(accData);
-	layout->addWidget(recData);
+	layout->addLayout(hl);
 	layout->addWidget(value);
 	layout->addWidget(purpose);
 	layout->addWidget(textKey);
