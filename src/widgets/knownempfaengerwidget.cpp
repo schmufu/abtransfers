@@ -35,6 +35,7 @@
 
 #include <QMouseEvent>
 #include <QDebug>
+#include <QString>
 
 KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
@@ -126,10 +127,13 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	abt_EmpfaengerInfo* info = this->dragObj;
 
 	qulonglong a = (qulonglong)info;
+	qulonglong app = (qulonglong)qApp; //unsere Instanz!
 	QString result;
 	QTextStream(&result) << a;
 	qDebug() << result;
-	mimeData->setData("application/x-abBaning_KnownRecipient", QByteArray(result.toAscii()));
+	//Nur dieselbe Instanz darf diesen Pointer verwenden!
+	QString mimetype = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
+	mimeData->setData(mimetype, QByteArray(result.toAscii()));
 	//mimeData->setData("text/plain", info);
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/knownEmpfaenger"));

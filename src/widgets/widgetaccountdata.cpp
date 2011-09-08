@@ -36,6 +36,8 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
 
+#include <QtCore/QCoreApplication> //um qApp verwenden zu können
+
 #include "widgetlineeditwithlabel.h"
 
 #include "../abt_validators.h"
@@ -344,12 +346,19 @@ bool widgetAccountData::hasChanges() const
 
 void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 {
-	/*! \todo Hier muss noch zwischen Account und KnownRecipient
+	/* DONE
+	 *  \todo Hier muss noch zwischen Account und KnownRecipient
 	 *	  unterschieden werden.
 	 *	  Auch der Drag-Event der Auslösenden Stelle muss dies
 	 *	  dann entsprechend setzen (am besten ein Pointer auf
 	 *	  aqb_accountInfo oder aqb_knownRecipient)
 	 */
+
+	qulonglong app = (qulonglong)qApp;
+	QString mimetypeRecipient = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
+	QString mimetypeAccount = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+
+
 	//qDebug() << "dragEnterEvent: Format =" << event->mimeData()->formats();
 	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist") &&
 	    event->possibleActions() & Qt::CopyAction) {
@@ -360,7 +369,7 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 		}
 	}
 
-	if (event->mimeData()->hasFormat("application/x-abBaning_KnownRecipient") &&
+	if (event->mimeData()->hasFormat(mimetypeRecipient) &&
 	    event->possibleActions() & Qt::CopyAction) {
 		//Sollen wir Drops von KnownRecipients engegennehmen?
 		if (this->allowDropKnownRecipient) {
@@ -368,7 +377,7 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 		}
 	}
 
-	if (event->mimeData()->hasFormat("application/x-abBaning_AccountInfo") &&
+	if (event->mimeData()->hasFormat(mimetypeAccount) &&
 	    event->possibleActions() & Qt::CopyAction) {
 		//Sollen wir Drops von Accounts engegennehmen?
 		if (this->allowDropAccount) {
@@ -384,8 +393,14 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 //	QString dropText = event->mimeData()->data(event->mimeData()->formats().at(0));
 //	qDebug() << "dropped: " << dropText;
 
-	if (event->mimeData()->hasFormat("application/x-abBaning_KnownRecipient")) {
-		QByteArray encoded = event->mimeData()->data("application/x-abBaning_KnownRecipient");
+	//Über den mimeType wird auch sichergestellt das nur dieselbe Instanz
+	//den übergebenen Pointer verwendet!
+	qulonglong app = (qulonglong)qApp;
+	QString mimetypeRecipient = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
+	QString mimetypeAccount = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+
+	if (event->mimeData()->hasFormat(mimetypeRecipient)) {
+		QByteArray encoded = event->mimeData()->data(mimetypeRecipient);
 		qulonglong a = encoded.toULongLong();
 		const abt_EmpfaengerInfo *info = (abt_EmpfaengerInfo*)a;
 
@@ -406,8 +421,8 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 		return;
 	}
 
-	if (event->mimeData()->hasFormat("application/x-abBaning_AccountInfo")) {
-		QByteArray encoded = event->mimeData()->data("application/x-abBaning_AccountInfo");
+	if (event->mimeData()->hasFormat(mimetypeAccount)) {
+		QByteArray encoded = event->mimeData()->data(mimetypeAccount);
 		qulonglong a = encoded.toULongLong();
 		const aqb_AccountInfo *info = (aqb_AccountInfo*)a;
 

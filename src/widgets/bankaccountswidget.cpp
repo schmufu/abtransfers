@@ -223,10 +223,13 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	aqb_AccountInfo* info = this->dragObj;
 
 	qulonglong a = (qulonglong)info;
+	qulonglong app = (qulonglong)qApp;
 	QString result;
 	QTextStream(&result) << a;
 	qDebug() << result;
-	mimeData->setData("application/x-abBaning_AccountInfo", QByteArray(result.toAscii()));
+	//Nur dieselbe Instanz darf diesen Pointer verwenden!
+	QString mimetype = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+	mimeData->setData(mimetype, QByteArray(result.toAscii()));
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/bank-icon"));
 
