@@ -52,6 +52,10 @@ public:
 	AB_BANKING* getAqBanking() const { return this->ab; }
 
 	QString getInstituteFromBLZ(const QString &BLZ) const;
+	/*! This function checks whether the given combination represents a valid account. */
+	bool checkAccount(const QString &country, const QString &branchId,
+			  const QString &bankId, const QString &accountId,
+			  QString &result) const;
 };
 
 #endif // AQB_BANKING_H
