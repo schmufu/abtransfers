@@ -83,7 +83,7 @@ public slots:
 	void setLimitAllowChange(int b);
 
 	/*! setzt die möglichen Wochentage die gewählt werden können */
-	void setLimitValuesExecutionDayWeek(const QStringList &execDays);
+	void setLimitValuesExecutionDayWeek(const QStringList &execWeekDays);
 	/*! setzt die möglichen Tage eines Monats die gewählt werden können */
 	void setLimitValuesExecutionDayMonth(const QStringList &execDays);
 };

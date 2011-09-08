@@ -43,8 +43,8 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
     QWidget(parent)
 {
 	widgetAccountData *accData = new widgetAccountData(this);
-	accData->setAllowDropKnownRecipient(false);
-	accData->setAllowDropAccount(true);
+	accData->setAllowDropKnownRecipient(true);
+	accData->setAllowDropAccount(false);
 
 	widgetValue *value = new widgetValue(this);
 

@@ -359,6 +359,15 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 			event->accept();
 		}
 	}
+
+	if (event->mimeData()->hasFormat("application/x-abBaning_KnownRecipient") &&
+	    event->possibleActions() & Qt::CopyAction) {
+		//Sollen wir Drops von KnownRecipients engegennehmen?
+		if (this->allowDropKnownRecipient) {
+			event->acceptProposedAction();
+		}
+	}
+
 }
 
 
@@ -367,6 +376,26 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 //	QString dropText = event->mimeData()->data(event->mimeData()->formats().at(0));
 //	qDebug() << "dropped: " << dropText;
 
+	QByteArray encoded = event->mimeData()->data("application/x-abBaning_KnownRecipient");
+	qulonglong a = encoded.toULongLong();
+	abt_EmpfaengerInfo *info = (abt_EmpfaengerInfo*)a;
+
+	this->setName(info->getName());
+	this->setAccountNumber(info->getKontonummer());
+	this->setBankCode(info->getBLZ());
+
+	//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
+	//gesetzt so belassen (siehe inhalt der Funktion!)
+	this->setBankName(QString(""));
+
+	//Es wurden Änderungen durchgeführt, dies beim Namen setzen
+	//(damit hasChanges() true zurückgibt!)
+	this->llName->lineEdit->setModified(true);
+
+	event->setDropAction(Qt::CopyAction);
+	event->accept();
+
+/****** OLD VERSION *******
 	QByteArray encoded = event->mimeData()->data("application/x-qabstractitemmodeldatalist");
 	QDataStream stream(&encoded, QIODevice::ReadOnly);
 
@@ -403,6 +432,7 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 
 	event->setDropAction(Qt::CopyAction);
 	event->accept();
+****** OLD VERSION *******/
 }
 
 

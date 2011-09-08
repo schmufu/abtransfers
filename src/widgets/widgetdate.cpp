@@ -204,16 +204,16 @@ void widgetDate::setLimitAllowChange(int b)
  *  "1" = Montag<br />
  *  "7" = Sonntag<br />
  */
-void widgetDate::setLimitValuesExecutionDayWeek(const QStringList &execDays)
+void widgetDate::setLimitValuesExecutionDayWeek(const QStringList &execWeekdays)
 {
-	if (execDays.isEmpty() || execDays.contains("0")) {
+	if (execWeekdays.isEmpty() || execWeekdays.contains("0")) {
 		this->allowedWeekDays.clear(); //Alle Tage erlaubt
 		return; //Fertig
 	}
 
 	//Qt::Monday=1 und Qt::Sunday=7 !!!
-	for (int i=0; i<execDays.size(); ++i) {
-		this->allowedWeekDays.append( (Qt::DayOfWeek)execDays.at(i).toInt() );
+	for (int i=0; i<execWeekdays.size(); ++i) {
+		this->allowedWeekDays.append( (Qt::DayOfWeek)execWeekdays.at(i).toInt() );
 	}
 }
 

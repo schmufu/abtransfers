@@ -52,7 +52,13 @@ public:
 	~KnownEmpfaengerWidget();
 
 protected:
+	QPoint dragStartPos;
+	abt_EmpfaengerInfo *dragObj;
+
 	void changeEvent(QEvent *e);
+	bool eventFilter(QObject *obj, QEvent *event);
+	void twMouseMoveEvent(QMouseEvent *event);
+	void twMousePressEvent(QMouseEvent *event);
 
 private:
 	void DisplayEmpfaenger();

@@ -44,7 +44,10 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 	this->EmpfaengerList = list; //could be NULL!
 	this->DisplayEmpfaenger();
 
-	this->ui->treeWidget->setDragEnabled(true);
+	this->dragStartPos = QPoint(0,0);
+	this->dragObj = NULL;
+//	this->ui->treeWidget->setDragEnabled(true);
+	this->ui->treeWidget->viewport()->installEventFilter(this);
 	qDebug() << this << "created";
 }
 
@@ -64,6 +67,76 @@ void KnownEmpfaengerWidget::changeEvent(QEvent *e)
 	default:
 		break;
 	}
+}
+
+bool KnownEmpfaengerWidget::eventFilter(QObject *obj, QEvent *event)
+{
+	//qDebug() << this << "eventFilter()";
+	if (obj != this->ui->treeWidget->viewport()) {
+		//standard event processing
+		return QGroupBox::eventFilter(obj, event);
+	}
+
+	if (event->type() == QEvent::MouseButtonPress) {
+		this->twMousePressEvent(dynamic_cast<QMouseEvent*>(event));
+		return QGroupBox::eventFilter(obj, event);
+	}
+
+	if (event->type() == QEvent::MouseMove) {
+		this->twMouseMoveEvent(dynamic_cast<QMouseEvent*>(event));
+		return QGroupBox::eventFilter(obj, event);
+	}
+
+	//qDebug() << this << "eventFilter() nothing! type:" << event->type();
+	return QGroupBox::eventFilter(obj, event);
+}
+
+void KnownEmpfaengerWidget::twMousePressEvent(QMouseEvent *event)
+{
+	//qDebug() << this << "twMousePressEvent()";
+	if (event->button() == Qt::LeftButton) {
+		QTreeWidgetItem *item = this->ui->treeWidget->itemAt(event->pos());
+		if (item) {
+			this->dragObj = item->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
+			this->dragStartPos = event->pos();
+		} else {
+			this->dragObj = NULL;
+			this->dragStartPos = QPoint(0,0);
+		}
+	}
+}
+
+void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
+{
+	//qDebug() << this << "twMouseMoveEvent()";
+	if (!(event->buttons() & Qt::LeftButton)) {
+		return;
+	}
+	if (this->dragObj == NULL) {
+		return; //no object to Drag set!
+	}
+	if ((event->pos() - this->dragStartPos).manhattanLength()
+		< QApplication::startDragDistance()) {
+		return;
+	}
+
+
+	QDrag *drag = new QDrag(this);
+	QMimeData *mimeData = new QMimeData;
+	abt_EmpfaengerInfo* info = this->dragObj;
+
+	qulonglong a = (qulonglong)info;
+	QString result;
+	QTextStream(&result) << a;
+	qDebug() << result;
+	mimeData->setData("application/x-abBaning_KnownRecipient", QByteArray(result.toAscii()));
+	//mimeData->setData("text/plain", info);
+	drag->setMimeData(mimeData);
+	drag->setPixmap(QPixmap(":/icons/knownEmpfaenger"));
+
+	Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+
+	//qDebug() << this << "dropAction" << dropAction;
 }
 
 void KnownEmpfaengerWidget::DisplayEmpfaenger()
@@ -98,7 +171,8 @@ void KnownEmpfaengerWidget::DisplayEmpfaenger()
 		Item = new QTreeWidgetItem;
 		ItemCount++;
 		Item->setData(0, Qt::DisplayRole, this->EmpfaengerList->at(i)->getName());
-		Item->setData(0, Qt::UserRole, (qint64)this->EmpfaengerList->at(i));
+		//Pointer zum abt_EmpfaengerInfo in der Qt::UserRole speichern
+		Item->setData(0, Qt::UserRole, QVariant::fromValue(this->EmpfaengerList->at(i)));
 		Item->setData(1, Qt::DisplayRole, this->EmpfaengerList->at(i)->getKontonummer());
 		Item->setData(2, Qt::DisplayRole, this->EmpfaengerList->at(i)->getBLZ());
 		this->ui->treeWidget->addTopLevelItem(Item);

@@ -33,6 +33,7 @@
 
 //#include <QObject>
 #include <QString>
+#include <QMetaType>
 
 
 /*! \brief Klasse zur beschreibung eines bekannten Empfängers
@@ -74,4 +75,8 @@ public:
 
 };
 
-#endif // TRANS_EMPFAENGER_H
+//damit wir ein abt_EmpfaengerInfo im QVariant verwenden können
+Q_DECLARE_METATYPE(abt_EmpfaengerInfo);
+Q_DECLARE_METATYPE(abt_EmpfaengerInfo*);
+
+#endif // ABT_EMPFAENGERINFO_H
