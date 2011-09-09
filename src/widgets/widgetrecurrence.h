@@ -60,31 +60,49 @@ private:
 	widgetDate *dateLast;
 	widgetDate *dateNext;
 
-	QList<Qt::DayOfWeek> allowedValuesCycleWeek;
-	QList<int> allowedValuesCycleMonth;
+	QList<Qt::DayOfWeek> allowedExecutionWeekDays; //!< erlaubte Ausführungstage (ComboBox) in period weekly
+	QList<int> allowedExecutionDays; //!< erlaubte Ausführungstage (ComboBox) in period monthly
 
-	QList<Qt::DayOfWeek> valuesExecutionDayWeek;
-	QList<int> valuesExecutionDayMonth;
+	QList<int> allowedCycleWeek; //!< werte fürs spinEdit in period weekly
+	QList<int> allowedCycleMonth; //!< werte fürs spinEdit in period monthly
 
-	QList<int> allowedDays;
-	QList<Qt::DayOfWeek> allowedWeekDays;
-	QList<int> allowedCycle;
+	Qt::DayOfWeek selectedWeekDay; //!< stores the currently selected weekday
+	int selectedDay; //!< stores the currently selected day
 
-	Qt::DayOfWeek selWeekDay;
-	int selDay;
+	int pspv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
 
 	AB_TRANSACTION_PERIOD m_period;
 
+
+	/*! \todo die nachfolgenden 4 Funktionen evt. auch als static in abt_conv */
+
+	//! speichert die \a strl in der QList<Qt::DayOfWeek> \a dayl
+	static void saveStringListInDayofweekList(const QStringList &strl,
+					   QList<Qt::DayOfWeek> &dayl);
+	//! speichert die \a strl in der QList<int> \a intl
+	static void saveStringListInIntList(const QStringList &strl, QList<int> &intl);
+	//! returns the next higher value or \a currv when no higher Value exist
+	static int getNextHigherValueFromList(int currv, const QList<int> &list, int step=1);
+	//! returns the next lower value or \a currv when no lower Value exist
+	static int getNextLowerValueFromList(int currv, const QList<int> &list, int step=1);
+
+	//! stellt alle Edits auf die hinterlegeten Werte ein
+	void updateWidgetStates();
+public:
 
 
 signals:
 
 private slots:
 	void selectedPeriodChanged(int newPeriod);
+	void spinBoxValueChanged(int value);
 
 public slots:
-	void setValuesCycleWeek(const QStringList &values);
-	void setValuesCycleMonth(const QStringList &values);
+	void setLimitValuesCycleWeek(const QStringList &values);
+	void setLimitValuesCycleMonth(const QStringList &values);
+
+	void setLimitValuesExecutionDayWeek(const QStringList &values);
+	void setLimitValuesExecutionDayMonth(const QStringList &values);
 
 	void setLimitAllowChangeFirstExecutionDate(int b);
 	void setLimitAllowChangeLastExecutionDate(int b);

@@ -30,6 +30,8 @@
 
 #include "widgetrecurrence.h"
 
+#include <QtCore/QDebug>
+
 #include <QtGui/QLayout>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QLabel>
@@ -55,8 +57,11 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 
 	//SpinBox erstellen
 	this->spinBox = new QSpinBox(this);
+	this->spinBox->setPrefix("alle");
 	this->spinBox->setMinimumWidth(75);
 	this->spinBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	connect(this->spinBox, SIGNAL(valueChanged(int)),
+		this, SLOT(spinBoxValueChanged(int)));
 
 	//Beschreibendes Label erstellen
 	this->label_week_month = new QLabel("Wochen", this);
@@ -107,9 +112,109 @@ widgetRecurrence::~widgetRecurrence()
 
 }
 
+//private static
+/**
+ * Die in \a strl enhaltenen Strings werden in integer konvertiert und als
+ * Qt::DayOfWeek interpretiert in der \a dayl gespeichert.
+ */
+void widgetRecurrence::saveStringListInDayofweekList(const QStringList &strl,
+						     QList<Qt::DayOfWeek> &dayl)
+{
+	dayl.clear(); //alle Elemente der Zielliste löschen
 
+	for (int i=0; i<strl.count(); ++i) {
+		dayl.append((Qt::DayOfWeek)strl.at(i).toInt());
+	}
 
+	qSort(dayl); //the list must be sorted!
 
+}
+
+//private static
+/**
+ * Die in \a strl enhaltenen Strings werden in integer konvertiert und in der
+ * \a intl gespeichert.
+ */
+void widgetRecurrence::saveStringListInIntList(const QStringList &strl,
+					       QList<int> &intl)
+{
+	intl.clear(); //alle Elemente der Zielliste löschen
+
+	for (int i=0; i<strl.count(); ++i) {
+		intl.append(strl.at(i).toInt());
+	}
+
+	qSort(intl); //the list must be sorted!
+
+}
+
+//private static
+/**
+ * Dieser Funktion muss eine sortierte Liste übergeben werden! Ansonsten ist
+ * der Rückgabewert undefiniert!
+ *
+ * Wenn ein Fehler auftritt wird ein um \a step reduzierter \a currv zurückgegeben.
+ */
+int widgetRecurrence::getNextHigherValueFromList(int currv, const QList<int> &list, int step)
+{
+	if (list.isEmpty()) return currv - step; //kleinerer Wert als currv wenn Fehler!
+
+	if (list.last() < currv) return list.last(); //kein größerer Wert vorhanden
+
+	//! \todo room for optimization! (BubbleSort/BlackWhiteTree)
+
+	//wir durchlaufen die Liste von "oben" nach "unten"
+	int biggerV = currv;
+	for (int i=list.size()-1; i>=0; i-=step) {
+		if (list.at(i) <= currv ) {
+			return biggerV;
+		}
+		biggerV = list.at(i);
+	}
+	qWarning() << "getNextHigherValueFromList(): No bigger value found!"
+			<< "returning supplied value! THIS SHOULD NEVER HAPPEN!";
+
+	return currv - step; //kleinerer Wert als currv wenn Fehler!
+}
+
+//private static
+/**
+ * Dieser Funktion muss eine sortierte Liste übergeben werden! Ansonsten ist
+ * der Rückgabewert undefiniert!
+ *
+ * Wenn ein Fehler auftritt wird ein um \a step erhöhter \a currv zurückgegeben.
+ */
+int widgetRecurrence::getNextLowerValueFromList(int currv, const QList<int> &list, int step)
+{
+	if (list.isEmpty()) return currv + step; //größerer Wert als currv wenn Fehler!
+
+	if (list.first() > currv) return list.first(); //kein kleinerer Wert vorhanden
+
+	//! \todo room for optimization! (BubbleSort/BlackWhiteTree)
+
+	//wir durchlaufen die Liste von "unten" nach "oben"
+	int lowerV = currv;
+	for (int i=0; i<list.size(); i+=step) {
+		if (list.at(i) >= currv ) {
+			return lowerV;
+		}
+		lowerV = list.at(i);
+	}
+	qWarning() << "getNextLowerValueFromList(): No lower value found!"
+			<< "returning supplied value! THIS SHOULD NEVER HAPPEN!";
+
+	return currv + step; //größerer Wert als currv wenn Fehler!
+}
+
+//private
+/**
+ * Nach Änderungen von allowed Values stellt diese Funktion die Edits des
+ * Widgets so ein das nur erlaubte Werte ausgewählt werden können
+ */
+void widgetRecurrence::updateWidgetStates()
+{
+
+}
 
 
 
@@ -120,9 +225,11 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 	switch (newPeriod) {
 	case AB_Transaction_PeriodWeekly: //wöchentlich gewählt
 
+		this->spinBox->setSpecialValueText(tr("jede"));
 		break;
 	case AB_Transaction_PeriodMonthly: //monatlich gewählt
 
+		this->spinBox->setSpecialValueText(tr("jeden"));
 		break;
 	default:
 		qDebug("Selected Period not supported");
@@ -131,6 +238,56 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 
 }
 
+//private slot
+void widgetRecurrence::spinBoxValueChanged(int value)
+{
+	const QList<int> *list;
+
+	//static int OldListValue = value;
+
+	//Während wir den neuen Wert prüfen und ihn ggf. anpassen soll
+	//die spinBox keine weiteren Signale senden!
+	this->spinBox->blockSignals(true);
+
+	switch (this->radio_group->checkedId()) {
+	case AB_Transaction_PeriodWeekly:
+		list = &this->allowedCycleWeek;
+		break;
+	case AB_Transaction_PeriodMonthly:
+		list = &this->allowedCycleMonth;
+		break;
+	default:
+		list = NULL;
+	}
+
+	if (list == NULL) {
+		//weder weekly noch monthly gewählt, weitere Eingaben unterbinden
+		this->spinBox->setDisabled(true);
+		this->comboBox->setDisabled(true);
+		this->spinBox->blockSignals(false); //Signals wieder zulässig
+		return;
+	}
+
+	qDebug() << "using list: " << *list;
+
+	//die list zeigt jetzt auf die QList<int> mit den möglichen gültigen
+	//Werten für die spinBox!
+	int newValue = value;
+	if (!list->contains(value)) { //gewählter Wert nicht möglich!
+		if (value > this->pspv) { //Wert wurde vergrößert
+			newValue = this->getNextHigherValueFromList(value, *list);
+			qDebug() << "getting next higher value -- selValue=" << value << " NEW=" << newValue;
+		} else {
+			newValue = this->getNextLowerValueFromList(value, *list);
+			qDebug() << "getting next lower value -- selValue=" << value << " NEW=" << newValue;
+		}
+		this->spinBox->setValue(newValue);
+	}
+
+	this->pspv = newValue; // jetzigen Wert merken
+
+	this->spinBox->blockSignals(false); //Signals wieder zulässig
+}
 
 
 
@@ -175,6 +332,7 @@ void widgetRecurrence::setLimitAllowMonthly(int b)
 {
 	// -1 == nicht erlaubt (form disabled), sonst unbekannt o. erlaubt
 	this->radio_monthly->setDisabled(b == -1);
+	this->updateWidgetStates();
 }
 
 //public Slot
@@ -182,6 +340,7 @@ void widgetRecurrence::setLimitAllowWeekly(int b)
 {
 	// -1 == nicht erlaubt (form disabled), sonst unbekannt o. erlaubt
 	this->radio_weekly->setDisabled(b == -1);
+	this->updateWidgetStates();
 }
 
 //public Slot
@@ -199,13 +358,25 @@ void widgetRecurrence::setLimitMaxValueSetupTime(int days)
 }
 
 //public Slot
-void widgetRecurrence::setValuesCycleMonth(const QStringList &values)
+void widgetRecurrence::setLimitValuesCycleMonth(const QStringList &values)
 {
-
+	saveStringListInIntList(values, this->allowedCycleMonth);
 }
 
 //public Slot
-void widgetRecurrence::setValuesCycleWeek(const QStringList &values)
+void widgetRecurrence::setLimitValuesCycleWeek(const QStringList &values)
 {
+	saveStringListInIntList(values, this->allowedCycleWeek);
+}
 
+//public Slot
+void widgetRecurrence::setLimitValuesExecutionDayMonth(const QStringList &values)
+{
+	saveStringListInIntList(values, this->allowedExecutionDays);
+}
+
+//public Slot
+void widgetRecurrence::setLimitValuesExecutionDayWeek(const QStringList &values)
+{
+	saveStringListInDayofweekList(values, this->allowedExecutionWeekDays);
 }

@@ -67,6 +67,14 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	textKey->setTextKey(54);
 
 	widgetRecurrence *recurrence = new widgetRecurrence(this);
+	QStringList Monthly;
+	Monthly << "1" << "2" << "3" << "6" << "12";
+	QStringList Weekly;
+	Weekly << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9"
+			 << "10" << "11" << "12" << "15";
+	recurrence->setLimitValuesCycleMonth(Monthly);
+	recurrence->setLimitValuesCycleWeek(Weekly);
+
 
 	QHBoxLayout *hl = new QHBoxLayout();
 	hl->addWidget(accData);
