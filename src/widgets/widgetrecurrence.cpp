@@ -224,11 +224,23 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 {
 	switch (newPeriod) {
 	case AB_Transaction_PeriodWeekly: //wöchentlich gewählt
-
+		this->spinBox->setRange(this->allowedCycleWeek.first(),
+					this->allowedCycleWeek.last());
+		if (this->setedCycleWeek != -1) {
+			this->spinBox->setValue(this->setedCycleWeek);
+		} else {
+			this->spinBox->setValue(this->allowedCycleWeek.first());
+		}
 		this->spinBox->setSpecialValueText(tr("jede"));
 		break;
 	case AB_Transaction_PeriodMonthly: //monatlich gewählt
-
+		this->spinBox->setRange(this->allowedCycleMonth.first(),
+					this->allowedCycleMonth.last());
+		if (this->setedCycleMonth!= -1) {
+			this->spinBox->setValue(this->setedCycleMonth);
+		} else {
+			this->spinBox->setValue(this->allowedCycleMonth.first());
+		}
 		this->spinBox->setSpecialValueText(tr("jeden"));
 		break;
 	default:
@@ -380,3 +392,18 @@ void widgetRecurrence::setLimitValuesExecutionDayWeek(const QStringList &values)
 {
 	saveStringListInDayofweekList(values, this->allowedExecutionWeekDays);
 }
+
+//public Slot
+void widgetRecurrence::setCycleMonth(int monthCycle)
+{
+	this->setedCycleMonth = monthCycle;
+	this->updateWidgetStates();
+}
+
+//public Slot
+void widgetRecurrence::setCycleWeek(int weekCycle)
+{
+	this->setedCycleMonth = weekCycle;
+	this->updateWidgetStates();
+}
+

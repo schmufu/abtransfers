@@ -69,6 +69,9 @@ private:
 	Qt::DayOfWeek selectedWeekDay; //!< stores the currently selected weekday
 	int selectedDay; //!< stores the currently selected day
 
+	int setedCycleMonth;
+	int setedCycleWeek;
+
 	int pspv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
 
 	AB_TRANSACTION_PERIOD m_period;
@@ -116,6 +119,8 @@ public slots:
 	void setLimitMinValueSetupTime(int days);
 	void setLimitMaxValueSetupTime(int days);
 
+	void setCycleMonth(int monthCycle);
+	void setCycleWeek(int weekCycle);
 
 
 };
