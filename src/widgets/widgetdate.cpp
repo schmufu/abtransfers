@@ -62,6 +62,8 @@ widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget 
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(this->label);
 	layout->addWidget(this->dateEdit);
+	layout->setSpacing(0);
+	layout->setContentsMargins(0,0,0,0);
 
 	this->setLayout(layout);
 
@@ -164,6 +166,12 @@ void widgetDate::calenderPopupPageChanged(int year, int month)
 QDate widgetDate::date() const
 {
 	return this->dateEdit->date();
+}
+
+//public slot
+void widgetDate::setReadOnly(bool readOnly)
+{
+	this->dateEdit->setReadOnly(readOnly);
 }
 
 //public slot

@@ -74,6 +74,7 @@ private slots:
 
 public slots:
 	void setDate(const QDate &date);
+	void setReadOnly(bool readOnly);
 
 	/*! Minimum time in days between issuing of a request and its first execution. */
 	void setLimitMinValueSetupTime(int days);

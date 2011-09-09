@@ -36,7 +36,7 @@
 #include "../widgets/widgettextkey.h"
 #include "../widgets/widgetvalue.h"
 #include "../widgets/widgetdate.h"
-
+#include "../widgets/widgetrecurrence.h"
 
 
 pageWidgetTests::pageWidgetTests(QWidget *parent) :
@@ -53,6 +53,9 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 
 	widgetValue *value = new widgetValue(this);
 
+	this->purpose = new widgetPurpose(this);
+	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
+
 	widgetDate *date = new widgetDate("Datum", Qt::AlignTop, this);
 	date->setLimitMaxValueSetupTime(60);
 	date->setLimitValuesExecutionDayWeek(QString("1,2,3,4").split(","));
@@ -63,8 +66,7 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
 	textKey->setTextKey(54);
 
-	this->purpose = new widgetPurpose(this);
-	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
+	widgetRecurrence *recurrence = new widgetRecurrence(this);
 
 	QHBoxLayout *hl = new QHBoxLayout();
 	hl->addWidget(accData);
@@ -76,6 +78,7 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	layout->addWidget(purpose);
 	layout->addWidget(textKey);
 	layout->addWidget(date, 0, Qt::AlignCenter);
+	layout->addWidget(recurrence, 0, Qt::AlignCenter);
 
 	this->setLayout(layout);
 	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
