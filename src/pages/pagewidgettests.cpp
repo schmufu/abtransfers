@@ -78,11 +78,9 @@ pageWidgetTests::pageWidgetTests(QWidget *parent) :
 	weekdays << "1" << "2" << "3" << "4" << "5" << "7";
 	QStringList days;
 	days << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9"
-	     << "10" << "11" << "12" << "15" << "16" << "18" << "20" << "30" << "99";
+	     << "10" << "11" << "12" << "15" << "16" << "18" << "20" << "30" << "99"<<"98"<<"97";
 	recurrence->setLimitValuesExecutionDayMonth(days);
 	recurrence->setLimitValuesExecutionDayWeek(weekdays);
-
-
 
 
 	QHBoxLayout *hl = new QHBoxLayout();

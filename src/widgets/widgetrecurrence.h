@@ -32,6 +32,7 @@
 #define WIDGETRECURRENCE_H
 
 #include <QWidget>
+#include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QSpinBox>
@@ -97,7 +98,12 @@ private:
 	void updateComboBoxItems(int period);
 
 public:
-
+	AB_TRANSACTION_PERIOD getPeriod() const	{ return (AB_TRANSACTION_PERIOD)this->radio_group->checkedId(); };
+	int getCycle() const { return this->spinBox->value(); };
+	int getExecutionDay() const { return this->comboBox->currentIndex(); };
+	const QDate getFirstExecutionDate() const { return this->dateFirst->getDate(); };
+	const QDate getLastExecutionDate() const { return this->dateLast->getDate(); };
+	const QDate getNextExecutionDate() const { return this->dateNext->getDate(); };
 
 signals:
 
@@ -106,6 +112,14 @@ private slots:
 	void spinBoxValueChanged(int value);
 
 public slots:
+	void setPeriod(AB_TRANSACTION_PERIOD period);
+	void setCycle(int cycle);
+	//! depends on cyle (weekday (Mo,Di,Mi,...) or day (1,2,3,4,...))
+	void setExecutionDay(int day);
+	void setFirstExecutionDay(const QDate &date);
+	void setLastExecutionDay(const QDate &date);
+	void setNextExecutionDay(const QDate &date);
+
 	void setLimitValuesCycleWeek(const QStringList &values);
 	void setLimitValuesCycleMonth(const QStringList &values);
 

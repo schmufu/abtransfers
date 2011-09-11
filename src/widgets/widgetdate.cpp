@@ -163,7 +163,7 @@ void widgetDate::calenderPopupPageChanged(int year, int month)
 
 //public
 /*! returns the selected date */
-QDate widgetDate::date() const
+QDate widgetDate::getDate() const
 {
 	return this->dateEdit->date();
 }

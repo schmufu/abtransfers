@@ -65,7 +65,7 @@ private:
 	void updateAllowedDates();
 
 public:
-	QDate date() const;
+	QDate getDate() const;
 
 signals:
 

@@ -33,7 +33,6 @@
 #include <QtCore/QDebug>
 
 #include <QtGui/QLayout>
-#include <QtGui/QButtonGroup>
 #include <QtGui/QLabel>
 
 widgetRecurrence::widgetRecurrence(QWidget *parent) :
@@ -397,6 +396,55 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 	this->spinBox->blockSignals(false); //Signals wieder zulässig
 }
 
+
+//public slot
+void widgetRecurrence::setPeriod(AB_TRANSACTION_PERIOD period)
+{
+	QRadioButton *btn = (QRadioButton*)this->radio_group->button(period);
+
+	if (!btn) return;
+
+	if (btn->isEnabled()) {
+		btn->setChecked(true);
+	} else {
+		btn->setChecked(false);
+	}
+}
+
+//public slot
+void widgetRecurrence::setCycle(int cycle)
+{
+	this->spinBox->setValue(cycle);
+}
+
+//public slot
+void widgetRecurrence::setExecutionDay(int day)
+{
+	int idx = this->comboBox->findData(day, Qt::UserRole);
+	if (idx != -1) {
+		this->comboBox->setCurrentIndex(idx);
+	} else {
+		qWarning() << "Value" << day << "not in ComboBox-ItemList!";
+	}
+}
+
+//public slot
+void widgetRecurrence::setFirstExecutionDay(const QDate &date)
+{
+	this->dateFirst->setDate(date);
+}
+
+//public slot
+void widgetRecurrence::setLastExecutionDay(const QDate &date)
+{
+	this->dateLast->setDate(date);
+}
+
+//public slot
+void widgetRecurrence::setNextExecutionDay(const QDate &date)
+{
+	this->dateNext->setDate(date);
+}
 
 
 //public Slot
