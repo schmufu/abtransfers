@@ -72,7 +72,7 @@ private:
 	int setedCycleMonth;
 	int setedCycleWeek;
 
-	int pspv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
+	int psbv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
 
 	AB_TRANSACTION_PERIOD m_period;
 
@@ -91,6 +91,11 @@ private:
 
 	//! stellt alle Edits auf die hinterlegeten Werte ein
 	void updateWidgetStates();
+
+	void updateLabelTexts();
+
+	void updateComboBoxItems(int period);
+
 public:
 
 

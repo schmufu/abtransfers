@@ -57,14 +57,14 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 
 	//SpinBox erstellen
 	this->spinBox = new QSpinBox(this);
-	this->spinBox->setPrefix("alle");
+	this->spinBox->setPrefix("alle ");
 	this->spinBox->setMinimumWidth(75);
 	this->spinBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	connect(this->spinBox, SIGNAL(valueChanged(int)),
 		this, SLOT(spinBoxValueChanged(int)));
 
 	//Beschreibendes Label erstellen
-	this->label_week_month = new QLabel("Wochen", this);
+	this->label_week_month = new QLabel("Monat", this);
 	this->label_week_month->setMinimumWidth(60);
 	this->label_week_month->setAlignment(Qt::AlignCenter);
 	QLabel *labelAt = new QLabel(tr("am"), this);
@@ -104,6 +104,9 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 
 	connect(this->radio_group, SIGNAL(buttonClicked(int)),
 		this, SLOT(selectedPeriodChanged(int)));
+	//default monthly selected, this also will call the selectedPeriodChanged()
+	//slot and update the whole form.
+	this->radio_monthly->setChecked(true);
 
 }
 
@@ -213,9 +216,91 @@ int widgetRecurrence::getNextLowerValueFromList(int currv, const QList<int> &lis
  */
 void widgetRecurrence::updateWidgetStates()
 {
+	//simple call the selectedPeriodChanged() slot, this will
+	//update the allowed values and the current selected spinBox value
+	this->selectedPeriodChanged(this->radio_group->checkedId());
+	this->updateComboBoxItems(this->radio_group->checkedId());
+}
+
+//private
+void widgetRecurrence::updateLabelTexts()
+{
+	switch (this->radio_group->checkedId()) {
+	case AB_Transaction_PeriodWeekly: //wöchentlich gewählt
+
+		if (this->spinBox->value() != this->spinBox->minimum()) {
+			this->label_week_month->setText(tr("Wochen"));
+		} else {
+			this->label_week_month->setText(tr("Woche"));
+		}
+		break;
+
+	case AB_Transaction_PeriodMonthly: //monatlich gewählt
+
+		if (this->spinBox->value() != this->spinBox->minimum()) {
+			this->label_week_month->setText(tr("Monate"));
+		} else {
+			this->label_week_month->setText(tr("Monat"));
+		}
+
+		break;
+
+	default:
+		qWarning("Selected Period not supported");
+		break;
+	}
 
 }
 
+//private
+void widgetRecurrence::updateComboBoxItems(int period)
+{
+	this->comboBox->clear();
+	switch (period) {
+	case AB_Transaction_PeriodMonthly:
+		for (int i=0; i<this->allowedExecutionDays.size(); ++i) {
+			const int day = this->allowedExecutionDays.at(i);
+			QString itemtext;
+			QString itemhint;
+			switch (day) {
+			case 99: //ultimo
+				itemtext = tr("Ultimo");
+				itemhint = tr("Immer der letzte Tag des Monats");
+				break;
+			case 98: //ultimo-1
+				itemtext = tr("Ultimo-1");
+				itemhint = tr("Immer 1 Tag vor dem letzten des Monats");
+				break;
+			case 97: //ultimo-2
+				itemtext = tr("Ultimo-2");
+				itemhint = tr("Immer 2 Tage vor dem letzten des Monats");
+				break;
+			default:
+				itemtext = QString("%1").arg(day);
+				itemhint.clear();
+				break;
+			}
+
+			this->comboBox->addItem(itemtext, day);
+			this->comboBox->setItemData(i, itemhint, Qt::ToolTipRole);
+		}
+
+		break;
+	case AB_Transaction_PeriodWeekly:
+		for (int i=0; i<this->allowedExecutionWeekDays.size(); ++i) {
+			const Qt::DayOfWeek weekday = this->allowedExecutionWeekDays.at(i);
+			//const QString weekdayname = QDate::longDayName(weekday);
+			const QString weekdayname = this->locale().standaloneDayName(weekday, QLocale::LongFormat);
+
+			this->comboBox->addItem(weekdayname, weekday);
+		}
+
+		break;
+	default:
+		qWarning("Not supported period");
+		break;
+	}
+}
 
 
 //private slot
@@ -231,8 +316,11 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 		} else {
 			this->spinBox->setValue(this->allowedCycleWeek.first());
 		}
+
 		this->spinBox->setSpecialValueText(tr("jede"));
+
 		break;
+
 	case AB_Transaction_PeriodMonthly: //monatlich gewählt
 		this->spinBox->setRange(this->allowedCycleMonth.first(),
 					this->allowedCycleMonth.last());
@@ -241,12 +329,18 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 		} else {
 			this->spinBox->setValue(this->allowedCycleMonth.first());
 		}
+
 		this->spinBox->setSpecialValueText(tr("jeden"));
+
 		break;
+
 	default:
-		qDebug("Selected Period not supported");
+		qWarning("Selected Period not supported");
 		break;
 	}
+
+	this->updateLabelTexts();
+	this->updateComboBoxItems(newPeriod);
 
 }
 
@@ -280,23 +374,25 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 		return;
 	}
 
-	qDebug() << "using list: " << *list;
+	//qDebug() << "using list: " << *list;
 
 	//die list zeigt jetzt auf die QList<int> mit den möglichen gültigen
 	//Werten für die spinBox!
 	int newValue = value;
 	if (!list->contains(value)) { //gewählter Wert nicht möglich!
-		if (value > this->pspv) { //Wert wurde vergrößert
+		if (value > this->psbv) { //Wert wurde vergrößert
 			newValue = this->getNextHigherValueFromList(value, *list);
-			qDebug() << "getting next higher value -- selValue=" << value << " NEW=" << newValue;
+			//qDebug() << "getting next higher value -- selValue=" << value << " NEW=" << newValue;
 		} else {
 			newValue = this->getNextLowerValueFromList(value, *list);
-			qDebug() << "getting next lower value -- selValue=" << value << " NEW=" << newValue;
+			//qDebug() << "getting next lower value -- selValue=" << value << " NEW=" << newValue;
 		}
 		this->spinBox->setValue(newValue);
 	}
 
-	this->pspv = newValue; // jetzigen Wert merken
+	this->psbv = newValue; // jetzigen Wert merken
+
+	this->updateLabelTexts();
 
 	this->spinBox->blockSignals(false); //Signals wieder zulässig
 }
@@ -373,24 +469,28 @@ void widgetRecurrence::setLimitMaxValueSetupTime(int days)
 void widgetRecurrence::setLimitValuesCycleMonth(const QStringList &values)
 {
 	saveStringListInIntList(values, this->allowedCycleMonth);
+	this->updateWidgetStates();
 }
 
 //public Slot
 void widgetRecurrence::setLimitValuesCycleWeek(const QStringList &values)
 {
 	saveStringListInIntList(values, this->allowedCycleWeek);
+	this->updateWidgetStates();
 }
 
 //public Slot
 void widgetRecurrence::setLimitValuesExecutionDayMonth(const QStringList &values)
 {
 	saveStringListInIntList(values, this->allowedExecutionDays);
+	this->updateWidgetStates();
 }
 
 //public Slot
 void widgetRecurrence::setLimitValuesExecutionDayWeek(const QStringList &values)
 {
 	saveStringListInDayofweekList(values, this->allowedExecutionWeekDays);
+	this->updateWidgetStates();
 }
 
 //public Slot
