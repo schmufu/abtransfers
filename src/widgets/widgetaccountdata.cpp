@@ -212,27 +212,27 @@ void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 }
 
 //public slot
-void widgetAccountData::setLimitAllowChangeName(bool b)
+void widgetAccountData::setLimitAllowChangeName(int b)
 {
-	this->llName->lineEdit->setReadOnly(!b);
+	this->llName->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
-void widgetAccountData::setLimitAllowChangeBankCode(bool b)
+void widgetAccountData::setLimitAllowChangeBankCode(int b)
 {
-	this->llBankCode->lineEdit->setReadOnly(!b);
+	this->llBankCode->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
-void widgetAccountData::setLimitAllowChangeBankName(bool b)
+void widgetAccountData::setLimitAllowChangeBankName(int b)
 {
-	this->llBankName->lineEdit->setReadOnly(!b);
+	this->llBankName->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
-void widgetAccountData::setLimitAllowChangeAccountNumber(bool b)
+void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 {
-	this->llAccountNumber->lineEdit->setReadOnly(!b);
+	this->llAccountNumber->lineEdit->setReadOnly(b == -1);
 }
 
 

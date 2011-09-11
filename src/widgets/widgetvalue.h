@@ -63,7 +63,7 @@ public slots:
 	//void setValueCurrency(const AB_VALUE *abv);
 	void setValueCurrency(const QString &value, const QString &currency = "EUR");
 
-	void setLimitAllowChange(bool b);
+	void setLimitAllowChange(int b);
 
 };
 

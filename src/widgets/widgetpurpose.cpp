@@ -138,18 +138,21 @@ void widgetPurpose::setPurpose(const QStringList &text)
 void widgetPurpose::setLimitMaxLen(int maxLen)
 {
 	this->maxLength = maxLen;
+	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
+	this->updateStatusLabel();
 }
 
 //public slot
 void widgetPurpose::setLimitMaxLines(int lines)
 {
 	this->maxLines = lines;
+	this->updateStatusLabel();
 }
 
 //public slot
-void widgetPurpose::setLimitAllowChange(bool b)
+void widgetPurpose::setLimitAllowChange(int b)
 {
-	this->setEnabled(b);
+	this->setDisabled(b == -1);
 }
 
 //public slot

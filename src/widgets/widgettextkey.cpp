@@ -114,7 +114,7 @@ int widgetTextKey::getTextKey() const
 }
 
 //public slot
-void widgetTextKey::setLimitAllowChange(bool b)
+void widgetTextKey::setLimitAllowChange(int b)
 {
-	this->setEnabled(b);
+	this->setDisabled(b == -1);
 }

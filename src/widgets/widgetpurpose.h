@@ -71,7 +71,7 @@ public slots:
 
 	void setLimitMaxLen(int maxLen);
 	void setLimitMaxLines(int lines);
-	void setLimitAllowChange(bool b);
+	void setLimitAllowChange(int b);
 
 	void clearAll();
 };

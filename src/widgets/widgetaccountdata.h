@@ -93,10 +93,10 @@ public slots:
 	void setLimitMaxLenAccountNumber(int maxLen);
 	void setLimitMaxLenBankCode(int maxLen);
 	void setLimitMaxLenBankName(int maxLen);
-	void setLimitAllowChangeName(bool b);
-	void setLimitAllowChangeAccountNumber(bool b);
-	void setLimitAllowChangeBankCode(bool b);
-	void setLimitAllowChangeBankName(bool b);
+	void setLimitAllowChangeName(int b);
+	void setLimitAllowChangeAccountNumber(int b);
+	void setLimitAllowChangeBankCode(int b);
+	void setLimitAllowChangeBankName(int b);
 
 
 };

@@ -119,9 +119,9 @@ void widgetValue::setValueCurrency(const QString &value, const QString &currency
 }
 
 //public slot
-void widgetValue::setLimitAllowChange(bool b)
+void widgetValue::setLimitAllowChange(int b)
 {
-	this->setEnabled(b);
+	this->setDisabled(b == -1);
 }
 
 

@@ -54,6 +54,7 @@
 #include "globalvars.h"
 #include "abt_conv.h"
 #include "abt_transactionlimits.h"
+#include "widgets/widgettransfer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -292,14 +293,14 @@ void MainWindow::on_actionAddGetDAs_triggered()
 	if (d == NULL) {
 		d = new QDialog(this);
 		QVBoxLayout *vb = new QVBoxLayout();
-		pageWidgetTests *testw = new pageWidgetTests(d);
+		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeTransfer,
+							   this->jobctrl->limits(5, AB_Job_TypeTransfer),
+							   d);
 		vb->addWidget(testw);
 		d->setLayout(vb);
 	}
 	d->showNormal();
 
-	pageWidgetTests *t = d->findChild<pageWidgetTests*>();
-	if (t) qDebug() << "Purpose in Main:" << t->getPurpose();
 }
 
 void MainWindow::on_actionAddGetDated_triggered()
