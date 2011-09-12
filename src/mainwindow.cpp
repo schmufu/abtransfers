@@ -293,8 +293,8 @@ void MainWindow::on_actionAddGetDAs_triggered()
 	if (d == NULL) {
 		d = new QDialog(this);
 		QVBoxLayout *vb = new QVBoxLayout();
-		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeSepaTransfer,
-							   this->accounts->getAccount(5)->limits(AB_Job_TypeSepaTransfer),
+		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeTransfer,
+							   this->accounts->getAccount(5)->limits(AB_Job_TypeTransfer),
 							   d);
 		vb->addWidget(testw);
 		d->setLayout(vb);

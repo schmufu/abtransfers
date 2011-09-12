@@ -371,17 +371,13 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 		}
 	}
 
-	if ( ( event->mimeData()->hasFormat(mimetypeRecipient) ||
-	       event->mimeData()->hasFormat(mimetypeAccount) ) &&
-	     (event->possibleActions() & Qt::CopyAction)) {
-		//Sollen wir Drops von KnownRecipients engegennehmen?
-		if (this->allowDropKnownRecipient) {
+	bool AllowRecipient = event->mimeData()->hasFormat(mimetypeRecipient) &&
+			      this->allowDropKnownRecipient;
+	bool AllowAccount = event->mimeData()->hasFormat(mimetypeAccount) &&
+			    this->allowDropAccount;
+	if ( (AllowRecipient || AllowAccount) &&
+	     (event->possibleActions() & Qt::CopyAction) ) {
 			event->acceptProposedAction();
-		}
-		//Sollen wir Drops von Accounts engegennehmen?
-		if (this->allowDropAccount) {
-			event->acceptProposedAction();
-		}
 	}
 
 }
