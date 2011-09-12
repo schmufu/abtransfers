@@ -419,12 +419,20 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 	if (event->mimeData()->hasFormat(mimetypeAccount)) {
 		QByteArray encoded = event->mimeData()->data(mimetypeAccount);
 		qulonglong a = encoded.toULongLong();
-		const aqb_AccountInfo *info = (aqb_AccountInfo*)a;
-		this->currAccount = info;
+		const aqb_AccountInfo *newAccount = (aqb_AccountInfo*)a;
+		if (this->currAccount == newAccount) {
+			//Account hat sich nicht geändert, wir akzeptieren den
+			//Drop, brauchen aber keine Daten ändern.
+			event->setDropAction(Qt::CopyAction);
+			event->accept();
+			return; //Abbruch;
+		}
+		//Neuen Account als aktuellen merken.
+		this->currAccount = newAccount;
 
-		this->setName(info->OwnerName());
-		this->setAccountNumber(info->Number());
-		this->setBankCode(info->BankCode());
+		this->setName(newAccount->OwnerName());
+		this->setAccountNumber(newAccount->Number());
+		this->setBankCode(newAccount->BankCode());
 
 		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
 		//gesetzt so belassen (siehe inhalt der Funktion!)
@@ -436,6 +444,8 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 
 		event->setDropAction(Qt::CopyAction);
 		event->accept();
+
+		//Alle die es wollen über die Änderung informieren
 		emit accountChanged(this->currAccount);
 		return;
 	}

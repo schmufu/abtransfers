@@ -213,6 +213,8 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */)
 	/** \todo wird die connection auch für den remoteAccount benötigt?
 	  *       Eigentlich nicht, auch bei einem Internal Transfer sind nur
 	  *       die Limits des Sendenden Accounts relevant!?!?
+	  *	  Das Signal wird sowiso nur gesendet wenn sich der Account
+	  *	  ändert! Bei einem KnownRecipient Drop wird nichts gesendet!
 	  */
 	//connect(this->remoteAccount, SIGNAL(accountChanged(const aqb_AccountInfo*)),
 	//	this, SLOT(onAccountChange(const aqb_AccountInfo*)));
