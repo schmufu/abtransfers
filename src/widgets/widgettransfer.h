@@ -65,7 +65,8 @@ public:
 	widgetTextKey *textKey;
 
 private:
-	const abt_transactionLimits *limits;
+	const abt_transactionLimits *m_limits;
+	AB_JOB_TYPE m_type;
 
 	QGroupBox *groupBoxLocal;
 	QGroupBox *groupBoxRemote;
@@ -92,9 +93,15 @@ private:
 	void my_create_recurrence();
 
 
+	void setAllLimits(const abt_transactionLimits *limits);
+
 signals:
 
+private slots:
+	void onAccountChange(const aqb_AccountInfo *accInfo);
+
 public slots:
+
 
 };
 

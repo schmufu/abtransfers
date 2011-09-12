@@ -35,12 +35,15 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 
+#include "../aqb_accountinfo.h"
+
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 			       const abt_transactionLimits *limits,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	this->limits = limits;
+	this->m_limits = limits;
+	this->m_type = type;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
 	this->value = NULL;
@@ -49,7 +52,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->textKey = NULL;
 	this->layoutMain = new QVBoxLayout();
 
-	if (this->limits == NULL) {
+	if (this->m_limits == NULL) {
 		QLabel *notAvailable = new QLabel(tr("Der \"Job\" '%1' ist bei "
 						     "dem ausgewähltem Konto "
 						     "nicht verfügbar!").arg(
@@ -101,6 +104,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		qWarning() << "type" << type << "not supported for widgetTransfer!";
 		break;
 	}
+
+	this->setAllLimits(this->m_limits);
 
 	this->setLayout(this->layoutMain);
 
@@ -187,11 +192,11 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer)
 	this->localAccount->setLimitAllowChangeBankCode(newTransfer);
 	this->localAccount->setLimitAllowChangeBankName(newTransfer);
 	this->localAccount->setLimitAllowChangeName(newTransfer);
-	this->localAccount->setLimitMaxLenAccountNumber(this->limits->MaxLenLocalAccountNumber);
-	this->localAccount->setLimitMaxLenBankCode(this->limits->MaxLenLocalBankCode);
-	this->localAccount->setLimitMaxLenName(this->limits->MaxLenLocalName);
 	gbll->addWidget(this->localAccount);
 	this->groupBoxLocal->setLayout(gbll);
+
+	connect(this->localAccount, SIGNAL(accountChanged(const aqb_AccountInfo*)),
+		this, SLOT(onAccountChange(const aqb_AccountInfo*)));
 }
 
 //private
@@ -201,16 +206,16 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */)
 	QVBoxLayout *gbrl = new QVBoxLayout();
 	this->remoteAccount = new widgetAccountData(this);
 	this->remoteAccount->setAllowDropAccount(false);
-	this->remoteAccount->setAllowDropKnownRecipient(true); //this->limits->AllowChangeRecipientAccount);
-	this->remoteAccount->setLimitAllowChangeAccountNumber(this->limits->AllowChangeRecipientAccount);
-	this->remoteAccount->setLimitAllowChangeBankCode(this->limits->AllowChangeRecipientAccount);
-	this->remoteAccount->setLimitAllowChangeBankName(this->limits->AllowChangeRecipientAccount);
-	this->remoteAccount->setLimitAllowChangeName(this->limits->AllowChangeRecipientName);
-	this->remoteAccount->setLimitMaxLenAccountNumber(this->limits->MaxLenRemoteAccountNumber);
-	this->remoteAccount->setLimitMaxLenBankCode(this->limits->MaxLenRemoteBankCode);
-	this->remoteAccount->setLimitMaxLenName(this->limits->MaxLenRemoteName);
+	this->remoteAccount->setAllowDropKnownRecipient(true);
 	gbrl->addWidget(this->remoteAccount);
 	this->groupBoxRemote->setLayout(gbrl);
+
+	/** \todo wird die connection auch für den remoteAccount benötigt?
+	  *       Eigentlich nicht, auch bei einem Internal Transfer sind nur
+	  *       die Limits des Sendenden Accounts relevant!?!?
+	  */
+	//connect(this->remoteAccount, SIGNAL(accountChanged(const aqb_AccountInfo*)),
+	//	this, SLOT(onAccountChange(const aqb_AccountInfo*)));
 }
 
 //private
@@ -218,7 +223,6 @@ void widgetTransfer::my_create_value_with_label_left()
 {
 	QLabel *labelValue = new QLabel(tr("Betrag (Euro,Cent):"));
 	this->value = new widgetValue(this);
-	this->value->setLimitAllowChange(this->limits->AllowChangeValue);
 	this->layoutValue = new QHBoxLayout();
 	this->layoutValue->addWidget(labelValue, 2, Qt::AlignRight);
 	this->layoutValue->addWidget(this->value, 0, Qt::AlignRight);
@@ -229,7 +233,6 @@ void widgetTransfer::my_create_value_with_label_top()
 {
 	QLabel *labelValue = new QLabel(tr("Betrag: (Euro,Cent)"));
 	this->value = new widgetValue(this);
-	this->value->setLimitAllowChange(this->limits->AllowChangeValue);
 	this->layoutValue = new QVBoxLayout();
 	this->layoutValue->addWidget(labelValue, 2, Qt::AlignRight);
 	this->layoutValue->addWidget(this->value, 0, Qt::AlignRight);
@@ -238,11 +241,7 @@ void widgetTransfer::my_create_value_with_label_top()
 //private
 void widgetTransfer::my_create_purpose()
 {
-
 	this->purpose = new widgetPurpose(this);
-	this->purpose->setLimitAllowChange(this->limits->AllowChangePurpose);
-	this->purpose->setLimitMaxLines(this->limits->MaxLinesPurpose);
-	this->purpose->setLimitMaxLen(this->limits->MaxLenPurpose);
 
 	QLabel *labelPurpose = new QLabel("Verwendungszweck");
 	this->layoutPurpose = new QVBoxLayout();
@@ -253,13 +252,7 @@ void widgetTransfer::my_create_purpose()
 //private
 void widgetTransfer::my_create_textKey()
 {
-	QList<int> allowedTextKeys;
-	foreach (QString key, limits->ValuesTextKey) {
-		allowedTextKeys.append(key.toInt());
-	}
-
-	this->textKey = new widgetTextKey(&allowedTextKeys);
-	this->textKey->setLimitAllowChange(this->limits->AllowChangeTextKey);
+	this->textKey = new widgetTextKey(NULL);
 }
 
 //private
@@ -267,23 +260,126 @@ void widgetTransfer::my_create_recurrence()
 {
 	this->groubBoxRecurrence = new QGroupBox(tr("Ausführungsdaten"));
 	this->recurrence = new widgetRecurrence(this);
-	this->recurrence->setLimitAllowChangeCycle(this->limits->AllowChangeCycle);
-	this->recurrence->setLimitAllowChangeExecutionDay(this->limits->AllowChangeExecutionDay);
-	this->recurrence->setLimitAllowChangePeriod(this->limits->AllowChangePeriod);
-	this->recurrence->setLimitAllowMonthly(this->limits->AllowMonthly);
-	this->recurrence->setLimitAllowWeekly(this->limits->AllowWeekly);
-	this->recurrence->setLimitAllowChangeFirstExecutionDate(this->limits->AllowChangeFirstExecutionDate);
-	this->recurrence->setLimitAllowChangeLastExecutionDate(this->limits->AllowChangeLastExecutionDate);
-
-	this->recurrence->setLimitValuesCycleMonth(this->limits->ValuesCycleMonth);
-	this->recurrence->setLimitValuesCycleWeek(this->limits->ValuesCycleWeek);
-	this->recurrence->setLimitValuesExecutionDayMonth(this->limits->ValuesExecutionDayMonth);
-	this->recurrence->setLimitValuesExecutionDayWeek(this->limits->ValuesExecutionDayWeek);
 
 	QVBoxLayout *grbl = new QVBoxLayout();
 	grbl->addWidget(this->recurrence);
 	this->groubBoxRecurrence->setLayout(grbl);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//private
+void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
+{
+	//wenn keine Limits vorhanden sind alle Widgets disablen, da ein Job
+	//ohne Limits von der Bank nicht unterstützt wird!
+	bool dis = limits == NULL;
+	if (this->localAccount) this->localAccount->setDisabled(dis);
+	if (this->remoteAccount) this->remoteAccount->setDisabled(dis);
+	if (this->value) this->value->setDisabled(dis);
+	if (this->purpose) this->purpose->setDisabled(dis);
+	if (this->textKey) this->textKey->setDisabled(dis);
+	if (this->recurrence) this->recurrence->setDisabled(dis);
+
+	if (dis) return; //Abbruch wenn keine Limits vorhanden sind
+
+
+	if (this->localAccount != NULL) {
+		this->localAccount->setLimitMaxLenAccountNumber(limits->MaxLenLocalAccountNumber);
+		this->localAccount->setLimitMaxLenBankCode(limits->MaxLenLocalBankCode);
+		this->localAccount->setLimitMaxLenName(limits->MaxLenLocalName);
+	}
+
+	if (this->remoteAccount != NULL) {
+		this->remoteAccount->setLimitAllowChangeAccountNumber(limits->AllowChangeRecipientAccount);
+		this->remoteAccount->setLimitAllowChangeBankCode(limits->AllowChangeRecipientAccount);
+		this->remoteAccount->setLimitAllowChangeBankName(limits->AllowChangeRecipientAccount);
+		this->remoteAccount->setLimitAllowChangeName(limits->AllowChangeRecipientName);
+		this->remoteAccount->setLimitMaxLenAccountNumber(limits->MaxLenRemoteAccountNumber);
+		this->remoteAccount->setLimitMaxLenBankCode(limits->MaxLenRemoteBankCode);
+		this->remoteAccount->setLimitMaxLenName(limits->MaxLenRemoteName);
+	}
+
+	if (this->value != NULL) {
+		this->value->setLimitAllowChange(limits->AllowChangeValue);
+	}
+
+	if (this->purpose != NULL) {
+		this->purpose->setLimitAllowChange(limits->AllowChangePurpose);
+		this->purpose->setLimitMaxLines(limits->MaxLinesPurpose);
+		this->purpose->setLimitMaxLen(limits->MaxLenPurpose);
+	}
+
+	if (this->textKey != NULL) {
+		int oldKey = this->textKey->getTextKey();
+		QList<int> allowedTextKeys;
+		foreach (QString key, limits->ValuesTextKey) {
+			allowedTextKeys.append(key.toInt());
+		}
+		this->textKey->fillTextKeys(&allowedTextKeys);
+		//den vorher gewählten key wieder setzen. Wenn er in der neuen
+		//Liste nicht vorhanden ist oder ungültig (-1) ist wird
+		//automatisch der erste Wert der neuen Liste gewählt.
+		this->textKey->setTextKey(oldKey);
+		this->textKey->setLimitAllowChange(limits->AllowChangeTextKey);
+	}
+
+	if (this->recurrence != NULL) {
+		this->recurrence->setLimitAllowChangeCycle(limits->AllowChangeCycle);
+		this->recurrence->setLimitAllowChangeExecutionDay(limits->AllowChangeExecutionDay);
+		this->recurrence->setLimitAllowChangePeriod(limits->AllowChangePeriod);
+		this->recurrence->setLimitAllowMonthly(limits->AllowMonthly);
+		this->recurrence->setLimitAllowWeekly(limits->AllowWeekly);
+		this->recurrence->setLimitAllowChangeFirstExecutionDate(limits->AllowChangeFirstExecutionDate);
+		this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+
+		this->recurrence->setLimitValuesCycleMonth(limits->ValuesCycleMonth);
+		this->recurrence->setLimitValuesCycleWeek(limits->ValuesCycleWeek);
+		this->recurrence->setLimitValuesExecutionDayMonth(limits->ValuesExecutionDayMonth);
+		this->recurrence->setLimitValuesExecutionDayWeek(limits->ValuesExecutionDayWeek);
+	}
+
+}
+
+//private slot
+void widgetTransfer::onAccountChange(const aqb_AccountInfo *accInfo)
+{
+	//Neuer Account als Absender wurde gewählt, somit treten evt. neue
+	//Limits von diesem Account in kraft.
+	this->m_limits = accInfo->limits(this->m_type); //limits merken
+	this->setAllLimits(this->m_limits); //und alle limits neu setzen
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**** AB_JOB_TYPE's
 	case AB_Job_TypeCreateDatedTransfer :
@@ -305,3 +401,5 @@ void widgetTransfer::my_create_recurrence()
 	case AB_Job_TypeTransfer :
 	case AB_Job_TypeUnknown :
 */
+
+
