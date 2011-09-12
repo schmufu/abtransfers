@@ -71,7 +71,15 @@ private:
 	Page_Ueberweisung_New *page_transfer_new;
 	Page_InternalTransfer_New *page_internaltransfer_new;
 
-	QDockWidget *dock_KnownEmpfaenger;
+	QDockWidget *dock_KnownRecipient;
+	QDockWidget *dock_KnownRecipient2;
+	QDockWidget *dock_KnownRecipient3;
+	QDockWidget *dock_KnownRecipient4;
+	QDockWidget *dock_KnownRecipient5;
+	QDockWidget *dock_KnownRecipient6;
+	QDockWidget *dock_KnownRecipient7;
+	QDockWidget *dock_KnownRecipient8;
+	QDockWidget *dock_Accounts;
 
 private slots:
 	void TimerTimeOut();
@@ -85,6 +93,7 @@ private slots:
 	void on_actionDebug_Info_triggered();
 
 	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
+	void onAccountWidgetContextMenuRequest(QPoint p);
 };
 
 #endif // MAINWINDOW_H

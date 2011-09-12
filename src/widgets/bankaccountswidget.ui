@@ -22,6 +22,9 @@
     <height>90</height>
    </size>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
+  </property>
   <property name="locale">
    <locale language="German" country="Germany"/>
   </property>

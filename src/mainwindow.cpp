@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
 							    ui->tabWidget_UW);
 	this->page_internaltransfer_new = new Page_InternalTransfer_New(
 				banking, this->accounts, ui->tabWidget_UW);
-	this->dock_KnownEmpfaenger = NULL;
+	this->dock_KnownRecipient = NULL;
 
 	//ui->tabWidget_DA->clear();
 	ui->tabWidget_DA->addTab(this->da_new, tr("Neu"));
@@ -144,16 +144,107 @@ MainWindow::MainWindow(QWidget *parent) :
 	//Default-Entry Überweisung auswählen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 
-	//DockWidget erstellen
-	this->dock_KnownEmpfaenger = new QDockWidget(tr("Bekannte Empfänger"),this);
+	//default DockOptions setzen
+	this->setDockOptions(QMainWindow::AllowNestedDocks |
+			     QMainWindow::AllowTabbedDocks);// |
+			     //QMainWindow::AnimatedDocks);
+	this->setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+	this->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	this->setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+	this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+	//DockWidget für KnownRecipients erstellen
+	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
 	qDebug() << "creating knownEmpfaengerWidget";
-	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownEmpfaenger);
-	this->dock_KnownEmpfaenger->setWidget(kew);
-	this->dock_KnownEmpfaenger->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	this->dock_KnownEmpfaenger->setFloating(false);
-	this->dock_KnownEmpfaenger->hide();
-	this->dock_KnownEmpfaenger->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownEmpfaenger);
+	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
+	this->dock_KnownRecipient->setWidget(kew);
+	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient->setFloating(false);
+	this->dock_KnownRecipient->hide();
+	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
+
+	//DockWidget für Accounts erstellen
+	this->dock_Accounts = new QDockWidget(tr("Unterstüzte Online Konten"),this);
+	qDebug() << "creating bankAccountsWidget";
+	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
+	this->dock_Accounts->setWidget(baw);
+	//this->dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+	this->dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_Accounts->setFloating(false);
+	this->dock_Accounts->hide();
+	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
+	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
+	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
+		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
+
+
+
+	this->dock_KnownRecipient2 = new QDockWidget(tr("Empf2"),this);
+	KnownEmpfaengerWidget *kew2 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient2);
+	this->dock_KnownRecipient2->setWidget(kew2);
+	this->dock_KnownRecipient2->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient2->setFloating(false);
+	this->dock_KnownRecipient2->hide();
+	this->dock_KnownRecipient2->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient2);
+
+	this->dock_KnownRecipient3 = new QDockWidget(tr("Empf3"),this);
+	KnownEmpfaengerWidget *kew3 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient3);
+	this->dock_KnownRecipient3->setWidget(kew3);
+	this->dock_KnownRecipient3->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient3->setFloating(false);
+	this->dock_KnownRecipient3->hide();
+	this->dock_KnownRecipient3->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient3);
+
+	this->dock_KnownRecipient4 = new QDockWidget(tr("Empf4"),this);
+	KnownEmpfaengerWidget *kew4 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient4);
+	this->dock_KnownRecipient4->setWidget(kew4);
+	this->dock_KnownRecipient4->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient4->setFloating(false);
+	this->dock_KnownRecipient4->hide();
+	this->dock_KnownRecipient4->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient4, Qt::Vertical);
+
+	this->dock_KnownRecipient5 = new QDockWidget(tr("Empf5"),this);
+	KnownEmpfaengerWidget *kew5 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient5);
+	this->dock_KnownRecipient5->setWidget(kew5);
+	this->dock_KnownRecipient5->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient5->setFloating(false);
+	this->dock_KnownRecipient5->hide();
+	this->dock_KnownRecipient5->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient5, Qt::Vertical);
+
+	this->dock_KnownRecipient6 = new QDockWidget(tr("Empf6"),this);
+	KnownEmpfaengerWidget *kew6 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient6);
+	this->dock_KnownRecipient6->setWidget(kew6);
+	this->dock_KnownRecipient6->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient6->setFloating(false);
+	this->dock_KnownRecipient6->hide();
+	this->dock_KnownRecipient6->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient6, Qt::Horizontal);
+
+	this->dock_KnownRecipient7 = new QDockWidget(tr("Empf7"),this);
+	KnownEmpfaengerWidget *kew7 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient7);
+	this->dock_KnownRecipient7->setWidget(kew7);
+	this->dock_KnownRecipient7->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient7->setFloating(false);
+	this->dock_KnownRecipient7->hide();
+	this->dock_KnownRecipient7->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient7, Qt::Horizontal);
+
+	this->dock_KnownRecipient8 = new QDockWidget(tr("Empf8"),this);
+	KnownEmpfaengerWidget *kew8 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient8);
+	this->dock_KnownRecipient8->setWidget(kew8);
+	this->dock_KnownRecipient8->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient8->setFloating(false);
+	this->dock_KnownRecipient8->hide();
+	this->dock_KnownRecipient8->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient8, Qt::Horizontal);
+
+
 
 
 	QTimer *timer = new QTimer(this);
@@ -196,7 +287,15 @@ void MainWindow::TimerTimeOut()
 	//Actions können zur mainToolBar wohl erst hinzugefügt werden wenn die
 	//execLoop läuft, deswegen erst hier nach ablauf des Timers.
 	//(Der Timer läuft erst ab wenn die execLoop gestartet ist)
-	this->ui->mainToolBar->addAction(this->dock_KnownEmpfaenger->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_Accounts->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient2->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient3->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient4->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient5->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient6->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient7->toggleViewAction());
+	this->ui->mainToolBar->addAction(this->dock_KnownRecipient8->toggleViewAction());
 }
 
 void MainWindow::on_actionDebug_Info_triggered()
@@ -323,4 +422,32 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 	msg.append(abt_conv::JobTypeToQString(type));
 	msg.append(tr(" - Auftrag wird von der Bank nicht unterstützt!"));
 	ui->statusBar->showMessage(msg);
+}
+
+//private slot
+void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
+{
+	QMenu Menu(this);
+	QMenu MenuTransfer("Überweisung", this);
+	MenuTransfer.addAction("National");
+	MenuTransfer.addAction("International");
+	MenuTransfer.addAction("Umbuchung");
+	MenuTransfer.addAction("Sepa-Überweisung");
+	QMenu MenuStanding("Daueraufträge", this);
+	MenuStanding.addAction("Neu");
+	MenuStanding.addAction("Bekannte Anzeigen");
+	MenuStanding.addAction("Aktualisieren");
+	QMenu MenuDated("Terminüberweisungen", this);
+	MenuDated.addAction("Neu");
+	MenuDated.addAction("Bekannte Anzeigen");
+	MenuDated.addAction("Aktualisieren");
+	Menu.addMenu(&MenuTransfer);
+	Menu.addMenu(&MenuStanding);
+	Menu.addMenu(&MenuDated);
+	Menu.addSeparator();
+	Menu.addAction("Text1");
+	Menu.addAction("Text2");
+	Menu.addSeparator();
+	Menu.addAction("Text3");
+	Menu.exec(this->dock_Accounts->widget()->mapToGlobal(p));
 }
