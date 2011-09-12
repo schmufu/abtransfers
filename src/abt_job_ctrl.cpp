@@ -124,7 +124,7 @@ abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_job_info*>;
-	this->m_transLimits = NULL;
+//	this->m_transLimits = NULL;
 //	this->createAllTransactionLimits();
 //	//Nur zum Testen
 //	QList<AB_JOB_TYPE> list = this->m_transLimits->value(5)->keys();
@@ -154,22 +154,22 @@ abt_job_ctrl::~abt_job_ctrl()
 
 	delete this->jobqueue;
 
-	abt_transactionLimits *l = NULL;
-	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
-	QList<int> allKeys = this->m_transLimits->keys();
-	for (int i=0; i<allKeys.size(); ++i) {
-		ah = m_transLimits->take(allKeys.at(i));
-
-		QList<AB_JOB_TYPE> keys = ah->keys();
-		for (int j=0; j<keys.size(); ++j) {
-			l = ah->take(keys.at(j));
-			delete l;
-		}
-		delete ah;
-	}
-
-	//Alle Elemente gelöscht, jetzt auch das oberste löschen
-	delete this->m_transLimits;
+//	abt_transactionLimits *l = NULL;
+//	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
+//	QList<int> allKeys = this->m_transLimits->keys();
+//	for (int i=0; i<allKeys.size(); ++i) {
+//		ah = m_transLimits->take(allKeys.at(i));
+//
+//		QList<AB_JOB_TYPE> keys = ah->keys();
+//		for (int j=0; j<keys.size(); ++j) {
+//			l = ah->take(keys.at(j));
+//			delete l;
+//		}
+//		delete ah;
+//	}
+//
+//	//Alle Elemente gelöscht, jetzt auch das oberste löschen
+//	delete this->m_transLimits;
 
 	qDebug() << this << "deleted";
 }
@@ -349,26 +349,26 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	AB_Transaction_free(t);
 }
 
-void abt_job_ctrl::printAllLimits() const
-{
-	abt_transactionLimits *l = NULL;
-	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
-	QList<int> allKeys = this->m_transLimits->keys();
-	for (int i=0; i<allKeys.size(); ++i) {
-		ah = m_transLimits->value(allKeys.at(i));
-
-		qDebug() << "##################################################\n"
-			 << "#### Limits für Account " << allKeys.at(i) << "\n";
-
-		QList<AB_JOB_TYPE> keys = ah->keys();
-		for (int j=0; j<keys.size(); ++j) {
-			l = ah->value(keys.at(j));
-			qDebug() << "*** TYPE: " << abt_conv::JobTypeToQString(keys.at(j))
-					<< "*** \n";
-			l->printAllAsDebug();
-		}
-	}
-}
+//void abt_job_ctrl::printAllLimits() const
+//{
+//	abt_transactionLimits *l = NULL;
+//	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
+//	QList<int> allKeys = this->m_transLimits->keys();
+//	for (int i=0; i<allKeys.size(); ++i) {
+//		ah = m_transLimits->value(allKeys.at(i));
+//
+//		qDebug() << "##################################################\n"
+//			 << "#### Limits für Account " << allKeys.at(i) << "\n";
+//
+//		QList<AB_JOB_TYPE> keys = ah->keys();
+//		for (int j=0; j<keys.size(); ++j) {
+//			l = ah->value(keys.at(j));
+//			qDebug() << "*** TYPE: " << abt_conv::JobTypeToQString(keys.at(j))
+//					<< "*** \n";
+//			l->printAllAsDebug();
+//		}
+//	}
+//}
 
 
 

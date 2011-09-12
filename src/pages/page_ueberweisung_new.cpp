@@ -145,14 +145,15 @@ void Page_Ueberweisung_New::account_selected(const aqb_AccountInfo *account)
 	//Alle zugelassenen TextSchlüssel holen und diese in der ComboBox
 	//des ÜberweisungsWidgets darstellen
 
-	const abt_transactionLimits *li = this->jobctrl->limits(account->get_ID(), AB_Job_TypeTransfer);
-	if (li == NULL) return; //Abbruch;
-	QList<int> keys;
-	QStringList possibleKeys = li->ValuesTextKey;
-	foreach(QString key, possibleKeys) {
-		keys.append(key.toInt());
-	}
-	this->ueberweisungwidget->setPossibleTextKeys(&keys);
+	/** \todo OBSOLET: page_ueberweisung_new wird bald durch widgetTransfer ersetzt! */
+//	const abt_transactionLimits *li = this->jobctrl->limits(account->get_ID(), AB_Job_TypeTransfer);
+//	if (li == NULL) return; //Abbruch;
+//	QList<int> keys;
+//	QStringList possibleKeys = li->ValuesTextKey;
+//	foreach(QString key, possibleKeys) {
+//		keys.append(key.toInt());
+//	}
+//	this->ueberweisungwidget->setPossibleTextKeys(&keys);
 }
 
 //private slot

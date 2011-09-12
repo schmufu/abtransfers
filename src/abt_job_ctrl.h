@@ -79,7 +79,7 @@ private:
 	bool checkJobStatus(AB_JOB_LIST2 *jl);
 
 //	//! Hash der die Limits für die einzelnen Transactions speichert
-	QHash<int, QHash<AB_JOB_TYPE, abt_transactionLimits*>*> *m_transLimits;
+//	QHash<int, QHash<AB_JOB_TYPE, abt_transactionLimits*>*> *m_transLimits;
 //	void createAllTransactionLimits();
 
 
@@ -90,15 +90,15 @@ public:
 
 	const QList<abt_job_info*> *jobqueueList() const { return this->jobqueue; }
 
-	const abt_transactionLimits* limits(int accountID, AB_JOB_TYPE type) const
-		{
-			if (this->m_transLimits->contains(accountID)) {
-				return this->m_transLimits->value(accountID)->value(type,NULL);
-			} else {
-				return NULL;
-			}
-		}
-	void printAllLimits() const;
+//	const abt_transactionLimits* limits(int accountID, AB_JOB_TYPE type) const
+//		{
+//			if (this->m_transLimits->contains(accountID)) {
+//				return this->m_transLimits->value(accountID)->value(type,NULL);
+//			} else {
+//				return NULL;
+//			}
+//		}
+//	void printAllLimits() const;
 
 	//! Static function for creating every TransactionLimit for an Account
 	static void createTransactionLimitsFor(AB_ACCOUNT *a,

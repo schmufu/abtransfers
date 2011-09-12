@@ -294,7 +294,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 		d = new QDialog(this);
 		QVBoxLayout *vb = new QVBoxLayout();
 		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeSepaTransfer,
-							   this->jobctrl->limits(5, AB_Job_TypeSepaTransfer),
+							   this->accounts->getAccount(5)->limits(AB_Job_TypeSepaTransfer),
 							   d);
 		vb->addWidget(testw);
 		d->setLayout(vb);
@@ -306,7 +306,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 void MainWindow::on_actionAddGetDated_triggered()
 {
 	this->ui->statusBar->showMessage("DebugOut Limits Transaction");
-	this->jobctrl->printAllLimits();
+//	this->jobctrl->printAllLimits();
 }
 
 void MainWindow::on_actionExecQueued_triggered()
