@@ -40,7 +40,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	Q_ASSERT(limits);
 	this->limits = limits;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
@@ -50,20 +49,42 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->textKey = NULL;
 	this->layoutMain = new QVBoxLayout();
 
+	if (this->limits == NULL) {
+		QLabel *notAvailable = new QLabel(tr("Der \"Job\" '%1' ist bei "
+						     "dem ausgewähltem Konto "
+						     "nicht verfügbar!").arg(
+							abt_conv::JobTypeToQString(type)), this);
+		notAvailable->setWordWrap(true);
+		QFont labelFont(notAvailable->font());
+		labelFont.setBold(true);
+		labelFont.setPixelSize(18);
+		notAvailable->setFont(labelFont);
+		this->layoutMain->addWidget(notAvailable,1,Qt::AlignCenter);
+		type = AB_Job_TypeUnknown;
+	}
+
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
 		break;
+	case AB_Job_TypeCreateStandingOrder :
+		this->my_create_standing_order_form(true);
+		break;
+	case AB_Job_TypeModifyStandingOrder :
+		this->my_create_standing_order_form(false);
+		break;
+	case AB_Job_TypeInternalTransfer :
+		this->my_create_internal_transfer_form(true);
+		break;
+
+
 	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeEuTransfer :
 
-	case AB_Job_TypeInternalTransfer :
 
 	case AB_Job_TypeCreateDatedTransfer :
 	case AB_Job_TypeModifyDatedTransfer :
 
-	case AB_Job_TypeCreateStandingOrder :
-	case AB_Job_TypeModifyStandingOrder :
 
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote :
@@ -90,6 +111,7 @@ widgetTransfer::~widgetTransfer()
 	qDebug() << this << "deleting";
 	delete this->groupBoxLocal;
 	delete this->groupBoxRemote;
+	delete this->groubBoxRecurrence;
 	qDebug() << this << "deleted";
 }
 
@@ -102,7 +124,17 @@ void widgetTransfer::my_create_internal_transfer_form(bool newTransfer)
 //private
 void widgetTransfer::my_create_standing_order_form(bool newTransfer)
 {
+	this->my_create_local_remote_horizontal(newTransfer);
+	this->my_create_value_with_label_left();
+	this->my_create_purpose();
+	this->my_create_recurrence();
+	this->my_create_textKey();
 
+	this->layoutMain->addLayout(this->layoutAccount);
+	this->layoutMain->addLayout(this->layoutValue);
+	this->layoutMain->addLayout(this->layoutPurpose);
+	this->layoutMain->addWidget(this->groubBoxRecurrence);
+	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
 }
 
 //private
@@ -226,6 +258,29 @@ void widgetTransfer::my_create_textKey()
 
 	this->textKey = new widgetTextKey(&allowedTextKeys);
 	this->textKey->setLimitAllowChange(this->limits->AllowChangeTextKey);
+}
+
+//private
+void widgetTransfer::my_create_recurrence()
+{
+	this->groubBoxRecurrence = new QGroupBox(tr("Ausführungsdaten"));
+	this->recurrence = new widgetRecurrence(this);
+	this->recurrence->setLimitAllowChangeCycle(this->limits->AllowChangeCycle);
+	this->recurrence->setLimitAllowChangeExecutionDay(this->limits->AllowChangeExecutionDay);
+	this->recurrence->setLimitAllowChangePeriod(this->limits->AllowChangePeriod);
+	this->recurrence->setLimitAllowMonthly(this->limits->AllowMonthly);
+	this->recurrence->setLimitAllowWeekly(this->limits->AllowWeekly);
+	this->recurrence->setLimitAllowChangeFirstExecutionDate(this->limits->AllowChangeFirstExecutionDate);
+	this->recurrence->setLimitAllowChangeLastExecutionDate(this->limits->AllowChangeLastExecutionDate);
+
+	this->recurrence->setLimitValuesCycleMonth(this->limits->ValuesCycleMonth);
+	this->recurrence->setLimitValuesCycleWeek(this->limits->ValuesCycleWeek);
+	this->recurrence->setLimitValuesExecutionDayMonth(this->limits->ValuesExecutionDayMonth);
+	this->recurrence->setLimitValuesExecutionDayWeek(this->limits->ValuesExecutionDayWeek);
+
+	QVBoxLayout *grbl = new QVBoxLayout();
+	grbl->addWidget(this->recurrence);
+	this->groubBoxRecurrence->setLayout(grbl);
 }
 
 /**** AB_JOB_TYPE's

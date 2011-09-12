@@ -34,6 +34,7 @@
 #include <QWidget>
 
 class widgetLineEditWithLabel;
+class aqb_AccountInfo;
 
 /*! \brief Widget zur Anzeige und Eingabe von Account Daten (Absender/Empfänger)
  *
@@ -58,6 +59,8 @@ private:
 	bool allowDropKnownRecipient;
 	bool readOnly;
 
+	const aqb_AccountInfo *currAccount;
+
 
 	void setEditAllowed(bool yes);
 
@@ -74,6 +77,7 @@ public:
 	bool hasChanges() const;
 
 signals:
+	void accountChanged(const aqb_AccountInfo *acc);
 
 private slots:
 	void lineEditBankCode_editingFinished();

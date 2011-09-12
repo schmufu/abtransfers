@@ -41,6 +41,7 @@
 #include "widgetlineeditwithlabel.h"
 
 #include "../abt_validators.h"
+//#include "../aqb_accountinfo.h"
 #include "../globalvars.h"
 
 widgetAccountData::widgetAccountData(QWidget *parent) :
@@ -50,6 +51,7 @@ widgetAccountData::widgetAccountData(QWidget *parent) :
 	this->allowDropAccount = false;
 	this->allowDropKnownRecipient = false;
 	this->readOnly = false;
+	this->currAccount = NULL;
 
 	this->llName = new widgetLineEditWithLabel(tr("Name"), "", Qt::AlignTop, this);
 	this->llAccountNumber = new widgetLineEditWithLabel(tr("Kontonummer"), "", Qt::AlignTop, this);
@@ -369,16 +371,13 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 		}
 	}
 
-	if (event->mimeData()->hasFormat(mimetypeRecipient) &&
-	    event->possibleActions() & Qt::CopyAction) {
+	if ( ( event->mimeData()->hasFormat(mimetypeRecipient) ||
+	       event->mimeData()->hasFormat(mimetypeAccount) ) &&
+	     (event->possibleActions() & Qt::CopyAction)) {
 		//Sollen wir Drops von KnownRecipients engegennehmen?
 		if (this->allowDropKnownRecipient) {
 			event->acceptProposedAction();
 		}
-	}
-
-	if (event->mimeData()->hasFormat(mimetypeAccount) &&
-	    event->possibleActions() & Qt::CopyAction) {
 		//Sollen wir Drops von Accounts engegennehmen?
 		if (this->allowDropAccount) {
 			event->acceptProposedAction();
@@ -425,6 +424,7 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 		QByteArray encoded = event->mimeData()->data(mimetypeAccount);
 		qulonglong a = encoded.toULongLong();
 		const aqb_AccountInfo *info = (aqb_AccountInfo*)a;
+		this->currAccount = info;
 
 		this->setName(info->OwnerName());
 		this->setAccountNumber(info->Number());
@@ -440,48 +440,10 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 
 		event->setDropAction(Qt::CopyAction);
 		event->accept();
+		emit accountChanged(this->currAccount);
 		return;
 	}
 
-
-/****** OLD VERSION *******
-	QByteArray encoded = event->mimeData()->data("application/x-qabstractitemmodeldatalist");
-	QDataStream stream(&encoded, QIODevice::ReadOnly);
-
-	while (!stream.atEnd())
-	{
-		int row, col;
-		QMap<int,  QVariant> roleDataMap;
-		stream >> row >> col >> roleDataMap;
-
-		//enable the debug line to see whats in the data
-		//qDebug() << "row:" << row << "col:" << col << "roleDataMap" << roleDataMap;
-		switch (col) {
-		case 0: //Name in Qt::DisplayRole und ptr zu abt_EmpfaengerInfo in Qt::userRole
-			this->setName(roleDataMap.value(Qt::DisplayRole).toString());
-			break;
-		case 1: //KontoNummer
-			this->setAccountNumber(roleDataMap.value(Qt::DisplayRole).toString());
-			break;
-		case 2: //BankCode
-			this->setBankCode(roleDataMap.value(Qt::DisplayRole).toString());
-			break;
-		default:
-			break;
-		}
-	}
-
-	//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
-	//gesetzt so belassen (siehe inhalt der Funktion!)
-	this->setBankName(QString(""));
-
-	//Es wurden Änderungen durchgeführt, dies beim Namen setzen
-	//(damit hasChanges() true zurückgibt!)
-	this->llName->lineEdit->setModified(true);
-
-	event->setDropAction(Qt::CopyAction);
-	event->accept();
-****** OLD VERSION *******/
 }
 
 

@@ -69,6 +69,7 @@ private:
 
 	QGroupBox *groupBoxLocal;
 	QGroupBox *groupBoxRemote;
+	QGroupBox *groubBoxRecurrence;
 	QBoxLayout *layoutAccount;
 	QBoxLayout *layoutValue;
 	QBoxLayout *layoutPurpose;
@@ -88,6 +89,7 @@ private:
 	void my_create_value_with_label_top();
 	void my_create_purpose();
 	void my_create_textKey();
+	void my_create_recurrence();
 
 
 signals:

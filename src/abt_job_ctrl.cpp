@@ -126,6 +126,13 @@ abt_job_ctrl::abt_job_ctrl(QObject *parent) :
 	this->jobqueue = new QList<abt_job_info*>;
 	this->m_transLimits = NULL;
 	this->createAllTransactionLimits();
+	//Nur zum Testen
+	QList<AB_JOB_TYPE> list = this->m_transLimits->value(5)->keys();
+	qDebug() << "HAVING THE FOLLOWING LIMITS";
+	foreach (AB_JOB_TYPE type, list) {
+		qDebug() << "5: having:" << abt_conv::JobTypeToQString(type);
+	}
+
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
 
@@ -239,6 +246,7 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
 
 	//AB_JobEuTransfer_GetFieldLimits existiert nicht!
 
+
 	j = AB_JobInternalTransfer_new(a);
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job InternalTransfer not available");
@@ -333,7 +341,6 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a)
 		}
 	}
 	AB_Job_free(j);
-
 
 	AB_Transaction_free(t);
 
