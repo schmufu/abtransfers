@@ -38,6 +38,7 @@
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
 
+class abt_transactionLimits;
 
 /*! \brief Daten von gespeicherten Daueraufträgen
   *
@@ -80,6 +81,8 @@ private:
 	QString m_AccountType;
 
 	QList<abt_DAInfo*> *m_KnownDAs;
+	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
+
 public:
 	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
 	~aqb_AccountInfo();
@@ -100,6 +103,8 @@ public:
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->m_ID; }
+
+	const abt_transactionLimits* limits(AB_JOB_TYPE type) const;
 
 public slots:
 	void loadKnownDAs();

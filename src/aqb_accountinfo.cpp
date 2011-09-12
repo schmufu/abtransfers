@@ -31,7 +31,9 @@
 #include "aqb_accountinfo.h"
 #include <QObject>
 #include <QDebug>
+
 #include "globalvars.h"
+#include "abt_job_ctrl.h"
 
 abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
 {
@@ -85,6 +87,10 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	//alle bekannten Daueraufträge für diesen Account holen
 	this->loadKnownDAs();
 
+	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken
+	this->m_limits = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
+	abt_job_ctrl::createTransactionLimitsFor(this->m_account, this->m_limits);
+
 	qDebug() << "AccountInfo for Account" << this->Number() << "created.";
 }
 
@@ -94,6 +100,12 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
 	abt_settings::freeDAsList(this->m_KnownDAs);
+
+	//Alle abt_transactionLimits und den QHash wieder löschen
+	foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
+		delete this->m_limits->take(type);
+	}
+	delete this->m_limits;
 }
 
 //public slot
@@ -106,4 +118,10 @@ void aqb_AccountInfo::loadKnownDAs()
 	this->m_KnownDAs = settings->getDAsForAccount(this->m_Number, this->m_BankCode);
 
 	emit knownDAsChanged(this);
+}
+
+//public
+const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
+{
+	return this->m_limits->value(type,NULL);
 }
