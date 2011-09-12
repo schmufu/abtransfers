@@ -51,6 +51,7 @@ private:
 	QHash<int, aqb_AccountInfo*> m_accounts;
 public:
 	aqb_Accounts(AB_BANKING *ab);
+	~aqb_Accounts();
 
 	const QHash<int, aqb_AccountInfo*>& getAccountHash() const
 		{ return this->m_accounts; }

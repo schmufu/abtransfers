@@ -124,14 +124,6 @@ abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_job_info*>;
-//	this->m_transLimits = NULL;
-//	this->createAllTransactionLimits();
-//	//Nur zum Testen
-//	QList<AB_JOB_TYPE> list = this->m_transLimits->value(5)->keys();
-//	qDebug() << "HAVING THE FOLLOWING LIMITS";
-//	foreach (AB_JOB_TYPE type, list) {
-//		qDebug() << "5: having:" << abt_conv::JobTypeToQString(type);
-//	}
 
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
@@ -154,53 +146,8 @@ abt_job_ctrl::~abt_job_ctrl()
 
 	delete this->jobqueue;
 
-//	abt_transactionLimits *l = NULL;
-//	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
-//	QList<int> allKeys = this->m_transLimits->keys();
-//	for (int i=0; i<allKeys.size(); ++i) {
-//		ah = m_transLimits->take(allKeys.at(i));
-//
-//		QList<AB_JOB_TYPE> keys = ah->keys();
-//		for (int j=0; j<keys.size(); ++j) {
-//			l = ah->take(keys.at(j));
-//			delete l;
-//		}
-//		delete ah;
-//	}
-//
-//	//Alle Elemente gelöscht, jetzt auch das oberste löschen
-//	delete this->m_transLimits;
-
 	qDebug() << this << "deleted";
 }
-
-//void abt_job_ctrl::createAllTransactionLimits()
-//{
-//	this->m_transLimits = new QHash<int, QHash<AB_JOB_TYPE, abt_transactionLimits*>*>;
-//	this->m_transLimits->clear();
-//	AB_ACCOUNT_LIST2 *accs;
-//	accs=AB_Banking_GetAccounts(banking->getAqBanking());
-//	if (accs) {
-//	       AB_ACCOUNT_LIST2_ITERATOR *it;
-//	       it=AB_Account_List2_First(accs);
-//	       if (it) {
-//		       AB_ACCOUNT *a;
-//		       a=AB_Account_List2Iterator_Data(it);
-//		       while(a) {
-//				this->createTransactionLimitsFor(a);
-//				a=AB_Account_List2Iterator_Next(it);
-//		       }
-//
-//		       /* the iterator must be freed after using it */
-//		       AB_Account_List2Iterator_free(it);
-//	       } else {
-//		       qWarning() << this << ": No iterator created!";
-//	       }
-//	       AB_Account_List2_free(accs);
-//       } else {
-//	       qWarning() << this << ": No Accounts from aqBanking found!";
-//       }
-//}
 
 /**
  * Erstellt alle TransactionLimits die für einen Account verfügbar sind und
@@ -348,28 +295,6 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 
 	AB_Transaction_free(t);
 }
-
-//void abt_job_ctrl::printAllLimits() const
-//{
-//	abt_transactionLimits *l = NULL;
-//	QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah = NULL;
-//	QList<int> allKeys = this->m_transLimits->keys();
-//	for (int i=0; i<allKeys.size(); ++i) {
-//		ah = m_transLimits->value(allKeys.at(i));
-//
-//		qDebug() << "##################################################\n"
-//			 << "#### Limits für Account " << allKeys.at(i) << "\n";
-//
-//		QList<AB_JOB_TYPE> keys = ah->keys();
-//		for (int j=0; j<keys.size(); ++j) {
-//			l = ah->value(keys.at(j));
-//			qDebug() << "*** TYPE: " << abt_conv::JobTypeToQString(keys.at(j))
-//					<< "*** \n";
-//			l->printAllAsDebug();
-//		}
-//	}
-//}
-
 
 
 

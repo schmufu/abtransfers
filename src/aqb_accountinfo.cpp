@@ -96,16 +96,22 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 
 aqb_AccountInfo::~aqb_AccountInfo()
 {
+	qDebug() << this << "destructor: started";
 	//existierende Daueraufträge für diesen Account speichern
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
 	abt_settings::freeDAsList(this->m_KnownDAs);
 
+	qDebug() << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
+	int i=0;
 	foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
+		qDebug() << this << "destructor: " << "in foreach -- i="<<i++;
 		delete this->m_limits->take(type);
 	}
+	qDebug() << this << "destructor: " << "after foreach";
 	delete this->m_limits;
+	qDebug() << this << "deleted";
 }
 
 //public slot

@@ -68,7 +68,7 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 					AB_TransactionLimits_GetValuesTextKey(el));
 
 	//TextKeys werden anscheinend von der Sparkasse Bremen nicht unterstützt
-	//oder das HBCI Backend setzt diese nicht, deswegen könnte der folgende
+	//oder das HBCI Backend setzt diese nicht, deswegen konnte der folgende
 	//Code nicht getestet werden!
 	AB_TEXTKEY_DESCR_LIST *dl = AB_TransactionLimits_GetTextKeys(el);
 	int lc = AB_TextKeyDescr_List_GetCount(dl); //ListCount
@@ -87,7 +87,7 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 			descr = AB_TextKeyDescr_List_Next(descr);
 			if (descr == NULL) {
 				qDebug() << "AB_TEXTKEY_DESCR_LIST ZÄHLER ZU WEIT!"
-						<< " -- lc=" <<lc<<" -- i="<<i;
+						<< " -- lc="<<lc << " -- i="<<i;
 				break;
 			}
 		}

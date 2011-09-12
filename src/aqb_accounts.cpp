@@ -100,3 +100,11 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 	}
 
 }
+
+aqb_Accounts::~aqb_Accounts()
+{
+	//Alle AccountInfo-Objecte wieder löschen
+	foreach (int key, this->m_accounts.keys()) {
+		delete this->m_accounts.take(key);
+	}
+}

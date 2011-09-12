@@ -109,9 +109,11 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 widgetTransfer::~widgetTransfer()
 {
 	qDebug() << this << "deleting";
-	delete this->groupBoxLocal;
-	delete this->groupBoxRemote;
-	delete this->groubBoxRecurrence;
+// Werden wohl durch das hinzufügen zum layout ein child dieses Widgets und
+// werden deswegen automatisch beim löschen des parentWidgets auch gelöscht
+//	delete this->groupBoxLocal;
+//	delete this->groupBoxRemote;
+//	delete this->groubBoxRecurrence;
 	qDebug() << this << "deleted";
 }
 
