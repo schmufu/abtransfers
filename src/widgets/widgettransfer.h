@@ -53,7 +53,7 @@ class widgetTransfer : public QWidget
 	Q_OBJECT
 public:
 	explicit widgetTransfer(AB_JOB_TYPE type,
-				const abt_transactionLimits *limits,
+				const aqb_AccountInfo *account,
 				QWidget *parent = 0);
 	~widgetTransfer();
 

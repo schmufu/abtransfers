@@ -71,6 +71,28 @@ private:
 	Page_Ueberweisung_New *page_transfer_new;
 	Page_InternalTransfer_New *page_internaltransfer_new;
 
+	QAction *actTransferNational;
+	QAction *actTransferInternational;
+	QAction *actTransferSepa;
+	QAction *actTransferInternal;
+	QAction *actDatedNew;
+	QAction *actDatedEdit;
+	QAction *actDatedDel;
+	QAction *actDatedUpdate;
+	QAction *actStandingNew;
+	QAction *actStandingEdit;
+	QAction *actStandingDel;
+	QAction *actStandingUpdate;
+	QAction *actDebitNote;
+	QAction *actDebitNoteSepa;
+	QAction *actUpdateBalance;
+//	QAction *act;
+//	QAction *act;
+//	QAction *act;
+//	QAction *act;
+
+	QMenu *accountContextMenu;
+
 	QDockWidget *dock_KnownRecipient;
 	QDockWidget *dock_KnownRecipient2;
 	QDockWidget *dock_KnownRecipient3;
@@ -80,6 +102,9 @@ private:
 	QDockWidget *dock_KnownRecipient7;
 	QDockWidget *dock_KnownRecipient8;
 	QDockWidget *dock_Accounts;
+
+	void createActions();
+	void createMenus();
 
 private slots:
 	void TimerTimeOut();
@@ -94,6 +119,25 @@ private slots:
 
 	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
+
+
+	//Slots für die verschiedenen Actions
+	void onActionTransferNationalTriggered();
+	void onActionTransferInternationalTriggered();
+	void onActionTransferSepaTriggered();
+	void onActionTransferInternalTriggered();
+	void onActionDatedNewTriggered();
+	void onActionDatedEditTriggered();
+	void onActionDatedDelTriggered();
+	void onActionDatedUpdateTriggered();
+	void onActionStandingNewTriggered();
+	void onActionStandingEditTriggered();
+	void onActionStandingDelTriggered();
+	void onActionStandingUpdateTriggered();
+	void onActionDebitNoteTriggered();
+	void onActionDebitNoteSepaTriggered();
+	void onActionUpdateBalanceTriggered();
+
 };
 
 #endif // MAINWINDOW_H

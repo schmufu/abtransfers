@@ -38,11 +38,11 @@
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
-			       const abt_transactionLimits *limits,
+			       const aqb_AccountInfo *account,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_limits = limits;
+	this->m_limits = account->limits(type);
 	this->m_type = type;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
@@ -69,6 +69,10 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
+		this->localAccount->setName(account->OwnerName());
+		this->localAccount->setAccountNumber(account->Number());
+		this->localAccount->setBankCode(account->BankCode());
+		this->localAccount->setBankName(account->BankName());
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);

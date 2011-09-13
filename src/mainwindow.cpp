@@ -247,6 +247,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+	this->createActions();
+	this->createMenus();
+
+
 	QTimer *timer = new QTimer(this);
 	timer->setSingleShot(true);
 	timer->start(10);
@@ -297,6 +301,118 @@ void MainWindow::TimerTimeOut()
 	this->ui->mainToolBar->addAction(this->dock_KnownRecipient7->toggleViewAction());
 	this->ui->mainToolBar->addAction(this->dock_KnownRecipient8->toggleViewAction());
 }
+
+//private
+void MainWindow::createActions()
+{
+	actTransferNational = new QAction(this);
+	actTransferNational->setText(tr("National"));
+	actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
+
+	actTransferInternational = new QAction(this);
+	actTransferInternational->setText(tr("International"));
+	actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
+
+	actTransferSepa = new QAction(this);
+	actTransferSepa->setText(tr("SEPA (EU weit)"));
+	actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
+
+	actTransferInternal = new QAction(this);
+	actTransferInternal->setText(tr("Umbuchung"));
+	actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
+
+	actDatedNew = new QAction(this);
+	actDatedNew->setText(tr("Anlegen"));
+	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
+
+	actDatedEdit = new QAction(this);
+	actDatedEdit->setText(tr("Bearbeiten"));
+	actDatedEdit->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDatedEdit, SIGNAL(triggered()), this, SLOT(onActionDatedEditTriggered()));
+
+	actDatedDel = new QAction(this);
+	actDatedDel->setText(tr("Löschen"));
+	actDatedDel->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDatedDel, SIGNAL(triggered()), this, SLOT(onActionDatedDelTriggered()));
+
+	actDatedUpdate = new QAction(this);
+	actDatedUpdate->setText(tr("Aktualisieren"));
+	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
+
+	actStandingNew = new QAction(this);
+	actStandingNew->setText(tr("Anlegen"));
+	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
+
+	actStandingEdit = new QAction(this);
+	actStandingEdit->setText(tr("Bearbeiten"));
+	actStandingEdit->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingEdit, SIGNAL(triggered()), this, SLOT(onActionStandingEditTriggered()));
+
+	actStandingDel = new QAction(this);
+	actStandingDel->setText(tr("Löschen"));
+	actStandingDel->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingDel, SIGNAL(triggered()), this, SLOT(onActionStandingDelTriggered()));
+
+	actStandingUpdate = new QAction(this);
+	actStandingUpdate->setText(tr("Aktualisieren"));
+	actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
+
+	actDebitNote = new QAction(this);
+	actDebitNote->setText(tr("Lastschrift"));
+	actDebitNote->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDebitNote, SIGNAL(triggered()), this, SLOT(onActionDebitNoteTriggered()));
+
+	actDebitNoteSepa = new QAction(this);
+	actDebitNoteSepa->setText(tr("SEPA-Lastschrift (EU weit)"));
+	actDebitNoteSepa->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actDebitNoteSepa, SIGNAL(triggered()), this, SLOT(onActionDebitNoteSepaTriggered()));
+
+	actUpdateBalance = new QAction(this);
+	actUpdateBalance->setText(tr("Kontostand aktualisieren"));
+	actUpdateBalance->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
+}
+
+
+//private
+void MainWindow::createMenus()
+{
+	this->accountContextMenu = new QMenu(this);
+	QMenu *MenuTransfer = new QMenu("Überweisung", this);
+	MenuTransfer->addAction(this->actTransferNational);
+	MenuTransfer->addAction(this->actTransferInternational);
+	MenuTransfer->addAction(this->actTransferInternal);
+	MenuTransfer->addAction(this->actTransferSepa);
+	QMenu *MenuStanding = new QMenu("Daueraufträge", this);
+	MenuStanding->addAction(this->actStandingNew);
+	MenuStanding->addAction(this->actStandingEdit);
+	MenuStanding->addAction(this->actStandingUpdate);
+	QMenu *MenuDated = new QMenu("Terminüberweisungen", this);
+	MenuDated->addAction(this->actDatedNew);
+	MenuDated->addAction(this->actDatedEdit);
+	MenuDated->addAction(this->actDatedUpdate);
+	this->accountContextMenu->addMenu(MenuTransfer);
+	this->accountContextMenu->addMenu(MenuStanding);
+	this->accountContextMenu->addMenu(MenuDated);
+	this->accountContextMenu->addAction(this->actDebitNote);
+	this->accountContextMenu->addAction(this->actDebitNoteSepa);
+	this->accountContextMenu->addSeparator();
+	this->accountContextMenu->addAction(this->actUpdateBalance);
+	this->accountContextMenu->addSeparator();
+	this->accountContextMenu->addAction("Text1");
+	this->accountContextMenu->addAction("Text2");
+	this->accountContextMenu->addSeparator();
+	this->accountContextMenu->addAction("Text3");
+}
+
 
 void MainWindow::on_actionDebug_Info_triggered()
 {
@@ -393,7 +509,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 		d = new QDialog(this);
 		QVBoxLayout *vb = new QVBoxLayout();
 		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeTransfer,
-							   this->accounts->getAccount(5)->limits(AB_Job_TypeTransfer),
+							   this->accounts->getAccount(5),
 							   d);
 		vb->addWidget(testw);
 		d->setLayout(vb);
@@ -427,27 +543,98 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 //private slot
 void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 {
-	QMenu Menu(this);
-	QMenu MenuTransfer("Überweisung", this);
-	MenuTransfer.addAction("National");
-	MenuTransfer.addAction("International");
-	MenuTransfer.addAction("Umbuchung");
-	MenuTransfer.addAction("Sepa-Überweisung");
-	QMenu MenuStanding("Daueraufträge", this);
-	MenuStanding.addAction("Neu");
-	MenuStanding.addAction("Bekannte Anzeigen");
-	MenuStanding.addAction("Aktualisieren");
-	QMenu MenuDated("Terminüberweisungen", this);
-	MenuDated.addAction("Neu");
-	MenuDated.addAction("Bekannte Anzeigen");
-	MenuDated.addAction("Aktualisieren");
-	Menu.addMenu(&MenuTransfer);
-	Menu.addMenu(&MenuStanding);
-	Menu.addMenu(&MenuDated);
-	Menu.addSeparator();
-	Menu.addAction("Text1");
-	Menu.addAction("Text2");
-	Menu.addSeparator();
-	Menu.addAction("Text3");
-	Menu.exec(this->dock_Accounts->widget()->mapToGlobal(p));
+	this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
+}
+//private slot
+void MainWindow::onActionTransferNationalTriggered()
+{
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	widgetTransfer *trans = new widgetTransfer(AB_Job_TypeTransfer,
+						   acc->getSelectedAccount(),
+						   this);
+	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+}
+
+//private slot
+void MainWindow::onActionTransferInternationalTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionTransferSepaTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionTransferInternalTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDatedNewTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDatedEditTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDatedDelTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDatedUpdateTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionStandingNewTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionStandingEditTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionStandingDelTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionStandingUpdateTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDebitNoteTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionDebitNoteSepaTriggered()
+{
+
+}
+
+//private slot
+void MainWindow::onActionUpdateBalanceTriggered()
+{
+
 }
