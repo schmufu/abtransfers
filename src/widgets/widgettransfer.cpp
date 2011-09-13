@@ -80,19 +80,31 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		this->my_create_internal_transfer_form(true);
 		break;
 
-
 	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeEuTransfer :
-
 
 	case AB_Job_TypeCreateDatedTransfer :
 	case AB_Job_TypeModifyDatedTransfer :
 
-
 	case AB_Job_TypeDebitNote :
-	case AB_Job_TypeSepaDebitNote :
+	case AB_Job_TypeSepaDebitNote : {
+		this->setWindowTitle(tr("nicht Implementiert"));
+		QLabel *notImplementet = new QLabel(tr("Der \"Job\" '%1' ist leider "
+						     "noch nicht implementiert.\n"
+						     "Bitte haben Sie noch etwas "
+						     "Geduld und warten auf eine "
+						     "Aktualisierung").arg(
+							abt_conv::JobTypeToQString(type)), this);
+		notImplementet->setWordWrap(true);
+		QFont labelFontNI(notImplementet->font());
+		labelFontNI.setBold(true);
+		labelFontNI.setPixelSize(14);
+		notImplementet->setFont(labelFontNI);
+		this->layoutMain->addWidget(notImplementet,1, Qt::AlignLeft | Qt::AlignVCenter);
+		}
+		break;
 
-	case AB_Job_TypeLoadCellPhone :
+	case AB_Job_TypeLoadCellPhone:
 	case AB_Job_TypeGetTransactions :
 	case AB_Job_TypeGetStandingOrders :
 	case AB_Job_TypeDeleteStandingOrder :
@@ -102,7 +114,20 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeUnknown :
 	default:
 		qWarning() << "type" << type << "not supported for widgetTransfer!";
-		break;
+		this->setWindowTitle(tr("Programmierfehler"));
+		QLabel *programError = new QLabel(tr("PROGRAMMIERFEHLER!\n"
+						     "Der \"Job\" '%1' wird von "
+						     "widgetTransfer nicht "
+						     "unterstützt!").arg(
+							abt_conv::JobTypeToQString(type)), this);
+		programError->setWordWrap(true);
+		QFont labelFontPE(programError->font());
+		labelFontPE.setBold(true);
+		labelFontPE.setPixelSize(18);
+		programError->setFont(labelFontPE);
+		this->layoutMain->addWidget(programError,1, Qt::AlignLeft | Qt::AlignVCenter);
+
+
 	}
 
 	this->setAllLimits(this->m_limits);
@@ -125,12 +150,18 @@ widgetTransfer::~widgetTransfer()
 //private
 void widgetTransfer::my_create_internal_transfer_form(bool newTransfer)
 {
+	this->setWindowTitle(tr("Umbuchung"));
 
 }
 
 //private
 void widgetTransfer::my_create_standing_order_form(bool newTransfer)
 {
+	if (newTransfer)
+		this->setWindowTitle(tr("Dauerauftrag anlegen"));
+	else
+		this->setWindowTitle(tr("Dauerauftrag bearbeiten"));
+
 	this->my_create_local_remote_horizontal(newTransfer);
 	this->my_create_value_with_label_left();
 	this->my_create_purpose();
@@ -147,6 +178,7 @@ void widgetTransfer::my_create_standing_order_form(bool newTransfer)
 //private
 void widgetTransfer::my_create_transfer_form(bool newTransfer)
 {
+	this->setWindowTitle(tr("Überweisung"));
 	this->my_create_local_remote_horizontal(newTransfer);
 	this->my_create_value_with_label_left();
 	this->my_create_purpose();
