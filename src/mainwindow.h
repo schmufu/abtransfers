@@ -107,6 +107,7 @@ private:
 	void createMenus();
 
 private slots:
+	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
 	void on_actionExecQueued_triggered();

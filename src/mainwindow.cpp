@@ -543,7 +543,11 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 //private slot
 void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 {
-	this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (acc->getSelectedAccount() != NULL) {
+		//Menü nur anzeigen wenn auch ein Account ausgewählt ist
+		this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
+	}
 }
 //private slot
 void MainWindow::onActionTransferNationalTriggered()
@@ -637,4 +641,21 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 void MainWindow::onActionUpdateBalanceTriggered()
 {
 
+}
+
+//private slot
+void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
+{
+	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(index));
+	if (transW == NULL) {
+		//child widget nicht vorhanden!
+		return; //nichts machen
+	}
+
+	if (transW->localAccount->hasChanges()) {
+		qDebug() << "TODO: Nachfragen ob Änderungen verworfen werden sollen!";
+	}
+
+	this->ui->tabWidget_UW->removeTab(index);
+	delete transW;
 }
