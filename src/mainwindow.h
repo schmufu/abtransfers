@@ -106,6 +106,8 @@ private:
 	void createActions();
 	void createMenus();
 
+	void createTransferWidgetAndAddTab(AB_JOB_TYPE type);
+
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();

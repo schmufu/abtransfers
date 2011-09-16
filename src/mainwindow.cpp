@@ -552,89 +552,92 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 //private slot
 void MainWindow::onActionTransferNationalTriggered()
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	widgetTransfer *trans = new widgetTransfer(AB_Job_TypeTransfer,
-						   acc->getSelectedAccount(),
-						   this);
-	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+//	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+//	widgetTransfer *trans = new widgetTransfer(AB_Job_TypeTransfer,
+//						   acc->getSelectedAccount(),
+//						   this);
+//	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+	this->createTransferWidgetAndAddTab(AB_Job_TypeTransfer);
 }
 
 //private slot
 void MainWindow::onActionTransferInternationalTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeEuTransfer);
 }
 
 //private slot
 void MainWindow::onActionTransferSepaTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeSepaTransfer);
 }
 
 //private slot
 void MainWindow::onActionTransferInternalTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeInternalTransfer);
 }
 
 //private slot
 void MainWindow::onActionDatedNewTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeCreateDatedTransfer);
 }
 
 //private slot
 void MainWindow::onActionDatedEditTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer);
 }
 
 //private slot
 void MainWindow::onActionDatedDelTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeDeleteDatedTransfer);
 }
 
 //private slot
 void MainWindow::onActionDatedUpdateTriggered()
 {
-
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	this->jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
 }
 
 //private slot
 void MainWindow::onActionStandingNewTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeCreateStandingOrder);
 }
 
 //private slot
 void MainWindow::onActionStandingEditTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder);
 }
 
 //private slot
 void MainWindow::onActionStandingDelTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeDeleteStandingOrder);
 }
 
 //private slot
 void MainWindow::onActionStandingUpdateTriggered()
 {
-
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
 }
 
 //private slot
 void MainWindow::onActionDebitNoteTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeDebitNote);
 }
 
 //private slot
 void MainWindow::onActionDebitNoteSepaTriggered()
 {
-
+	this->createTransferWidgetAndAddTab(AB_Job_TypeSepaDebitNote);
 }
 
 //private slot
@@ -652,10 +655,23 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 		return; //nichts machen
 	}
 
-	if (transW->localAccount->hasChanges()) {
-		qDebug() << "TODO: Nachfragen ob Änderungen verworfen werden sollen!";
+	if (transW->localAccount != NULL) {
+		if (transW->localAccount->hasChanges()) {
+			qDebug() << "TODO: Nachfragen ob Änderungen verworfen werden sollen!";
+		}
 	}
 
 	this->ui->tabWidget_UW->removeTab(index);
 	delete transW;
+}
+
+//private
+void MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type)
+{
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	widgetTransfer *trans = new widgetTransfer(type,
+						   acc->getSelectedAccount(),
+						   this);
+	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+	this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 }

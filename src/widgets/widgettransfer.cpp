@@ -42,7 +42,11 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_limits = account->limits(type);
+	if (account == NULL) {
+		this->m_limits = NULL;
+	} else {
+		this->m_limits = account->limits(type);
+	}
 	this->m_type = type;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
@@ -55,7 +59,10 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	if (this->m_limits == NULL) {
 		QLabel *notAvailable = new QLabel(tr("Der \"Job\" '%1' ist bei "
 						     "dem ausgewähltem Konto "
-						     "nicht verfügbar!").arg(
+						     "nicht verfügbar!\n\n"
+						     "(Oder es wurde kein gültiger "
+						     "Account dem widgetTransfer() "
+						     "übergeben!)").arg(
 							abt_conv::JobTypeToQString(type)), this);
 		notAvailable->setWordWrap(true);
 		QFont labelFont(notAvailable->font());
@@ -376,6 +383,13 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 	}
 
 	if (this->recurrence != NULL) {
+		//Es müssen zwingend zuerst die Werte und danach die AllowChange
+		//Parameter gesetzt werden!
+		this->recurrence->setLimitValuesCycleMonth(limits->ValuesCycleMonth);
+		this->recurrence->setLimitValuesCycleWeek(limits->ValuesCycleWeek);
+		this->recurrence->setLimitValuesExecutionDayMonth(limits->ValuesExecutionDayMonth);
+		this->recurrence->setLimitValuesExecutionDayWeek(limits->ValuesExecutionDayWeek);
+
 		this->recurrence->setLimitAllowChangeCycle(limits->AllowChangeCycle);
 		this->recurrence->setLimitAllowChangeExecutionDay(limits->AllowChangeExecutionDay);
 		this->recurrence->setLimitAllowChangePeriod(limits->AllowChangePeriod);
@@ -383,11 +397,6 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->recurrence->setLimitAllowWeekly(limits->AllowWeekly);
 		this->recurrence->setLimitAllowChangeFirstExecutionDate(limits->AllowChangeFirstExecutionDate);
 		this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
-
-		this->recurrence->setLimitValuesCycleMonth(limits->ValuesCycleMonth);
-		this->recurrence->setLimitValuesCycleWeek(limits->ValuesCycleWeek);
-		this->recurrence->setLimitValuesExecutionDayMonth(limits->ValuesExecutionDayMonth);
-		this->recurrence->setLimitValuesExecutionDayWeek(limits->ValuesExecutionDayWeek);
 	}
 
 }
