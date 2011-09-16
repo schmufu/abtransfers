@@ -63,6 +63,7 @@ public:
 	widgetPurpose *purpose;
 	widgetRecurrence *recurrence;
 	widgetTextKey *textKey;
+	widgetDate *datedDate;
 
 private:
 	const abt_transactionLimits *m_limits;
@@ -80,12 +81,13 @@ private:
 	void my_create_transfer_form(bool newTransfer);
 	void my_create_internal_transfer_form(bool newTransfer);
 	void my_create_standing_order_form(bool newTransfer);
+	void my_create_dated_transfer_form(bool newTransfer);
 
 	void my_create_local_remote_horizontal(bool newTransfer);
 	void my_create_local_remote_vertical(bool newTransfer);
 
-	void my_create_localAccount_groupbox(bool newTransfer);
-	void my_create_remoteAccount_groupbox(bool newTransfer);
+	void my_create_localAccount_groupbox(bool newTransfer, bool allowLocal=true, bool allowKnownRecipent=false);
+	void my_create_remoteAccount_groupbox(bool newTransfer, bool allowLocal=false, bool allowKnownRecipent=true);
 	void my_create_value_with_label_left();
 	void my_create_value_with_label_top();
 	void my_create_purpose();

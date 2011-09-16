@@ -54,6 +54,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->purpose = NULL;
 	this->recurrence = NULL;
 	this->textKey = NULL;
+	this->datedDate = NULL;
 	this->layoutMain = new QVBoxLayout();
 
 	if (this->m_limits == NULL) {
@@ -90,12 +91,16 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeInternalTransfer :
 		this->my_create_internal_transfer_form(true);
 		break;
+	case AB_Job_TypeCreateDatedTransfer :
+		this->my_create_dated_transfer_form(true);
+		break;
+	case AB_Job_TypeModifyDatedTransfer :
+		this->my_create_dated_transfer_form(false);
+		break;
 
 	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeEuTransfer :
 
-	case AB_Job_TypeCreateDatedTransfer :
-	case AB_Job_TypeModifyDatedTransfer :
 
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
@@ -201,6 +206,27 @@ void widgetTransfer::my_create_transfer_form(bool newTransfer)
 	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
 }
 
+//pricate
+void widgetTransfer::my_create_dated_transfer_form(bool newTransfer)
+{
+	if (newTransfer) {
+		this->setWindowTitle(tr("Terminüberweisung anlegen"));
+	} else {
+		this->setWindowTitle(tr("Terminüberweisung ändern"));
+	}
+	this->my_create_local_remote_horizontal(newTransfer);
+	this->my_create_value_with_label_left();
+	this->my_create_purpose();
+	this->datedDate = new widgetDate(tr("Ausführen am"), Qt::AlignLeft, this);
+	this->my_create_textKey();
+
+	this->layoutMain->addLayout(this->layoutAccount);
+	this->layoutMain->addLayout(this->layoutValue);
+	this->layoutMain->addLayout(this->layoutPurpose);
+	this->layoutMain->addWidget(this->datedDate, 0, Qt::AlignHCenter);
+	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
+}
+
 //private
 void widgetTransfer::my_create_local_remote_horizontal(bool newTransfer)
 {
@@ -224,13 +250,13 @@ void widgetTransfer::my_create_local_remote_vertical(bool newTransfer)
 }
 
 //private
-void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer)
+void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allowLocal, bool allowKnownRecipent)
 {
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
 	this->localAccount = new widgetAccountData(this);
-	this->localAccount->setAllowDropAccount(newTransfer);
-	this->localAccount->setAllowDropKnownRecipient(false);
+	this->localAccount->setAllowDropAccount(newTransfer && allowLocal);
+	this->localAccount->setAllowDropKnownRecipient(allowKnownRecipent);
 	this->localAccount->setLimitAllowChangeAccountNumber(newTransfer);
 	this->localAccount->setLimitAllowChangeBankCode(newTransfer);
 	this->localAccount->setLimitAllowChangeBankName(newTransfer);
@@ -243,13 +269,13 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer)
 }
 
 //private
-void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */)
+void widgetTransfer::my_create_remoteAccount_groupbox(bool newTransfer, bool allowLocal, bool allowKnownRecipent)
 {
 	this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 	QVBoxLayout *gbrl = new QVBoxLayout();
 	this->remoteAccount = new widgetAccountData(this);
-	this->remoteAccount->setAllowDropAccount(false);
-	this->remoteAccount->setAllowDropKnownRecipient(true);
+	this->remoteAccount->setAllowDropAccount(allowLocal);
+	this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipent);
 	gbrl->addWidget(this->remoteAccount);
 	this->groupBoxRemote->setLayout(gbrl);
 
@@ -397,6 +423,14 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->recurrence->setLimitAllowWeekly(limits->AllowWeekly);
 		this->recurrence->setLimitAllowChangeFirstExecutionDate(limits->AllowChangeFirstExecutionDate);
 		this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+	}
+
+	if (this->datedDate != NULL) {
+		this->datedDate->setLimitValuesExecutionDayMonth(limits->ValuesExecutionDayMonth);
+		this->datedDate->setLimitValuesExecutionDayWeek(limits->ValuesExecutionDayWeek);
+		this->datedDate->setLimitAllowChange(limits->AllowChangeFirstExecutionDate);
+		this->datedDate->setLimitMaxValueSetupTime(limits->MaxValueSetupTime);
+		this->datedDate->setLimitMinValueSetupTime(limits->MinValueSetupTime);
 	}
 
 }
