@@ -35,6 +35,8 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 
+#include <QtCore/QDebug>
+
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
@@ -77,30 +79,30 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
-		this->localAccount->setName(account->OwnerName());
-		this->localAccount->setAccountNumber(account->Number());
-		this->localAccount->setBankCode(account->BankCode());
-		this->localAccount->setBankName(account->BankName());
+		this->setLocalFromAccount(account);
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
+		this->setLocalFromAccount(account);
 		break;
 	case AB_Job_TypeModifyStandingOrder :
 		this->my_create_standing_order_form(false);
 		break;
 	case AB_Job_TypeInternalTransfer :
 		this->my_create_internal_transfer_form(true);
+		this->setLocalFromAccount(account);
 		break;
 	case AB_Job_TypeCreateDatedTransfer :
 		this->my_create_dated_transfer_form(true);
+		this->setLocalFromAccount(account);
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);
 		break;
 
+
 	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeEuTransfer :
-
 
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
@@ -168,6 +170,21 @@ void widgetTransfer::my_create_internal_transfer_form(bool newTransfer)
 {
 	this->setWindowTitle(tr("Umbuchung"));
 
+	this->my_create_localAccount_groupbox(newTransfer, true, false);
+	this->my_create_remoteAccount_groupbox(newTransfer, true, false);
+
+	this->layoutAccount = new QHBoxLayout();
+	this->layoutAccount->addWidget(this->groupBoxLocal);
+	this->layoutAccount->addWidget(this->groupBoxRemote);
+
+	this->my_create_value_with_label_left();
+	this->my_create_purpose();
+	this->my_create_textKey();
+
+	this->layoutMain->addLayout(this->layoutAccount);
+	this->layoutMain->addLayout(this->layoutValue);
+	this->layoutMain->addLayout(this->layoutPurpose);
+	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
 }
 
 //private
@@ -349,7 +366,20 @@ void widgetTransfer::my_create_recurrence()
 
 
 
+//private
+void widgetTransfer::setLocalFromAccount(const aqb_AccountInfo *acc)
+{
+	if (this->localAccount != NULL) {
+		this->localAccount->setName(acc->OwnerName());
+		this->localAccount->setAccountNumber(acc->Number());
+		this->localAccount->setBankCode(acc->BankCode());
+		this->localAccount->setBankName(acc->BankName());
+	} else {
+		qWarning() << this << "setLocalFromAccount() called without"
+				<< "having a localAccountWidget!";
+	}
 
+}
 
 
 //private
