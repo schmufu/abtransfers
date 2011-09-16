@@ -34,6 +34,8 @@
 #include <QtGui/QCalendarWidget>
 #include <QtGui/QTextCharFormat>
 
+#include <QtCore/QDebug>
+
 widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget *parent) :
 	QWidget(parent)
 {
@@ -59,7 +61,17 @@ widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget 
 
 	this->label = new QLabel(labelText, this);
 
-	QVBoxLayout *layout = new QVBoxLayout();
+	QBoxLayout *layout = NULL;
+	if (labelAt & Qt::AlignTop) {
+		layout = new QVBoxLayout();
+	} else if (labelAt & Qt::AlignLeft) {
+		layout = new QHBoxLayout();
+	} else {
+		qWarning() << this << "neither Qt::AlignTop nor Qt::AlignLeft supplied!"
+				<< "These are the only supported values!";
+		layout = new QVBoxLayout();
+	}
+
 	layout->addWidget(this->label);
 	layout->addWidget(this->dateEdit);
 	layout->setSpacing(0);
