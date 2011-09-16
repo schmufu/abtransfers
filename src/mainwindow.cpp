@@ -66,26 +66,26 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->jobctrl = new abt_job_ctrl(this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
-	this->da_edit_del = new Page_DA_Edit_Delete(banking,
-						    this->accounts,
-						    ui->tabWidget_DA);
-	this->da_new = new Page_DA_New(banking,
-				       this->accounts,
-				       ui->tabWidget_DA);
-	this->page_transfer_new = new Page_Ueberweisung_New(banking,
-							    this->jobctrl,
-							    this->accounts,
-							    ui->tabWidget_UW);
-	this->page_internaltransfer_new = new Page_InternalTransfer_New(
-				banking, this->accounts, ui->tabWidget_UW);
+//	this->da_edit_del = new Page_DA_Edit_Delete(banking,
+//						    this->accounts,
+//						    ui->tabWidget_DA);
+//	this->da_new = new Page_DA_New(banking,
+//				       this->accounts,
+//				       ui->tabWidget_DA);
+//	this->page_transfer_new = new Page_Ueberweisung_New(banking,
+//							    this->jobctrl,
+//							    this->accounts,
+//							    ui->tabWidget_UW);
+//	this->page_internaltransfer_new = new Page_InternalTransfer_New(
+//				banking, this->accounts, ui->tabWidget_UW);
 	this->dock_KnownRecipient = NULL;
 
 	//ui->tabWidget_DA->clear();
-	ui->tabWidget_DA->addTab(this->da_new, tr("Neu"));
-	ui->tabWidget_DA->addTab(this->da_edit_del, tr("Bearbeiten"));
-
-	ui->tabWidget_UW->insertTab(0, this->page_transfer_new, tr("National"));
-	ui->tabWidget_UW->insertTab(1, this->page_internaltransfer_new, tr("Umbuchung"));
+//	ui->tabWidget_DA->addTab(this->da_new, tr("Neu"));
+//	ui->tabWidget_DA->addTab(this->da_edit_del, tr("Bearbeiten"));
+//
+//	ui->tabWidget_UW->insertTab(0, this->page_transfer_new, tr("National"));
+//	ui->tabWidget_UW->insertTab(1, this->page_internaltransfer_new, tr("Umbuchung"));
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -112,29 +112,29 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
-	//Wenn ein DA gelöscht werden soll diesen in abt_job_ctrl einfügen
-	connect(this->da_edit_del, SIGNAL(deleteDA(aqb_AccountInfo*,const abt_transaction*)),
-		this->jobctrl, SLOT(addDeleteStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
-
-	//Aktualisieren eines DAs
-	connect(this->da_edit_del, SIGNAL(getAllDAs(aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetStandingOrders(aqb_AccountInfo*)));
-
-	//Ändern eines DAs
-	connect(this->da_edit_del, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
-		this->jobctrl, SLOT(addModifyStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
-
-	//Neuen DA erstellen
-	connect(this->da_new, SIGNAL(createDA(aqb_AccountInfo*,const abt_transaction*)),
-		this->jobctrl, SLOT(addCreateStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
-
-	//Neue "Nationale Überweisung" anlegen
-	connect(this->page_transfer_new, SIGNAL(createTransfer(aqb_AccountInfo*,const abt_transaction*)),
-		this->jobctrl, SLOT(addNewSingleTransfer(aqb_AccountInfo*,const abt_transaction*)));
-
-	//Neue "Umbuchung" anlegen
-	connect(this->page_internaltransfer_new, SIGNAL(createInternalTransfer(aqb_AccountInfo*,const abt_transaction*)),
-		this->jobctrl, SLOT(addNewInternalTransfer(aqb_AccountInfo*,const abt_transaction*)));
+//	//Wenn ein DA gelöscht werden soll diesen in abt_job_ctrl einfügen
+//	connect(this->da_edit_del, SIGNAL(deleteDA(aqb_AccountInfo*,const abt_transaction*)),
+//		this->jobctrl, SLOT(addDeleteStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+//
+//	//Aktualisieren eines DAs
+//	connect(this->da_edit_del, SIGNAL(getAllDAs(aqb_AccountInfo*)),
+//		this->jobctrl, SLOT(addGetStandingOrders(aqb_AccountInfo*)));
+//
+//	//Ändern eines DAs
+//	connect(this->da_edit_del, SIGNAL(modifyDA(aqb_AccountInfo*,const abt_transaction*)),
+//		this->jobctrl, SLOT(addModifyStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+//
+//	//Neuen DA erstellen
+//	connect(this->da_new, SIGNAL(createDA(aqb_AccountInfo*,const abt_transaction*)),
+//		this->jobctrl, SLOT(addCreateStandingOrder(aqb_AccountInfo*,const abt_transaction*)));
+//
+//	//Neue "Nationale Überweisung" anlegen
+//	connect(this->page_transfer_new, SIGNAL(createTransfer(aqb_AccountInfo*,const abt_transaction*)),
+//		this->jobctrl, SLOT(addNewSingleTransfer(aqb_AccountInfo*,const abt_transaction*)));
+//
+//	//Neue "Umbuchung" anlegen
+//	connect(this->page_internaltransfer_new, SIGNAL(createInternalTransfer(aqb_AccountInfo*,const abt_transaction*)),
+//		this->jobctrl, SLOT(addNewInternalTransfer(aqb_AccountInfo*,const abt_transaction*)));
 
 	//Jede Änderung des Jobqueue dem Ausgang mitteilen
 // Jetzt im Page_Ausgang Constructor
@@ -262,9 +262,9 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->page_transfer_new;	//SingleTransfer löschen
-	delete this->da_edit_del;	//DauerAufträge ändern löschen
-	delete this->da_new;		//DauerAufträge neu erstellen löschen
+//	delete this->page_transfer_new;	//SingleTransfer löschen
+//	delete this->da_edit_del;	//DauerAufträge ändern löschen
+//	delete this->da_new;		//DauerAufträge neu erstellen löschen
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
