@@ -468,13 +468,55 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QDialog *about = new QDialog(this);
 	about->setWindowTitle("about aqBanking Transfers");
 
-	QVBoxLayout *vbox = new QVBoxLayout(about);
+	//Lizenz-Text auf Anforderung (Click) anzeigen
+	QDialog *licenseDialog = new QDialog(about);
+	licenseDialog->setWindowTitle(tr("Lizenz"));
+	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
+	QLabel *licenseText = new QLabel(licenseDialog);
+	licenseText->setText("Copyright (C) 2011 Patrick Wacker<br /><br />"
+			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
+			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
+			     "weitergeben und/oder modifizieren, entweder gemÃ¤ÃŸ Version 2 der Lizenz oder (nach<br />"
+			     "Ihrer Option) jeder späteren Version.<br /><br />"
+			     "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von<br />"
+			     "Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie<br />"
+			     "der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details<br />"
+			     "finden Sie in der GNU General Public License.<br /><br />"
+			     "Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem<br />"
+			     "Programm erhalten haben. Falls nicht, schreiben Sie an die<br />"
+			     "Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.<br /><br /><br />"
+			     "siehe <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>");
+	licenseText->setOpenExternalLinks(true);
+	licenseText->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	licenseLayout->addWidget(licenseText);
+	QPushButton *licenseClose = new QPushButton(tr("Schließen"));
+	connect(licenseClose, SIGNAL(clicked()), licenseDialog, SLOT(accept()));
+	licenseLayout->addWidget(licenseClose, 0, Qt::AlignRight);
+
+	//Horizontal Layout
+	QHBoxLayout *hbox = new QHBoxLayout();
+	//Icon-Image als Grafik oben links
+	QLabel *img = new QLabel(about);
+	QPixmap *iconpic = new QPixmap(":/icons/bank-icon");
+	img->setPixmap(*iconpic);
+	img->setScaledContents(true);
+	img->setMaximumSize(100, 100);
+	hbox->addWidget(img);
+
 	QLabel *text1 = new QLabel(QString::fromUtf8("<b>aqBanking Transfers</b><br><br>"
 			     "Dieses Programm nutzt die library aqbanking um Online-Banking<br>"
 			     "Transaktionen durchzuführen.<br><br>"
-			     "Es sind alle wesentlichen Vorgänge implementiert, u.a. auch<br>"
-			     "Überweisungen und die Verwaltung von Daueraufträgen<br>"));
-	vbox->addWidget(text1, 0, Qt::AlignLeft);
+			     "Es sind alle wesentlichen Vorgänge von aqbanking implementiert,<br>"
+			     "u.a. auch Überweisungen, Lastschriften Daueraufträge usw.<br>"
+			     "Sowie eine selbst Implementierte Verwaltung von Daueraufträgen<br>"
+			     "und Terminierten Überweisungen."));
+	hbox->addWidget(text1, 0, Qt::AlignLeft);
+
+	QVBoxLayout *vbox = new QVBoxLayout(about);
+	vbox->addLayout(hbox);
+
+	vbox->addSpacing(16);
+
 	QLabel *author = new QLabel(QString("Author: Patrick Wacker"));
 	vbox->addWidget(author, 0, Qt::AlignCenter);
 	QLabel *version = new QLabel(QString("Version: %1").arg(qApp->applicationVersion()));
@@ -486,14 +528,48 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QLabel *versionSVN = new QLabel(QString("svn revision: %1").arg(ABTRANSFER_SVN_REVISION));
 	vbox->addWidget(versionSVN, 0, Qt::AlignCenter);
 
-	QPushButton *ok = new QPushButton("OK");
-	vbox->addWidget(ok,0,Qt::AlignRight);
+	vbox->addSpacing(10);
 
+
+	QLabel *webURL = new QLabel(tr("Website: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/dokuwiki/ab_transfer:start"));
+	webURL->setOpenExternalLinks(true);
+	webURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(webURL, 0, Qt::AlignLeft);
+
+	QLabel *svnURL = new QLabel(tr("svn repo: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/svn/ab_transfers/"));
+	svnURL->setOpenExternalLinks(true);
+	svnURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(svnURL, 0, Qt::AlignLeft);
+
+	QLabel *viewvcURL = new QLabel(tr("viewvc: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/viewvc/ab_transfers/"));
+	viewvcURL->setOpenExternalLinks(true);
+	viewvcURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(viewvcURL, 0, Qt::AlignLeft);
+
+	vbox->addSpacing(10);
+
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	QPushButton *ok = new QPushButton(tr("OK"));
+	QPushButton *licenseBtn = new QPushButton(tr("Lizenz"));
+	connect(licenseBtn, SIGNAL(clicked()), licenseDialog, SLOT(exec()));
 	connect(ok, SIGNAL(clicked()), about, SLOT(accept()));
-	//about->layout()->setSpacing(4);
+	hbox2->addWidget(licenseBtn, 0, Qt::AlignLeft);
+	QSpacerItem *hbox2spacer = new QSpacerItem(10, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
+	hbox2->addSpacerItem(hbox2spacer);
+	hbox2->addWidget(ok, 0, Qt::AlignRight);
+	vbox->addLayout(hbox2, 0);
+
+	QLabel *usedImages = new QLabel(tr("<b>genutzte Grafiken:</b>"));
+	vbox->addWidget(usedImages, 0, Qt::AlignLeft);
+
+	QLabel *iconsURL = new QLabel(QString("Icons used from: <a href=\"%1\">%1</a>").arg("http://www.oxygen-icons.org"));
+	iconsURL->setOpenExternalLinks(true);
+	iconsURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(iconsURL, 0, Qt::AlignCenter);
+
+	vbox->addSpacing(6);
 
 	about->exec();
-
 
 	delete about;
 }
