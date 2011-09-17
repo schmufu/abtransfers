@@ -40,15 +40,18 @@
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
-			       const aqb_AccountInfo *account,
+			       const aqb_AccountInfo *localAccount,
+			       const aqb_Accounts *allAccounts,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	if (account == NULL) {
+	if (localAccount == NULL) {
 		this->m_limits = NULL;
 	} else {
-		this->m_limits = account->limits(type);
+		this->m_limits = localAccount->limits(type);
 	}
+
+	this->m_allAccounts = allAccounts; //could be NULL!
 	this->m_type = type;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
@@ -79,22 +82,22 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
-		this->setLocalFromAccount(account);
+		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
-		this->setLocalFromAccount(account);
+		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeModifyStandingOrder :
 		this->my_create_standing_order_form(false);
 		break;
 	case AB_Job_TypeInternalTransfer :
 		this->my_create_internal_transfer_form(true);
-		this->setLocalFromAccount(account);
+		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeCreateDatedTransfer :
 		this->my_create_dated_transfer_form(true);
-		this->setLocalFromAccount(account);
+		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);

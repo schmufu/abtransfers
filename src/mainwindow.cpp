@@ -510,6 +510,7 @@ void MainWindow::on_actionAddGetDAs_triggered()
 		QVBoxLayout *vb = new QVBoxLayout();
 		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeTransfer,
 							   this->accounts->getAccount(5),
+							   this->accounts,
 							   d);
 		vb->addWidget(testw);
 		d->setLayout(vb);
@@ -671,6 +672,7 @@ void MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type)
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	widgetTransfer *trans = new widgetTransfer(type,
 						   acc->getSelectedAccount(),
+						   this->accounts,
 						   this);
 	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
 	this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
