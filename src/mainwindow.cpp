@@ -155,6 +155,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//DockWidget für KnownRecipients erstellen
 	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
+	this->dock_KnownRecipient->setObjectName("KnownRecipients");
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
 	this->dock_KnownRecipient->setWidget(kew);
@@ -167,6 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//DockWidget für Accounts erstellen
 	this->dock_Accounts = new QDockWidget(tr("Unterstüzte Online Konten"),this);
+	this->dock_Accounts->setObjectName("OnlineAccounts");
 	qDebug() << "creating bankAccountsWidget";
 	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
 	this->dock_Accounts->setWidget(baw);
@@ -182,6 +184,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 	this->dock_KnownRecipient2 = new QDockWidget(tr("Empf2"),this);
+	this->dock_KnownRecipient2->setObjectName("KnownRecipients2");
 	KnownEmpfaengerWidget *kew2 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient2);
 	this->dock_KnownRecipient2->setWidget(kew2);
 	this->dock_KnownRecipient2->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -191,6 +194,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient2);
 
 	this->dock_KnownRecipient3 = new QDockWidget(tr("Empf3"),this);
+	this->dock_KnownRecipient3->setObjectName("KnownRecipients3");
 	KnownEmpfaengerWidget *kew3 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient3);
 	this->dock_KnownRecipient3->setWidget(kew3);
 	this->dock_KnownRecipient3->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -200,6 +204,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient3);
 
 	this->dock_KnownRecipient4 = new QDockWidget(tr("Empf4"),this);
+	this->dock_KnownRecipient4->setObjectName("KnownRecipients4");
 	KnownEmpfaengerWidget *kew4 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient4);
 	this->dock_KnownRecipient4->setWidget(kew4);
 	this->dock_KnownRecipient4->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -209,6 +214,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient4, Qt::Vertical);
 
 	this->dock_KnownRecipient5 = new QDockWidget(tr("Empf5"),this);
+	this->dock_KnownRecipient5->setObjectName("KnownRecipients5");
 	KnownEmpfaengerWidget *kew5 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient5);
 	this->dock_KnownRecipient5->setWidget(kew5);
 	this->dock_KnownRecipient5->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -218,6 +224,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient5, Qt::Vertical);
 
 	this->dock_KnownRecipient6 = new QDockWidget(tr("Empf6"),this);
+	this->dock_KnownRecipient6->setObjectName("KnownRecipients6");
 	KnownEmpfaengerWidget *kew6 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient6);
 	this->dock_KnownRecipient6->setWidget(kew6);
 	this->dock_KnownRecipient6->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -227,6 +234,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient6, Qt::Horizontal);
 
 	this->dock_KnownRecipient7 = new QDockWidget(tr("Empf7"),this);
+	this->dock_KnownRecipient7->setObjectName("KnownRecipients7");
 	KnownEmpfaengerWidget *kew7 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient7);
 	this->dock_KnownRecipient7->setWidget(kew7);
 	this->dock_KnownRecipient7->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -236,6 +244,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient7, Qt::Horizontal);
 
 	this->dock_KnownRecipient8 = new QDockWidget(tr("Empf8"),this);
+	this->dock_KnownRecipient8->setObjectName("KnownRecipients8");
 	KnownEmpfaengerWidget *kew8 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient8);
 	this->dock_KnownRecipient8->setWidget(kew8);
 	this->dock_KnownRecipient8->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -245,16 +254,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient8, Qt::Horizontal);
 
 
-
-
 	this->createActions();
 	this->createMenus();
+	this->createDockToolbar();
 
-
-	QTimer *timer = new QTimer(this);
-	timer->setSingleShot(true);
-	timer->start(10);
-	connect(timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
+//	QTimer *timer = new QTimer(this);
+//	timer->setSingleShot(true);
+//	timer->start(10);
+//	connect(timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
 }
 
 MainWindow::~MainWindow()
@@ -291,15 +298,15 @@ void MainWindow::TimerTimeOut()
 	//Actions können zur mainToolBar wohl erst hinzugefügt werden wenn die
 	//execLoop läuft, deswegen erst hier nach ablauf des Timers.
 	//(Der Timer läuft erst ab wenn die execLoop gestartet ist)
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_Accounts->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient2->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient3->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient4->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient5->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient6->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient7->toggleViewAction());
-	this->ui->mainToolBar->addAction(this->dock_KnownRecipient8->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_Accounts->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient2->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient3->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient4->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient5->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient6->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient7->toggleViewAction());
+//	this->ui->mainToolBar->addAction(this->dock_KnownRecipient8->toggleViewAction());
 }
 
 //private
@@ -411,6 +418,24 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addAction("Text2");
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction("Text3");
+}
+
+//private
+void MainWindow::createDockToolbar()
+{
+	this->dockToolbar = new QToolBar(tr("Hilfsfenster"),this);
+	this->dockToolbar->setObjectName("dockToolbar");
+	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient2->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient3->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient4->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient5->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient6->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient7->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient8->toggleViewAction());
+	this->addToolBar(Qt::TopToolBarArea, this->dockToolbar);
 }
 
 

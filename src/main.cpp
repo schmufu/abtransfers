@@ -68,10 +68,22 @@ int main(int argc, char *argv[])
 
 	MainWindow w;
 	debugDialog = new DebugDialogWidget(&w);
+
+	//Letzten Zustand wieder herstellen
+	qDebug("RESTORING LAST STATE");
+	QByteArray ba = settings->loadWindowGeometry();
+	if (!ba.isEmpty()) w.restoreGeometry(ba);
+	ba = settings->loadWindowState();
+	if (!ba.isEmpty()) w.restoreState(ba, 1);
+
+	qDebug("BEFORE SHOW");
 	w.show();
+	qDebug("AFTER SHOW");
 	apprv = app.exec();
+	qDebug("AFTER EXEC");
 
-
+	settings->saveWindowStateGeometry(w.saveState(1), w.saveGeometry());
+	qDebug("AFTER SAVING STATE");
 	delete banking;
 	delete settings;
 

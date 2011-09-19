@@ -213,6 +213,25 @@ void abt_settings::saveDAsForAccount(const QStringList &DAIDs,
 	this->Settings->endGroup();
 }
 
+
+void abt_settings::saveWindowStateGeometry(QByteArray state,
+					   QByteArray geometry)
+{
+	this->Settings->setValue("Main/WindowState", state);
+	this->Settings->setValue("Main/WindowGeometry", geometry);
+}
+
+QByteArray abt_settings::loadWindowState()
+{
+	return this->Settings->value("Main/WindowState", QVariant()).toByteArray();
+}
+
+QByteArray abt_settings::loadWindowGeometry()
+{
+	return this->Settings->value("Main/WindowGeometry", QVariant()).toByteArray();
+}
+
+
 //static
 void abt_settings::freeDAsList(QList<abt_DAInfo*> *list)
 {
@@ -231,3 +250,5 @@ void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 		w->resizeColumnToContents(i);
 	}
 }
+
+

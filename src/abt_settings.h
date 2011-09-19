@@ -73,6 +73,11 @@ public:
 	static void freeDAsList(QList<abt_DAInfo*> *list);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
+
+	void saveWindowStateGeometry(const QByteArray state, const QByteArray geometry);
+	QByteArray loadWindowState();
+	QByteArray loadWindowGeometry();
+
 signals:
 
 public slots:

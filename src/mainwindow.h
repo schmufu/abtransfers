@@ -92,6 +92,7 @@ private:
 //	QAction *act;
 
 	QMenu *accountContextMenu;
+	QToolBar *dockToolbar;
 
 	QDockWidget *dock_KnownRecipient;
 	QDockWidget *dock_KnownRecipient2;
@@ -105,6 +106,7 @@ private:
 
 	void createActions();
 	void createMenus();
+	void createDockToolbar();
 
 	void createTransferWidgetAndAddTab(AB_JOB_TYPE type);
 
