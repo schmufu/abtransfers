@@ -52,6 +52,7 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	this->textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
 	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
 	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
+	this->textEdit->installEventFilter(this);
 
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(this->textEdit);
@@ -72,6 +73,52 @@ widgetPurpose::~widgetPurpose()
 	delete this->statusString;
 	delete this->statusLabel;
 	qDebug() << this << "deleted";
+}
+
+
+//protected
+/*! kontrolliert die möglichen Zeichen bei der TextEdit-Eingabe */
+bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
+{
+	//wir behandeln nur keyPress Events vom TextEdit
+	if (obj != this->textEdit) return false;
+	if (event->type() != QEvent::KeyPress) return false;
+
+	QKeyEvent *ev = dynamic_cast<QKeyEvent*>(event);
+	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
+	QRegExp regex("^[-+ .,/*&%0-9A-Za-z]$", Qt::CaseSensitive);
+
+//	qDebug() << "Eingabe:" << ev->key() << "Zeichen:" << ev->text();
+
+	if (regex.indexIn(ev->text()) != -1) { //Zeichen ist erlaubt!
+		return false;
+	}
+
+	switch (ev->key()) {
+	case Qt::Key_Backspace:
+	case Qt::Key_Return:
+	case Qt::Key_Delete:
+	case Qt::Key_Enter:
+	case Qt::Key_Left:
+	case Qt::Key_Right:
+	case Qt::Key_Up:
+	case Qt::Key_Down:
+	case Qt::Key_PageUp:
+	case Qt::Key_PageDown:
+	case Qt::Key_End:
+	case Qt::Key_Home:
+	case Qt::Key_Insert:
+	case Qt::Key_Control:	//for copy,paste,cut
+	case Qt::Key_C:	//copy
+	case Qt::Key_V:	//pase
+	case Qt::Key_X:	//cut
+		return false; //Zeichen ist Steuerzeichen und auch erlaubt
+		break;
+	}
+
+	//Wenn wir hierher kommen ist das Zeichen nicht erlaubt.
+	ev->setAccepted(false); //Eingabe unterbinden.
+	return true; //Weitere Behandlung nicht erforderlich!
 }
 
 //private

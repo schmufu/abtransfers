@@ -57,6 +57,9 @@ private:
 
 	void updateStatusLabel();
 
+protected:
+	bool eventFilter(QObject *obj, QEvent *event);
+
 public:
 	QStringList getPurpose() const;
 
