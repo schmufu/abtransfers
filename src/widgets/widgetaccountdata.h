@@ -56,7 +56,7 @@ public:
 	 * Ansonsten ein Widget mit der Eingabemöglichkeit für die Kontodaten.
 	 */
 	explicit widgetAccountData(QWidget *parent = 0,
-				   aqb_AccountInfo *acc = NULL,
+				   const aqb_AccountInfo *acc = NULL,
 				   const aqb_Accounts *allAccounts = NULL);
 	~widgetAccountData();
 
@@ -76,7 +76,7 @@ private:
 	bool allowDropKnownRecipient;
 	bool readOnly;
 
-	aqb_AccountInfo *currAccount;
+	const aqb_AccountInfo *currAccount;
 	const aqb_Accounts *allAccounts;
 
 

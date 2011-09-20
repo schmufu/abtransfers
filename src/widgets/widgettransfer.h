@@ -56,7 +56,7 @@ class widgetTransfer : public QWidget
 	Q_OBJECT
 public:
 	explicit widgetTransfer(AB_JOB_TYPE type,
-				aqb_AccountInfo *localAccount,
+				const aqb_AccountInfo *localAccount,
 				const aqb_Accounts *allAccounts,
 				QWidget *parent = 0);
 	~widgetTransfer();
@@ -72,7 +72,7 @@ public:
 private:
 	const abt_transactionLimits *m_limits;
 	const aqb_Accounts *m_allAccounts;
-	aqb_AccountInfo *m_accountAtCreation;
+	const aqb_AccountInfo *m_accountAtCreation;
 	AB_JOB_TYPE m_type;
 
 	QGroupBox *groupBoxLocal;

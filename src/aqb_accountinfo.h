@@ -116,6 +116,6 @@ signals:
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);
 Q_DECLARE_METATYPE(aqb_AccountInfo*);
-//Q_DECLARE_METATYPE(const aqb_AccountInfo*);
+Q_DECLARE_METATYPE(const aqb_AccountInfo*);
 
 #endif // AQB_ACCOUNTINFO_H

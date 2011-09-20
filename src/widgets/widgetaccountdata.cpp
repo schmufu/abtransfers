@@ -48,7 +48,7 @@
 #include "../globalvars.h"
 
 widgetAccountData::widgetAccountData(QWidget *parent,
-				     aqb_AccountInfo *acc,
+				     const aqb_AccountInfo *acc,
 				     const aqb_Accounts *allAccounts) :
 	QWidget(parent)
 {
@@ -160,7 +160,7 @@ void widgetAccountData::createLocalAccountWidget()
 	QGridLayout *layoutMain = new QGridLayout();
 
 	this->comboBoxAccounts = new QComboBox(this);
-	foreach (aqb_AccountInfo *acc, this->allAccounts->getAccountHash().values()) {
+	foreach (const aqb_AccountInfo *acc, this->allAccounts->getAccountHash().values()) {
 		QString accText = acc->Name();
 		//accText.append("(%1 [%2])").arg(acc->Number(), acc->BankCode());
 		//AccountPointer in Qt::UserRole im ComboBoxItem hinterlegen
@@ -209,8 +209,8 @@ void widgetAccountData::createLocalAccountWidget()
 //private slot
 void widgetAccountData::comboBoxNewAccountSelected(int idx)
 {
-	aqb_AccountInfo *selAcc;
-	selAcc = this->comboBoxAccounts->itemData(idx).value<aqb_AccountInfo*>();
+	const aqb_AccountInfo *selAcc;
+	selAcc = this->comboBoxAccounts->itemData(idx).value<const aqb_AccountInfo*>();
 	qDebug() << "comboBoxNewAccountSelected() - idx=" << idx << " - selAcc =" << selAcc;
 	if (selAcc != NULL) {
 		this->currAccount = selAcc;
@@ -586,7 +586,7 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 	if (event->mimeData()->hasFormat(mimetypeAccount)) {
 		QByteArray encoded = event->mimeData()->data(mimetypeAccount);
 		qulonglong a = encoded.toULongLong();
-		aqb_AccountInfo *newAccount = (aqb_AccountInfo*)a;
+		const aqb_AccountInfo *newAccount = (aqb_AccountInfo*)a;
 		if (this->currAccount == newAccount) {
 			//Account hat sich nicht geändert, wir akzeptieren den
 			//Drop, brauchen aber keine Daten ändern.

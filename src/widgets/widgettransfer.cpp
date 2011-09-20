@@ -40,7 +40,7 @@
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
-			       aqb_AccountInfo *localAccount,
+			       const aqb_AccountInfo *localAccount,
 			       const aqb_Accounts *allAccounts,
 			       QWidget *parent) :
 	QWidget(parent)
