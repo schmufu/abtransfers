@@ -40,7 +40,7 @@
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
-			       const aqb_AccountInfo *localAccount,
+			       aqb_AccountInfo *localAccount,
 			       const aqb_Accounts *allAccounts,
 			       QWidget *parent) :
 	QWidget(parent)
@@ -52,6 +52,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	}
 
 	this->m_allAccounts = allAccounts; //could be NULL!
+	this->m_accountAtCreation = localAccount; //could be NULL!
 	this->m_type = type;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
@@ -60,6 +61,9 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->recurrence = NULL;
 	this->textKey = NULL;
 	this->datedDate = NULL;
+	this->pushButtonOK = NULL;
+	this->pushButtonCancel = NULL;
+	this->pushButtonRevert = NULL;
 	this->layoutMain = new QVBoxLayout();
 
 	if (this->m_limits == NULL) {
@@ -82,7 +86,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
-		this->setLocalFromAccount(localAccount);
+		//this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
@@ -152,6 +156,27 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	}
 
 	this->setAllLimits(this->m_limits);
+
+	this->pushButtonRevert = new QPushButton(QIcon::fromTheme("edit-undo"),
+						 tr("Rückgängig"), this);
+	this->pushButtonCancel = new QPushButton(QIcon::fromTheme("dialog-close"),
+						 tr("Abbrechen"), this);
+	this->pushButtonOK = new QPushButton(QIcon::fromTheme("dialog-ok-apply"),
+					     tr("Senden"), this);
+	connect(this->pushButtonOK, SIGNAL(clicked()),
+		this, SLOT(onOkButtonPressed()));
+	connect(this->pushButtonCancel, SIGNAL(clicked()),
+		this, SLOT(onCancelButtonPressed()));
+
+	this->layoutButtons = new QHBoxLayout();
+	this->layoutButtons->addSpacerItem(new QSpacerItem(1,1,
+							   QSizePolicy::Expanding,
+							   QSizePolicy::Fixed));
+	this->layoutButtons->addWidget(this->pushButtonRevert);
+	this->layoutButtons->addWidget(this->pushButtonCancel);
+	this->layoutButtons->addWidget(this->pushButtonOK);
+
+	this->layoutMain->addLayout(this->layoutButtons);
 
 	this->setLayout(this->layoutMain);
 
@@ -274,13 +299,13 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allo
 {
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
-	this->localAccount = new widgetAccountData(this);
-	this->localAccount->setAllowDropAccount(newTransfer && allowLocal);
-	this->localAccount->setAllowDropKnownRecipient(allowKnownRecipent);
-	this->localAccount->setLimitAllowChangeAccountNumber(newTransfer);
-	this->localAccount->setLimitAllowChangeBankCode(newTransfer);
-	this->localAccount->setLimitAllowChangeBankName(newTransfer);
-	this->localAccount->setLimitAllowChangeName(newTransfer);
+	this->localAccount = new widgetAccountData(this, this->m_accountAtCreation, this->m_allAccounts);
+//	this->localAccount->setAllowDropAccount(newTransfer && allowLocal);
+//	this->localAccount->setAllowDropKnownRecipient(allowKnownRecipent);
+//	this->localAccount->setLimitAllowChangeAccountNumber(newTransfer);
+//	this->localAccount->setLimitAllowChangeBankCode(newTransfer);
+//	this->localAccount->setLimitAllowChangeBankName(newTransfer);
+//	this->localAccount->setLimitAllowChangeName(newTransfer);
 	gbll->addWidget(this->localAccount);
 	this->groupBoxLocal->setLayout(gbll);
 
@@ -293,7 +318,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool newTransfer, bool all
 {
 	this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 	QVBoxLayout *gbrl = new QVBoxLayout();
-	this->remoteAccount = new widgetAccountData(this);
+	this->remoteAccount = new widgetAccountData(this, NULL, NULL);
 	this->remoteAccount->setAllowDropAccount(allowLocal);
 	this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipent);
 	gbrl->addWidget(this->remoteAccount);
@@ -477,7 +502,17 @@ void widgetTransfer::onAccountChange(const aqb_AccountInfo *accInfo)
 	this->setAllLimits(this->m_limits); //und alle limits neu setzen
 }
 
+//private slot
+void widgetTransfer::onOkButtonPressed()
+{
+	emit this->createTransfer(this->m_type, this);
+}
 
+//pricate slot
+void widgetTransfer::onCancelButtonPressed()
+{
+	emit this->cancelClicked(this);
+}
 
 
 

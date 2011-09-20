@@ -35,6 +35,9 @@
 
 class widgetLineEditWithLabel;
 class aqb_AccountInfo;
+class aqb_Accounts;
+class QLabel;
+class QComboBox;
 
 /*! \brief Widget zur Anzeige und Eingabe von Account Daten (Absender/Empfänger)
  *
@@ -46,7 +49,15 @@ class widgetAccountData : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetAccountData(QWidget *parent = 0);
+	/*! \brief erstellt eine Eingabe- oder Auswahlmöglichkeit für Accountdaten
+	 *
+	 * Wenn ein \a acc und ein \a allAccounts != NULL übergeben wird, wird
+	 * ein Widget erstellt indem der locale Account ausgewählt werden kann.
+	 * Ansonsten ein Widget mit der Eingabemöglichkeit für die Kontodaten.
+	 */
+	explicit widgetAccountData(QWidget *parent = 0,
+				   aqb_AccountInfo *acc = NULL,
+				   const aqb_Accounts *allAccounts = NULL);
 	~widgetAccountData();
 
 private:
@@ -55,14 +66,25 @@ private:
 	widgetLineEditWithLabel *llBankCode;
 	widgetLineEditWithLabel *llBankName;
 
+	QLabel *localOwner;
+	QLabel *localAccountNumber;
+	QLabel *localBankCode;
+	QLabel *localBankName;
+	QComboBox *comboBoxAccounts;
+
 	bool allowDropAccount;
 	bool allowDropKnownRecipient;
 	bool readOnly;
 
-	const aqb_AccountInfo *currAccount;
+	aqb_AccountInfo *currAccount;
+	const aqb_Accounts *allAccounts;
 
 
 	void setEditAllowed(bool yes);
+	//! erstellt die Edits für local Account Auswahl.
+	void createLocalAccountWidget();
+	//! erstellt die Edits für remote Account Eingabe.
+	void createRemoteAccountWidget();
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
@@ -81,6 +103,7 @@ signals:
 
 private slots:
 	void lineEditBankCode_editingFinished();
+	void comboBoxNewAccountSelected(int idx);
 
 public slots:
 	void setAllowDropAccount(bool b);

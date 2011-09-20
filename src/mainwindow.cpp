@@ -777,4 +777,91 @@ void MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type)
 						   this);
 	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
 	this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
+
+	connect(trans, SIGNAL(createTransfer(AB_JOB_TYPE,const widgetTransfer*)),
+		this, SLOT(onWidgetTransferCreateTransfer(AB_JOB_TYPE,const widgetTransfer*)));
+	connect(trans, SIGNAL(cancelClicked(widgetTransfer*)),
+		this, SLOT(onWidgetTransferCancelClicked(widgetTransfer*)));
 }
+
+//private slot
+void MainWindow::onWidgetTransferCancelClicked(widgetTransfer *sender)
+{
+	//sender im TabWidget suchen und entfernen
+	int tabIdx = this->ui->tabWidget_UW->indexOf(sender);
+	this->on_tabWidget_UW_tabCloseRequested(tabIdx);
+}
+
+//private slot
+void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer *sender)
+{
+	//entsprechende Transaction erstellen oder Ändern und dem abt_job_ctrl
+	//zur Ausführung übergeben, danach das Widget und den Tab entfernen.
+	switch (type) {
+	case AB_Job_TypeTransfer:
+		this->createAndSendTransfer(sender);
+		break;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//private
+void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
+{
+//	abt_transaction *t = new abt_transaction();
+//	aqb_AccountInfo *acc = sender->
+	qDebug() << "must be implemented! not done yet.";
+}
+
+//private
+void MainWindow::createAndSendInternationalTransfer(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendSepaTransfer(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
+{
+
+}
+
+//private
+void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
+{
+
+}
+

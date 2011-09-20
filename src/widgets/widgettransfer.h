@@ -48,13 +48,15 @@ class aqb_Accounts;
 class QGroupBox;
 class QBoxLayout;
 class QVBoxLayout;
+class QHBoxLayout;
+class QPushButton;
 
 class widgetTransfer : public QWidget
 {
 	Q_OBJECT
 public:
 	explicit widgetTransfer(AB_JOB_TYPE type,
-				const aqb_AccountInfo *localAccount,
+				aqb_AccountInfo *localAccount,
 				const aqb_Accounts *allAccounts,
 				QWidget *parent = 0);
 	~widgetTransfer();
@@ -70,6 +72,7 @@ public:
 private:
 	const abt_transactionLimits *m_limits;
 	const aqb_Accounts *m_allAccounts;
+	aqb_AccountInfo *m_accountAtCreation;
 	AB_JOB_TYPE m_type;
 
 	QGroupBox *groupBoxLocal;
@@ -79,6 +82,10 @@ private:
 	QBoxLayout *layoutValue;
 	QBoxLayout *layoutPurpose;
 	QVBoxLayout *layoutMain;
+	QHBoxLayout *layoutButtons;
+	QPushButton *pushButtonOK;
+	QPushButton *pushButtonCancel;
+	QPushButton *pushButtonRevert;
 
 	//private inline funktionen um die verschiedenen forms zu erstellen
 	void my_create_transfer_form(bool newTransfer);
@@ -102,9 +109,14 @@ private:
 	void setLocalFromAccount(const aqb_AccountInfo *acc);
 
 signals:
+	void createTransfer(AB_JOB_TYPE type, const widgetTransfer *sender);
+	void cancelClicked(widgetTransfer *sender);
 
 private slots:
 	void onAccountChange(const aqb_AccountInfo *accInfo);
+
+	void onOkButtonPressed();
+	void onCancelButtonPressed();
 
 public slots:
 

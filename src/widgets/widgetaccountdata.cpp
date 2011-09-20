@@ -35,6 +35,8 @@
 #include <QtGui/QLayout>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+#include <QtGui/QLabel>
+#include <QtGui/QComboBox>
 
 #include <QtCore/QCoreApplication> //um qApp verwenden zu können
 
@@ -42,17 +44,56 @@
 
 #include "../abt_validators.h"
 //#include "../aqb_accountinfo.h"
+#include "../aqb_accounts.h"
 #include "../globalvars.h"
 
-widgetAccountData::widgetAccountData(QWidget *parent) :
+widgetAccountData::widgetAccountData(QWidget *parent,
+				     aqb_AccountInfo *acc,
+				     const aqb_Accounts *allAccounts) :
 	QWidget(parent)
 {
 	//defaults
 	this->allowDropAccount = false;
 	this->allowDropKnownRecipient = false;
 	this->readOnly = false;
-	this->currAccount = NULL;
+	//private pointer auf definierten Wert setzen!
+	this->llName = NULL;
+	this->llAccountNumber = NULL;
+	this->llBankCode = NULL;
+	this->llBankName = NULL;
+	this->localOwner = NULL;
+	this->localAccountNumber = NULL;
+	this->localBankCode = NULL;
+	this->localBankName = NULL;
+	this->comboBoxAccounts = NULL;
 
+	this->currAccount = acc; //default argument value = NULL !
+	this->allAccounts = allAccounts; //default argument value = NULL !
+
+	if ((this->currAccount == NULL) || (this->allAccounts == NULL)) {
+		this->createRemoteAccountWidget();
+	} else {
+		this->createLocalAccountWidget();
+	}
+
+
+
+	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	this->setAcceptDrops(true);
+}
+
+widgetAccountData::~widgetAccountData()
+{
+//	delete this->llName;
+//	delete this->llAccountNumber;
+//	delete this->llBankCode;
+//	delete this->llBankName;
+	qDebug() << this << "deleted";
+}
+
+//private
+void widgetAccountData::createRemoteAccountWidget()
+{
 	this->llName = new widgetLineEditWithLabel(tr("Name"), "", Qt::AlignTop, this);
 	this->llAccountNumber = new widgetLineEditWithLabel(tr("Kontonummer"), "", Qt::AlignTop, this);
 	this->llBankCode = new widgetLineEditWithLabel(tr("Bankleitzahl"), "", Qt::AlignTop, this);
@@ -105,23 +146,79 @@ widgetAccountData::widgetAccountData(QWidget *parent) :
 	layout->addWidget(this->llBankName);
 	layout->setContentsMargins(zeroMargins);
 	layout->setSpacing(0);
-
 	this->setLayout(layout);
-	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-	this->setAcceptDrops(true);
 
 	connect(this->llBankCode->lineEdit, SIGNAL(editingFinished()),
 		this, SLOT(lineEditBankCode_editingFinished()));
+
+	this->allowDropKnownRecipient = true;
 }
 
-widgetAccountData::~widgetAccountData()
+//private
+void widgetAccountData::createLocalAccountWidget()
 {
-	delete this->llName;
-	delete this->llAccountNumber;
-	delete this->llBankCode;
-	delete this->llBankName;
-	qDebug() << this << "deleted";
+	QGridLayout *layoutMain = new QGridLayout();
+
+	this->comboBoxAccounts = new QComboBox(this);
+	foreach (aqb_AccountInfo *acc, this->allAccounts->getAccountHash().values()) {
+		QString accText = acc->Name();
+		//accText.append("(%1 [%2])").arg(acc->Number(), acc->BankCode());
+		//AccountPointer in Qt::UserRole im ComboBoxItem hinterlegen
+		this->comboBoxAccounts->insertItem(100, accText, QVariant::fromValue(acc));
+	}
+
+	//den übergebenen Account in der ComboBox auswählen
+	QVariant variPtr = QVariant::fromValue(this->currAccount);
+	int cbIdx = this->comboBoxAccounts->findData(variPtr);
+	if (cbIdx != -1) {
+		qDebug("CBIDX != -1 IST TRUE");
+		this->comboBoxAccounts->setCurrentIndex(cbIdx);
+	} else { //ersten Eintrag als default wählen
+		qDebug("CBIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
+		this->comboBoxAccounts->setCurrentIndex(0);
+	}
+
+	this->localOwner = new QLabel(this->currAccount->OwnerName(), this);
+	this->localAccountNumber = new QLabel(this->currAccount->Number(), this);
+	this->localBankCode = new QLabel(this->currAccount->BankCode(), this);
+	this->localBankName = new QLabel(this->currAccount->BankName(), this);
+
+	QLabel *labelDescName = new QLabel(tr("Name:"), this);
+	QLabel *labelDescKto = new QLabel(tr("Kontonummer:"), this);
+	QLabel *labelDescBLZ = new QLabel(tr("Bankleitzahl:"), this);
+	QLabel *labelDescBank = new QLabel(tr("Kreditinstitut:"), this);
+
+	layoutMain->addWidget(this->comboBoxAccounts, 0, 0, 1, 2, Qt::AlignCenter);
+	layoutMain->addWidget(labelDescName, 1, 0, Qt::AlignRight);
+	layoutMain->addWidget(labelDescKto, 2, 0, Qt::AlignRight);
+	layoutMain->addWidget(labelDescBLZ, 3, 0, Qt::AlignRight);
+	layoutMain->addWidget(labelDescBank, 4, 0, Qt::AlignRight);
+	layoutMain->addWidget(this->localOwner, 1, 1, Qt::AlignLeft);
+	layoutMain->addWidget(this->localAccountNumber, 2, 1, Qt::AlignLeft);
+	layoutMain->addWidget(this->localBankCode, 3, 1, Qt::AlignLeft);
+	layoutMain->addWidget(this->localBankName, 4, 1, Qt::AlignLeft);
+
+	this->setLayout(layoutMain);
+
+	connect(this->comboBoxAccounts, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(comboBoxNewAccountSelected(int)));
+
+	this->allowDropAccount = true;
+}
+
+//private slot
+void widgetAccountData::comboBoxNewAccountSelected(int idx)
+{
+	aqb_AccountInfo *selAcc;
+	selAcc = this->comboBoxAccounts->itemData(idx).value<aqb_AccountInfo*>();
+	qDebug() << "comboBoxNewAccountSelected() - idx=" << idx << " - selAcc =" << selAcc;
+	if (selAcc != NULL) {
+		this->currAccount = selAcc;
+		this->localOwner->setText(selAcc->OwnerName());
+		this->localAccountNumber->setText(selAcc->Number());
+		this->localBankCode->setText(selAcc->BankCode());
+		this->localBankName->setText(selAcc->BankName());
+	}
 }
 
 //private
@@ -144,34 +241,53 @@ void widgetAccountData::lineEditBankCode_editingFinished()
 //public slot
 void widgetAccountData::setAllowDropAccount(bool b)
 {
-	this->allowDropAccount = b;
+	if ((this->allAccounts != NULL) && (this->currAccount != NULL)) {
+		this->allowDropAccount = b;
+	} else {
+		this->allowDropAccount = false;
+	}
+
 }
 
 //public slot
 void widgetAccountData::setAllowDropKnownRecipient(bool b)
 {
-	this->allowDropKnownRecipient = b;
+	if ((this->allAccounts == NULL) || (this->currAccount == NULL)) {
+		this->allowDropKnownRecipient = b;
+	} else {
+		this->allowDropKnownRecipient = false;
+	}
 }
 
 //public slot
 void widgetAccountData::setReadOnly(bool b)
 {
-	this->readOnly = b;
-	this->setEditAllowed(this->readOnly);
+	if ((this->allAccounts == NULL) || (this->currAccount == NULL)) {
+		this->readOnly = b;
+		this->setEditAllowed(this->readOnly);
+	} else {
+		this->readOnly = false;
+	}
 }
 
 //public slot
 void widgetAccountData::clearAllEdits()
 {
-	this->llName->lineEdit->clear();
-	this->llAccountNumber->lineEdit->clear();
-	this->llBankCode->lineEdit->clear();
-	this->llBankName->lineEdit->clear();
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts == NULL) {
+		this->llName->lineEdit->clear();
+		this->llAccountNumber->lineEdit->clear();
+		this->llBankCode->lineEdit->clear();
+		this->llBankName->lineEdit->clear();
+	}
 }
 
 //public slot
 void widgetAccountData::setLimitMaxLenName(int maxLen)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
 	if (maxLen <= 0) maxLen = 32767; //Default, wenn unknown
@@ -183,6 +299,9 @@ void widgetAccountData::setLimitMaxLenName(int maxLen)
 //public slot
 void widgetAccountData::setLimitMaxLenAccountNumber(int maxLen)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
 	if (maxLen <= 0) maxLen = 32767; //Default, wenn unknown
@@ -194,6 +313,9 @@ void widgetAccountData::setLimitMaxLenAccountNumber(int maxLen)
 //public slot
 void widgetAccountData::setLimitMaxLenBankCode(int maxLen)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
 	if (maxLen <= 0) maxLen = 32767; //Default, wenn unknown
@@ -205,6 +327,9 @@ void widgetAccountData::setLimitMaxLenBankCode(int maxLen)
 //public slot
 void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
 	if (maxLen <= 0) maxLen = 32767; //Default, wenn unknown
@@ -216,24 +341,36 @@ void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 //public slot
 void widgetAccountData::setLimitAllowChangeName(int b)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	this->llName->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
 void widgetAccountData::setLimitAllowChangeBankCode(int b)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	this->llBankCode->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
 void widgetAccountData::setLimitAllowChangeBankName(int b)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	this->llBankName->lineEdit->setReadOnly(b == -1);
 }
 
 //public slot
 void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	this->llAccountNumber->lineEdit->setReadOnly(b == -1);
 }
 
@@ -241,6 +378,9 @@ void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 //public slot
 void widgetAccountData::setName(const QString &text)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	if ( ! this->llName->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llName->lineEdit->setText(text);
 }
@@ -248,6 +388,9 @@ void widgetAccountData::setName(const QString &text)
 //public slot
 void widgetAccountData::setAccountNumber(const QString &text)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	if ( ! this->llAccountNumber->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llAccountNumber->lineEdit->setText(text);
 }
@@ -255,6 +398,9 @@ void widgetAccountData::setAccountNumber(const QString &text)
 //public slot
 void widgetAccountData::setBankCode(const QString &text)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	if ( ! this->llBankCode->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llBankCode->lineEdit->setText(text);
 }
@@ -262,6 +408,9 @@ void widgetAccountData::setBankCode(const QString &text)
 //public slot
 void widgetAccountData::setBankName(const QString &text)
 {
+	//Nur wenn wir ein remoteAccountWidget sind
+	if (this->comboBoxAccounts != NULL) return;
+
 	if ( ! this->llBankName->isEnabled()) return; //Nur setzen wenn erlaubt
 
 	if ( ! text.isEmpty()) { //Übergebenen BankName anzeigen
@@ -282,6 +431,10 @@ void widgetAccountData::setBankName(const QString &text)
  */
 QString widgetAccountData::getName() const
 {
+	if (this->comboBoxAccounts != NULL) {
+		return this->currAccount->OwnerName();
+	}
+
 	if (this->llName->isEnabled()) {
 		return this->llName->lineEdit->text();
 	} else {
@@ -295,6 +448,10 @@ QString widgetAccountData::getName() const
  */
 QString widgetAccountData::getAccountNumber() const
 {
+	if (this->comboBoxAccounts != NULL) {
+		return this->currAccount->Number();
+	}
+
 	if (this->llAccountNumber->isEnabled()) {
 		return this->llAccountNumber->lineEdit->text();
 	} else {
@@ -308,6 +465,10 @@ QString widgetAccountData::getAccountNumber() const
  */
 QString widgetAccountData::getBankCode() const
 {
+	if (this->comboBoxAccounts != NULL) {
+		return this->currAccount->BankCode();
+	}
+
 	if (this->llBankCode->isEnabled()) {
 		return this->llBankCode->lineEdit->text();
 	} else {
@@ -321,6 +482,10 @@ QString widgetAccountData::getBankCode() const
  */
 QString widgetAccountData::getBankName() const
 {
+	if (this->comboBoxAccounts != NULL) {
+		return this->currAccount->BankName();
+	}
+
 	if (this->llBankName->isEnabled()) {
 		return this->llBankName->lineEdit->text();
 	} else {
@@ -331,6 +496,8 @@ QString widgetAccountData::getBankName() const
 //public
 bool widgetAccountData::hasChanges() const
 {
+	if (this->comboBoxAccounts != NULL) return false;
+
 	if (this->llName->lineEdit->isModified() ||
 	    this->llAccountNumber->lineEdit->isModified() ||
 	    this->llBankCode->lineEdit->isModified() ||
@@ -362,14 +529,14 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 
 
 	//qDebug() << "dragEnterEvent: Format =" << event->mimeData()->formats();
-	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist") &&
-	    event->possibleActions() & Qt::CopyAction) {
-		//Sollen wir Drops entgegen nehmen?
-		if (this->allowDropKnownRecipient) {
-			event->setDropAction(Qt::CopyAction);
-			event->accept();
-		}
-	}
+//	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist") &&
+//	    event->possibleActions() & Qt::CopyAction) {
+//		//Sollen wir Drops entgegen nehmen?
+//		if (this->allowDropKnownRecipient) {
+//			event->setDropAction(Qt::CopyAction);
+//			event->accept();
+//		}
+//	}
 
 	bool AllowRecipient = event->mimeData()->hasFormat(mimetypeRecipient) &&
 			      this->allowDropKnownRecipient;
@@ -419,28 +586,37 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 	if (event->mimeData()->hasFormat(mimetypeAccount)) {
 		QByteArray encoded = event->mimeData()->data(mimetypeAccount);
 		qulonglong a = encoded.toULongLong();
-		const aqb_AccountInfo *newAccount = (aqb_AccountInfo*)a;
+		aqb_AccountInfo *newAccount = (aqb_AccountInfo*)a;
 		if (this->currAccount == newAccount) {
 			//Account hat sich nicht geändert, wir akzeptieren den
 			//Drop, brauchen aber keine Daten ändern.
 			event->setDropAction(Qt::CopyAction);
 			event->accept();
-			return; //Abbruch;
+			return; // Nichts weiter zu tun
 		}
+
 		//Neuen Account als aktuellen merken.
 		this->currAccount = newAccount;
 
-		this->setName(newAccount->OwnerName());
-		this->setAccountNumber(newAccount->Number());
-		this->setBankCode(newAccount->BankCode());
-
-		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
-		//gesetzt so belassen (siehe inhalt der Funktion!)
-		this->setBankName(QString(""));
-
-		//Es wurden Änderungen durchgeführt, dies beim Namen setzen
-		//(damit hasChanges() true zurückgibt!)
-		this->llName->lineEdit->setModified(true);
+		//den index der ComboBox des neuen Accounts suchen
+		int cbIdx = this->comboBoxAccounts->findData(QVariant::fromValue(this->currAccount), Qt::UserRole);
+		if (cbIdx == -1) {
+			qWarning() << "Account" << this->currAccount << "not found in ComboBox!";
+		} else {
+			//Dies updated auch die Labeltexte und setzt this->currAccount
+			this->comboBoxAccounts->setCurrentIndex(cbIdx);
+		}
+//		this->setName(newAccount->OwnerName());
+//		this->setAccountNumber(newAccount->Number());
+//		this->setBankCode(newAccount->BankCode());
+//
+//		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
+//		//gesetzt so belassen (siehe inhalt der Funktion!)
+//		this->setBankName(QString(""));
+//
+//		//Es wurden Änderungen durchgeführt, dies beim Namen setzen
+//		//(damit hasChanges() true zurückgibt!)
+//		this->llName->lineEdit->setModified(true);
 
 		event->setDropAction(Qt::CopyAction);
 		event->accept();

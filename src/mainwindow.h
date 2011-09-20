@@ -34,6 +34,7 @@
 #include <QMainWindow>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QDockWidget>
+#include <QtGui/QToolBar>
 
 #include "aqb_accounts.h"
 #include "abt_job_ctrl.h"
@@ -44,6 +45,8 @@
 #include "pages/page_da_new.h"
 #include "pages/page_ueberweisung_new.h"
 #include "pages/page_internaltransfer_new.h"
+
+class widgetTransfer;
 
 namespace Ui {
     class MainWindow;
@@ -110,6 +113,16 @@ private:
 
 	void createTransferWidgetAndAddTab(AB_JOB_TYPE type);
 
+	void createAndSendTransfer(const widgetTransfer *sender);
+	void createAndSendInternationalTransfer(const widgetTransfer *sender);
+	void createAndSendDatedTransfer(const widgetTransfer *sender);
+	void createAndSendStandingOrder(const widgetTransfer *sender);
+	void createAndSendSepaTransfer(const widgetTransfer *sender);
+	void createAndSendModifyDatedTransfer(const widgetTransfer *sender);
+	void createAndSendModifyStandingOrder(const widgetTransfer *sender);
+	void createAndSendDebitNote(const widgetTransfer *sender);
+
+
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
@@ -142,6 +155,9 @@ private slots:
 	void onActionDebitNoteTriggered();
 	void onActionDebitNoteSepaTriggered();
 	void onActionUpdateBalanceTriggered();
+
+	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
+	void onWidgetTransferCancelClicked(widgetTransfer* sender);
 
 };
 
