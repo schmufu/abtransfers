@@ -515,6 +515,79 @@ void widgetTransfer::onCancelButtonPressed()
 }
 
 
+//public
+/** Prüft alle Eingaben und gibt zurück ob diese i.O. sind
+ *
+ * Wenn Eingaben fehlen oder fehlerhaft sind wird false zurückgegeben und
+ * in \a errorMsg ein Menschenlesbarer Text der fehlerhaften Eingaben
+ * gespeichert.
+ */
+bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
+{
+	errorMsg.clear();
+	if (this->localAccount != NULL) {
+		if (this->localAccount->getAccount() == NULL) {
+			errorMsg.append(tr(" - Absender Konto unbekannt\n"));
+		}
+	} else {
+		errorMsg.append(tr(" - Absender Konto Widget fehlt! (Programmierfehler)\n"));
+	}
+
+	if (this->remoteAccount != NULL) {
+		if (this->m_type == AB_Job_TypeInternalTransfer) {
+			if (this->remoteAccount->getAccount() == NULL) {
+				errorMsg.append(tr(" - Empänger Konto unbekannt\n"));
+			} else { //Bei Umbuchung muss Absender und Empänger unterschiedlich sein
+				if (this->localAccount != NULL) {
+					if (this->localAccount->getAccount() ==
+					    this->remoteAccount->getAccount()) {
+						errorMsg.append(tr(" - Absender und Empfänger müssen unterschiedlich sein\n"));
+					}
+				}
+			}
+		} else {
+			if (this->remoteAccount->getAccountNumber().isEmpty()) {
+				errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben\n"));
+			}
+			if (this->remoteAccount->getBankCode().isEmpty()) {
+				errorMsg.append(tr(" - Empfänger Bankleitzahl nicht eingegeben\n"));
+			}
+			if (this->remoteAccount->getBankName().isEmpty()) {
+				errorMsg.append(tr(" - Empfänger Institut nicht eingegeben\n"));
+			}
+			if (this->remoteAccount->getName().isEmpty()) {
+				errorMsg.append(tr(" - Empfängername nicht eingegeben\n"));
+			}
+		}
+	} else {
+		errorMsg.append(tr(" - Empfänger Konto Widget fehlt! (Programmierfehler)\n"));
+	}
+
+	if (this->value != NULL) {
+		if (this->value->getValue().isEmpty()) {
+			errorMsg.append(tr(" - Überweisungsbetrag fehlt\n"));
+		}
+		if (this->value->getCurrency().isEmpty()) {
+			errorMsg.append(tr(" - Überweisungs-Währung fehlt\n"));
+		}
+	} else {
+		errorMsg.append(tr(" - Betrag Widget fehlt! (Programmierfehler)\n"));
+	}
+
+	if (this->purpose != NULL) {
+		if (this->purpose->getPurpose().isEmpty()) {
+			errorMsg.append(tr(" - Verwendungszweck fehlt\n"));
+		}
+	} else {
+		errorMsg.append(tr(" - Verwendungszweck Widget fehlt! (Programmierfehler)\n"));
+	}
+
+	if (errorMsg.isEmpty()) {
+		return true;
+	}
+
+	return false;
+}
 
 
 

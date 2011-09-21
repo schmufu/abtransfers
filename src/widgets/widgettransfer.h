@@ -69,6 +69,8 @@ public:
 	widgetTextKey *textKey;
 	widgetDate *datedDate;
 
+	bool isGeneralInputOk(QString &errorMsg) const;
+
 private:
 	const abt_transactionLimits *m_limits;
 	const aqb_Accounts *m_allAccounts;

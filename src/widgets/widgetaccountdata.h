@@ -92,6 +92,7 @@ protected:
 
 
 public:
+	const aqb_AccountInfo* getAccount() const;
 	QString getName() const;
 	QString getAccountNumber() const;
 	QString getBankCode() const;

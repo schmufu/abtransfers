@@ -310,7 +310,7 @@ void abt_job_ctrl::addlog(const QString &str)
 }
 
 //SLOT
-void abt_job_ctrl::addNewSingleTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 

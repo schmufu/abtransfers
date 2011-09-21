@@ -98,7 +98,7 @@ signals:
 	void datedTransfersParsed();
 
 public slots:
-	void addNewSingleTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
+	void addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addNewSingleDebitNote(aqb_AccountInfo *acc, const abt_transaction *t);
 	void addNewEuTransfer(aqb_AccountInfo *acc, const abt_transaction *t);
 	void addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transaction *t);

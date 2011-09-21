@@ -509,6 +509,18 @@ bool widgetAccountData::hasChanges() const
 	return false;
 }
 
+//public
+/** gibt das accountInfo Object zurück das zur Zeit ausgewählt ist.
+ *
+ * Dieser Wert ist NULL wenn es sich um ein Widget für den Empfänger handelt,
+ * nur wenn beim Constructor sowohl der account als auch die all_accountList
+ * übergeben wurde ist dieser Wert != NULL
+ */
+const aqb_AccountInfo* widgetAccountData::getAccount() const
+{
+	return this->currAccount;
+}
+
 /******************************************************************************
   Methods and Event handling for Drag'n'Drop
 *******************************************************************************/

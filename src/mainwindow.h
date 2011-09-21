@@ -112,6 +112,8 @@ private:
 	void createDockToolbar();
 
 	void createTransferWidgetAndAddTab(AB_JOB_TYPE type);
+	void deleteTabWidgetAndTab(const widgetTransfer *w);
+	void deleteTabWidgetAndTab(int tabIndex);
 
 	void createAndSendTransfer(const widgetTransfer *sender);
 	void createAndSendInternationalTransfer(const widgetTransfer *sender);

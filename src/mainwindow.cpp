@@ -749,6 +749,13 @@ void MainWindow::onActionUpdateBalanceTriggered()
 }
 
 //private slot
+/** Tab soll gelöscht werden
+ *
+ * Prüft ob nicht gespeicherte Änderungen vorhanden sind und wenn ja erfolgt
+ * eine abfrage ob der Tab wirklich geschlossen werden soll.
+ * Wenn der Tab entfernt werden soll wird dies über deleteTabWidgetAndTab()
+ * erledigt.
+ */
 void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 {
 	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(index));
@@ -763,8 +770,30 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 		}
 	}
 
-	this->ui->tabWidget_UW->removeTab(index);
+}
+
+//private
+void MainWindow::deleteTabWidgetAndTab(int tabIndex)
+{
+	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(tabIndex));
+
+	this->ui->tabWidget_UW->removeTab(tabIndex);
 	delete transW;
+}
+
+//private
+void MainWindow::deleteTabWidgetAndTab(const widgetTransfer *w)
+{
+	int tabIdx = -2;
+	//Diese funktion sollte nur aufgerufen werden wenn das Tab welches
+	//gelöscht werden soll auch gerade das übergebene Widget anzeigt.
+	if (this->ui->tabWidget_UW->currentWidget() == w) {
+		tabIdx = this->ui->tabWidget_UW->currentIndex();
+	}
+
+	if (tabIdx >= 0) {
+		this->deleteTabWidgetAndTab(tabIdx);
+	}
 }
 
 //private
@@ -795,6 +824,18 @@ void MainWindow::onWidgetTransferCancelClicked(widgetTransfer *sender)
 //private slot
 void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer *sender)
 {
+	//erstmal prüfen ob die Eingaben in dem Widget so OK sind.
+	QString errMsg;
+	if (! sender->isGeneralInputOk(errMsg)) {
+		QMessageBox::critical(this,
+				      tr("Fehlerhafte Eingaben"),
+				      tr("Folgende Eingaben sind fehlerhaft:\n"
+					 "%1\n"
+					 "Bitte korrigieren Sie diese.").arg(errMsg),
+				      QMessageBox::Ok);
+		return; //Abbruch, Eingaben sind fehlerhaft.
+	}
+
 	//entsprechende Transaction erstellen oder Ändern und dem abt_job_ctrl
 	//zur Ausführung übergeben, danach das Widget und den Tab entfernen.
 	switch (type) {
@@ -816,50 +857,75 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 {
-//	abt_transaction *t = new abt_transaction();
-//	aqb_AccountInfo *acc = sender->
-	qDebug() << "must be implemented! not done yet.";
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
+
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
+	this->deleteTabWidgetAndTab(sender);
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendInternationalTransfer(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendSepaTransfer(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
 
 }
 
 //private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 {
 
