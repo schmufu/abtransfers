@@ -298,7 +298,7 @@ public:
 	/// @}
 
 
-	void printAllAsDebug();
+	void printAllAsDebug() const;
 };
 
 #endif // ABT_TRANSACTIONLIMITS_H

@@ -130,10 +130,14 @@ public:
 	/*****************************
 	 * Dates		     *
 	 *****************************/
+	//! Wertstellung
 	const QDate getValutaDate() const;
+	//! Wertstellung
 	void setValutaDate(const QDate &ValutaDate);
 
+	//! Buchungsdatum
 	const QDate getDate() const;
+	//! Buchungsdatum
 	void setDate(const QDate &Date);
 
 	/*****************************

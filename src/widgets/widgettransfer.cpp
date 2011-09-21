@@ -67,6 +67,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->layoutMain = new QVBoxLayout();
 
 	if (this->m_limits == NULL) {
+		//Wenn die limits nicht existieren oder kein Account übergeben
+		//wurde wird der Job von der Bank nicht unterstützt.
 		QLabel *notAvailable = new QLabel(tr("Der \"Job\" '%1' ist bei "
 						     "dem ausgewähltem Konto "
 						     "nicht verfügbar!\n\n"
@@ -86,25 +88,25 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
-		//this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
-		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeModifyStandingOrder :
 		this->my_create_standing_order_form(false);
 		break;
 	case AB_Job_TypeInternalTransfer :
 		this->my_create_internal_transfer_form(true);
-		this->setLocalFromAccount(localAccount);
 		break;
 	case AB_Job_TypeCreateDatedTransfer :
 		this->my_create_dated_transfer_form(true);
-		this->setLocalFromAccount(localAccount);
+		this->m_limits->printAllAsDebug();
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);
+		qDebug() << "acc =" << m_accountAtCreation->OwnerName();
+		qDebug() << "type =" << abt_conv::JobTypeToQString(m_type);
+		this->m_limits->printAllAsDebug();
 		break;
 
 
@@ -135,9 +137,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeDeleteStandingOrder :
 	case AB_Job_TypeGetDatedTransfers :
 	case AB_Job_TypeDeleteDatedTransfer :
-	case AB_Job_TypeGetBalance :
-	case AB_Job_TypeUnknown :
-	default:
+	case AB_Job_TypeGetBalance : {
 		qWarning() << "type" << type << "not supported for widgetTransfer!";
 		this->setWindowTitle(tr("Programmierfehler"));
 		QLabel *programError = new QLabel(tr("PROGRAMMIERFEHLER!\n"
@@ -151,8 +151,12 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		labelFontPE.setPixelSize(18);
 		programError->setFont(labelFontPE);
 		this->layoutMain->addWidget(programError,1, Qt::AlignLeft | Qt::AlignVCenter);
+		}
+		break;
 
-
+	case AB_Job_TypeUnknown :
+	default:
+		break;
 	}
 
 	this->setAllLimits(this->m_limits);
@@ -300,12 +304,6 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allo
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
 	this->localAccount = new widgetAccountData(this, this->m_accountAtCreation, this->m_allAccounts);
-//	this->localAccount->setAllowDropAccount(newTransfer && allowLocal);
-//	this->localAccount->setAllowDropKnownRecipient(allowKnownRecipent);
-//	this->localAccount->setLimitAllowChangeAccountNumber(newTransfer);
-//	this->localAccount->setLimitAllowChangeBankCode(newTransfer);
-//	this->localAccount->setLimitAllowChangeBankName(newTransfer);
-//	this->localAccount->setLimitAllowChangeName(newTransfer);
 	gbll->addWidget(this->localAccount);
 	this->groupBoxLocal->setLayout(gbll);
 
@@ -416,12 +414,15 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 	//wenn keine Limits vorhanden sind alle Widgets disablen, da ein Job
 	//ohne Limits von der Bank nicht unterstützt wird!
 	bool dis = limits == NULL;
-	if (this->localAccount) this->localAccount->setDisabled(dis);
+	//local Account so belassen, damit dieser evt. wieder geändert werden
+	//kann und somit limits in kraft treten die wieder verfügbar sind.
+	//if (this->localAccount) this->localAccount->setDisabled(dis);
 	if (this->remoteAccount) this->remoteAccount->setDisabled(dis);
 	if (this->value) this->value->setDisabled(dis);
 	if (this->purpose) this->purpose->setDisabled(dis);
 	if (this->textKey) this->textKey->setDisabled(dis);
 	if (this->recurrence) this->recurrence->setDisabled(dis);
+	if (this->datedDate) this->datedDate->setDisabled(dis);
 
 	if (dis) return; //Abbruch wenn keine Limits vorhanden sind
 

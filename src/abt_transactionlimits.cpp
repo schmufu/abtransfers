@@ -139,7 +139,7 @@ abt_transactionLimits::~abt_transactionLimits()
 }
 
 //public
-void abt_transactionLimits::printAllAsDebug()
+void abt_transactionLimits::printAllAsDebug() const
 {
 	qDebug()
 	<< "MaxLenLocalName" << this->MaxLenLocalName << "\n"

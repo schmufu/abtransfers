@@ -116,13 +116,15 @@ private:
 	void deleteTabWidgetAndTab(int tabIndex);
 
 	void createAndSendTransfer(const widgetTransfer *sender);
-	void createAndSendInternationalTransfer(const widgetTransfer *sender);
+	void createAndSendEUTransfer(const widgetTransfer *sender);
 	void createAndSendDatedTransfer(const widgetTransfer *sender);
 	void createAndSendStandingOrder(const widgetTransfer *sender);
 	void createAndSendSepaTransfer(const widgetTransfer *sender);
 	void createAndSendModifyDatedTransfer(const widgetTransfer *sender);
 	void createAndSendModifyStandingOrder(const widgetTransfer *sender);
 	void createAndSendDebitNote(const widgetTransfer *sender);
+	void createAndSendInternalTransfer(const widgetTransfer *sender);
+	void createAndSendSepaDebitNote(const widgetTransfer *sender);
 
 
 private slots:

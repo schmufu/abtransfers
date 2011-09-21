@@ -770,6 +770,7 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 		}
 	}
 
+	this->deleteTabWidgetAndTab(index);
 }
 
 //private
@@ -842,7 +843,51 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 	case AB_Job_TypeTransfer:
 		this->createAndSendTransfer(sender);
 		break;
+	case AB_Job_TypeCreateDatedTransfer :
+		this->createAndSendDatedTransfer(sender);
+		break;
+	case AB_Job_TypeCreateStandingOrder :
+		this->createAndSendStandingOrder(sender);
+		break;
+	case AB_Job_TypeModifyDatedTransfer :
+		this->createAndSendModifyDatedTransfer(sender);
+		break;
+	case AB_Job_TypeModifyStandingOrder :
+		this->createAndSendModifyStandingOrder(sender);
+		break;
+	case AB_Job_TypeDebitNote :
+		this->createAndSendDebitNote(sender);
+		break;
+	case AB_Job_TypeEuTransfer :
+		this->createAndSendEUTransfer(sender);
+		break;
+	case AB_Job_TypeSepaTransfer :
+		this->createAndSendSepaTransfer(sender);
+		break;
+	case AB_Job_TypeInternalTransfer :
+		this->createAndSendInternalTransfer(sender);
+		break;
+	case AB_Job_TypeSepaDebitNote :
+		this->createAndSendSepaDebitNote(sender);
+		break;
+	case AB_Job_TypeGetBalance :
+	case AB_Job_TypeDeleteDatedTransfer :
+	case AB_Job_TypeDeleteStandingOrder :
+	case AB_Job_TypeGetDatedTransfers :
+	case AB_Job_TypeGetStandingOrders :
+	case AB_Job_TypeGetTransactions :
+	case AB_Job_TypeLoadCellPhone :
+	case AB_Job_TypeUnknown :
+	default:
+		qWarning() << "onWidgetTransferCreateTransfer(): type '" <<
+				type << "' not supported! No Job added! ABBRUCH!";
+		return;
+		break;
 	}
+
+	//Der Transfer wurde in den Ausgangskorb übernommen, das Widget und den
+	//Tab löschen
+	this->deleteTabWidgetAndTab(sender);
 }
 
 
@@ -879,55 +924,235 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 	this->jobctrl->addNewSingleTransfer(acc, t);
 
 	delete t;
-	this->deleteTabWidgetAndTab(sender);
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
-void MainWindow::createAndSendInternationalTransfer(const widgetTransfer *sender)
+void MainWindow::createAndSendEUTransfer(const widgetTransfer *sender)
 {
+	qWarning() << "create EU Transfer not implemented yet!";
+	return;
 
+//	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+//	abt_transaction *t = new abt_transaction();
+//
+//	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+//
+//	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+//	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+//	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+//	t->setRemoteBankName(sender->remoteAccount->getBankName());
+//
+//	t->setValue(sender->value->getValueABV());
+//
+//	t->setPurpose(sender->purpose->getPurpose());
+//
+//	t->setTextKey(sender->textKey->getTextKey());
+//
+//	this->jobctrl->addNewSingleTransfer(acc, t);
+//
+//	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	t->setDate(sender->datedDate->getDate());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendSepaTransfer(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
 void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 {
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
 
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
+}
+
+//private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
+{
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
+
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
+}
+
+//private
+/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+void MainWindow::createAndSendSepaDebitNote(const widgetTransfer *sender)
+{
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
+
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSingleTransfer(acc, t);
+
+	delete t;
 }
 
