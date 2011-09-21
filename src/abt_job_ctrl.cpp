@@ -341,7 +341,7 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_tr
 }
 
 //SLOT
-void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -372,7 +372,7 @@ void abt_job_ctrl::addNewSingleDebitNote(aqb_AccountInfo *acc, const abt_transac
 }
 
 //SLOT
-void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -423,7 +423,7 @@ void abt_job_ctrl::addNewEuTransfer(aqb_AccountInfo *acc, const abt_transaction 
 }
 
 //SLOT
-void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -455,7 +455,7 @@ void abt_job_ctrl::addNewInternalTransfer(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -489,7 +489,7 @@ void abt_job_ctrl::addNewSepaTransfer(aqb_AccountInfo *acc, const abt_transactio
 /******* Dated Transfers ********/
 
 //SLOT
-void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -541,7 +541,7 @@ void abt_job_ctrl::addCreateDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -592,7 +592,7 @@ void abt_job_ctrl::addModifyDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -644,7 +644,7 @@ void abt_job_ctrl::addDeleteDatedTransfer(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addGetDatedTransfers(aqb_AccountInfo *acc)
+void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc)
 {
 	int rv;
 
@@ -678,7 +678,7 @@ void abt_job_ctrl::addGetDatedTransfers(aqb_AccountInfo *acc)
 
 
 //SLOT
-void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -709,7 +709,7 @@ void abt_job_ctrl::addCreateStandingOrder(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -740,7 +740,7 @@ void abt_job_ctrl::addModifyStandingOrder(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const abt_transaction *t)
+void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
 	int rv;
 
@@ -771,7 +771,7 @@ void abt_job_ctrl::addDeleteStandingOrder(aqb_AccountInfo *acc, const abt_transa
 }
 
 //SLOT
-void abt_job_ctrl::addGetStandingOrders(aqb_AccountInfo *acc)
+void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc)
 {
 	int rv;
 
