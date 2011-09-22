@@ -341,5 +341,6 @@ public:
 
 Q_DECLARE_METATYPE(abt_transaction);
 Q_DECLARE_METATYPE(abt_transaction*);
+Q_DECLARE_METATYPE(const abt_transaction*);
 
 #endif // TRANS_JOB_H

@@ -31,7 +31,8 @@ SOURCES += src/main.cpp \
     src/widgets/widgetvalue.cpp \
     src/widgets/widgetdate.cpp \
     src/widgets/widgetrecurrence.cpp \
-    src/widgets/widgettransfer.cpp
+    src/widgets/widgettransfer.cpp \
+    src/widgets/widgetknownstandingorders.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -58,7 +59,8 @@ HEADERS += src/mainwindow.h \
     src/widgets/widgetvalue.h \
     src/widgets/widgetdate.h \
     src/widgets/widgetrecurrence.h \
-    src/widgets/widgettransfer.h
+    src/widgets/widgettransfer.h \
+    src/widgets/widgetknownstandingorders.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
