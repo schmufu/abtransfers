@@ -212,6 +212,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->createMenus();
 	this->createDockToolbar();
 
+	this->ui->tabWidget_UW->setTabText(0, tr("Überischt"));
+	connect(this->ui->pushButton, SIGNAL(clicked()),
+		this->actTransferNational, SLOT(trigger()));
+	connect(this->ui->pushButton_2, SIGNAL(clicked()),
+		this->actTransferInternational, SLOT(trigger()));
+	connect(this->ui->pushButton_3, SIGNAL(clicked()),
+		this->actTransferSepa, SLOT(trigger()));
+	connect(this->ui->pushButton_4, SIGNAL(clicked()),
+		this->actTransferInternal, SLOT(trigger()));
+
+
 //	QTimer *timer = new QTimer(this);
 //	timer->setSingleShot(true);
 //	timer->start(10);
@@ -721,10 +732,11 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 	if (transW->hasChanges()) {
 		if (QMessageBox::question(this,
 					  tr("Änderungen verwerfen?"),
-					  tr("Im aktuellen Dialog wurden "
-					     "Änderungenen vorgenommen!\n"
+					  tr("Im Tab '%1' wurden "
+					     "Änderungenen vorgenommen!\n\n"
 					     "Sollen diese Änderungen "
-					     "verworfen werden?"),
+					     "verworfen werden?").arg(
+							     this->ui->tabWidget_UW->tabText(index)),
 					  QMessageBox::Yes | QMessageBox::No,
 					  QMessageBox::Yes) != QMessageBox::Yes) {
 			return; //Abbruch, Tab nicht schließen

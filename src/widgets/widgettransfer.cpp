@@ -83,6 +83,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		notAvailable->setFont(labelFont);
 		this->layoutMain->addWidget(notAvailable,1,Qt::AlignCenter);
 		type = AB_Job_TypeUnknown;
+		this->m_type = AB_Job_TypeUnknown;
 	}
 
 	switch (type) {
@@ -151,6 +152,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		labelFontPE.setPixelSize(18);
 		programError->setFont(labelFontPE);
 		this->layoutMain->addWidget(programError,1, Qt::AlignLeft | Qt::AlignVCenter);
+		this->m_type = AB_Job_TypeUnknown;
 		}
 		break;
 
@@ -625,6 +627,10 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 /** gibt zurück ob Daten gegenüber der Erstellung geändert wurden */
 bool widgetTransfer::hasChanges() const
 {
+	if (this->m_type == AB_Job_TypeUnknown) {
+		return false; //Form hat nur ein Label, kann keine Änderungen enthalten
+	}
+	//Alle anderen Typen müssen mindestens die folgenden Widgets enthalten
 	Q_ASSERT_X(this->localAccount != NULL, "widgetTransfer", "localAccount must exist");
 	Q_ASSERT_X(this->remoteAccount != NULL, "widgetTransfer", "remoteAccount must exist");
 	Q_ASSERT_X(this->value != NULL, "widgetTransfer", "value must exist");
