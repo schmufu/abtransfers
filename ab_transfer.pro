@@ -12,8 +12,6 @@ SOURCES += src/main.cpp \
     src/aqb_accounts.cpp \
     src/aqb_banking.cpp \
     src/widgets/debugdialogwidget.cpp \
-    src/widgets/ueberweisungswidget.cpp \
-    src/pages/page_da_edit_delete.cpp \
     src/widgets/knownempfaengerwidget.cpp \
     src/abt_empfaengerinfo.cpp \
     src/abt_settings.cpp \
@@ -23,11 +21,6 @@ SOURCES += src/main.cpp \
     src/pages/page_log.cpp \
     src/pages/page_ausgang.cpp \
     src/abt_conv.cpp \
-    src/widgets/extrastandingorderswidget.cpp \
-    src/pages/page_da_new.cpp \
-    src/pages/page_ueberweisung_new.cpp \
-    src/widgets/extratextkeywidget.cpp \
-    src/pages/page_internaltransfer_new.cpp \
     src/abt_validators.cpp \
     src/abt_transactionlimits.cpp \
     src/widgets/widgetlineeditwithlabel.cpp \
@@ -46,8 +39,6 @@ HEADERS += src/mainwindow.h \
     src/aqb_banking.h \
     src/globalvars.h \
     src/widgets/debugdialogwidget.h \
-    src/widgets/ueberweisungswidget.h \
-    src/pages/page_da_edit_delete.h \
     src/widgets/knownempfaengerwidget.h \
     src/abt_empfaengerinfo.h \
     src/abt_settings.h \
@@ -57,11 +48,6 @@ HEADERS += src/mainwindow.h \
     src/pages/page_log.h \
     src/pages/page_ausgang.h \
     src/abt_conv.h \
-    src/widgets/extrastandingorderswidget.h \
-    src/pages/page_da_new.h \
-    src/pages/page_ueberweisung_new.h \
-    src/widgets/extratextkeywidget.h \
-    src/pages/page_internaltransfer_new.h \
     src/abt_validators.h \
     src/abt_transactionlimits.h \
     src/widgets/widgetlineeditwithlabel.h \
@@ -76,13 +62,9 @@ HEADERS += src/mainwindow.h \
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
-    src/widgets/ueberweisungswidget.ui \
-    src/pages/page_da_edit_delete.ui \
     src/widgets/knownempfaengerwidget.ui \
     src/pages/page_log.ui \
-    src/pages/page_ausgang.ui \
-    src/widgets/extrastandingorderswidget.ui \
-    src/widgets/extratextkeywidget.ui
+    src/pages/page_ausgang.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
     documentation/Doxyfile
 RESOURCES += src/resources.qrc

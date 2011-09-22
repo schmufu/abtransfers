@@ -41,10 +41,6 @@
 
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
-#include "pages/page_da_edit_delete.h"
-#include "pages/page_da_new.h"
-#include "pages/page_ueberweisung_new.h"
-#include "pages/page_internaltransfer_new.h"
 
 class widgetTransfer;
 
@@ -69,10 +65,6 @@ private:
 	abt_job_ctrl *jobctrl;
 	page_log *logw;
 	Page_Ausgang *outw;
-	Page_DA_Edit_Delete *da_edit_del;
-	Page_DA_New *da_new;
-	Page_Ueberweisung_New *page_transfer_new;
-	Page_InternalTransfer_New *page_internaltransfer_new;
 
 	QAction *actTransferNational;
 	QAction *actTransferInternational;
