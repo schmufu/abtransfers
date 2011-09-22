@@ -53,6 +53,7 @@ public:
 	QString getValue() const;
 	QString getCurrency() const;
 	const AB_VALUE* getValueABV() const;
+	bool hasChanges() const;
 
 signals:
 

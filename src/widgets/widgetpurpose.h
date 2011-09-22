@@ -62,6 +62,7 @@ protected:
 
 public:
 	QStringList getPurpose() const;
+	bool hasChanges() const;
 
 signals:
 

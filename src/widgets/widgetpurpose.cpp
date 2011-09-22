@@ -163,6 +163,12 @@ QStringList widgetPurpose::getPurpose() const
 	return purposeLines;
 }
 
+//public
+bool widgetPurpose::hasChanges() const
+{
+	return this->textEdit->document()->isModified();
+}
+
 //private slot
 void widgetPurpose::plainTextEdit_TextChanged()
 {

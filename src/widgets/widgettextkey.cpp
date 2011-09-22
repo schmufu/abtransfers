@@ -73,14 +73,17 @@ void widgetTextKey::fillTextKeys(const QList<int> *keys)
 		return; //Abbruch, keine Keys setzen und ComboBox leer lassen
 	}
 
-	const QHash<int, QString> *desc = settings->getTextKeyDescriptions();
+	const QHash<int, QString> *hashDesc = settings->getTextKeyDescriptions();
 
 	//Alle Testschlüssel mit Bezeichnung in der ComboBox darstellen, wenn
 	//zu einem Schlüssel kein Text existiert wird unbekannt angezeigt.
-	foreach (int i, *keys) {
-		cb->addItem(tr("%1 - %2").arg(i).arg(desc->value(i,tr("Unbekannt"))), i);
+	foreach (int key, *keys) {
+		QString desc_text = hashDesc->value(key,tr("Unbekannt"));
+		QString desc = tr("%1 - %2").arg(key).arg(desc_text);
+		cb->addItem(desc, key);
 	}
 	cb->setCurrentIndex(0); //Erster Eintrag als Default
+	this->settedKey = this->getTextKey(); //gesetzten key merken
 }
 
 /** Den übergebenen Key setzen */
@@ -93,6 +96,7 @@ void widgetTextKey::setTextKey(int key)
 	for (int i=0; i<cb->count(); ++i) {
 		if (cb->itemData(i, Qt::UserRole).toInt() == key) {
 			cb->setCurrentIndex(i);
+			this->settedKey = key;
 			return; //Gefunden und gesetzt, wieder zurück
 		}
 	}
@@ -100,6 +104,7 @@ void widgetTextKey::setTextKey(int key)
 	//Wenn wir hierher kommen wurde ein nicht in der ComboBox vorhandener
 	//key übergeben, wir setzen einfach den ersten
 	cb->setCurrentIndex(0);
+	this->settedKey = this->getTextKey(); //gesetzten key merken
 }
 
 /** liefert den aktuell gewählten TextKey zurück */
@@ -111,6 +116,13 @@ int widgetTextKey::getTextKey() const
 	}
 	int ret = this->comboBox->itemData(idx, Qt::UserRole).toInt();
 	return ret;
+}
+
+//public
+bool widgetTextKey::hasChanges() const
+{
+	int curr = this->getTextKey(); //aktueller TextKey
+	return this->settedKey != curr;
 }
 
 //public slot

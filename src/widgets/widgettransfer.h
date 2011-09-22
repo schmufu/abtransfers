@@ -70,6 +70,7 @@ public:
 	widgetDate *datedDate;
 
 	bool isGeneralInputOk(QString &errorMsg) const;
+	bool hasChanges() const;
 
 private:
 	const abt_transactionLimits *m_limits;

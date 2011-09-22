@@ -576,11 +576,42 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	}
 
 	if (this->purpose != NULL) {
-		if (this->purpose->getPurpose().isEmpty()) {
+		QStringList purpose = this->purpose->getPurpose();
+		//Alle Elemente durchgehen und wenn ALLE leer sind ist kein
+		//Verwendungszweck eingegeben.
+		bool allEmpty = true;
+		foreach(QString zeile, purpose) {
+			if (!zeile.isEmpty()) {
+				allEmpty = false;
+				break; //foreach abbrechen, nicht leere Zeile gefunden
+			}
+		}
+
+		if (allEmpty) {
 			errorMsg.append(tr(" - Verwendungszweck fehlt\n"));
 		}
 	} else {
 		errorMsg.append(tr(" - Verwendungszweck Widget fehlt! (Programmierfehler)\n"));
+	}
+
+	if (this->textKey != NULL) {
+		if (!this->m_limits->ValuesTextKey.contains(
+				QString("%1").arg(this->textKey->getTextKey()))) {
+			errorMsg.append(tr(" - Textschlüssel nicht erlaubt\n"));
+		}
+	}
+
+	//datedDate und recurrence können nur gültige Werte annehmen!
+
+	if (this->m_type == AB_Job_TypeInternalTransfer) {
+		if (this->remoteAccount->getAccount() != NULL) {
+			if (this->localAccount->getAccount() ==
+			    this->remoteAccount->getAccount()) {
+				errorMsg.append(tr(" - Umbuchung von ein auf dasselbe Konto nicht möglich\n"));
+			}
+		} else {
+			errorMsg.append(tr(" - remoteAccount muss bei Umbuchung einen Account besitzen! (Programmierfehler)\n"));
+		}
 	}
 
 	if (errorMsg.isEmpty()) {
@@ -590,7 +621,34 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	return false;
 }
 
+//public
+/** gibt zurück ob Daten gegenüber der Erstellung geändert wurden */
+bool widgetTransfer::hasChanges() const
+{
+	Q_ASSERT_X(this->localAccount != NULL, "widgetTransfer", "localAccount must exist");
+	Q_ASSERT_X(this->remoteAccount != NULL, "widgetTransfer", "remoteAccount must exist");
+	Q_ASSERT_X(this->value != NULL, "widgetTransfer", "value must exist");
+	Q_ASSERT_X(this->purpose != NULL, "widgetTransfer", "purpose must exist");
 
+	if (this->localAccount->getAccount() != this->m_accountAtCreation) {
+		return true;
+	}
+
+	if (this->remoteAccount->hasChanges() ||
+	    this->value->hasChanges() ||
+	    this->purpose->hasChanges()) {
+		return true;
+	}
+
+	if (this->textKey != NULL) {
+		if (this->textKey->hasChanges()) {
+			return true;
+		}
+	}
+
+	//Wenn wir bis hierher kommen haben keine Änderungen stattgefunden
+	return false;
+}
 
 
 

@@ -44,11 +44,13 @@ public:
 	~widgetTextKey();
 
 	int getTextKey() const;
+	bool hasChanges() const;
 
 protected:
 //	void changeEvent(QEvent *e);
 
 private:
+	int settedKey;
 	QComboBox *comboBox;
 	QLabel *label;
 

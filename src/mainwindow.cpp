@@ -718,9 +718,16 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 		return; //nichts machen
 	}
 
-	if (transW->localAccount != NULL) {
-		if (transW->localAccount->hasChanges()) {
-			qDebug() << "TODO: Nachfragen ob Änderungen verworfen werden sollen!";
+	if (transW->hasChanges()) {
+		if (QMessageBox::question(this,
+					  tr("Änderungen verwerfen?"),
+					  tr("Im aktuellen Dialog wurden "
+					     "Änderungenen vorgenommen!\n"
+					     "Sollen diese Änderungen "
+					     "verworfen werden?"),
+					  QMessageBox::Yes | QMessageBox::No,
+					  QMessageBox::Yes) != QMessageBox::Yes) {
+			return; //Abbruch, Tab nicht schließen
 		}
 	}
 

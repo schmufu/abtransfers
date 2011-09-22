@@ -92,6 +92,11 @@ const AB_VALUE* widgetValue::getValueABV() const
 					   this->currency->text());
 }
 
+//public
+bool widgetValue::hasChanges() const
+{
+	return (this->value->isModified() || this->currency->isModified());
+}
 
 //public slot
 void widgetValue::setValue(const QString &value)
