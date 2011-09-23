@@ -34,6 +34,7 @@
 #include <QWidget>
 
 class widgetLineEditWithLabel;
+class widgetAccountComboBox;
 class aqb_AccountInfo;
 class aqb_Accounts;
 class QLabel;
@@ -70,7 +71,7 @@ private:
 	QLabel *localAccountNumber;
 	QLabel *localBankCode;
 	QLabel *localBankName;
-	QComboBox *comboBoxAccounts;
+	widgetAccountComboBox *comboBoxAccounts;
 
 	bool allowDropAccount;
 	bool allowDropKnownRecipient;
@@ -82,7 +83,7 @@ private:
 
 	void setEditAllowed(bool yes);
 	//! erstellt die Edits für local Account Auswahl.
-	void createLocalAccountWidget();
+	void createLocalAccountWidget(const aqb_AccountInfo *acc, const aqb_Accounts *accounts);
 	//! erstellt die Edits für remote Account Eingabe.
 	void createRemoteAccountWidget();
 
@@ -104,7 +105,7 @@ signals:
 
 private slots:
 	void lineEditBankCode_editingFinished();
-	void comboBoxNewAccountSelected(int idx);
+	void comboBoxNewAccountSelected(const aqb_AccountInfo *newAccount);
 
 public slots:
 	void setAllowDropAccount(bool b);

@@ -41,6 +41,7 @@
 #include <QtCore/QCoreApplication> //um qApp verwenden zu können
 
 #include "widgetlineeditwithlabel.h"
+#include "widgetaccountcombobox.h"
 
 #include "../abt_validators.h"
 //#include "../aqb_accountinfo.h"
@@ -73,7 +74,7 @@ widgetAccountData::widgetAccountData(QWidget *parent,
 	if ((this->currAccount == NULL) || (this->allAccounts == NULL)) {
 		this->createRemoteAccountWidget();
 	} else {
-		this->createLocalAccountWidget();
+		this->createLocalAccountWidget(acc, allAccounts);
 	}
 
 
@@ -155,29 +156,11 @@ void widgetAccountData::createRemoteAccountWidget()
 }
 
 //private
-void widgetAccountData::createLocalAccountWidget()
+void widgetAccountData::createLocalAccountWidget(const aqb_AccountInfo *acc, const aqb_Accounts *accounts)
 {
 	QGridLayout *layoutMain = new QGridLayout();
 
-	this->comboBoxAccounts = new QComboBox(this);
-	foreach (const aqb_AccountInfo *acc, this->allAccounts->getAccountHash().values()) {
-		QString accText = acc->Name();
-		//accText.append("(%1 [%2])").arg(acc->Number(), acc->BankCode());
-		//AccountPointer in Qt::UserRole im ComboBoxItem hinterlegen
-		this->comboBoxAccounts->insertItem(100, accText, QVariant::fromValue(acc));
-	}
-
-	//den übergebenen Account in der ComboBox auswählen
-	QVariant variPtr = QVariant::fromValue(this->currAccount);
-	int cbIdx = this->comboBoxAccounts->findData(variPtr);
-	if (cbIdx != -1) {
-		qDebug("CBIDX != -1 IST TRUE");
-		this->comboBoxAccounts->setCurrentIndex(cbIdx);
-	} else { //ersten Eintrag als default wählen
-		qDebug("CBIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
-		this->comboBoxAccounts->setCurrentIndex(0);
-	}
-
+	this->comboBoxAccounts = new widgetAccountComboBox(acc, accounts, this);
 	this->localOwner = new QLabel(this->currAccount->OwnerName(), this);
 	this->localAccountNumber = new QLabel(this->currAccount->Number(), this);
 	this->localBankCode = new QLabel(this->currAccount->BankCode(), this);
@@ -198,20 +181,21 @@ void widgetAccountData::createLocalAccountWidget()
 	layoutMain->addWidget(this->localBankCode, 3, 1, Qt::AlignLeft);
 	layoutMain->addWidget(this->localBankName, 4, 1, Qt::AlignLeft);
 
+	layoutMain->setColumnMinimumWidth(0, labelDescBank->width() + 20);
+	layoutMain->setColumnStretch(0, 0);
+	layoutMain->setColumnStretch(0, 5);
+
 	this->setLayout(layoutMain);
 
-	connect(this->comboBoxAccounts, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(comboBoxNewAccountSelected(int)));
+	connect(this->comboBoxAccounts, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
+		this, SLOT(comboBoxNewAccountSelected(const aqb_AccountInfo*)));
 
 	this->allowDropAccount = true;
 }
 
 //private slot
-void widgetAccountData::comboBoxNewAccountSelected(int idx)
+void widgetAccountData::comboBoxNewAccountSelected(const aqb_AccountInfo *selAcc)
 {
-	const aqb_AccountInfo *selAcc;
-	selAcc = this->comboBoxAccounts->itemData(idx).value<const aqb_AccountInfo*>();
-	qDebug() << "comboBoxNewAccountSelected() - idx=" << idx << " - selAcc =" << selAcc;
 	if (selAcc != NULL) {
 		this->currAccount = selAcc;
 		this->localOwner->setText(selAcc->OwnerName());
@@ -496,7 +480,9 @@ QString widgetAccountData::getBankName() const
 //public
 bool widgetAccountData::hasChanges() const
 {
-	if (this->comboBoxAccounts != NULL) return false;
+	if (this->comboBoxAccounts != NULL) {
+		return this->comboBoxAccounts->hasChanges();
+	}
 
 	if (this->llName->lineEdit->isModified() ||
 	    this->llAccountNumber->lineEdit->isModified() ||
@@ -610,25 +596,8 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 		//Neuen Account als aktuellen merken.
 		this->currAccount = newAccount;
 
-		//den index der ComboBox des neuen Accounts suchen
-		int cbIdx = this->comboBoxAccounts->findData(QVariant::fromValue(this->currAccount), Qt::UserRole);
-		if (cbIdx == -1) {
-			qWarning() << "Account" << this->currAccount << "not found in ComboBox!";
-		} else {
-			//Dies updated auch die Labeltexte und setzt this->currAccount
-			this->comboBoxAccounts->setCurrentIndex(cbIdx);
-		}
-//		this->setName(newAccount->OwnerName());
-//		this->setAccountNumber(newAccount->Number());
-//		this->setBankCode(newAccount->BankCode());
-//
-//		//nachdem alles gesetzt wurde den bankname ermitteln, bzw wenn bereits
-//		//gesetzt so belassen (siehe inhalt der Funktion!)
-//		this->setBankName(QString(""));
-//
-//		//Es wurden Änderungen durchgeführt, dies beim Namen setzen
-//		//(damit hasChanges() true zurückgibt!)
-//		this->llName->lineEdit->setModified(true);
+		//den neuen Account in der ComboBox setzen
+		this->comboBoxAccounts->setSelectedAccount(this->currAccount);
 
 		event->setDropAction(Qt::CopyAction);
 		event->accept();
