@@ -223,8 +223,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->ui->pushButton_4, SIGNAL(clicked()),
 		this->actTransferInternal, SLOT(trigger()));
 
-	QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
-	widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
+	//QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
+	//widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
 
 
 //	QTimer *timer = new QTimer(this);

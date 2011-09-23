@@ -171,6 +171,10 @@ void widgetAccountData::createLocalAccountWidget(const aqb_AccountInfo *acc, con
 	QLabel *labelDescBLZ = new QLabel(tr("Bankleitzahl:"), this);
 	QLabel *labelDescBank = new QLabel(tr("Kreditinstitut:"), this);
 
+	layoutMain->setColumnMinimumWidth(0, labelDescBank->width() + 20);
+	layoutMain->setColumnStretch(0, 0);
+	layoutMain->setColumnStretch(1, 5);
+
 	layoutMain->addWidget(this->comboBoxAccounts, 0, 0, 1, 2, Qt::AlignCenter);
 	layoutMain->addWidget(labelDescName, 1, 0, Qt::AlignRight);
 	layoutMain->addWidget(labelDescKto, 2, 0, Qt::AlignRight);
@@ -180,10 +184,6 @@ void widgetAccountData::createLocalAccountWidget(const aqb_AccountInfo *acc, con
 	layoutMain->addWidget(this->localAccountNumber, 2, 1, Qt::AlignLeft);
 	layoutMain->addWidget(this->localBankCode, 3, 1, Qt::AlignLeft);
 	layoutMain->addWidget(this->localBankName, 4, 1, Qt::AlignLeft);
-
-	layoutMain->setColumnMinimumWidth(0, labelDescBank->width() + 20);
-	layoutMain->setColumnStretch(0, 0);
-	layoutMain->setColumnStretch(0, 5);
 
 	this->setLayout(layoutMain);
 
