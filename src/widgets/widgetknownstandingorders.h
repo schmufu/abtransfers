@@ -71,6 +71,7 @@ private slots:
 
 public slots:
 	void refreshKnownStandingOrders(const aqb_AccountInfo *account);
+	void setAccount(const aqb_AccountInfo *account);
 
 };
 

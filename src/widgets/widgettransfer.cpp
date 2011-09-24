@@ -656,8 +656,60 @@ bool widgetTransfer::hasChanges() const
 	return false;
 }
 
+//public
+/** setzt alle Werte in den angezeigten widgets entsprechend der Transaction
+ *
+ * Alle Werte die gesetzt werden können werden auf den entsprechenden Wert
+ * der übergebenen Transaction \a t gesetzt.
+ *
+ * Es wird davon ausgegangen das wenn ein Widget für z.B. recurrence existiert
+ * dieses auch die werte der transaction darstellen kann.
+ */
+void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
+{
+	if (this->localAccount != NULL) {
+		if (this->localAccount->getAccountNumber() !=
+		    t->getLocalAccountNumber()) {
+			qWarning() << "SETTING VALUES FROM A TRANSACTION THAT IS NOT FOR THE SELECTED ACCOUNT";
+		}
+	}
 
+	if (this->remoteAccount != NULL) {
+		this->remoteAccount->setName(t->getRemoteName().at(0));
+		this->remoteAccount->setAccountNumber(t->getRemoteAccountNumber());
+		this->remoteAccount->setBankCode(t->getRemoteBankCode());
+		this->remoteAccount->setBankName(t->getRemoteBankName());
+	}
 
+	if (this->value != NULL) {
+		this->value->setValue(t->getValue());
+		//! \todo currency der Transaction verwenden
+		this->value->setCurrency("EUR");
+	}
+
+	if (this->purpose != NULL) {
+		this->purpose->setPurpose(t->getPurpose());
+	}
+
+	if (this->textKey != NULL) {
+		this->textKey->setTextKey(t->getTextKey());
+		qDebug() << "widgetTransfer::setValuesFromTransaction(): TextKeyExt =" << t->getTextKeyExt();
+	}
+
+	if (this->recurrence != NULL) {
+		this->recurrence->setCycle(t->getCycle());
+		this->recurrence->setPeriod(t->getPeriod());
+		this->recurrence->setExecutionDay(t->getExecutionDay());
+		this->recurrence->setFirstExecutionDay(t->getFirstExecutionDate());
+		this->recurrence->setLastExecutionDay(t->getLastExecutionDate());
+		this->recurrence->setNextExecutionDay(t->getNextExecutionDate());
+	}
+
+	if (this->datedDate != NULL) {
+		this->datedDate->setDate(t->getDate());
+	}
+
+}
 
 
 

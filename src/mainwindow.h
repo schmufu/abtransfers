@@ -90,20 +90,17 @@ private:
 	QToolBar *dockToolbar;
 
 	QDockWidget *dock_KnownRecipient;
-	QDockWidget *dock_KnownRecipient2;
-	QDockWidget *dock_KnownRecipient3;
-	QDockWidget *dock_KnownRecipient4;
-	QDockWidget *dock_KnownRecipient5;
-	QDockWidget *dock_KnownRecipient6;
-	QDockWidget *dock_KnownRecipient7;
-	QDockWidget *dock_KnownRecipient8;
 	QDockWidget *dock_Accounts;
+	QDockWidget* dock_KnownStandingOrders;
+	QDockWidget* dock_KnownDatedTransfers;
 
 	void createActions();
 	void createMenus();
 	void createDockToolbar();
+	void createWidgetsInScrollArea();
+	void createDockStandingOrders();
 
-	void createTransferWidgetAndAddTab(AB_JOB_TYPE type);
+	widgetTransfer* createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = NULL);
 	void deleteTabWidgetAndTab(const widgetTransfer *w);
 	void deleteTabWidgetAndTab(int tabIndex);
 
@@ -154,6 +151,9 @@ private slots:
 
 	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
 	void onWidgetTransferCancelClicked(widgetTransfer* sender);
+
+	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
+	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
 
 };
 

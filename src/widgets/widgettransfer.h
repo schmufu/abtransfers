@@ -50,6 +50,7 @@ class QBoxLayout;
 class QVBoxLayout;
 class QHBoxLayout;
 class QPushButton;
+class abt_transaction;
 
 class widgetTransfer : public QWidget
 {
@@ -71,6 +72,8 @@ public:
 
 	bool isGeneralInputOk(QString &errorMsg) const;
 	bool hasChanges() const;
+
+	void setValuesFromTransaction(const abt_transaction *t);
 
 private:
 	const abt_transactionLimits *m_limits;

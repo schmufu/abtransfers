@@ -58,6 +58,7 @@
 #include "widgets/bankaccountswidget.h"
 #include "widgets/knownempfaengerwidget.h"
 #include "widgets/widgetknownstandingorders.h"
+#include "widgets/widgetaccountcombobox.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;
+	this->dock_KnownStandingOrders = NULL;
+	this->dock_KnownDatedTransfers = NULL;
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -122,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
 
 	//DockWidget für Accounts erstellen
-	this->dock_Accounts = new QDockWidget(tr("Unterstüzte Online Konten"),this);
+	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
 	this->dock_Accounts->setObjectName("OnlineAccounts");
 	qDebug() << "creating bankAccountsWidget";
 	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
@@ -136,84 +139,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
 
-
-
-	this->dock_KnownRecipient2 = new QDockWidget(tr("Empf2"),this);
-	this->dock_KnownRecipient2->setObjectName("KnownRecipients2");
-	KnownEmpfaengerWidget *kew2 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient2);
-	this->dock_KnownRecipient2->setWidget(kew2);
-	this->dock_KnownRecipient2->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient2->setFloating(false);
-	this->dock_KnownRecipient2->hide();
-	this->dock_KnownRecipient2->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient2);
-
-	this->dock_KnownRecipient3 = new QDockWidget(tr("Empf3"),this);
-	this->dock_KnownRecipient3->setObjectName("KnownRecipients3");
-	KnownEmpfaengerWidget *kew3 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient3);
-	this->dock_KnownRecipient3->setWidget(kew3);
-	this->dock_KnownRecipient3->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient3->setFloating(false);
-	this->dock_KnownRecipient3->hide();
-	this->dock_KnownRecipient3->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient3);
-
-	this->dock_KnownRecipient4 = new QDockWidget(tr("Empf4"),this);
-	this->dock_KnownRecipient4->setObjectName("KnownRecipients4");
-	KnownEmpfaengerWidget *kew4 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient4);
-	this->dock_KnownRecipient4->setWidget(kew4);
-	this->dock_KnownRecipient4->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient4->setFloating(false);
-	this->dock_KnownRecipient4->hide();
-	this->dock_KnownRecipient4->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient4, Qt::Vertical);
-
-	this->dock_KnownRecipient5 = new QDockWidget(tr("Empf5"),this);
-	this->dock_KnownRecipient5->setObjectName("KnownRecipients5");
-	KnownEmpfaengerWidget *kew5 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient5);
-	this->dock_KnownRecipient5->setWidget(kew5);
-	this->dock_KnownRecipient5->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient5->setFloating(false);
-	this->dock_KnownRecipient5->hide();
-	this->dock_KnownRecipient5->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient5, Qt::Vertical);
-
-	this->dock_KnownRecipient6 = new QDockWidget(tr("Empf6"),this);
-	this->dock_KnownRecipient6->setObjectName("KnownRecipients6");
-	KnownEmpfaengerWidget *kew6 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient6);
-	this->dock_KnownRecipient6->setWidget(kew6);
-	this->dock_KnownRecipient6->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient6->setFloating(false);
-	this->dock_KnownRecipient6->hide();
-	this->dock_KnownRecipient6->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient6, Qt::Horizontal);
-
-	this->dock_KnownRecipient7 = new QDockWidget(tr("Empf7"),this);
-	this->dock_KnownRecipient7->setObjectName("KnownRecipients7");
-	KnownEmpfaengerWidget *kew7 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient7);
-	this->dock_KnownRecipient7->setWidget(kew7);
-	this->dock_KnownRecipient7->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient7->setFloating(false);
-	this->dock_KnownRecipient7->hide();
-	this->dock_KnownRecipient7->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient7, Qt::Horizontal);
-
-	this->dock_KnownRecipient8 = new QDockWidget(tr("Empf8"),this);
-	this->dock_KnownRecipient8->setObjectName("KnownRecipients8");
-	KnownEmpfaengerWidget *kew8 = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient8);
-	this->dock_KnownRecipient8->setWidget(kew8);
-	this->dock_KnownRecipient8->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient8->setFloating(false);
-	this->dock_KnownRecipient8->hide();
-	this->dock_KnownRecipient8->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient8, Qt::Horizontal);
-
+	this->createDockStandingOrders();
 
 	this->createActions();
 	this->createMenus();
 	this->createDockToolbar();
 
-	this->ui->tabWidget_UW->setTabText(0, tr("Überischt"));
+	this->createWidgetsInScrollArea();
+
+	//this->ui->tabWidget_UW->setTabText(0, tr("Überischt"));
 	connect(this->ui->pushButton, SIGNAL(clicked()),
 		this->actTransferNational, SLOT(trigger()));
 	connect(this->ui->pushButton_2, SIGNAL(clicked()),
@@ -222,6 +156,18 @@ MainWindow::MainWindow(QWidget *parent) :
 		this->actTransferSepa, SLOT(trigger()));
 	connect(this->ui->pushButton_4, SIGNAL(clicked()),
 		this->actTransferInternal, SLOT(trigger()));
+
+	connect(this->ui->pushButton_so_new, SIGNAL(clicked()),
+		this->actStandingNew, SLOT(trigger()));
+	connect(this->ui->pushButton_so_update, SIGNAL(clicked()),
+		this->actStandingUpdate, SLOT(trigger()));
+
+	connect(this->ui->pushButton_dated_new, SIGNAL(clicked()),
+		this->actDatedNew, SLOT(trigger()));
+	connect(this->ui->pushButton_dated_update, SIGNAL(clicked()),
+		this->actDatedUpdate, SLOT(trigger()));
+
+
 
 	//QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
 	//widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
@@ -241,6 +187,7 @@ MainWindow::~MainWindow()
 //	delete this->page_transfer_new;	//SingleTransfer löschen
 //	delete this->da_edit_del;	//DauerAufträge ändern löschen
 //	delete this->da_new;		//DauerAufträge neu erstellen löschen
+//	delete this->docks_KnownStandingOrders;
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
@@ -395,18 +342,71 @@ void MainWindow::createDockToolbar()
 	this->dockToolbar = new QToolBar(tr("Hilfsfenster"),this);
 	this->dockToolbar->setObjectName("dockToolbar");
 	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
 	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient2->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient3->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient4->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient5->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient6->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient7->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient8->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownStandingOrders->toggleViewAction());
+
 	this->addToolBar(Qt::TopToolBarArea, this->dockToolbar);
 }
 
+//private
+void MainWindow::createWidgetsInScrollArea()
+{
+	QVBoxLayout *layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
+	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+		QGroupBox *grp = new QGroupBox(this);
+		QVBoxLayout *l = new QVBoxLayout(grp);
+		grp->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
+		//! \todo Signale des widgetKnownStandingOrders verbinden
+		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(acc, this);
+		l->addWidget(StandingOrders);
+		layoutScrollArea->addWidget(grp);
+
+	}
+}
+
+//private
+void MainWindow::createDockStandingOrders()
+{
+	QDockWidget *dock = new QDockWidget("Daueraufträge", this);
+	dock->setObjectName("dockStandingOrders");
+
+	QVBoxLayout *layoutDock = new QVBoxLayout();
+	QHBoxLayout *layoutAcc = new QHBoxLayout();
+	QLabel *accText = new QLabel(tr("Konto"));
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL,
+								       this->accounts);
+	widgetKnownStandingOrders *StandingOrders;
+	StandingOrders = new widgetKnownStandingOrders(accComboBox->getAccount());
+
+	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
+		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
+
+	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+
+	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
+		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
+		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+
+	layoutAcc->addWidget(accText,1, Qt::AlignRight);
+	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
+
+	layoutDock->addLayout(layoutAcc);
+	layoutDock->addWidget(StandingOrders);
+	QWidget *wid = new QWidget();
+	wid->setLayout(layoutDock);
+
+	dock->setWidget(wid);
+	dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	dock->setFloating(false);
+	dock->hide();
+	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
+	this->addDockWidget(Qt::RightDockWidgetArea, dock);
+
+	this->dock_KnownStandingOrders = dock;
+}
 
 void MainWindow::on_actionDebug_Info_triggered()
 {
@@ -775,20 +775,28 @@ void MainWindow::deleteTabWidgetAndTab(const widgetTransfer *w)
 }
 
 //private
-void MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type)
+widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
+							  const aqb_AccountInfo *account)
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	widgetTransfer *trans = new widgetTransfer(type,
-						   acc->getSelectedAccount(),
-						   this->accounts,
-						   this);
+	BankAccountsWidget *bankAccW;
+	const aqb_AccountInfo *acc;
+	if (account == NULL) {
+		bankAccW = this->dock_Accounts->findChild<BankAccountsWidget*>();
+		acc = bankAccW->getSelectedAccount();
+	} else {
+		acc = account;
+	}
+
+	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
 	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
-	this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
+	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
+	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
 	connect(trans, SIGNAL(createTransfer(AB_JOB_TYPE,const widgetTransfer*)),
 		this, SLOT(onWidgetTransferCreateTransfer(AB_JOB_TYPE,const widgetTransfer*)));
 	connect(trans, SIGNAL(cancelClicked(widgetTransfer*)),
 		this, SLOT(onWidgetTransferCancelClicked(widgetTransfer*)));
+	return trans;
 }
 
 //private slot
@@ -871,7 +879,20 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 
 
 
+//private Slot
+void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_DAInfo *da)
+{
+	widgetTransfer *transW;
+	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
+						     acc);
+	transW->setValuesFromTransaction(da->getSOT());
+}
 
+//private Slot
+void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_DAInfo *da)
+{
+	this->jobctrl->addDeleteStandingOrder(acc, da->getSOT());
+}
 
 
 

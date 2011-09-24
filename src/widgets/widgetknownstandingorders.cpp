@@ -86,6 +86,11 @@ void widgetKnownStandingOrders::createAllActions()
 //public slot
 void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo *account)
 {
+	//Wozu das hier nach??
+	//Damit die DAs nur neu geladen werden wenn sich dieses Widget auch
+	//darum kümmert, die Aktualisierung findet z.B. nach dem neuen Abrufen
+	//von DAs statt, um die Anzeige umzustellen sollte setAccount()
+	//verwendet werden
 	if (this->m_account != account) {
 		return; //Die DAs betreffen nicht den von uns verwalteten account
 	}
@@ -108,7 +113,7 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
-			      tr("keine bekannten Daueraufträge für diesen Account vorhanden"));
+			      tr("keine bekannten Daueraufträge für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
 		this->treeWidget->addTopLevelItem(Item);
 
@@ -152,6 +157,13 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 
 }
 
+//public slot
+void widgetKnownStandingOrders::setAccount(const aqb_AccountInfo *account)
+{
+	this->m_account = account;
+	this->refreshKnownStandingOrders(account);
+}
+
 //private slot
 void widgetKnownStandingOrders::onActionDeleteTriggered()
 {
@@ -175,15 +187,20 @@ void widgetKnownStandingOrders::onActionEditTriggered()
 //private slot
 void widgetKnownStandingOrders::onActionRefreshTriggered()
 {
-	emit this->refreshKnownStandingOrders(this->m_account);
+	emit this->updateStandingOrders(this->m_account);
 }
 
 //private slot
 void widgetKnownStandingOrders::onContextMenuRequest(const QPoint &pos)
 {
+	//Actions disablen wenn sie nicht sinnvoll sind
+	bool dis = this->treeWidget->selectedItems().size() == 0;
+	this->actEdit->setDisabled(dis);
+	this->actDelete->setDisabled(dis);
+
 	QMenu *contextMenu = new QMenu();
 	contextMenu->addAction(this->actEdit);
 	contextMenu->addAction(this->actDelete);
 	contextMenu->addAction(this->actRefresh);
-	contextMenu->exec(this->treeWidget->mapToGlobal(pos));
+	contextMenu->exec(this->treeWidget->viewport()->mapToGlobal(pos));
 }
