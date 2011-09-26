@@ -155,6 +155,9 @@ private slots:
 	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
 	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
 
+	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
+	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
+
 };
 
 #endif // MAINWINDOW_H

@@ -105,9 +105,9 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);
-		qDebug() << "acc =" << m_accountAtCreation->OwnerName();
-		qDebug() << "type =" << abt_conv::JobTypeToQString(m_type);
-		this->m_limits->printAllAsDebug();
+//		qDebug() << "acc =" << m_accountAtCreation->OwnerName();
+//		qDebug() << "type =" << abt_conv::JobTypeToQString(m_type);
+//		this->m_limits->printAllAsDebug();
 		break;
 
 
@@ -316,13 +316,25 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allo
 //private
 void widgetTransfer::my_create_remoteAccount_groupbox(bool newTransfer, bool allowLocal, bool allowKnownRecipent)
 {
-	this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
-	QVBoxLayout *gbrl = new QVBoxLayout();
-	this->remoteAccount = new widgetAccountData(this, NULL, NULL);
-	this->remoteAccount->setAllowDropAccount(allowLocal);
-	this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipent);
-	gbrl->addWidget(this->remoteAccount);
-	this->groupBoxRemote->setLayout(gbrl);
+	if (allowLocal) {
+		//Wenn der RemoteAccount local drops akzeptiert ist die
+		//erstellung für ein UmbuchungsWidget und wir Zeigen die
+		//als remoteAccount auch eine LocalAccountAuswahl an
+		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
+		QVBoxLayout *gbrl = new QVBoxLayout();
+		this->remoteAccount = new widgetAccountData(this, this->m_accountAtCreation, this->m_allAccounts);
+		gbrl->addWidget(this->remoteAccount);
+		this->groupBoxRemote->setLayout(gbrl);
+	} else {
+		//Die RemoteKontoEingabe ermöglichen
+		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
+		QVBoxLayout *gbrl = new QVBoxLayout();
+		this->remoteAccount = new widgetAccountData(this, NULL, NULL);
+		this->remoteAccount->setAllowDropAccount(allowLocal);
+		this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipent);
+		gbrl->addWidget(this->remoteAccount);
+		this->groupBoxRemote->setLayout(gbrl);
+	}
 
 	/** \todo wird die connection auch für den remoteAccount benötigt?
 	  *       Eigentlich nicht, auch bei einem Internal Transfer sind nur
@@ -397,6 +409,7 @@ void widgetTransfer::my_create_recurrence()
 //private
 void widgetTransfer::setLocalFromAccount(const aqb_AccountInfo *acc)
 {
+	qWarning() << "OBSOLET function called  -  widgetTransfer::setLocalFromAccount()";
 	if (this->localAccount != NULL) {
 		this->localAccount->setName(acc->OwnerName());
 		this->localAccount->setAccountNumber(acc->Number());

@@ -167,7 +167,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->ui->pushButton_dated_update, SIGNAL(clicked()),
 		this->actDatedUpdate, SLOT(trigger()));
 
-
+	
 
 	//QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
 	//widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
@@ -316,11 +316,11 @@ void MainWindow::createMenus()
 	MenuTransfer->addAction(this->actTransferSepa);
 	QMenu *MenuStanding = new QMenu("Daueraufträge", this);
 	MenuStanding->addAction(this->actStandingNew);
-	MenuStanding->addAction(this->actStandingEdit);
+	//MenuStanding->addAction(this->actStandingEdit);
 	MenuStanding->addAction(this->actStandingUpdate);
 	QMenu *MenuDated = new QMenu("Terminüberweisungen", this);
 	MenuDated->addAction(this->actDatedNew);
-	MenuDated->addAction(this->actDatedEdit);
+	//MenuDated->addAction(this->actDatedEdit);
 	MenuDated->addAction(this->actDatedUpdate);
 	this->accountContextMenu->addMenu(MenuTransfer);
 	this->accountContextMenu->addMenu(MenuStanding);
@@ -329,11 +329,11 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addAction(this->actDebitNoteSepa);
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
-	this->accountContextMenu->addSeparator();
-	this->accountContextMenu->addAction("Text1");
-	this->accountContextMenu->addAction("Text2");
-	this->accountContextMenu->addSeparator();
-	this->accountContextMenu->addAction("Text3");
+//	this->accountContextMenu->addSeparator();
+//	this->accountContextMenu->addAction("Text1");
+//	this->accountContextMenu->addAction("Text2");
+//	this->accountContextMenu->addSeparator();
+//	this->accountContextMenu->addAction("Text3");
 }
 
 //private
@@ -359,6 +359,15 @@ void MainWindow::createWidgetsInScrollArea()
 		grp->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
 		//! \todo Signale des widgetKnownStandingOrders verbinden
 		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(acc, this);
+
+		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+
+		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
+			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
+			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+
 		l->addWidget(StandingOrders);
 		layoutScrollArea->addWidget(grp);
 
@@ -885,16 +894,30 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
 						     acc);
-	transW->setValuesFromTransaction(da->getSOT());
+	transW->setValuesFromTransaction(da->getTransaction());
 }
 
 //private Slot
 void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_DAInfo *da)
 {
-	this->jobctrl->addDeleteStandingOrder(acc, da->getSOT());
+	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }
 
 
+//private Slot
+void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+{
+	widgetTransfer *transW;
+	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer,
+						     acc);
+	transW->setValuesFromTransaction(di->getTransaction());
+}
+
+//private Slot
+void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+{
+	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
+}
 
 
 

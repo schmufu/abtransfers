@@ -135,7 +135,7 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 	const AB_VALUE *v;
 	int ItemCount = 0;
 	for(int i=0; i<this->m_StandingOrders->size(); ++i) {
-		const abt_transaction *DAtrans = this->m_StandingOrders->at(i)->getSOT();
+		const abt_transaction *DAtrans = this->m_StandingOrders->at(i)->getTransaction();
 		Item = new QTreeWidgetItem;
 		ItemCount++;
 		Item->setData(0, Qt::DisplayRole, DAtrans->getRemoteAccountNumber());

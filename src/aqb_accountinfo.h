@@ -41,27 +41,44 @@
 class abt_transactionLimits;
 
 /*! \brief Daten von gespeicherten Daueraufträgen
-  *
-  * Diese Klasse kapselt die Daten der lokal gespeicherten Daueraufträge.
-  * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
-  * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
-  */
+ *
+ * Diese Klasse kapselt die Daten der lokal gespeicherten Daueraufträge.
+ * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
+ * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
+ */
 class abt_DAInfo {
 private:
 	abt_transaction *t;
 public:
 	abt_DAInfo(abt_transaction *transaction);
 
-	abt_transaction* getSOT() const { return this->t; }
+	abt_transaction* getTransaction() const { return this->t; }
+};
+
+
+/*! \brief Daten von gespeicherten Terminierten Überweisungen
+ *
+ * Diese Klasse kapselt die Daten der lokal gespeicherten Terminüberweisungen.
+ * Diese werden dann in der "bekannte Dated"-Groupbox angezeigt.
+ * Neue, geänderte und gelöschte Terminüberweisungen müssen in der Datei
+ * aktualisiert werden!
+ */
+class abt_DatedInfo {
+private:
+	abt_transaction *t;
+public:
+	abt_DatedInfo(abt_transaction *transaction);
+
+	abt_transaction* getTransaction() const { return this->t; }
 };
 
 /*! \brief Informationen über eine Account
-  *
-  * Alle relevanten Informationen für einen Account werden über diese Klasse
-  * zur Verfügung gestellt. Es wird intern einfach ein Umsetzung auf
-  * AB_AccountGet* durchgeführt.
-  * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
-  */
+ *
+ * Alle relevanten Informationen für einen Account werden über diese Klasse
+ * zur Verfügung gestellt. Es wird intern einfach ein Umsetzung auf
+ * AB_AccountGet* durchgeführt.
+ * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
+ */
 class aqb_AccountInfo : public QObject {
 	Q_OBJECT
 private:

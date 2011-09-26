@@ -40,6 +40,10 @@ abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
 	this->t = transaction;
 }
 
+abt_DatedInfo::abt_DatedInfo(abt_transaction *transaction)
+{
+	this->t = transaction;
+}
 
 
 aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
