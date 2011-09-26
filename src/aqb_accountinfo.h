@@ -46,11 +46,11 @@ class abt_transactionLimits;
  * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
  * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
  */
-class abt_DAInfo {
+class abt_StandingInfo {
 private:
 	abt_transaction *t;
 public:
-	abt_DAInfo(abt_transaction *transaction);
+	abt_StandingInfo(abt_transaction *transaction);
 
 	abt_transaction* getTransaction() const { return this->t; }
 };
@@ -97,7 +97,8 @@ private:
 	QString m_Country;
 	QString m_AccountType;
 
-	QList<abt_DAInfo*> *m_KnownDAs;
+	QList<abt_StandingInfo*> *m_KnownStandingOrders;
+	QList<abt_DatedInfo*> *m_KnownDatedTransfers;
 	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
 
 public:
@@ -116,7 +117,8 @@ public:
 	const QString& Currency() const { return this->m_Currency; }
 	const QString& Country() const { return this->m_Country; }
 	const QString& AccountType() const { return this->m_AccountType; }
-	const QList<abt_DAInfo*> *getKnownDAs() const { return this->m_KnownDAs; }
+	const QList<abt_StandingInfo*> *getKnownStandingOrders() const { return this->m_KnownStandingOrders; }
+	const QList<abt_DatedInfo*> *getKnownDatedTransfers() const { return this->m_KnownDatedTransfers; }
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->m_ID; }
@@ -124,11 +126,14 @@ public:
 	const abt_transactionLimits* limits(AB_JOB_TYPE type) const;
 
 public slots:
-	void loadKnownDAs();
+	void loadKnownStandingOrders();
+	void loadKnownDatedTransfers();
 
 signals:
-	//! \brief wird gesendet wenn die DAs neu geladen wurden.
-	void knownDAsChanged(const aqb_AccountInfo *account);
+	//! \brief wird gesendet wenn die StandingOrders neu geladen wurden.
+	void knownStandingOrdersChanged(const aqb_AccountInfo *account);
+	//! \brief wird gesendet wenn die DatedTransfers neu geladen wurden.
+	void knownDatedTransfersChanged(const aqb_AccountInfo *account);
 };
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);

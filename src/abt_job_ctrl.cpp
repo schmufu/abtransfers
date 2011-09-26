@@ -803,8 +803,11 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc)
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
 	//mit dem parsen fertig sind (damit dies die DAs neu laden kann)
+	connect(this, SIGNAL(standingOrdersParsed()),
+		acc, SLOT(loadKnownStandingOrders()));
 	connect(this, SIGNAL(datedTransfersParsed()),
-		acc, SLOT(loadKnownDAs()));
+		acc, SLOT(loadKnownDatedTransfers()));
+
 }
 
 
@@ -1059,7 +1062,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 	AB_TRANSACTION *t;
 	QString logmsg = "Recvd-NotedTransactions: ";
 	QString logmsg2;
-	QStringList strList;
+	QStringList strList, DTIDs;
 	const AB_VALUE *v;
 	const GWEN_STRINGLIST *l;
 	int cnt = 0;
@@ -1087,8 +1090,29 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
+		/*! \todo NOCH NICHT FERTIG! Momentan wird in Daueraufträge.ini
+		 *	  gespeichert.
+		 */
+		//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
+		this->addlog(QString(
+			"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
+			).arg(AB_Transaction_GetFiId(t)));
+		abt_transaction::saveTransaction(t);
+		DTIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
+
 		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
 	}
+
+	if (DAIDs.size() > 0) {
+		//Die lokal gespeicherten DatedTransfers auch in den Einstellungen merken.
+		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+
+		settings->saveDatedTransfersForAccount(DTIDs, KtoNr, BLZ);
+
+		emit this->datedTransfersParsed();
+	}
+
 	return cnt;
 
 }
@@ -1145,9 +1169,9 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
 		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
 
-		settings->saveDAsForAccount(DAIDs, KtoNr, BLZ);
+		settings->saveStandingOrdersForAccount(DAIDs, KtoNr, BLZ);
 
-		emit this->datedTransfersParsed();
+		emit this->standingOrdersParsed();
 	}
 
 	return cnt;

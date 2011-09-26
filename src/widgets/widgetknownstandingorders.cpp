@@ -95,7 +95,7 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 		return; //Die DAs betreffen nicht den von uns verwalteten account
 	}
 
-	this->m_StandingOrders = account->getKnownDAs();
+	this->m_StandingOrders = account->getKnownStandingOrders();
 
 
 	//Alle bekannten DAs des Accounts aus dem treeWidget entfernen

@@ -36,7 +36,7 @@
 #include <QtGui/QAction>
 
 class aqb_AccountInfo;
-class abt_DAInfo;
+class abt_StandingInfo;
 
 class widgetKnownStandingOrders : public QWidget
 {
@@ -51,15 +51,15 @@ private:
 	QAction *actRefresh;
 
 	const aqb_AccountInfo *m_account;
-	const QList<abt_DAInfo*> *m_StandingOrders;
+	const QList<abt_StandingInfo*> *m_StandingOrders;
 
 	void createAllActions();
 
 signals:
 	void deleteStandingOrder(const aqb_AccountInfo *account,
-				 const abt_DAInfo *standingOrder);
+				 const abt_StandingInfo *standingOrder);
 	void editStandingOrder(const aqb_AccountInfo *account,
-			       const abt_DAInfo *standingOrder);
+			       const abt_StandingInfo *standingOrder);
 	void updateStandingOrders(const aqb_AccountInfo *account);
 
 

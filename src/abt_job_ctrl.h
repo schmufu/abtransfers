@@ -95,6 +95,8 @@ signals:
 	void jobAdded(const abt_job_info *jobInfo);
 	void log(const QString &str);
 	//! wird gesendet wenn das parsen der Daueraufträge abgeschlossen ist
+	void standingOrdersParsed();
+	//! wird gesendet wenn das parsen der Terminüberweisungen abgeschlossen ist
 	void datedTransfersParsed();
 
 public slots:

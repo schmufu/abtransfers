@@ -182,8 +182,8 @@ const QString *abt_settings::getDataDir() const
 
 
 
-QList<abt_DAInfo*> *abt_settings::getDAsForAccount(const QString &KtoNr,
-						   const QString &BLZ)
+QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
+							 const QString &BLZ)
 {
 	QStringList DA_IDs;
 	this->Settings->beginGroup("Dauerauftraege");
@@ -191,27 +191,92 @@ QList<abt_DAInfo*> *abt_settings::getDAsForAccount(const QString &KtoNr,
 	DA_IDs = this->Settings->value(key).toStringList();
 	this->Settings->endGroup();
 
-	abt_DAInfo *DAInfo;
-	QList<abt_DAInfo*> *List = new QList<abt_DAInfo*>;
+	abt_StandingInfo *DAInfo;
+	QList<abt_StandingInfo*> *List = new QList<abt_StandingInfo*>;
 
 	for (int i=0; i<DA_IDs.size(); ++i) {
 		AB_TRANSACTION *t = abt_transaction::loadTransaction(DA_IDs.at(i));
 		abt_transaction *trans = new abt_transaction(t, true);
-		DAInfo = new abt_DAInfo(trans);
+		DAInfo = new abt_StandingInfo(trans);
 		List->append(DAInfo);
 	}
 
 	return List;
 }
 
-void abt_settings::saveDAsForAccount(const QStringList &DAIDs,
+void abt_settings::saveStandingOrdersForAccount(const QStringList &SOIDs,
 				     const QString &KtoNr, const QString &BLZ)
 {
 	this->Settings->beginGroup("Dauerauftraege");
 	QString key = KtoNr + "_" + BLZ;
-	this->Settings->setValue(key, DAIDs);
+	this->Settings->setValue(key, SOIDs);
 	this->Settings->endGroup();
 }
+
+//static
+void abt_settings::freeStandingOrdersList(QList<abt_StandingInfo*> *list)
+{
+	if (list == NULL) return; //Liste ist schon leer
+
+	while (list->size() != 0) {
+		delete list->takeFirst();
+	}
+	delete list;
+	list = NULL;
+}
+
+
+
+
+
+
+QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
+								 const QString &BLZ)
+{
+	QStringList DT_IDs;
+	this->Settings->beginGroup("DatedTransfers");
+	QString key = KtoNr + "_" + BLZ;
+	DT_IDs = this->Settings->value(key).toStringList();
+	this->Settings->endGroup();
+
+	abt_DatedInfo *DatedInfo;
+	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
+
+	for (int i=0; i<DT_IDs.size(); ++i) {
+		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
+		abt_transaction *trans = new abt_transaction(t, true);
+		DatedInfo = new abt_DatedInfo(trans);
+		List->append(DatedInfo);
+	}
+
+	return List;
+}
+
+void abt_settings::saveDatedTransfersForAccount(const QStringList &DTIDs,
+						const QString &KtoNr,
+						const QString &BLZ)
+{
+	this->Settings->beginGroup("DatedTransfers");
+	QString key = KtoNr + "_" + BLZ;
+	this->Settings->setValue(key, DTIDs);
+	this->Settings->endGroup();
+}
+
+//static
+void abt_settings::freeDatedTransfersList(QList<abt_DatedInfo *> *list)
+{
+	if (list == NULL) return; //Liste ist schon leer
+
+	while (list->size() != 0) {
+		delete list->takeFirst();
+	}
+	delete list;
+	list = NULL;
+}
+
+
+
+
 
 
 void abt_settings::saveWindowStateGeometry(QByteArray state,
@@ -229,18 +294,6 @@ QByteArray abt_settings::loadWindowState()
 QByteArray abt_settings::loadWindowGeometry()
 {
 	return this->Settings->value("Main/WindowGeometry", QVariant()).toByteArray();
-}
-
-
-//static
-void abt_settings::freeDAsList(QList<abt_DAInfo*> *list)
-{
-	if (list == NULL) return; //Liste ist schon leer
-
-	while (list->size() != 0) {
-		delete list->takeFirst();
-	}
-	delete list;
 }
 
 //static

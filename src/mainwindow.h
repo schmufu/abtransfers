@@ -152,8 +152,8 @@ private slots:
 	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
 	void onWidgetTransferCancelClicked(widgetTransfer* sender);
 
-	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
-	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_DAInfo* da);
+	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_StandingInfo* da);
+	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_StandingInfo* da);
 
 	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);

@@ -363,10 +363,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
-			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
-		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
-			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
+			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
+			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
 
 		l->addWidget(StandingOrders);
 		layoutScrollArea->addWidget(grp);
@@ -394,10 +394,10 @@ void MainWindow::createDockStandingOrders()
 	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
-		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
-	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_DAInfo*)),
-		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_DAInfo*)));
+	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
+		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
+		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
@@ -889,7 +889,7 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 
 
 //private Slot
-void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_DAInfo *da)
+void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
 {
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
@@ -898,7 +898,7 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 }
 
 //private Slot
-void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_DAInfo *da)
+void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
 {
 	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }

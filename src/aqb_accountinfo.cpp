@@ -35,7 +35,7 @@
 #include "globalvars.h"
 #include "abt_job_ctrl.h"
 
-abt_DAInfo::abt_DAInfo(abt_transaction *transaction)
+abt_StandingInfo::abt_StandingInfo(abt_transaction *transaction)
 {
 	this->t = transaction;
 }
@@ -51,7 +51,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 {
 	this->m_account = account;
 	this->m_ID = AB_Account_GetUniqueId(this->m_account);
-	this->m_KnownDAs = NULL;
+	this->m_KnownStandingOrders = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
 	this->m_BankName = QString::fromUtf8(AB_Account_GetBankName(this->m_account));
@@ -89,7 +89,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	}
 
 	//alle bekannten Daueraufträge für diesen Account holen
-	this->loadKnownDAs();
+	this->loadKnownStandingOrders();
 
 	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken
 	this->m_limits = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
@@ -104,7 +104,7 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	//existierende Daueraufträge für diesen Account speichern
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
-	abt_settings::freeDAsList(this->m_KnownDAs);
+	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
 
 	qDebug() << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
@@ -120,14 +120,26 @@ aqb_AccountInfo::~aqb_AccountInfo()
 
 //public slot
 /*! \brief lädt die Bekannten Daueraufträge für den übergebenen account */
-void aqb_AccountInfo::loadKnownDAs()
+void aqb_AccountInfo::loadKnownStandingOrders()
 {
 	//Alle DAs löschen
-	abt_settings::freeDAsList(this->m_KnownDAs);
+	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
 	//und neu laden
-	this->m_KnownDAs = settings->getDAsForAccount(this->m_Number, this->m_BankCode);
+	this->m_KnownStandingOrders = settings->getStandingOrdersForAccount(this->m_Number, this->m_BankCode);
 
-	emit knownDAsChanged(this);
+	emit knownStandingOrdersChanged(this);
+}
+
+//public slot
+/*! \brief lädt die Bekannten Terminüberweisungen für den übergebenen account */
+void aqb_AccountInfo::loadKnownDatedTransfers()
+{
+	//Alle DAs löschen
+	abt_settings::freeDatedTransfersList(this->m_KnownDatedTransfers);
+	//und neu laden
+	this->m_KnownDatedTransfers = settings->getDatedTransfersForAccount(this->m_Number, this->m_BankCode);
+
+	emit knownDatedTransfersChanged(this);
 }
 
 //public

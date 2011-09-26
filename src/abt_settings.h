@@ -66,11 +66,19 @@ public:
 
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_DAInfo*> *getDAsForAccount(const QString &KtoNr, const QString &BLZ);
+	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
 	//! Speichert alle Einträge der Liste für den entsprechenden Account
-	void saveDAsForAccount(const QStringList &DAIDs, const QString &KtoNr, const QString &BLZ);
+	void saveStandingOrdersForAccount(const QStringList &SOIDs, const QString &KtoNr, const QString &BLZ);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeDAsList(QList<abt_DAInfo*> *list);
+	static void freeStandingOrdersList(QList<abt_StandingInfo*> *list);
+
+	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
+	//! the caller is responsible for freeing the Objects and the list!
+	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
+	//! Speichert alle Einträge der Liste für den entsprechenden Account
+	void saveDatedTransfersForAccount(const QStringList &DTIDs, const QString &KtoNr, const QString &BLZ);
+	//! Löscht alle Objekte der Liste sowie die liste selbst
+	static void freeDatedTransfersList(QList<abt_DatedInfo*> *list);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
 

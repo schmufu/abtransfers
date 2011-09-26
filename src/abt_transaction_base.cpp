@@ -110,6 +110,10 @@ void abt_transaction::saveTransaction(const abt_transaction *t)
 	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
 	// \todo Alle daten in der Datei speichern
 
+	/*! \todo hier muss zwischen Dauerauftrag und Terminüberweisung unterschieden werden!
+	 *	  Kann dazu das type und subType Feld genutzt werden?
+	 */
+
 	if (t->getFiId().isEmpty()) {
 		qWarning() << t << " -- Speichern nicht möglich! Keine FiId gesetzt!";
 		return; //Abbruch
