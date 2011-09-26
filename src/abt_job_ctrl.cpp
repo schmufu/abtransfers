@@ -1103,7 +1103,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
 	}
 
-	if (DAIDs.size() > 0) {
+	if (DTIDs.size() > 0) {
 		//Die lokal gespeicherten DatedTransfers auch in den Einstellungen merken.
 		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
 		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
