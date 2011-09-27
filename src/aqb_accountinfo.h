@@ -51,6 +51,7 @@ private:
 	abt_transaction *t;
 public:
 	abt_StandingInfo(abt_transaction *transaction);
+	~abt_StandingInfo();
 
 	abt_transaction* getTransaction() const { return this->t; }
 };
@@ -68,6 +69,7 @@ private:
 	abt_transaction *t;
 public:
 	abt_DatedInfo(abt_transaction *transaction);
+	~abt_DatedInfo();
 
 	abt_transaction* getTransaction() const { return this->t; }
 };

@@ -195,7 +195,7 @@ QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QStrin
 	QList<abt_StandingInfo*> *List = new QList<abt_StandingInfo*>;
 
 	for (int i=0; i<DA_IDs.size(); ++i) {
-		AB_TRANSACTION *t = abt_transaction::loadTransaction("Daueraufraege.ini", DA_IDs.at(i));
+		AB_TRANSACTION *t = abt_transaction::loadTransaction("Dauerauftraege.ini", DA_IDs.at(i));
 		abt_transaction *trans = new abt_transaction(t, true);
 		DAInfo = new abt_StandingInfo(trans);
 		List->append(DAInfo);
