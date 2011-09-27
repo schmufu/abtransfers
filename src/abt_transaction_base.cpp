@@ -110,8 +110,12 @@ void abt_transaction::saveTransaction(const abt_transaction *t, const QString &f
 	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
 	// \todo Alle daten in der Datei speichern
 
-	/*! \todo hier muss zwischen Dauerauftrag und Terminüberweisung unterschieden werden!
+	/*  \todo hier muss zwischen Dauerauftrag und Terminüberweisung unterschieden werden!
 	 *	  Kann dazu das type und subType Feld genutzt werden?
+	 *	  Die Felder können nicht genutzt werden, es muss jetzt aber
+	 *	  ein Dateiname übergeben werden, somit bestimmt die aufrufende
+	 *	  funktion wo gespeichert wird. Und diese muss zwichen Standing
+	 *	  und Dated unterscheiden.
 	 */
 
 	if (t->getFiId().isEmpty()) {

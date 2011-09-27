@@ -1051,9 +1051,6 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
-		/*! \todo NOCH NICHT FERTIG! Momentan wird in Daueraufträge.ini
-		 *	  gespeichert.
-		 */
 		//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
 		this->addlog(QString(
 			"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
