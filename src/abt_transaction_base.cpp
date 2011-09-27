@@ -61,30 +61,30 @@ abt_transaction::~abt_transaction()
 }
 
 //static
-void abt_transaction::removeTransaction(AB_TRANSACTION *t)
+void abt_transaction::removeTransaction(AB_TRANSACTION *t, const QString &filename)
 {
 	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
 	abt_transaction *trans = new abt_transaction(t, false);
 	//und dieses dann löschen
-	abt_transaction::saveTransaction(trans);
+	abt_transaction::removeTransaction(trans, filename);
 	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
 	delete trans;
 }
 
 //static
-void abt_transaction::removeTransaction(const abt_transaction *t)
+void abt_transaction::removeTransaction(const abt_transaction *t, const QString &filename)
 {
 	if (t->getFiId().isEmpty()) {
 		qWarning() << t << " -- Löschen nicht möglich! Keine FiId gesetzt!";
 		return; //Abbruch
 	}
 
-	QString Filename;
-	Filename.append(settings->getDataDir());
-	Filename.append("Dauerauftraege.ini");
+	QString completeFilename;
+	completeFilename.append(settings->getDataDir());
+	completeFilename.append(filename);
 
 	QSettings *s;
-	s = new QSettings(Filename, QSettings::IniFormat);
+	s = new QSettings(completeFilename, QSettings::IniFormat);
 
 	QString key = QString("TransFiId-%1").arg(t->getFiId());
 
@@ -94,18 +94,18 @@ void abt_transaction::removeTransaction(const abt_transaction *t)
 }
 
 //static
-void abt_transaction::saveTransaction(AB_TRANSACTION *t)
+void abt_transaction::saveTransaction(AB_TRANSACTION *t, const QString &filename)
 {
 	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
 	abt_transaction *trans = new abt_transaction(t, false);
 	//und dieses dann speichern
-	abt_transaction::saveTransaction(trans);
+	abt_transaction::saveTransaction(trans, filename);
 	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
 	delete trans;
 }
 
 //static
-void abt_transaction::saveTransaction(const abt_transaction *t)
+void abt_transaction::saveTransaction(const abt_transaction *t, const QString &filename)
 {
 	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
 	// \todo Alle daten in der Datei speichern
@@ -120,12 +120,12 @@ void abt_transaction::saveTransaction(const abt_transaction *t)
 	}
 
 	QSettings *s;
-	QString Filename;
-	Filename.append(settings->getDataDir());
-	Filename.append("Dauerauftraege.ini");
+	QString completeFilename;
+	completeFilename.append(settings->getDataDir());
+	completeFilename.append(filename);
 
 	const AB_VALUE *v;
-	s = new QSettings(Filename, QSettings::IniFormat);
+	s = new QSettings(completeFilename, QSettings::IniFormat);
 
 	s->beginGroup(QString("TransFiId-%1").arg(t->getFiId()));
 	s->setValue("LocalCountry", t->getLocalCountry());
@@ -213,6 +213,7 @@ void abt_transaction::saveTransaction(const abt_transaction *t)
 //static
 AB_TRANSACTION* abt_transaction::loadTransaction(const QString &id)
 {
+	qWarning() << "OBSOLETE - abt_transaction::loadTransaction(id) - now use loadTransaction(filename, id)";
 	return abt_transaction::loadTransaction("Dauerauftraege.ini", id);
 }
 

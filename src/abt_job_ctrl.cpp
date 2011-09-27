@@ -1058,7 +1058,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 		this->addlog(QString(
 			"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
 			).arg(AB_Transaction_GetFiId(t)));
-		abt_transaction::saveTransaction(t);
+		abt_transaction::saveTransaction(t, "Terminueberweisungen.ini");
 		DTIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
 
 		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
@@ -1155,7 +1155,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		this->addlog(QString(
 			"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
 			).arg(AB_Transaction_GetFiId(t)));
-		abt_transaction::saveTransaction(t);
+		abt_transaction::saveTransaction(t, "Dauerauftraege.ini");
 		DAIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
