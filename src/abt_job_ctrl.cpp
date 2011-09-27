@@ -1023,7 +1023,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 	AB_TRANSACTION *t;
 	QString logmsg = "Recvd-DatedTransfers: ";
 	QString logmsg2;
-	QStringList strList;
+	QStringList strList, DTIDs;
 	const AB_VALUE *v;
 	const GWEN_STRINGLIST *l;
 	int cnt = 0;
@@ -1033,45 +1033,6 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 	this->addlog(logmsg + logmsg2);
 
 	t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
-	while (t) {
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
-	}
-	return cnt;
-
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-NotedTransactions: ";
-	QString logmsg2;
-	QStringList strList, DTIDs;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-
-	cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
 	while (t) {
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
@@ -1100,7 +1061,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 		abt_transaction::saveTransaction(t);
 		DTIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
 
-		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
+		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
 	}
 
 	if (DTIDs.size() > 0) {
@@ -1113,6 +1074,45 @@ int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACC
 		emit this->datedTransfersParsed();
 	}
 
+	return cnt;
+
+}
+
+int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
+{
+	AB_TRANSACTION *t;
+	QString logmsg = "Recvd-NotedTransactions: ";
+	QString logmsg2;
+	QStringList strList;
+	const AB_VALUE *v;
+	const GWEN_STRINGLIST *l;
+	int cnt = 0;
+
+	cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
+	logmsg2 = QString("Count: %1").arg(cnt);
+	this->addlog(logmsg + logmsg2);
+
+	t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
+	while (t) {
+		logmsg2 = QString("Purpose:\t");
+		l = AB_Transaction_GetPurpose(t);
+		strList = abt_conv::GwenStringListToQStringList(l);
+		logmsg2.append(strList.join(" - "));
+		this->addlog(logmsg + logmsg2);
+
+		logmsg2 = QString("Value:\t");
+		v = AB_Transaction_GetValue(t);
+		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+		this->addlog(logmsg + logmsg2);
+
+		logmsg2 = QString("RemoteName:\t");
+		l = AB_Transaction_GetRemoteName(t);
+		strList = abt_conv::GwenStringListToQStringList(l);
+		logmsg2.append(strList.join(" - "));
+		this->addlog(logmsg + logmsg2);
+
+		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
+	}
 	return cnt;
 
 }
