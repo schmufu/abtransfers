@@ -54,6 +54,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->m_allAccounts = allAccounts; //could be NULL!
 	this->m_accountAtCreation = localAccount; //could be NULL!
 	this->m_type = type;
+	this->m_origTransaction = NULL;
 	this->localAccount = NULL;
 	this->remoteAccount = NULL;
 	this->value = NULL;
@@ -546,48 +547,48 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			errorMsg.append(tr(" - Absender Konto unbekannt\n"));
 		}
 	} else {
-		errorMsg.append(tr(" - Absender Konto Widget fehlt! (Programmierfehler)\n"));
+		errorMsg.append(tr(" - <b>Programmierfehler:</b> localAccount Widget fehlt!<br />"));
 	}
 
 	if (this->remoteAccount != NULL) {
 		if (this->m_type == AB_Job_TypeInternalTransfer) {
 			if (this->remoteAccount->getAccount() == NULL) {
-				errorMsg.append(tr(" - Empänger Konto unbekannt\n"));
+				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount->getAccount == NULL<br />"));
 			} else { //Bei Umbuchung muss Absender und Empänger unterschiedlich sein
 				if (this->localAccount != NULL) {
 					if (this->localAccount->getAccount() ==
 					    this->remoteAccount->getAccount()) {
-						errorMsg.append(tr(" - Absender und Empfänger müssen unterschiedlich sein\n"));
+						errorMsg.append(tr(" - Absender und Empfänger müssen unterschiedlich sein<br />"));
 					}
 				}
 			}
 		} else {
 			if (this->remoteAccount->getAccountNumber().isEmpty()) {
-				errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben\n"));
+				errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben<br />"));
 			}
 			if (this->remoteAccount->getBankCode().isEmpty()) {
-				errorMsg.append(tr(" - Empfänger Bankleitzahl nicht eingegeben\n"));
+				errorMsg.append(tr(" - Empfänger Bankleitzahl nicht eingegeben<br />"));
 			}
 			if (this->remoteAccount->getBankName().isEmpty()) {
-				errorMsg.append(tr(" - Empfänger Institut nicht eingegeben\n"));
+				errorMsg.append(tr(" - Empfänger Institut nicht eingegeben<br />"));
 			}
 			if (this->remoteAccount->getName().isEmpty()) {
-				errorMsg.append(tr(" - Empfängername nicht eingegeben\n"));
+				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
 			}
 		}
 	} else {
-		errorMsg.append(tr(" - Empfänger Konto Widget fehlt! (Programmierfehler)\n"));
+		errorMsg.append(tr(" - <b>Programmierfehler:</b> Empfänger Konto Widget fehlt!<br />"));
 	}
 
 	if (this->value != NULL) {
 		if (this->value->getValue().isEmpty()) {
-			errorMsg.append(tr(" - Überweisungsbetrag fehlt\n"));
+			errorMsg.append(tr(" - Überweisungsbetrag fehlt<br />"));
 		}
 		if (this->value->getCurrency().isEmpty()) {
-			errorMsg.append(tr(" - Überweisungs-Währung fehlt\n"));
+			errorMsg.append(tr(" - Überweisungs-Währung fehlt<br />"));
 		}
 	} else {
-		errorMsg.append(tr(" - Betrag Widget fehlt! (Programmierfehler)\n"));
+		errorMsg.append(tr(" - <b>Programmierfehler:</b> Betrag Widget fehlt!</b>\n"));
 	}
 
 	if (this->purpose != NULL) {
@@ -603,16 +604,16 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		}
 
 		if (allEmpty) {
-			errorMsg.append(tr(" - Verwendungszweck fehlt\n"));
+			errorMsg.append(tr(" - Verwendungszweck fehlt<br />"));
 		}
 	} else {
-		errorMsg.append(tr(" - Verwendungszweck Widget fehlt! (Programmierfehler)\n"));
+		errorMsg.append(tr(" - <b>Programmierfehler:</b> Verwendungszweck Widget fehlt!<br />"));
 	}
 
 	if (this->textKey != NULL) {
 		if (!this->m_limits->ValuesTextKey.contains(
 				QString("%1").arg(this->textKey->getTextKey()))) {
-			errorMsg.append(tr(" - Textschlüssel nicht erlaubt\n"));
+			errorMsg.append(tr(" - Textschlüssel nicht erlaubt<br />"));
 		}
 	}
 
@@ -622,15 +623,41 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		if (this->remoteAccount->getAccount() != NULL) {
 			if (this->localAccount->getAccount() ==
 			    this->remoteAccount->getAccount()) {
-				errorMsg.append(tr(" - Umbuchung von ein auf dasselbe Konto nicht möglich\n"));
+				errorMsg.append(tr(" - Umbuchung von ein auf dasselbe Konto nicht möglich<br />"));
+			}
+			if (this->localAccount->getAccount()->BankCode() !=
+			    this->remoteAccount->getAccount()->BankCode()) {
+				errorMsg.append(tr(" - Umbuchungungen sind nur zwischen Konten desselben Instituts möglich<br />"));
 			}
 		} else {
-			errorMsg.append(tr(" - remoteAccount muss bei Umbuchung einen Account besitzen! (Programmierfehler)\n"));
+			errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount muss bei Umbuchung einen Account besitzen!<br />"));
+		}
+	}
+
+	if ((this->m_type == AB_Job_TypeModifyDatedTransfer) ||
+	    (this->m_type == AB_Job_TypeModifyStandingOrder)) {
+		if (this->m_origTransaction == NULL) {
+			errorMsg.append(tr(" - <b>Programmierfehler:</b> Bei Änderungen muss die Original<br />"
+					   "&nbsp;&nbsp;&nbsp;Transaction gesetzt sein!<br />"));
 		}
 	}
 
 	if (errorMsg.isEmpty()) {
 		return true;
+	}
+
+	//: the same string as used for displaying programmer failures
+	if (errorMsg.contains(tr("Programmierfehler"))) {
+		errorMsg.append(tr("<br />"
+				   "<hr>"
+				   "Es sind Fehler aufgetreten an denen Sie nichts ändern "
+				   "können (Programmierfehler).<br />"
+				   "Bitte Informieren Sie den Author des Programms welche "
+				   "Fehler aufgetreten sind und wenn möglich die genauen "
+				   "Schritte die Sie durchgeführt haben.<br />"
+				   "Vielen Dank im vorraus bei Ihrer Hilfe zur Verbesserung "
+				   "des Programms."
+				   "<hr><br />"));
 	}
 
 	return false;
@@ -677,9 +704,16 @@ bool widgetTransfer::hasChanges() const
  *
  * Es wird davon ausgegangen das wenn ein Widget für z.B. recurrence existiert
  * dieses auch die werte der transaction darstellen kann.
+ *
+ * Ausserdem wird sich diese Transaction gemerkt und als "Original" angesehen
+ * wenn eine Modifizierender Job ausgeführt wird kann über getOriginalTransaction()
+ * die Transaction besorgt und dann eine modifizierte Kopie davon zur Bank
+ * gesendet werden.
  */
 void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 {
+	this->m_origTransaction = t;
+
 	if (this->localAccount != NULL) {
 		if (this->localAccount->getAccountNumber() !=
 		    t->getLocalAccountNumber()) {

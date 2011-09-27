@@ -70,16 +70,12 @@ public:
 	widgetTextKey *textKey;
 	widgetDate *datedDate;
 
-	bool isGeneralInputOk(QString &errorMsg) const;
-	bool hasChanges() const;
-
-	void setValuesFromTransaction(const abt_transaction *t);
-
 private:
 	const abt_transactionLimits *m_limits;
 	const aqb_Accounts *m_allAccounts;
 	const aqb_AccountInfo *m_accountAtCreation;
 	AB_JOB_TYPE m_type;
+	const abt_transaction *m_origTransaction;
 
 	QGroupBox *groupBoxLocal;
 	QGroupBox *groupBoxRemote;
@@ -112,6 +108,7 @@ private:
 
 
 	void setAllLimits(const abt_transactionLimits *limits);
+	//! \obsolete
 	void setLocalFromAccount(const aqb_AccountInfo *acc);
 
 signals:
@@ -125,6 +122,14 @@ private slots:
 	void onCancelButtonPressed();
 
 public slots:
+	void setValuesFromTransaction(const abt_transaction *t);
+
+public:
+	bool isGeneralInputOk(QString &errorMsg) const;
+	bool hasChanges() const;
+	/*! Wenn über setValuesFromTransaction() eine Transaction gesetzt wurde
+	 *  kann diese hierrüber wieder gelesen werden. */
+	const abt_transaction* getOriginalTransaction() const { return this->m_origTransaction; }
 
 
 };

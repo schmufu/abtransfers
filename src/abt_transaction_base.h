@@ -57,6 +57,7 @@ protected:
 
 public:
 	abt_transaction(AB_TRANSACTION *t = NULL, bool freeOnDelete = false);
+	abt_transaction(const abt_transaction &abt_t); //copy contructor
 	~abt_transaction();
 
 	/*****************************

@@ -53,6 +53,15 @@ abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 	}
 }
 
+//copy constructor
+abt_transaction::abt_transaction(const abt_transaction &abt_t)
+{
+	AB_TRANSACTION *t = AB_Transaction_dup(abt_t.getAB_Transaction());
+	this->aqb_transaction = t;
+	//Wir haben die transaction neu erstellt, also müssen wir sie auch wieder löschen
+	this->FreeTransactionOnDelete = true;
+}
+
 abt_transaction::~abt_transaction()
 {
 	if (this->FreeTransactionOnDelete) {
