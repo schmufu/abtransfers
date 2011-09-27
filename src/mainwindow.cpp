@@ -58,6 +58,7 @@
 #include "widgets/bankaccountswidget.h"
 #include "widgets/knownempfaengerwidget.h"
 #include "widgets/widgetknownstandingorders.h"
+#include "widgets/widgetknowndatedtransfers.h"
 #include "widgets/widgetaccountcombobox.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -140,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
 
 	this->createDockStandingOrders();
+	this->createDockDatedTransfers();
 
 	this->createActions();
 	this->createMenus();
@@ -345,6 +347,7 @@ void MainWindow::createDockToolbar()
 	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
 	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
 	this->dockToolbar->addAction(this->dock_KnownStandingOrders->toggleViewAction());
+	this->dockToolbar->addAction(this->dock_KnownDatedTransfers->toggleViewAction());
 
 	this->addToolBar(Qt::TopToolBarArea, this->dockToolbar);
 }
@@ -415,6 +418,49 @@ void MainWindow::createDockStandingOrders()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownStandingOrders = dock;
+}
+
+//private
+void MainWindow::createDockDatedTransfers()
+{
+	QDockWidget *dock = new QDockWidget("Terminüberweisungen", this);
+	dock->setObjectName("dockDatedTransfers");
+
+	QVBoxLayout *layoutDock = new QVBoxLayout();
+	QHBoxLayout *layoutAcc = new QHBoxLayout();
+	QLabel *accText = new QLabel(tr("Konto"));
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL,
+								       this->accounts);
+	widgetKnownDatedTransfers *DatedTransfers;
+	DatedTransfers = new widgetKnownDatedTransfers(accComboBox->getAccount());
+
+	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
+		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
+
+	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+
+	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
+		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
+		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+
+	layoutAcc->addWidget(accText,1, Qt::AlignRight);
+	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
+
+	layoutDock->addLayout(layoutAcc);
+	layoutDock->addWidget(DatedTransfers);
+	QWidget *wid = new QWidget();
+	wid->setLayout(layoutDock);
+
+	dock->setWidget(wid);
+	dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	dock->setFloating(false);
+	dock->hide();
+	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
+	this->addDockWidget(Qt::RightDockWidgetArea, dock);
+
+	this->dock_KnownDatedTransfers = dock;
 }
 
 void MainWindow::on_actionDebug_Info_triggered()

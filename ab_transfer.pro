@@ -33,7 +33,8 @@ SOURCES += src/main.cpp \
     src/widgets/widgetrecurrence.cpp \
     src/widgets/widgettransfer.cpp \
     src/widgets/widgetknownstandingorders.cpp \
-    src/widgets/widgetaccountcombobox.cpp
+    src/widgets/widgetaccountcombobox.cpp \
+    src/widgets/widgetknowndatedtransfers.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -62,7 +63,8 @@ HEADERS += src/mainwindow.h \
     src/widgets/widgetrecurrence.h \
     src/widgets/widgettransfer.h \
     src/widgets/widgetknownstandingorders.h \
-    src/widgets/widgetaccountcombobox.h
+    src/widgets/widgetaccountcombobox.h \
+    src/widgets/widgetknowndatedtransfers.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \

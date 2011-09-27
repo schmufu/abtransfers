@@ -99,6 +99,7 @@ private:
 	void createDockToolbar();
 	void createWidgetsInScrollArea();
 	void createDockStandingOrders();
+	void createDockDatedTransfers();
 
 	widgetTransfer* createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = NULL);
 	void deleteTabWidgetAndTab(const widgetTransfer *w);
