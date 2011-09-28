@@ -99,6 +99,12 @@ bool widgetValue::hasChanges() const
 }
 
 //public slot
+void widgetValue::clearAll()
+{
+	this->value->clear();
+}
+
+//public slot
 void widgetValue::setValue(const QString &value)
 {
 	this->value->setText(value);

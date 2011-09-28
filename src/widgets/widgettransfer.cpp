@@ -102,7 +102,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		break;
 	case AB_Job_TypeCreateDatedTransfer :
 		this->my_create_dated_transfer_form(true);
-		this->m_limits->printAllAsDebug();
+//		this->m_limits->printAllAsDebug();
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);
@@ -174,6 +174,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		this, SLOT(onOkButtonPressed()));
 	connect(this->pushButtonCancel, SIGNAL(clicked()),
 		this, SLOT(onCancelButtonPressed()));
+	connect(this->pushButtonRevert, SIGNAL(clicked()),
+		this, SLOT(onRevertButtonPressed()));
 
 	this->layoutButtons = new QHBoxLayout();
 	this->layoutButtons->addSpacerItem(new QSpacerItem(1,1,
@@ -525,10 +527,50 @@ void widgetTransfer::onOkButtonPressed()
 	emit this->createTransfer(this->m_type, this);
 }
 
-//pricate slot
+//private slot
 void widgetTransfer::onCancelButtonPressed()
 {
 	emit this->cancelClicked(this);
+}
+
+//private slot
+void widgetTransfer::onRevertButtonPressed()
+{
+	//Wenn wir eine Transaction besitzen die werte dieser setzen
+	if (this->m_origTransaction != NULL) {
+		this->setValuesFromTransaction(this->m_origTransaction);
+	} else { //ansonsten alle Edit-Felder löschen (default-Wert)
+		if (this->remoteAccount != NULL) {
+			if (this->remoteAccount->getAccount() == NULL) {
+				//remoteAccount muss EingabeWidgets enthalten,
+				//diese löschen
+				this->remoteAccount->clearAllEdits();
+			}
+		}
+		if (this->value != NULL) {
+			this->value->clearAll();;
+		}
+		if (this->purpose != NULL) {
+			this->purpose->clearAll();
+		}
+		if (this->recurrence != NULL) {
+			//Default jeden Monat
+			this->recurrence->setCycleMonth(1);
+			this->recurrence->setPeriod(AB_Transaction_PeriodMonthly);
+			//wenn dies geändert wird werden alle anderen Werte
+			//auch entsprechend automatisch aktualisiert!
+		}
+		if (this->textKey != NULL) {
+			//Wir setzen einfach einen "unbekannten" Key, somit
+			//stellt sich das Widget automatisch auf den ersten
+			//gültigen Eintrag!
+			this->textKey->setTextKey(-5);
+		}
+		if (this->datedDate != NULL) {
+			//Heute als default
+			this->datedDate->setDate(QDate::currentDate());
+		}
+	}
 }
 
 

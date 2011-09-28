@@ -120,6 +120,7 @@ private slots:
 
 	void onOkButtonPressed();
 	void onCancelButtonPressed();
+	void onRevertButtonPressed();
 
 public slots:
 	void setValuesFromTransaction(const abt_transaction *t);

@@ -260,9 +260,13 @@ void widgetAccountData::clearAllEdits()
 	//Nur wenn wir ein remoteAccountWidget sind
 	if (this->comboBoxAccounts == NULL) {
 		this->llName->lineEdit->clear();
+		this->llName->lineEdit->setModified(false);
 		this->llAccountNumber->lineEdit->clear();
+		this->llAccountNumber->lineEdit->setModified(false);
 		this->llBankCode->lineEdit->clear();
+		this->llBankCode->lineEdit->setModified(false);
 		this->llBankName->lineEdit->clear();
+		this->llBankName->lineEdit->setModified(false);
 	}
 }
 

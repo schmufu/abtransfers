@@ -38,6 +38,10 @@
 widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	QWidget(parent)
 {
+	//Default Werte setzen
+	this->setedCycleMonth = -1;	//unknown
+	this->setedCycleWeek = -1;	//unknown
+
 	//RadioButtons erstellen
 	this->radio_weekly = new QRadioButton(tr("wöchentlich"), this);
 	this->radio_monthly = new QRadioButton(tr("monatlich"), this);
@@ -323,7 +327,7 @@ void widgetRecurrence::selectedPeriodChanged(int newPeriod)
 	case AB_Transaction_PeriodMonthly: //monatlich gewählt
 		this->spinBox->setRange(this->allowedCycleMonth.first(),
 					this->allowedCycleMonth.last());
-		if (this->setedCycleMonth!= -1) {
+		if (this->setedCycleMonth != -1) {
 			this->spinBox->setValue(this->setedCycleMonth);
 		} else {
 			this->spinBox->setValue(this->allowedCycleMonth.first());
@@ -551,7 +555,7 @@ void widgetRecurrence::setCycleMonth(int monthCycle)
 //public Slot
 void widgetRecurrence::setCycleWeek(int weekCycle)
 {
-	this->setedCycleMonth = weekCycle;
+	this->setedCycleWeek = weekCycle;
 	this->updateWidgetStates();
 }
 

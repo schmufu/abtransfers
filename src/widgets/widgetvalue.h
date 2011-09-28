@@ -58,6 +58,7 @@ public:
 signals:
 
 public slots:
+	void clearAll();
 	void setValue(const QString &value);
 	void setValue(const AB_VALUE *abv);
 	void setCurrency(const QString &currency);
