@@ -46,6 +46,7 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 	layoutMain->setContentsMargins(0,0,0,0);
 
 	this->comboBox = new QComboBox(this);
+	this->comboBox->setMinimumHeight(25);
 
 	//Alle Accounts in der ComboBox darstellen
 	foreach(const aqb_AccountInfo *account, allAccounts->getAccountHash().values()) {

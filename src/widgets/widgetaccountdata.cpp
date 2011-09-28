@@ -79,7 +79,7 @@ widgetAccountData::widgetAccountData(QWidget *parent,
 
 
 
-	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	this->setAcceptDrops(true);
 }
 

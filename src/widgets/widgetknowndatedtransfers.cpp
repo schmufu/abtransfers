@@ -56,7 +56,10 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(const aqb_AccountInfo *acco
 	this->setLayout(layoutMain);
 
 	this->createAllActions();
-	this->refreshKnownDatedTransfers(this->m_account);
+
+	//setzt den aktuellen account, stellt alle connections her und
+	//aktualisiert die Anzeige des treeWidgets
+	this->setAccount(account);
 }
 
 
@@ -161,8 +164,15 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 //public slot
 void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 {
-	this->m_account = account;
-	this->refreshKnownDatedTransfers(account);
+	//alte connection löschen
+	disconnect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
+		   this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
+	this->m_account = account; //neuen account merken
+	this->refreshKnownDatedTransfers(account); //DTs des account anzeigen
+
+	//darüber informiert werden wenn sich die DTs des accounts ändern
+	connect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
+		this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
 }
 
 //private slot

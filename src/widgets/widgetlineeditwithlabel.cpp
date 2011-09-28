@@ -41,7 +41,9 @@ widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
     QWidget(parent)
 {
 	this->lineEdit = new QLineEdit(editText, this);
+	this->lineEdit->setMinimumHeight(25);
 	this->label = new QLabel(labelText, this);
+	this->label->setMinimumHeight(15);
 	//layout anlegen und lineEdit sowie label ausrichten
 	this->alignEditAndLabel(labelAt);
 	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

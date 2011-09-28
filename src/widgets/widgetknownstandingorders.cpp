@@ -39,8 +39,8 @@
 widgetKnownStandingOrders::widgetKnownStandingOrders(const aqb_AccountInfo *account, QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_account = account;
-	this->m_StandingOrders = NULL;
+	this->m_account = NULL;	//init
+	this->m_StandingOrders = NULL; //init
 
 	QHBoxLayout *layoutMain = new QHBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
@@ -56,7 +56,10 @@ widgetKnownStandingOrders::widgetKnownStandingOrders(const aqb_AccountInfo *acco
 	this->setLayout(layoutMain);
 
 	this->createAllActions();
-	this->refreshKnownStandingOrders(this->m_account);
+
+	//setzt den aktuellen account, stellt alle connections her und
+	//aktualisiert die Anzeige des treeWidgets
+	this->setAccount(account);
 }
 
 
@@ -160,8 +163,15 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 //public slot
 void widgetKnownStandingOrders::setAccount(const aqb_AccountInfo *account)
 {
-	this->m_account = account;
-	this->refreshKnownStandingOrders(account);
+	//alte connection löschen
+	disconnect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
+		   this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
+	this->m_account = account; //neuen account merken
+	this->refreshKnownStandingOrders(account); //SOs des account anzeigen
+
+	//darüber informiert werden wenn sich die SOs des accounts ändern
+	connect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
+		this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
 }
 
 //private slot

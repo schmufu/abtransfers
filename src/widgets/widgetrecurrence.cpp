@@ -103,7 +103,7 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 
 	this->setLayout(layout);
 
-	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	connect(this->radio_group, SIGNAL(buttonClicked(int)),
 		this, SLOT(selectedPeriodChanged(int)));

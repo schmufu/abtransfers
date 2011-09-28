@@ -130,6 +130,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		labelFontNI.setPixelSize(14);
 		notImplementet->setFont(labelFontNI);
 		this->layoutMain->addWidget(notImplementet,1, Qt::AlignLeft | Qt::AlignVCenter);
+		this->m_type = AB_Job_TypeUnknown;
 		}
 		break;
 
@@ -176,6 +177,10 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		this, SLOT(onCancelButtonPressed()));
 	connect(this->pushButtonRevert, SIGNAL(clicked()),
 		this, SLOT(onRevertButtonPressed()));
+
+	//OK und revert disablen wenn type == unknown
+	this->pushButtonOK->setDisabled(this->m_type == AB_Job_TypeUnknown);
+	this->pushButtonRevert->setDisabled(this->m_type == AB_Job_TypeUnknown);
 
 	this->layoutButtons = new QHBoxLayout();
 	this->layoutButtons->addSpacerItem(new QSpacerItem(1,1,

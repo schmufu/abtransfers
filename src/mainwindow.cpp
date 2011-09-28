@@ -356,11 +356,12 @@ void MainWindow::createDockToolbar()
 void MainWindow::createWidgetsInScrollArea()
 {
 	QVBoxLayout *layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
+
 	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
-		QGroupBox *grp = new QGroupBox(this);
-		QVBoxLayout *l = new QVBoxLayout(grp);
-		grp->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		//! \todo Signale des widgetKnownStandingOrders verbinden
+		//Bekannte Daueraufträge
+		QGroupBox *grpSO = new QGroupBox(this);
+		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
+		grpSO->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
 		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(acc, this);
 
 		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
@@ -371,9 +372,25 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
 			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
 
-		l->addWidget(StandingOrders);
-		layoutScrollArea->addWidget(grp);
+		lSO->addWidget(StandingOrders);
+		layoutScrollArea->addWidget(grpSO);
 
+		//Bekannte Terminüberweisungen
+		QGroupBox *grpDT = new QGroupBox(this);
+		QVBoxLayout *lDT = new QVBoxLayout(grpDT);
+		grpDT->setTitle(tr("Terminierte Überweisungen von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
+		widgetKnownDatedTransfers *DatedTransfers = new widgetKnownDatedTransfers(acc, this);
+
+		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+
+		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
+			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
+			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+
+		lDT->addWidget(DatedTransfers);
+		layoutScrollArea->addWidget(grpDT);
 	}
 }
 
@@ -684,6 +701,7 @@ void MainWindow::onActionTransferNationalTriggered()
 //						   this);
 //	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
 	this->createTransferWidgetAndAddTab(AB_Job_TypeTransfer);
+	qDebug() << "stackedWidget.height =" << this->ui->stackedWidget->height();
 }
 
 //private slot
