@@ -1034,6 +1034,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 
 	t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
 	while (t) {
+
 		logmsg2 = QString("Purpose:\t");
 		l = AB_Transaction_GetPurpose(t);
 		strList = abt_conv::GwenStringListToQStringList(l);
@@ -1051,6 +1052,10 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
+//		abt_transaction *at = new abt_transaction(t, false);
+//		if (at->getType() == AB_Transaction_TypeTransfer) {
+//			if (at->getStatus() == AB_Transaction_StatusManuallyReconciled)
+//		}
 		//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
 		this->addlog(QString(
 			"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
@@ -1307,7 +1312,7 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 		// %C3%9C durch Ü ersetzen
 		strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
 		// %C3%B6 durch ö ersetzen
-		strList.replaceInStrings("%C3%BC", "ö", Qt::CaseSensitive);
+		strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
 		// %C3%96 durch Ö ersetzen
 		strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
 		// %3D durch = ersetzen
