@@ -227,39 +227,138 @@ void abt_settings::freeStandingOrdersList(QList<abt_StandingInfo*> *list)
 
 
 
-
+QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const aqb_AccountInfo *a)
+{
+	return this->getDatedTransfersForAccount(a->Number(), a->BankCode());
+}
 
 
 QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
 								 const QString &BLZ)
 {
-	QStringList DT_IDs;
-	this->Settings->beginGroup("DatedTransfers");
-	QString key = KtoNr + "_" + BLZ;
-	DT_IDs = this->Settings->value(key).toStringList();
+	const QString DTMainKey = "DatedTransfers/" + BLZ + "/" + KtoNr;
+	this->Settings->beginGroup(DTMainKey);
+
+	QStringList DT_IDs = this->Settings->childGroups();
 	this->Settings->endGroup();
+
+	//Jetzt stehen in DTIDs alle IDs von DatedTransfers die zu dem
+	//angegebenen paar von KtoNr und BLZ gehören.
+
+	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs;
+
 
 	abt_DatedInfo *DatedInfo;
 	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
 
-	for (int i=0; i<DT_IDs.size(); ++i) {
-		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
-		abt_transaction *trans = new abt_transaction(t, true);
+	foreach(const QString ID, DT_IDs) {
+		const QString DTKey = DTMainKey + "/" + ID;
+		this->Settings->beginGroup(DTKey);
+		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
 		DatedInfo = new abt_DatedInfo(trans);
 		List->append(DatedInfo);
+		this->Settings->endGroup();
 	}
 
 	return List;
+
+//
+//	//Alle Transactions aus der Terminueberweisungen.ini holen
+//	QSettings *s;
+//	QString myFilename;
+//	const QString filename = "Terminueberweisungen.ini";
+//	myFilename.append(settings->getDataDir());
+//	myFilename.append(filename);
+//
+//	s = new QSettings(myFilename, QSettings::IniFormat);
+//
+//	QStringList DT_IDs;
+//	DT_IDs = s->childGroups();
+//	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs;
+//	delete s; //wird nicht länger benötigt
+//
+//	abt_DatedInfo *DatedInfo;
+//	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
+//
+//	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs << "  --  nach delete s";
+//
+//	for (int i=0; i<DT_IDs.size(); ++i) {
+//		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
+//		abt_transaction *trans = new abt_transaction(t, true);
+//		DatedInfo = new abt_DatedInfo(trans);
+//		List->append(DatedInfo);
+//	}
+
+
+//	QStringList DT_IDs;
+//	this->Settings->beginGroup("DatedTransfers");
+//	QString key = KtoNr + "_" + BLZ;
+//	DT_IDs = this->Settings->value(key).toStringList();
+//	this->Settings->endGroup();
+//
+//	abt_DatedInfo *DatedInfo;
+//	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
+//
+//	for (int i=0; i<DT_IDs.size(); ++i) {
+//		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
+//		abt_transaction *trans = new abt_transaction(t, true);
+//		DatedInfo = new abt_DatedInfo(trans);
+//		List->append(DatedInfo);
+//	}
+//
+//	return List;
 }
 
 void abt_settings::saveDatedTransfersForAccount(const QStringList &DTIDs,
 						const QString &KtoNr,
 						const QString &BLZ)
 {
+	qWarning() << "OBSOLETE - abt_settings::saveDatedTransfersForAccount()";
 	this->Settings->beginGroup("DatedTransfers");
 	QString key = KtoNr + "_" + BLZ;
 	this->Settings->setValue(key, DTIDs);
 	this->Settings->endGroup();
+}
+
+
+void abt_settings::saveDatedTransfer(const abt_transaction *t)
+{
+	const QString BLZ = t->getLocalBankCode();
+	const QString KtoNr = t->getLocalAccountNumber();
+	const QString ID = t->getFiId();
+	const QString DTGroup = "DatedTransfers/" + BLZ + "/" + KtoNr + "/" + ID;
+
+	this->Settings->beginGroup(DTGroup);
+
+	abt_transaction::saveTransaction(t, this->Settings);
+
+	this->Settings->endGroup();
+}
+
+void abt_settings::saveDatedTransfer(AB_TRANSACTION *t)
+{
+	const abt_transaction *trans = new abt_transaction(t, false);
+	this->saveDatedTransfer(trans);
+	delete trans;
+}
+
+void abt_settings::deleteDatedTransfer(const abt_transaction *t)
+{
+	const QString BLZ = t->getLocalBankCode();
+	const QString KtoNr = t->getLocalAccountNumber();
+	const QString ID = t->getFiId();
+	const QString DTGroup = "DatedTransfers/" + BLZ + "/" + KtoNr + "/" + ID;
+
+	this->Settings->beginGroup(DTGroup);
+	this->Settings->remove("");	//Aktuelle Gruppe löschen
+	this->Settings->endGroup();
+}
+
+void abt_settings::deleteDatedTransfer(AB_TRANSACTION *t)
+{
+	const abt_transaction *trans = new abt_transaction(t, false);
+	this->deleteDatedTransfer(trans);
+	delete trans;
 }
 
 //static

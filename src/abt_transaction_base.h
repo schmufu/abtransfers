@@ -41,6 +41,8 @@
 
 //#include "aqb_accountinfo.h"
 
+class QSettings;
+
 /*! simple wrapper to AB_Transaction_Set* -Get* functions
   *
   * Diese Klasse stellt alle Funktionen von aqBanking die Transactionen
@@ -331,6 +333,9 @@ public:
 	static void saveTransaction(const abt_transaction *t, const QString &filename);
 	//! \overload
 	static void saveTransaction(AB_TRANSACTION *t, const QString &filename);
+	//! speichert die Transaction in dem übergebenen QSettings \a s Objekt
+	static void saveTransaction(const abt_transaction *t, QSettings *s);
+
 
 	//! löscht die Transaction aus der ini-Datei \a filename
 	static void removeTransaction(const abt_transaction *t, const QString &filename);
@@ -339,6 +344,7 @@ public:
 
 	static AB_TRANSACTION* loadTransaction(const QString &id);
 	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
+	static abt_transaction* loadTransaction(const QSettings *s);
 
 };
 

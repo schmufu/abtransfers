@@ -75,8 +75,14 @@ public:
 	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
 	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
+	//! \overload
+	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
 	//! Speichert alle Einträge der Liste für den entsprechenden Account
 	void saveDatedTransfersForAccount(const QStringList &DTIDs, const QString &KtoNr, const QString &BLZ);
+	void saveDatedTransfer(const abt_transaction *t);
+	void saveDatedTransfer(AB_TRANSACTION *t);
+	void deleteDatedTransfer(const abt_transaction *t);
+	void deleteDatedTransfer(AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
 	static void freeDatedTransfersList(QList<abt_DatedInfo*> *list);
 
