@@ -88,12 +88,12 @@ void abt_transaction::removeTransaction(const abt_transaction *t, const QString 
 		return; //Abbruch
 	}
 
-	QString completeFilename;
-	completeFilename.append(settings->getDataDir());
-	completeFilename.append(filename);
+	QString filePathName;
+	filePathName.append(settings->getDataDir());
+	filePathName.append(filename);
 
 	QSettings *s;
-	s = new QSettings(completeFilename, QSettings::IniFormat);
+	s = new QSettings(filePathName, QSettings::IniFormat);
 
 	QString key = QString("TransFiId-%1").arg(t->getFiId());
 

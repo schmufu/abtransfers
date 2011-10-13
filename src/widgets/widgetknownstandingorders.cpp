@@ -163,9 +163,12 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 //public slot
 void widgetKnownStandingOrders::setAccount(const aqb_AccountInfo *account)
 {
-	//alte connection löschen
-	disconnect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
-		   this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
+	//wenn ein vorheriger Account existiert auch die connection von diesem löschen
+	if (this->m_account != NULL) {
+		disconnect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
+			   this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
+	}
+
 	this->m_account = account; //neuen account merken
 	this->refreshKnownStandingOrders(account); //SOs des account anzeigen
 

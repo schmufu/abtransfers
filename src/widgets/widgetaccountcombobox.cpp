@@ -95,7 +95,7 @@ void widgetAccountComboBox::setSelectedAccount(const aqb_AccountInfo *account)
 		//qDebug("CBIDX != -1 IST TRUE");
 		this->comboBox->setCurrentIndex(cbIdx);
 	} else { //ersten Eintrag als default wählen
-		qDebug("cbIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
+		qDebug("widgetAccountComboBox::setSelectedAccount: cbIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
 		this->comboBox->setCurrentIndex(0);
 	}
 }

@@ -164,9 +164,12 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 //public slot
 void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 {
-	//alte connection löschen
-	disconnect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
-		   this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
+	//wenn ein vorheriger Account existiert auch die connection von diesem löschen
+	if (this->m_account != NULL) {
+		disconnect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
+			   this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
+	}
+
 	this->m_account = account; //neuen account merken
 	this->refreshKnownDatedTransfers(account); //DTs des account anzeigen
 

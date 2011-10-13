@@ -661,7 +661,10 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc)
 
 	//Create Info
 	QString info;
-	info.append("INFO: Holt alle noch nicht ausgeführten Terminüberweisungen");
+	info.append("Holt alle noch nicht ausgeführten Terminüberweisungen;");
+	info.append("für das Konto ");
+	info.append(acc->Number());
+	info.append(" (" + acc->Name() + ")");
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
@@ -1030,6 +1033,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 	const AB_VALUE *v;
 	const GWEN_STRINGLIST *l;
 	int cnt = 0;
+	bool datedChanged = false;
 
 	cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
 	logmsg2 = QString("Count: %1").arg(cnt);
@@ -1055,18 +1059,15 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
-//		abt_transaction *at = new abt_transaction(t, false);
-//		if (at->getType() == AB_Transaction_TypeTransfer) {
-//			if (at->getStatus() == AB_Transaction_StatusManuallyReconciled)
-//		}
 		switch (AB_Transaction_GetStatus(t)) {
 		case AB_Transaction_StatusRevoked:
 			//Bei der Bank hinterlegte Terminüberweisung wurde gelöscht
 			this->addlog(QString(
 				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
-			abt_transaction::removeTransaction(t, "Terminueberweisung.ini");
-			DTIDsDeleted.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
+			//löscht die Transaction in der settings.ini
+			settings->deleteDatedTransfer(t);
+			datedChanged = true;
 			break;
 		case AB_Transaction_StatusManuallyReconciled:
 		case AB_Transaction_StatusAutoReconciled:
@@ -1075,61 +1076,43 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 				"Speichere bei der Bank geänderte Terminüberweisung (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
 			//einfach löschen und dann neu speichern
-			abt_transaction::removeTransaction(t, "Terminueberweisung.ini");
-			abt_transaction::saveTransaction(t, "Terminueberweisung.ini");
-			DTIDsModified.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
+			//die neue Transaction hat eine neue ID bekommen, wir
+			//müssen die alte löschen und dann die neue Speichern!
+
+			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
+			//settings->deleteDatedTransfer(t);
+			//neue Transaction speichern
+			settings->saveDatedTransfer(t);
+			datedChanged = true;
 			break;
 		default:
 			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
 			this->addlog(QString(
 				"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
-			abt_transaction::saveTransaction(t, "Terminueberweisungen.ini");
-			DTIDsNew.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
+			settings->saveDatedTransfer(t);
+			datedChanged = true;
 			break;
 		}
-
-//		if (AB_Transaction_GetStatus(t) == AB_Transaction_StatusRevoked) {
-//			//Bei der Bank hinterlegte Terminüberweisung wurde gelöscht
-//			this->addlog(QString(
-//				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
-//				).arg(AB_Transaction_GetFiId(t)));
-//			abt_transaction::removeTransaction(t, "Terminueberweisung.ini");
-//			DTIDsDeleted.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
-//		} else if ((AB_Transaction_GetStatus(t) == AB_Transaction_StatusManuallyReconciled) ||
-//			   (AB_Transaction_GetStatus(t) == AB_Transaction_StatusAutoReconciled)) {
-//			//Bei der Bank hinterlegte Terminüberweisung wurde geändert
-//			this->addlog(QString(
-//				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
-//				).arg(AB_Transaction_GetFiId(t)));
-//			abt_transaction::removeTransaction(t, "Terminueberweisung.ini");
-//			DTIDsDeleted.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
-//		}
-//
-//		//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
-//		this->addlog(QString(
-//			"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
-//			).arg(AB_Transaction_GetFiId(t)));
-//		abt_transaction::saveTransaction(t, "Terminueberweisungen.ini");
-//		DTIDsNew.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
 
 		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
 	}
 
-	QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
-	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
-
-	if (DTIDsNew.size() > 0) {
-		//Die lokal gespeicherten DatedTransfers auch in den Einstellungen merken.
-		settings->saveDatedTransfersForAccount(DTIDsNew, KtoNr, BLZ);
-
+	if (datedChanged) {
 		emit this->datedTransfersParsed();
 	}
 
-
+//	QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+//	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+//
+//	if (DTIDsNew.size() > 0) {
+//		//Die lokal gespeicherten DatedTransfers auch in den Einstellungen merken.
+//		settings->saveDatedTransfersForAccount(DTIDsNew, KtoNr, BLZ);
+//
+//		emit this->datedTransfersParsed();
+//	}
 
 	return cnt;
-
 }
 
 int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
