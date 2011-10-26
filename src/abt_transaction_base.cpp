@@ -48,7 +48,7 @@ abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 	} else {
 		//Übergebene Transaction nutzen
 		this->aqb_transaction = t;
-		//Löschen nur auf Aufforderung;
+		//Löschen nur auf Aufforderung (default: false)
 		this->FreeTransactionOnDelete = freeOnDelete;
 	}
 }

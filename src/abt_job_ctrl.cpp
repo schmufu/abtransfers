@@ -73,9 +73,19 @@ abt_job_info::~abt_job_info()
 	delete this->jobInfo;
 }
 
+AB_JOB_STATUS abt_job_info::getAbJobStatus() const
+{
+	return AB_Job_GetStatus(this->job);
+}
+
 const QString abt_job_info::getStatus() const
 {
 	return abt_conv::JobStatusToQString(this->job);
+}
+
+AB_JOB_TYPE abt_job_info::getAbJobType() const
+{
+	return AB_Job_GetType(this->job);
 }
 
 const QString abt_job_info::getType() const
@@ -853,6 +863,7 @@ void abt_job_ctrl::execQueuedTransactions()
 		this->addlog(QString("** ERROR ** Fehler bei AB_Baning_ExecuteJobs(). return value = %1 ** ABBRUCH **").arg(rv));
 		AB_Job_List2_ClearAll(jl);
 		AB_ImExporterContext_Clear(ctx);
+		AB_ImExporterContext_free(ctx);
 		return;
 	}
 
@@ -872,6 +883,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	AB_Job_List2_ClearAll(jl);
 	AB_ImExporterContext_Clear(ctx);
+	AB_ImExporterContext_free(ctx);
 
 	//Alle Objecte in der jobqueue liste löschen
 	while (!this->jobqueue->isEmpty()) {
@@ -880,6 +892,119 @@ void abt_job_ctrl::execQueuedTransactions()
 		delete j;
 	}
 	emit this->jobQueueListChanged();
+}
+
+
+bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx)
+{
+	AB_JOB *j;
+	AB_JOB_STATUS state;
+	AB_JOB_TYPE type;
+	GWEN_STRINGLIST *gwenStrList;
+	QString strState;
+	QString strType;
+	QStringList strList;
+	int run=0;
+	bool res=true;
+	qDebug() << "parseExecutedJobListAndContext() started";
+
+	AB_JOB_LIST2_ITERATOR *jli;
+	jli = AB_Job_List2Iterator_new(jobList);
+	jli = AB_Job_List2_First(jobList);
+	j = AB_Job_List2Iterator_Data(jli);
+	while (j) {
+		qDebug() << "in parseExecutedJobListAndContext()-while - RUN: " << ++run;
+		type = AB_Job_GetType(j);
+		strType = AB_Job_Type2Char(type);
+		this->addlog(QString("JobType: ").append(strType));
+
+		state = AB_Job_GetStatus(j);
+		strState = AB_Job_Status2Char(state);
+		this->addlog(QString("JobState: ").append(strState));
+
+		gwenStrList = AB_Job_GetLogs(j);
+		strList = abt_conv::GwenStringListToQStringList(gwenStrList);
+		GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
+					    //NEIN! QStringlistToGwenStringList löscht sich selbst!
+					    //GwenToQ macht dies nicht! (und das aus guten Grund!)
+
+		//die logs von aqBanking ein wenig aufbereiten
+		// %22 durch " ersetzen
+		strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
+		// %28 durch ( ersetzen
+		strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
+		// %29 durch ) ersetzen
+		strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
+		// %3A durch : ersetzen
+		strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
+		// %C3%A4 durch ä ersetzen
+		strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
+		// %C3%84 durch Ä ersetzen
+		strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
+		// %C3%BC durch ü ersetzen
+		strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
+		// %C3%9C durch Ü ersetzen
+		strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
+		// %C3%B6 durch ö ersetzen
+		strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
+		// %C3%96 durch Ö ersetzen
+		strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
+		// %3D durch = ersetzen
+		strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
+
+		//Alle Strings der StringListe zum Log hinzufügen
+		for (int i=0; i<strList.count(); ++i) {
+			this->addlog(QString("JobLog: ").append(strList.at(i)));
+		}
+
+
+		switch (type) {
+		case AB_Job_TypeCreateDatedTransfer:
+			//wenn Status Successfull Transaction des Jobs als Dated Speichern
+		case AB_Job_TypeDeleteDatedTransfer:
+			//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+		case AB_Job_TypeModifyDatedTransfer:
+			//wenn Successfull Transaction des Jobs löschen
+			//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
+			//die neue Transaction muss gespeichert werden
+		case AB_Job_TypeGetDatedTransfers:
+			//wenn Successfull Ctx parsen (dort sind die DTs drin)
+
+		//für StandingOrders siehe Kommentare bei DatedTransfers
+		case AB_Job_TypeCreateStandingOrder:
+		case AB_Job_TypeDeleteStandingOrder:
+		case AB_Job_TypeModifyStandingOrder:
+		case AB_Job_TypeGetStandingOrders:
+
+		//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
+		//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
+		case AB_Job_TypeTransfer:
+		case AB_Job_TypeEuTransfer:
+		case AB_Job_TypeSepaTransfer:
+		case AB_Job_TypeInternalTransfer:
+		case AB_Job_TypeDebitNote:
+		case AB_Job_TypeSepaDebitNote:
+		case AB_Job_TypeUnknown:
+
+		case AB_Job_TypeGetBalance:
+		case AB_Job_TypeGetTransactions:
+
+		case AB_Job_TypeLoadCellPhone:
+
+		default:
+			break;
+		} /* switch (type) */
+
+
+		j = AB_Job_List2Iterator_Next(jli);
+	} /* while (j) */
+
+	AB_Job_List2Iterator_free(jli);
+
+	qDebug() << "parseExecutedJobListAndContext() finished";
+
+	return res;
+
 }
 
 bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)

@@ -48,7 +48,9 @@ public:
 	abt_job_info(AB_JOB *j, const QString &Info);
 	~abt_job_info();
 
+	AB_JOB_STATUS getAbJobStatus() const;
 	const QString getStatus() const;
+	AB_JOB_TYPE getAbJobType() const;
 	const QString getType() const;
 	const QStringList* getInfo() const;
 	AB_JOB *getJob() const;
@@ -77,6 +79,10 @@ private:
 	int parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
 
 	bool checkJobStatus(AB_JOB_LIST2 *jl);
+
+
+	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
+	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
 
 
 public:

@@ -137,7 +137,7 @@ aqb_AccountInfo::~aqb_AccountInfo()
 /*! \brief lädt die Bekannten Daueraufträge für den übergebenen account */
 void aqb_AccountInfo::loadKnownStandingOrders()
 {
-	//Alle DAs löschen
+	//Alle SOs löschen
 	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
 	//und neu laden
 	this->m_KnownStandingOrders = settings->getStandingOrdersForAccount(this->m_Number, this->m_BankCode);
@@ -149,7 +149,7 @@ void aqb_AccountInfo::loadKnownStandingOrders()
 /*! \brief lädt die Bekannten Terminüberweisungen für den übergebenen account */
 void aqb_AccountInfo::loadKnownDatedTransfers()
 {
-	//Alle DAs löschen
+	//Alle DTs löschen
 	abt_settings::freeDatedTransfersList(this->m_KnownDatedTransfers);
 	//und neu laden
 	this->m_KnownDatedTransfers = settings->getDatedTransfersForAccount(this->m_Number, this->m_BankCode);
