@@ -150,6 +150,7 @@ abt_job_ctrl::~abt_job_ctrl()
 
 	while (!this->jobqueue->isEmpty()) {
 		abt_job_info *j = this->jobqueue->takeFirst();
+		//The job is owned by aqBanking, so we dont free it!
 		//AB_Job_free(j->getJob());
 		delete j;
 	}
@@ -168,6 +169,8 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 					      QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah)
 {
 	//ah = AccountHash
+	Q_ASSERT(ah != NULL);
+	Q_ASSERT(a != NULL);
 
 	AB_TRANSACTION *t = AB_Transaction_new();
 	const AB_TRANSACTION_LIMITS *tl = NULL;
@@ -308,7 +311,7 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 
 
 
-
+//private
 void abt_job_ctrl::addlog(const QString &str)
 {
 	static QString time;
@@ -317,6 +320,46 @@ void abt_job_ctrl::addlog(const QString &str)
 	time.append(str);
 
 	emit this->log(time);
+}
+
+//private
+QStringList abt_job_ctrl::getParsedJobLogs(const AB_JOB *j) const
+{
+	QStringList strList;
+	GWEN_STRINGLIST *gwenStrList;
+
+	gwenStrList = AB_Job_GetLogs(j);
+	strList = abt_conv::GwenStringListToQStringList(gwenStrList);
+	GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
+				    //NEIN! QStringlistToGwenStringList löscht sich selbst!
+				    //GwenToQ macht dies nicht! (und das aus guten Grund!)
+
+	//die logs von aqBanking ein wenig aufbereiten (UTF8 in ASCII)
+	// %22 durch " ersetzen
+	strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
+	// %28 durch ( ersetzen
+	strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
+	// %29 durch ) ersetzen
+	strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
+	// %3A durch : ersetzen
+	strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
+	// %C3%A4 durch ä ersetzen
+	strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
+	// %C3%84 durch Ä ersetzen
+	strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
+	// %C3%BC durch ü ersetzen
+	strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
+	// %C3%9C durch Ü ersetzen
+	strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
+	// %C3%B6 durch ö ersetzen
+	strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
+	// %C3%96 durch Ö ersetzen
+	strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
+	// %3D durch = ersetzen
+	strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
+
+	//Aufbereitete Logs zurückgeben
+	return strList;
 }
 
 //SLOT
@@ -860,7 +903,7 @@ void abt_job_ctrl::execQueuedTransactions()
 		qWarning() << this << "Error on execQueuedTransactions ("
 				<< rv << ")";
 		//cleanup
-		this->addlog(QString("** ERROR ** Fehler bei AB_Baning_ExecuteJobs(). return value = %1 ** ABBRUCH **").arg(rv));
+		this->addlog(QString("** ERROR ** Fehler bei AB_Banking_ExecuteJobs(). return value = %1 ** ABBRUCH **").arg(rv));
 		AB_Job_List2_ClearAll(jl);
 		AB_ImExporterContext_Clear(ctx);
 		AB_ImExporterContext_free(ctx);
@@ -898,9 +941,8 @@ void abt_job_ctrl::execQueuedTransactions()
 bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx)
 {
 	AB_JOB *j;
-	AB_JOB_STATUS state;
-	AB_JOB_TYPE type;
-	GWEN_STRINGLIST *gwenStrList;
+	AB_JOB_STATUS jobState;
+	AB_JOB_TYPE jobType;
 	QString strState;
 	QString strType;
 	QStringList strList;
@@ -908,103 +950,113 @@ bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEX
 	bool res=true;
 	qDebug() << "parseExecutedJobListAndContext() started";
 
+	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
+	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
 	AB_JOB_LIST2_ITERATOR *jli;
 	jli = AB_Job_List2Iterator_new(jobList);
 	jli = AB_Job_List2_First(jobList);
 	j = AB_Job_List2Iterator_Data(jli);
 	while (j) {
 		qDebug() << "in parseExecutedJobListAndContext()-while - RUN: " << ++run;
-		type = AB_Job_GetType(j);
-		strType = AB_Job_Type2Char(type);
+		jobType = AB_Job_GetType(j);
+		strType = AB_Job_Type2Char(jobType);
 		this->addlog(QString("JobType: ").append(strType));
 
-		state = AB_Job_GetStatus(j);
-		strState = AB_Job_Status2Char(state);
+		jobState = AB_Job_GetStatus(j);
+		strState = AB_Job_Status2Char(jobState);
 		this->addlog(QString("JobState: ").append(strState));
 
-		gwenStrList = AB_Job_GetLogs(j);
-		strList = abt_conv::GwenStringListToQStringList(gwenStrList);
-		GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
-					    //NEIN! QStringlistToGwenStringList löscht sich selbst!
-					    //GwenToQ macht dies nicht! (und das aus guten Grund!)
-
-		//die logs von aqBanking ein wenig aufbereiten
-		// %22 durch " ersetzen
-		strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
-		// %28 durch ( ersetzen
-		strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
-		// %29 durch ) ersetzen
-		strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
-		// %3A durch : ersetzen
-		strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
-		// %C3%A4 durch ä ersetzen
-		strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
-		// %C3%84 durch Ä ersetzen
-		strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
-		// %C3%BC durch ü ersetzen
-		strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
-		// %C3%9C durch Ü ersetzen
-		strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
-		// %C3%B6 durch ö ersetzen
-		strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
-		// %C3%96 durch Ö ersetzen
-		strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
-		// %3D durch = ersetzen
-		strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
+		//Die Logs des Backends parsen
+		strList = this->getParsedJobLogs(j);
 
 		//Alle Strings der StringListe zum Log hinzufügen
-		for (int i=0; i<strList.count(); ++i) {
-			this->addlog(QString("JobLog: ").append(strList.at(i)));
+		foreach(QString line, strList) { // (int i=0; i<strList.count(); ++i) {
+			this->addlog(QString("JobLog: ").append(line));
 		}
 
 
-		switch (type) {
+		switch (jobType) {
 		case AB_Job_TypeCreateDatedTransfer:
 			//wenn Status Successfull Transaction des Jobs als Dated Speichern
+			this->parseJobTypeCreateDatedTransfer(j);
+			break;
 		case AB_Job_TypeDeleteDatedTransfer:
 			//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+			this->parseJobTypeDeleteDatedTransfer(j);
+			break;
 		case AB_Job_TypeModifyDatedTransfer:
 			//wenn Successfull Transaction des Jobs löschen
 			//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
 			//die neue Transaction muss gespeichert werden
+			this->parseJobTypeModifyDatedTransfer(j);
+			break;
 		case AB_Job_TypeGetDatedTransfers:
 			//wenn Successfull Ctx parsen (dort sind die DTs drin)
+			this->parseJobTypeGetDatedTransfers(j);
+			break;
 
 		//für StandingOrders siehe Kommentare bei DatedTransfers
 		case AB_Job_TypeCreateStandingOrder:
+			this->parseJobTypeCreateStandingOrder(j);
+			break;
 		case AB_Job_TypeDeleteStandingOrder:
+			this->parseJobTypeDeleteStandingOrder(j);
+			break;
 		case AB_Job_TypeModifyStandingOrder:
+			this->parseJobTypeModifyStandingOrder(j);
+			break;
 		case AB_Job_TypeGetStandingOrders:
+			this->parseJobTypeGetStandingOrders(j);
+			break;
 
 		//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
 		//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
 		case AB_Job_TypeTransfer:
+			this->parseJobTypeTransfer(j);
+
 		case AB_Job_TypeEuTransfer:
+			this->parseJobTypeEuTransfer(j);
+			break;
 		case AB_Job_TypeSepaTransfer:
+			this->parseJobTypeSepaTransfer(j);
+			break;
 		case AB_Job_TypeInternalTransfer:
+			this->parseJobTypeInternalTransfer(j);
+			break;
 		case AB_Job_TypeDebitNote:
+			this->parseJobTypeDebitNote(j);
+			break;
 		case AB_Job_TypeSepaDebitNote:
+			this->parseJobTypeSepaDebitNote(j);
+			break;
 		case AB_Job_TypeUnknown:
+			this->parseJobTypeUnknown(j);
+			break;
 
 		case AB_Job_TypeGetBalance:
+			this->parseJobTypeGetBalance(j);
+			break;
 		case AB_Job_TypeGetTransactions:
+			this->parseJobTypeGetTransactions(j);
+			break;
 
 		case AB_Job_TypeLoadCellPhone:
+			this->parseJobTypeLoadCellPhone(j);
+			break;
 
 		default:
 			break;
 		} /* switch (type) */
 
 
-		j = AB_Job_List2Iterator_Next(jli);
+		j = AB_Job_List2Iterator_Next(jli); //next Job in list
 	} /* while (j) */
 
-	AB_Job_List2Iterator_free(jli);
+	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
 
 	qDebug() << "parseExecutedJobListAndContext() finished";
 
 	return res;
-
 }
 
 bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
@@ -1544,6 +1596,143 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 
 
 
+
+
+
+
+/******************************************************************************
+ * Parsen der einzelnen Jobs nach Ausführung
+ ******************************************************************************/
+
+//wenn Status Successfull Transaction des Jobs als Dated Speichern
+int abt_job_ctrl::parseJobTypeCreateDatedTransfer(const AB_JOB *j) {
+	AB_JOB_STATUS jobStatus;
+	const AB_TRANSACTION *t;
+
+	jobStatus = AB_Job_GetStatus(j);
+	t = AB_JobCreateDatedTransfer_GetTransaction(j);
+
+	switch(jobStatus) {
+	case AB_Job_StatusNew:
+		//Job is new and not yet enqueued.
+		break;
+	case AB_Job_StatusUpdated:
+		//Job has been updated by the backend and is still not yet enqueued
+		break;
+	case AB_Job_StatusEnqueued:
+		//Job has been enqueued, i.e. it has not yet been sent, but will
+		//be sent at the next AB_BANKING_ExecuteQueue().
+		//These jobs are stored in the "todo" directory.
+		break;
+	case AB_Job_StatusSent:
+		//Job has been sent, but there is not yet any response.
+		break;
+	case AB_Job_StatusPending:
+		//Job has been sent, and an answer has been received, so the Job
+		//has been successfully sent to the bank. However, the answer to
+		//this job said that the job is still pending at the bank server.
+		//This status is most likely used with transfer orders which are
+		//accepted by the bank server but checked (and possibly rejected)
+		//later. These jobs are stored in the "pending" directory.
+		break;
+	case AB_Job_StatusFinished:
+		//Job has been sent, a response has been received, and everything
+		//has been sucessfully executed. These jobs are stored in the
+		//"finished" directory.
+		break;
+	case AB_Job_StatusError:
+		//There was an error in jobs' execution. These jobs are stored
+		//in the "finished" directory. Jobs are never enqueued twice for
+		//execution, so if it has this status it will never be sent again.
+		break;
+	case AB_Job_StatusUnknown:	//default ausführen
+		//Unknown status
+	default:
+		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+		break;
+	} /* switch(jobStatus) */
+
+}
+
+//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+int abt_job_ctrl::parseJobTypeDeleteDatedTransfer(const AB_JOB *j) {
+
+}
+
+//wenn Successfull Transaction des Jobs löschen
+//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
+//die neue Transaction muss gespeichert werden
+int abt_job_ctrl::parseJobTypeModifyDatedTransfer(const AB_JOB *j) {
+
+}
+
+//wenn Successfull Ctx parsen (dort sind die DTs drin)
+int abt_job_ctrl::parseJobTypeGetDatedTransfers(const AB_JOB *j) {
+
+}
+
+
+//für StandingOrders siehe Kommentare bei DatedTransfers
+int abt_job_ctrl::parseJobTypeCreateStandingOrder(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeDeleteStandingOrder(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeModifyStandingOrder(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeGetStandingOrders(const AB_JOB *j) {
+
+}
+
+
+//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
+//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
+int abt_job_ctrl::parseJobTypeTransfer(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeEuTransfer(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeSepaTransfer(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeInternalTransfer(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeDebitNote(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeSepaDebitNote(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeUnknown(const AB_JOB *j) {
+
+}
+
+
+int abt_job_ctrl::parseJobTypeGetBalance(const AB_JOB *j) {
+
+}
+
+int abt_job_ctrl::parseJobTypeGetTransactions(const AB_JOB *j) {
+
+}
+
+
+int abt_job_ctrl::parseJobTypeLoadCellPhone(const AB_JOB *j) {
+
+}
 
 
 

@@ -116,6 +116,9 @@ void abt_transaction::saveTransaction(AB_TRANSACTION *t, const QString &filename
 //static
 void abt_transaction::saveTransaction(const abt_transaction *t, const QString &filename)
 {
+
+	qWarning() << "OBSOLETE - abt_transaction::saveTransaction(abt_transaction, filename) - now use saveTransaction(abt_transaction, QSettings)";
+
 	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
 	// \todo Alle daten in der Datei speichern
 
