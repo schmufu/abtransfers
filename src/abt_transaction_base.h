@@ -329,23 +329,11 @@ public:
 	/**********************************************************************
 	 * Static Helper functions                                            *
 	 **********************************************************************/
-	//! speichert die Transaction in der ini-Datei \a filename
-	static void saveTransaction(const abt_transaction *t, const QString &filename);
-	//! \overload
-	static void saveTransaction(AB_TRANSACTION *t, const QString &filename);
 	//! speichert die Transaction in dem übergebenen QSettings \a s Objekt
 	static void saveTransaction(const abt_transaction *t, QSettings *s);
 	//! \overload
 	static void saveTransaction(AB_TRANSACTION *t, QSettings *s);
 
-
-	//! löscht die Transaction aus der ini-Datei \a filename
-	static void removeTransaction(const abt_transaction *t, const QString &filename);
-	//! \overload
-	static void removeTransaction(AB_TRANSACTION *t, const QString &filename);
-
-	static AB_TRANSACTION* loadTransaction(const QString &id);
-	static AB_TRANSACTION* loadTransaction(const QString &filename, const QString &id);
 	static abt_transaction* loadTransaction(const QSettings *s);
 
 };
