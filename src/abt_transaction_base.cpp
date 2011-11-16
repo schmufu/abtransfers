@@ -40,6 +40,7 @@
 
 abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 {
+	//Constructor for not constant object, which can be modified
 	if (t == NULL) {
 		//Keine Transaction übergeben, wir erstellen uns selber eine
 		this->aqb_transaction = AB_Transaction_new();
@@ -51,6 +52,21 @@ abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 		//Löschen nur auf Aufforderung (default: false)
 		this->FreeTransactionOnDelete = freeOnDelete;
 	}
+
+	this->aqb_transaction_C = this->aqb_transaction;
+}
+
+abt_transaction::abt_transaction(const AB_TRANSACTION *t)
+{
+	//Constructor for constant object, which can only be read!
+	Q_ASSERT(t != NULL);
+
+	this->aqb_transaction = NULL; //keine Änderbare Transaction vorhanden!
+	//Diese muss zum Schluss auch nicht wieder gelöscht werden
+	this->FreeTransactionOnDelete = false;
+
+	//Übergebene constant Transaction nutzen
+	this->aqb_transaction_C = t;
 }
 
 //copy constructor
@@ -58,6 +74,7 @@ abt_transaction::abt_transaction(const abt_transaction &abt_t)
 {
 	AB_TRANSACTION *t = AB_Transaction_dup(abt_t.getAB_Transaction());
 	this->aqb_transaction = t;
+	this->aqb_transaction_C = this->aqb_transaction;
 	//Wir haben die transaction neu erstellt, also müssen wir sie auch wieder löschen
 	this->FreeTransactionOnDelete = true;
 }
@@ -303,7 +320,7 @@ const QString abt_transaction::getLocalCountry() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalCountry(this->aqb_transaction));
+		AB_Transaction_GetLocalCountry(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -318,7 +335,7 @@ const QString abt_transaction::getLocalBankCode() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalBankCode(this->aqb_transaction));
+		AB_Transaction_GetLocalBankCode(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -333,7 +350,7 @@ const QString abt_transaction::getLocalBranchId() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalBranchId(this->aqb_transaction));
+		AB_Transaction_GetLocalBranchId(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -348,7 +365,7 @@ const QString abt_transaction::getLocalAccountNumber() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalAccountNumber(this->aqb_transaction));
+		AB_Transaction_GetLocalAccountNumber(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -363,7 +380,7 @@ const QString abt_transaction::getLocalSuffix() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalSuffix(this->aqb_transaction));
+		AB_Transaction_GetLocalSuffix(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -378,7 +395,7 @@ const QString abt_transaction::getLocalIban() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalIban(this->aqb_transaction));
+		AB_Transaction_GetLocalIban(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -393,7 +410,7 @@ const QString abt_transaction::getLocalName() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalName(this->aqb_transaction));
+		AB_Transaction_GetLocalName(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -408,7 +425,7 @@ const QString abt_transaction::getLocalBic() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetLocalBic(this->aqb_transaction));
+		AB_Transaction_GetLocalBic(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -427,7 +444,7 @@ const QString abt_transaction::getRemoteCountry() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteCountry(this->aqb_transaction));
+		AB_Transaction_GetRemoteCountry(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -442,7 +459,7 @@ const QString abt_transaction::getRemoteBankName() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteBankName(this->aqb_transaction));
+		AB_Transaction_GetRemoteBankName(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -457,7 +474,7 @@ const QString abt_transaction::getRemoteBankLocation() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteBankLocation(this->aqb_transaction));
+		AB_Transaction_GetRemoteBankLocation(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -472,7 +489,7 @@ const QString abt_transaction::getRemoteBankCode() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteBankCode(this->aqb_transaction));
+		AB_Transaction_GetRemoteBankCode(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -487,7 +504,7 @@ const QString abt_transaction::getRemoteBranchId() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteBranchId(this->aqb_transaction));
+		AB_Transaction_GetRemoteBranchId(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -502,7 +519,7 @@ const QString abt_transaction::getRemoteAccountNumber() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteAccountNumber(this->aqb_transaction));
+		AB_Transaction_GetRemoteAccountNumber(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -517,7 +534,7 @@ const QString abt_transaction::getRemoteSuffix() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteSuffix(this->aqb_transaction));
+		AB_Transaction_GetRemoteSuffix(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -532,7 +549,7 @@ const QString abt_transaction::getRemoteIban() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteIban(this->aqb_transaction));
+		AB_Transaction_GetRemoteIban(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -545,7 +562,7 @@ void abt_transaction::setRemoteIban(const QString &Iban)
 const QStringList abt_transaction::getRemoteName() const
 {
 	return abt_conv::GwenStringListToQStringList(
-			AB_Transaction_GetRemoteName(this->aqb_transaction));
+			AB_Transaction_GetRemoteName(this->aqb_transaction_C));
 }
 
 void abt_transaction::setRemoteName(const QStringList &Name)
@@ -561,7 +578,7 @@ const QString abt_transaction::getRemoteBic() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteBic(this->aqb_transaction));
+		AB_Transaction_GetRemoteBic(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -579,7 +596,7 @@ void abt_transaction::setRemoteBic(const QString &Bic)
 const QDate abt_transaction::getValutaDate() const
 {
 	const GWEN_TIME *gwen_date;
-	gwen_date = AB_Transaction_GetValutaDate(this->aqb_transaction);
+	gwen_date = AB_Transaction_GetValutaDate(this->aqb_transaction_C);
 
 	return abt_conv::GwenTimeToQDate(gwen_date);
 }
@@ -593,7 +610,7 @@ void abt_transaction::setValutaDate(const QDate &ValutaDate)
 const QDate abt_transaction::getDate() const
 {
 	const GWEN_TIME *gwen_date;
-	gwen_date = AB_Transaction_GetDate(this->aqb_transaction);
+	gwen_date = AB_Transaction_GetDate(this->aqb_transaction_C);
 
 	return abt_conv::GwenTimeToQDate(gwen_date);
 }
@@ -616,7 +633,7 @@ void abt_transaction::setDate(const QDate &Date)
 
 const AB_VALUE *abt_transaction::getValue() const
 {
-	return AB_Transaction_GetValue(this->aqb_transaction);
+	return AB_Transaction_GetValue(this->aqb_transaction_C);
 }
 
 void abt_transaction::setValue(const AB_VALUE *Value)
@@ -633,7 +650,7 @@ void abt_transaction::setValue(const AB_VALUE *Value)
  */
 int abt_transaction::getTextKey() const
 {
-	return AB_Transaction_GetTextKey(this->aqb_transaction);
+	return AB_Transaction_GetTextKey(this->aqb_transaction_C);
 }
 
 void abt_transaction::setTextKey(int TextKey)
@@ -643,7 +660,7 @@ void abt_transaction::setTextKey(int TextKey)
 
 int abt_transaction::getTextKeyExt() const
 {
-	return AB_Transaction_GetTextKeyExt(this->aqb_transaction);
+	return AB_Transaction_GetTextKeyExt(this->aqb_transaction_C);
 }
 
 void abt_transaction::setTextKeyExt(int TextKeyExt)
@@ -656,7 +673,7 @@ const QString abt_transaction::getTransactionKey() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetTransactionKey(this->aqb_transaction));
+		AB_Transaction_GetTransactionKey(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -671,7 +688,7 @@ const QString abt_transaction::getCustomerReference() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetCustomerReference(this->aqb_transaction));
+		AB_Transaction_GetCustomerReference(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -686,7 +703,7 @@ const QString abt_transaction::getBankReference() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetBankReference(this->aqb_transaction));
+		AB_Transaction_GetBankReference(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -701,7 +718,7 @@ const QString abt_transaction::getEndToEndReference() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetEndToEndReference(this->aqb_transaction));
+		AB_Transaction_GetEndToEndReference(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -716,7 +733,7 @@ const QString abt_transaction::getMandateReference() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetMandateReference(this->aqb_transaction));
+		AB_Transaction_GetMandateReference(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -731,7 +748,7 @@ const QString abt_transaction::getCreditorIdentifier() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetCreditorIdentifier(this->aqb_transaction));
+		AB_Transaction_GetCreditorIdentifier(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -746,7 +763,7 @@ const QString abt_transaction::getOriginatorIdentifier() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetOriginatorIdentifier(this->aqb_transaction));
+		AB_Transaction_GetOriginatorIdentifier(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -759,7 +776,7 @@ void abt_transaction::setOriginatorIdentifier(const QString &OriginatorIdentifie
 
 int abt_transaction::getTransactionCode() const
 {		
-	return AB_Transaction_GetTransactionCode(this->aqb_transaction);
+	return AB_Transaction_GetTransactionCode(this->aqb_transaction_C);
 }
 
 void abt_transaction::setTransactionCode(int TransactionCode)
@@ -773,7 +790,7 @@ const QString abt_transaction::getTransactionText() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetTransactionText(this->aqb_transaction));
+		AB_Transaction_GetTransactionText(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -788,7 +805,7 @@ const QString abt_transaction::getPrimanota() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetPrimanota(this->aqb_transaction));
+		AB_Transaction_GetPrimanota(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -803,7 +820,7 @@ const QString abt_transaction::getFiId() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetFiId(this->aqb_transaction));
+		AB_Transaction_GetFiId(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -816,7 +833,7 @@ void abt_transaction::setFiId(const QString &FiId)
 const QStringList abt_transaction::getPurpose() const
 {
 	return abt_conv::GwenStringListToQStringList(
-			AB_Transaction_GetPurpose(this->aqb_transaction));
+			AB_Transaction_GetPurpose(this->aqb_transaction_C));
 }
 
 void abt_transaction::setPurpose(const QStringList &Purpose)
@@ -829,7 +846,7 @@ void abt_transaction::setPurpose(const QStringList &Purpose)
 const QStringList abt_transaction::getCategory() const
 {
 	return abt_conv::GwenStringListToQStringList(
-			AB_Transaction_GetCategory(this->aqb_transaction));
+			AB_Transaction_GetCategory(this->aqb_transaction_C));
 }
 
 void abt_transaction::setCategory(const QStringList &Category)
@@ -847,7 +864,7 @@ void abt_transaction::setCategory(const QStringList &Category)
  */
 AB_TRANSACTION_PERIOD abt_transaction::getPeriod() const
 {
-	return AB_Transaction_GetPeriod(this->aqb_transaction);
+	return AB_Transaction_GetPeriod(this->aqb_transaction_C);
 }
 
 void abt_transaction::setPeriod(AB_TRANSACTION_PERIOD Period)
@@ -858,7 +875,7 @@ void abt_transaction::setPeriod(AB_TRANSACTION_PERIOD Period)
 
 int abt_transaction::getCycle() const
 {
-	return AB_Transaction_GetCycle(this->aqb_transaction);
+	return AB_Transaction_GetCycle(this->aqb_transaction_C);
 }
 
 void abt_transaction::setCycle(int Cycle)
@@ -868,7 +885,7 @@ void abt_transaction::setCycle(int Cycle)
 
 int abt_transaction::getExecutionDay() const
 {
-	return AB_Transaction_GetExecutionDay(this->aqb_transaction);
+	return AB_Transaction_GetExecutionDay(this->aqb_transaction_C);
 }
 
 void abt_transaction::setExecutionDay(int ExecutionDay)
@@ -880,7 +897,7 @@ void abt_transaction::setExecutionDay(int ExecutionDay)
 const QDate abt_transaction::getFirstExecutionDate() const
 {
 	const GWEN_TIME *gwen_date;
-	gwen_date = AB_Transaction_GetFirstExecutionDate(this->aqb_transaction);
+	gwen_date = AB_Transaction_GetFirstExecutionDate(this->aqb_transaction_C);
 
 	return abt_conv::GwenTimeToQDate(gwen_date);
 }
@@ -895,7 +912,7 @@ void abt_transaction::setFirstExecutionDate(const QDate &Date)
 const QDate abt_transaction::getLastExecutionDate() const
 {
 	const GWEN_TIME *gwen_date;
-	gwen_date = AB_Transaction_GetLastExecutionDate(this->aqb_transaction);
+	gwen_date = AB_Transaction_GetLastExecutionDate(this->aqb_transaction_C);
 
 	return abt_conv::GwenTimeToQDate(gwen_date);
 }
@@ -910,7 +927,7 @@ void abt_transaction::setLastExecutionDate(const QDate &Date)
 const QDate abt_transaction::getNextExecutionDate() const
 {
 	const GWEN_TIME *gwen_date;
-	gwen_date = AB_Transaction_GetNextExecutionDate(this->aqb_transaction);
+	gwen_date = AB_Transaction_GetNextExecutionDate(this->aqb_transaction_C);
 
 	return abt_conv::GwenTimeToQDate(gwen_date);
 }
@@ -931,7 +948,7 @@ void abt_transaction::setNextExecutionDate(const QDate &Date)
  */
 AB_TRANSACTION_TYPE abt_transaction::getType() const
 {
-	return AB_Transaction_GetType(this->aqb_transaction);
+	return AB_Transaction_GetType(this->aqb_transaction_C);
 }
 
 void abt_transaction::setType(AB_TRANSACTION_TYPE Type)
@@ -942,7 +959,7 @@ void abt_transaction::setType(AB_TRANSACTION_TYPE Type)
 
 AB_TRANSACTION_SUBTYPE abt_transaction::getSubType() const
 {
-	return AB_Transaction_GetSubType(this->aqb_transaction);
+	return AB_Transaction_GetSubType(this->aqb_transaction_C);
 }
 void abt_transaction::setSubType(AB_TRANSACTION_SUBTYPE SubType)
 {
@@ -952,7 +969,7 @@ void abt_transaction::setSubType(AB_TRANSACTION_SUBTYPE SubType)
 
 AB_TRANSACTION_STATUS abt_transaction::getStatus() const
 {
-	return AB_Transaction_GetStatus(this->aqb_transaction);
+	return AB_Transaction_GetStatus(this->aqb_transaction_C);
 }
 
 void abt_transaction::setStatus(AB_TRANSACTION_STATUS Status)
@@ -963,7 +980,7 @@ void abt_transaction::setStatus(AB_TRANSACTION_STATUS Status)
 
 AB_TRANSACTION_CHARGE abt_transaction::getCharge() const
 {
-	return AB_Transaction_GetCharge(this->aqb_transaction);
+	return AB_Transaction_GetCharge(this->aqb_transaction_C);
 }
 
 void abt_transaction::setCharge(AB_TRANSACTION_CHARGE Charge)
@@ -984,7 +1001,7 @@ const QString abt_transaction::getRemoteAddrStreet() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteAddrStreet(this->aqb_transaction));
+		AB_Transaction_GetRemoteAddrStreet(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -999,7 +1016,7 @@ const QString abt_transaction::getRemoteAddrZipcode() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteAddrZipcode(this->aqb_transaction));
+		AB_Transaction_GetRemoteAddrZipcode(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -1014,7 +1031,7 @@ const QString abt_transaction::getRemoteAddrCity() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemoteAddrCity(this->aqb_transaction));
+		AB_Transaction_GetRemoteAddrCity(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -1029,7 +1046,7 @@ const QString abt_transaction::getRemotePhone() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetRemotePhone(this->aqb_transaction));
+		AB_Transaction_GetRemotePhone(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -1052,7 +1069,7 @@ const QString abt_transaction::getUnitId() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetUnitId(this->aqb_transaction));
+		AB_Transaction_GetUnitId(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -1066,7 +1083,7 @@ const QString abt_transaction::getUnitIdNameSpace() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetUnitIdNameSpace(this->aqb_transaction));
+		AB_Transaction_GetUnitIdNameSpace(this->aqb_transaction_C));
 	return ret;
 }
 
@@ -1079,7 +1096,7 @@ void abt_transaction::setUnitIdNameSpace(const QString &UnitIdNameSpace)
 
 const AB_VALUE* abt_transaction::getUnits() const
 {
-	return AB_Transaction_GetUnits(this->aqb_transaction);
+	return AB_Transaction_GetUnits(this->aqb_transaction_C);
 }
 
 void abt_transaction::setUnits(const AB_VALUE *Units)
@@ -1090,7 +1107,7 @@ void abt_transaction::setUnits(const AB_VALUE *Units)
 
 const AB_VALUE* abt_transaction::getUnitPrice() const
 {
-	return AB_Transaction_GetUnitPrice(this->aqb_transaction);
+	return AB_Transaction_GetUnitPrice(this->aqb_transaction_C);
 }
 
 void abt_transaction::setUnitPrice(const AB_VALUE *UnitPrice)
@@ -1101,7 +1118,7 @@ void abt_transaction::setUnitPrice(const AB_VALUE *UnitPrice)
 
 const AB_VALUE* abt_transaction::getCommission() const
 {
-	return AB_Transaction_GetCommission(this->aqb_transaction);
+	return AB_Transaction_GetCommission(this->aqb_transaction_C);
 }
 
 void abt_transaction::setCommission(const AB_VALUE *Commission)
@@ -1114,7 +1131,7 @@ void abt_transaction::setCommission(const AB_VALUE *Commission)
  ***************************************/
 quint32 abt_transaction::getUniqueId() const
 {
-	return AB_Transaction_GetUniqueId(this->aqb_transaction);
+	return AB_Transaction_GetUniqueId(this->aqb_transaction_C);
 }
 void abt_transaction::setUniqueId(quint32 id)
 {
@@ -1123,7 +1140,7 @@ void abt_transaction::setUniqueId(quint32 id)
 
 quint32 abt_transaction::getIdForApplication() const
 {
-	return AB_Transaction_GetIdForApplication(this->aqb_transaction);
+	return AB_Transaction_GetIdForApplication(this->aqb_transaction_C);
 }
 void abt_transaction::setIdForApplication(quint32 id)
 {
@@ -1132,7 +1149,7 @@ void abt_transaction::setIdForApplication(quint32 id)
 
 quint32 abt_transaction::getGroupId() const
 {
-	return AB_Transaction_GetGroupId(this->aqb_transaction);
+	return AB_Transaction_GetGroupId(this->aqb_transaction_C);
 }
 void abt_transaction::setGroupId(quint32 id)
 {
@@ -1141,7 +1158,7 @@ void abt_transaction::setGroupId(quint32 id)
 
 const AB_VALUE* abt_transaction::getFees() const
 {
-	return AB_Transaction_GetFees(this->aqb_transaction);
+	return AB_Transaction_GetFees(this->aqb_transaction_C);
 }
 void abt_transaction::setFees(const AB_VALUE* value)
 {

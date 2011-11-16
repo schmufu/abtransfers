@@ -56,9 +56,11 @@ private:
 
 protected:
 	AB_TRANSACTION* aqb_transaction;
+	const AB_TRANSACTION* aqb_transaction_C;
 
 public:
 	abt_transaction(AB_TRANSACTION *t = NULL, bool freeOnDelete = false);
+	abt_transaction(const AB_TRANSACTION *t);
 	abt_transaction(const abt_transaction &abt_t); //copy contructor
 	~abt_transaction();
 

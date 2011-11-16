@@ -327,9 +327,9 @@ void abt_settings::saveDatedTransfer(const abt_transaction *t)
 	this->Settings->endGroup();
 }
 
-void abt_settings::saveDatedTransfer(AB_TRANSACTION *t)
+void abt_settings::saveDatedTransfer(const AB_TRANSACTION *t)
 {
-	const abt_transaction *trans = new abt_transaction(t, false);
+	const abt_transaction *trans = new abt_transaction(t);
 	this->saveDatedTransfer(trans);
 	delete trans;
 }

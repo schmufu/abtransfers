@@ -86,7 +86,7 @@ public:
 	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
 
 	void saveDatedTransfer(const abt_transaction *t);
-	void saveDatedTransfer(AB_TRANSACTION *t);
+	void saveDatedTransfer(const AB_TRANSACTION *t);
 	void deleteDatedTransfer(const abt_transaction *t);
 	void deleteDatedTransfer(AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
