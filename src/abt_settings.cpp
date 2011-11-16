@@ -204,6 +204,47 @@ QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QStrin
 	return List;
 }
 
+/**
+ * the returned pointer must be freed by the calling function!
+ */
+QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
+{
+	return this->getStandingOrdersForAccount(a->Number(), a->BankCode());
+}
+
+/**
+ * the returned pointer must be freed by the calling function!
+ */
+QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
+								 const QString &BLZ)
+{
+	const QString SOMainKey = "StandingOrders/" + BLZ + "/" + KtoNr;
+	this->Settings->beginGroup(SOMainKey);
+
+	QStringList SO_IDs = this->Settings->childGroups();
+	this->Settings->endGroup();
+
+	//Jetzt stehen in SO_IDs alle IDs von StandingOrders die zu dem
+	//angegebenen paar von KtoNr und BLZ gehören.
+
+	qDebug() << "childGroups von " << KtoNr << " = " << SO_IDs;
+
+
+	abt_StandingInfo *StandingInfo;
+	QList<abt_StandingInfo*> *List = new QList<abt_DatedInfo*>;
+
+	foreach(const QString ID, SO_IDs) {
+		const QString SOKey = SOMainKey + "/" + ID;
+		this->Settings->beginGroup(SOKey);
+		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
+		StandingInfo = new abt_StandingInfo(trans);
+		List->append(StandingInfo);
+		this->Settings->endGroup();
+	}
+
+	return List;
+}
+
 void abt_settings::saveStandingOrdersForAccount(const QStringList &SOIDs,
 				     const QString &KtoNr, const QString &BLZ)
 {
@@ -313,7 +354,7 @@ void abt_settings::saveDatedTransfersForAccount(const QStringList &DTIDs,
 						const QString &KtoNr,
 						const QString &BLZ)
 {
-	qWarning() << "OBSOLETE - abt_settings::saveDatedTransfersForAccount()";
+	qWarning() << "OBSOLETE" << Q_FUNC_INFO << "- now use abt_settings::saveDatedTransfer()";
 	this->Settings->beginGroup("DatedTransfers");
 	QString key = KtoNr + "_" + BLZ;
 	this->Settings->setValue(key, DTIDs);

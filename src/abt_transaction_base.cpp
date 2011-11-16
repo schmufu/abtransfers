@@ -117,7 +117,7 @@ void abt_transaction::saveTransaction(AB_TRANSACTION *t, const QString &filename
 void abt_transaction::saveTransaction(const abt_transaction *t, const QString &filename)
 {
 
-	qWarning() << "OBSOLETE - abt_transaction::saveTransaction(abt_transaction, filename) - now use saveTransaction(abt_transaction, QSettings)";
+	qWarning() << "OBSOLETE" << Q_FUNC_INFO << "- now use saveTransaction(abt_transaction, QSettings)";
 
 	//ist glaube ich erledigt (Patrick Wacker 24.08.2011)
 	// \todo Alle daten in der Datei speichern
@@ -226,6 +226,23 @@ void abt_transaction::saveTransaction(const abt_transaction *t, const QString &f
 	delete s;
 }
 
+
+/**
+ * Die Werte der Transaction \a t werden in dem QSettings Objekt gespeichert.
+ * Die eingestellte Group von \a s wird nicht verändert!
+ */
+//static
+void abt_transaction::saveTransaction(AB_TRANSACTION *t, QSettings *s)
+{
+	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
+	const abt_transaction *trans = new abt_transaction(t, false);
+	//und dieses dann speichern
+	abt_transaction::saveTransaction(trans, s);
+	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
+	delete trans;
+}
+
+
 /**
  * Die Werte der Transaction \a t werden in dem QSettings Objekt gespeichert.
  * Die eingestellte Group von \a s wird nicht verändert!
@@ -318,14 +335,14 @@ void abt_transaction::saveTransaction(const abt_transaction *t, QSettings *s)
 //static
 AB_TRANSACTION* abt_transaction::loadTransaction(const QString &id)
 {
-	qWarning() << "OBSOLETE - abt_transaction::loadTransaction(id) - now use loadTransaction(filename, id)";
+	qWarning() << "OBSOLETE" << Q_FUNC_INFO << "- now use loadTransaction(filename, id)";
 	return abt_transaction::loadTransaction("Dauerauftraege.ini", id);
 }
 
 //static
 AB_TRANSACTION* abt_transaction::loadTransaction(const QString &filename, const QString &id)
 {
-	qWarning() << "OBSOLETE - abt_transaction::loadTransaction(filename, id) - now use loadTransaction(QSettings)";
+	qWarning() << "OBSOLETE" << Q_FUNC_INFO << "- now use loadTransaction(QSettings)";
 	QSettings *s;
 	QString myFilename;
 	myFilename.append(settings->getDataDir());

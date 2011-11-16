@@ -335,6 +335,8 @@ public:
 	static void saveTransaction(AB_TRANSACTION *t, const QString &filename);
 	//! speichert die Transaction in dem übergebenen QSettings \a s Objekt
 	static void saveTransaction(const abt_transaction *t, QSettings *s);
+	//! \overload
+	static void saveTransaction(AB_TRANSACTION *t, QSettings *s);
 
 
 	//! löscht die Transaction aus der ini-Datei \a filename
