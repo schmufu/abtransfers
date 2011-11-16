@@ -182,40 +182,14 @@ const QString *abt_settings::getDataDir() const
 
 
 
-QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
-							 const QString &BLZ)
-{
-	QStringList DA_IDs;
-	this->Settings->beginGroup("Dauerauftraege");
-	QString key = KtoNr + "_" + BLZ;
-	DA_IDs = this->Settings->value(key).toStringList();
-	this->Settings->endGroup();
 
-	abt_StandingInfo *DAInfo;
-	QList<abt_StandingInfo*> *List = new QList<abt_StandingInfo*>;
 
-	for (int i=0; i<DA_IDs.size(); ++i) {
-		AB_TRANSACTION *t = abt_transaction::loadTransaction("Dauerauftraege.ini", DA_IDs.at(i));
-		abt_transaction *trans = new abt_transaction(t, true);
-		DAInfo = new abt_StandingInfo(trans);
-		List->append(DAInfo);
-	}
-
-	return List;
-}
-
-/**
- * the returned pointer must be freed by the calling function!
- */
-QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
+QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
 {
 	return this->getStandingOrdersForAccount(a->Number(), a->BankCode());
 }
 
-/**
- * the returned pointer must be freed by the calling function!
- */
-QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
+QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
 								 const QString &BLZ)
 {
 	const QString SOMainKey = "StandingOrders/" + BLZ + "/" + KtoNr;
@@ -231,7 +205,7 @@ QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const QString &
 
 
 	abt_StandingInfo *StandingInfo;
-	QList<abt_StandingInfo*> *List = new QList<abt_DatedInfo*>;
+	QList<abt_StandingInfo*> *List = new QList<abt_StandingInfo*>;
 
 	foreach(const QString ID, SO_IDs) {
 		const QString SOKey = SOMainKey + "/" + ID;
@@ -245,13 +219,44 @@ QList<abt_DatedInfo*> *abt_settings::getStandingOrdersForAccount(const QString &
 	return List;
 }
 
-void abt_settings::saveStandingOrdersForAccount(const QStringList &SOIDs,
-				     const QString &KtoNr, const QString &BLZ)
+void abt_settings::saveStandingOrder(const abt_transaction *t)
 {
-	this->Settings->beginGroup("Dauerauftraege");
-	QString key = KtoNr + "_" + BLZ;
-	this->Settings->setValue(key, SOIDs);
+	const QString BLZ = t->getLocalBankCode();
+	const QString KtoNr = t->getLocalAccountNumber();
+	const QString ID = t->getFiId();
+	const QString SOGroup = "StandingOrders/" + BLZ + "/" + KtoNr + "/" + ID;
+
+	this->Settings->beginGroup(SOGroup);
+
+	abt_transaction::saveTransaction(t, this->Settings);
+
 	this->Settings->endGroup();
+}
+
+void abt_settings::saveStandingOrder(AB_TRANSACTION *t)
+{
+	const abt_transaction *trans = new abt_transaction(t, false);
+	this->saveStandingOrder(trans);
+	delete trans;
+}
+
+void abt_settings::deleteStandingOrder(const abt_transaction *t)
+{
+	const QString BLZ = t->getLocalBankCode();
+	const QString KtoNr = t->getLocalAccountNumber();
+	const QString ID = t->getFiId();
+	const QString SOGroup = "StandingOrders/" + BLZ + "/" + KtoNr + "/" + ID;
+
+	this->Settings->beginGroup(SOGroup);
+	this->Settings->remove("");	//Aktuelle Gruppe löschen
+	this->Settings->endGroup();
+}
+
+void abt_settings::deleteStandingOrder(AB_TRANSACTION *t)
+{
+	const abt_transaction *trans = new abt_transaction(t, false);
+	this->deleteStandingOrder(trans);
+	delete trans;
 }
 
 //static
@@ -268,11 +273,15 @@ void abt_settings::freeStandingOrdersList(QList<abt_StandingInfo*> *list)
 
 
 
+
+
+
+
+
 QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const aqb_AccountInfo *a)
 {
 	return this->getDatedTransfersForAccount(a->Number(), a->BankCode());
 }
-
 
 QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
 								 const QString &BLZ)
@@ -302,65 +311,7 @@ QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &
 	}
 
 	return List;
-
-//
-//	//Alle Transactions aus der Terminueberweisungen.ini holen
-//	QSettings *s;
-//	QString myFilename;
-//	const QString filename = "Terminueberweisungen.ini";
-//	myFilename.append(settings->getDataDir());
-//	myFilename.append(filename);
-//
-//	s = new QSettings(myFilename, QSettings::IniFormat);
-//
-//	QStringList DT_IDs;
-//	DT_IDs = s->childGroups();
-//	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs;
-//	delete s; //wird nicht länger benötigt
-//
-//	abt_DatedInfo *DatedInfo;
-//	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
-//
-//	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs << "  --  nach delete s";
-//
-//	for (int i=0; i<DT_IDs.size(); ++i) {
-//		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
-//		abt_transaction *trans = new abt_transaction(t, true);
-//		DatedInfo = new abt_DatedInfo(trans);
-//		List->append(DatedInfo);
-//	}
-
-
-//	QStringList DT_IDs;
-//	this->Settings->beginGroup("DatedTransfers");
-//	QString key = KtoNr + "_" + BLZ;
-//	DT_IDs = this->Settings->value(key).toStringList();
-//	this->Settings->endGroup();
-//
-//	abt_DatedInfo *DatedInfo;
-//	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
-//
-//	for (int i=0; i<DT_IDs.size(); ++i) {
-//		AB_TRANSACTION *t = abt_transaction::loadTransaction("Terminueberweisungen.ini", DT_IDs.at(i));
-//		abt_transaction *trans = new abt_transaction(t, true);
-//		DatedInfo = new abt_DatedInfo(trans);
-//		List->append(DatedInfo);
-//	}
-//
-//	return List;
 }
-
-void abt_settings::saveDatedTransfersForAccount(const QStringList &DTIDs,
-						const QString &KtoNr,
-						const QString &BLZ)
-{
-	qWarning() << "OBSOLETE" << Q_FUNC_INFO << "- now use abt_settings::saveDatedTransfer()";
-	this->Settings->beginGroup("DatedTransfers");
-	QString key = KtoNr + "_" + BLZ;
-	this->Settings->setValue(key, DTIDs);
-	this->Settings->endGroup();
-}
-
 
 void abt_settings::saveDatedTransfer(const abt_transaction *t)
 {

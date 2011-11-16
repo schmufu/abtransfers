@@ -67,18 +67,24 @@ public:
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
 	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
-	//! Speichert alle Einträge der Liste für den entsprechenden Account
-	void saveStandingOrdersForAccount(const QStringList &SOIDs, const QString &KtoNr, const QString &BLZ);
+	//! \overload
+	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
+
+	void saveStandingOrder(const abt_transaction *t);
+	void saveStandingOrder(AB_TRANSACTION *t);
+	void deleteStandingOrder(const abt_transaction *t);
+	void deleteStandingOrder(AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
 	static void freeStandingOrdersList(QList<abt_StandingInfo*> *list);
+
+
 
 	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
 	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
 	//! \overload
 	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
-	//! Speichert alle Einträge der Liste für den entsprechenden Account
-	void saveDatedTransfersForAccount(const QStringList &DTIDs, const QString &KtoNr, const QString &BLZ);
+
 	void saveDatedTransfer(const abt_transaction *t);
 	void saveDatedTransfer(AB_TRANSACTION *t);
 	void deleteDatedTransfer(const abt_transaction *t);

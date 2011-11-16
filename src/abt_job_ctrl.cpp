@@ -1370,8 +1370,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		this->addlog(QString(
 			"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
 			).arg(AB_Transaction_GetFiId(t)));
-		abt_transaction::saveTransaction(t, "Dauerauftraege.ini");
-		DAIDs.append(QString::fromUtf8(AB_Transaction_GetFiId(t)));
+		settings->saveStandingOrder(t);
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
 
@@ -1379,16 +1378,17 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		  wurden. Somit werden alle vorhandenen DAs gelöscht!
 		  Es muss nur gespeichert werden wenn auch DAs empfangen wurden!
 	*/
-	if (DAIDs.size() > 0) {
-		//Die lokal gespeicherten DAs auch in den Einstellungen merken.
-		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
-		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+//	if (DAIDs.size() > 0) {
+//		//Die lokal gespeicherten DAs auch in den Einstellungen merken.
+//		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+//		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+//
+//		settings->saveStandingOrdersForAccount(DAIDs, KtoNr, BLZ);
+//
+//
+//	}
 
-		settings->saveStandingOrdersForAccount(DAIDs, KtoNr, BLZ);
-
-		emit this->standingOrdersParsed();
-	}
-
+	emit this->standingOrdersParsed();
 	return cnt;
 
 }
