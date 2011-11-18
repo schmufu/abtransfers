@@ -1619,7 +1619,10 @@ int abt_job_ctrl::parseJobTypeCreateDatedTransfer(const AB_JOB *j) {
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - saving DatedTransfer" << AB_Transaction_GetFiId(t);
-		settings->saveDatedTransfer(t);
+
+		//Die hier vorhandene Transaktion hat keine FiId!!!!!!
+		//settings->saveDatedTransfer(t);
+
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
@@ -1680,6 +1683,7 @@ int abt_job_ctrl::parseJobTypeDeleteDatedTransfer(const AB_JOB *j) {
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
+		settings->deleteDatedTransfer(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored

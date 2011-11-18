@@ -56,6 +56,13 @@ abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 	this->aqb_transaction_C = this->aqb_transaction;
 }
 
+/**
+ * this constructor must only be used with a const Object! !
+ * \code
+ * const abt_transaction *t = new abt_transaction(CONST_AB_TRANSACTION_PTR);
+ * \endcode
+ * NEVER leave the const away!!!
+ */
 abt_transaction::abt_transaction(const AB_TRANSACTION *t)
 {
 	//Constructor for constant object, which can only be read!
