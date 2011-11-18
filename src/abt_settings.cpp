@@ -39,18 +39,24 @@
 abt_settings::abt_settings(QObject *parent) :
 	QObject(parent)
 {
+	QString defValue;
+
 	this->Settings = new QSettings(QDir::homePath() + "/.ab_transfers/settings.ini",
 				       QSettings::IniFormat, this);
 	this->Settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
 
 	this->EmpfaengerList = new QList<abt_EmpfaengerInfo*>;
 
-	this->knownEmpfaengerFilename =
-		this->Settings->value("Main/EmpfaengerFileName", QDir::homePath() +
-				      "/.ab_transfers/knownEmpfaenger.txt").toString();
 
-	this->m_dataDir = this->Settings->value("Main/DataDir", QDir::homePath() +
-						"/.ab_transfers/").toString();
+	defValue = QDir::homePath() + "/.ab_transfers/knownEmpfaenger.txt";
+	defValue = QDir::toNativeSeparators(defValue);
+	this->knownEmpfaengerFilename =
+		this->Settings->value("Main/EmpfaengerFileName", defValue).toString();
+
+	defValue = QDir::homePath() + "/.ab_transfers/";
+	defValue = QDir::toNativeSeparators(defValue);
+	this->m_dataDir = this->Settings->value("Main/DataDir", defValue).toString();
+
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
 }
@@ -68,42 +74,45 @@ abt_settings::~abt_settings()
 
 	delete this->m_textKeyDescr;
 
-	this->Settings->beginGroup("TextKeyDescriptionsDEFAULT");
-	this->Settings->setValue("hint", "Dies kann kopiert werden um vernuenftige Eintraege zu erstellen");
-	this->Settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
-	this->Settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
-	this->Settings->setValue("51", "Überweisung");
-	this->Settings->setValue("52", "Dauerauftrags-Überweisung");
-	this->Settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
-	this->Settings->setValue("54", "Vermögenswirksame Leistung (VL)");
-	this->Settings->setValue("56", "Überweisung öffentlicher Kassen");
-	this->Settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
-	this->Settings->setValue("69", "Spendenüberweisung");
-	this->Settings->endGroup();
-
-
 	//Einstellungen in der ini-Datei speichern
 	this->Settings->setValue("Main/EmpfaengerFileName",
 				 this->knownEmpfaengerFilename);
-	this->Settings->setValue("Main/DataDir",
-				 this->m_dataDir);
+	this->Settings->setValue("Main/DataDir", this->m_dataDir);
+
 	//und danach das Object wieder löschen
 	delete this->Settings;
 }
 
 void abt_settings::loadTextKeyDescriptions()
 {
-	if (this->m_textKeyDescr != NULL) {
-		this->m_textKeyDescr->clear();
-	} else {
+	if (this->m_textKeyDescr == NULL) {
 		this->m_textKeyDescr = new QHash<int, QString>;
 	}
+
+	this->m_textKeyDescr->clear();
+
+	if (!this->Settings->childGroups().contains("TextKeyDescriptions")) {
+		//TextKexDescriptions noch unbekannt, default werte setzen
+		this->Settings->beginGroup("TextKeyDescriptions");
+		this->Settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
+		this->Settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
+		this->Settings->setValue("51", "Überweisung");
+		this->Settings->setValue("52", "Dauerauftrags-Überweisung");
+		this->Settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
+		this->Settings->setValue("54", "Vermögenswirksame Leistung (VL)");
+		this->Settings->setValue("56", "Überweisung öffentlicher Kassen");
+		this->Settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
+		this->Settings->setValue("69", "Spendenüberweisung");
+		this->Settings->endGroup();
+	}
+	
 	this->Settings->beginGroup("TextKeyDescriptions");
-	QStringList all = this->Settings->allKeys();
-	foreach (QString key, all) { //for (int i=0; i<all.size(); ++i) {
+	//Alle Schlüssel durchgehen und deren Werte in einem QHash Speichern
+	foreach (QString key, this->Settings->allKeys()) {
 		QString text = this->Settings->value(key, tr("Unbekannt")).toString();
 		this->m_textKeyDescr->insert(key.toInt(), text);
 	}
+
 	this->Settings->endGroup();
 }
 
