@@ -34,6 +34,16 @@
 #include <QtGui/QLayout>
 #include <QtGui/QTextBlock>
 
+
+/*! todo: wenn der Text:
+		shirt orange, grafik schwarz	(28 Zeichen)
+	eingegeben wird erfolgt KEIN automatischer Umbruch!!!
+	wenn dagegen
+		SHIRT ORANGE, GRAFIK SCHWARZ
+	eingegeben wird erfolgt bei der eingabe von Z ein automatischer Umbruch!
+	--> evt alles in Großbuchstaben wandeln!
+*/
+
 widgetPurpose::widgetPurpose(QWidget *parent) :
 	QWidget(parent)
 {
@@ -49,9 +59,10 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	this->maxLength = 27;
 	this->maxLines = 4;
 	this->updateStatusLabel();
+	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
 	this->textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
 	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
-	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
+
 	this->textEdit->installEventFilter(this);
 
 	QVBoxLayout *layout = new QVBoxLayout();
