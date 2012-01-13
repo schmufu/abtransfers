@@ -35,13 +35,14 @@
 #include <QtGui/QTextBlock>
 
 
-/*! todo: wenn der Text:
-		shirt orange, grafik schwarz	(28 Zeichen)
-	eingegeben wird erfolgt KEIN automatischer Umbruch!!!
-	wenn dagegen
-		SHIRT ORANGE, GRAFIK SCHWARZ
-	eingegeben wird erfolgt bei der eingabe von Z ein automatischer Umbruch!
-	--> evt alles in Großbuchstaben wandeln!
+/*! \bug
+ wenn der Text:
+	shirt orange, grafik schwarz	(28 Zeichen)
+ eingegeben wird erfolgt KEIN automatischer Umbruch!!!
+ wenn dagegen
+	SHIRT ORANGE, GRAFIK SCHWARZ
+ eingegeben wird erfolgt bei der eingabe von Z ein automatischer Umbruch!
+ --> evt alles in Großbuchstaben wandeln!
 */
 
 widgetPurpose::widgetPurpose(QWidget *parent) :
