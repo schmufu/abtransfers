@@ -93,6 +93,9 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	this->dateNext = new widgetDate(tr("nächste Ausf."), Qt::AlignTop, this);
 	this->dateNext->setReadOnly(true);
 
+	connect(this->dateFirst, SIGNAL(dateChanged(QDate)),
+		this, SLOT(setNextExecutionDay(QDate)));
+
 	QGridLayout *layout = new QGridLayout();
 	layout->addLayout(cycleLayout, 0, 0, 1, -1,Qt::AlignCenter);
 	layout->addWidget(this->dateFirst, 1, 0, Qt::AlignCenter);

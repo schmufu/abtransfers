@@ -59,6 +59,9 @@ widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget 
 	connect(this->dateEdit->calendarWidget(), SIGNAL(currentPageChanged(int,int)),
 		this, SLOT(calenderPopupPageChanged(int,int)));
 
+	connect(this->dateEdit, SIGNAL(dateChanged(QDate)),
+		this, SLOT(dateEditDateChanged(QDate)));
+
 	this->label = new QLabel(labelText, this);
 
 	QBoxLayout *layout = NULL;
@@ -171,6 +174,12 @@ void widgetDate::calenderPopupPageChanged(int year, int month)
 			cal->setDateTextFormat(QDate(year,month,day), ActiveFormat);
 		}
 	}
+}
+
+//private slot
+void widgetDate::dateEditDateChanged(QDate newDate) const
+{
+	emit this->dateChanged(newDate);
 }
 
 //public

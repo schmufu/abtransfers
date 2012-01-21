@@ -792,6 +792,12 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
+
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
+		//nach dem erstellen muss eine Aktualisierung stattfinden.
+		this->addGetStandingOrders(acc, true);
+	}
+
 }
 
 //SLOT
@@ -823,6 +829,12 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_
 	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
+
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
+		//nach dem ändern muss eine Aktualisierung stattfinden.
+		this->addGetStandingOrders(acc, true);
+	}
+
 }
 
 //SLOT
@@ -857,7 +869,7 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_
 }
 
 //SLOT
-void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc)
+void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
 {
 	int rv;
 
@@ -884,7 +896,9 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc)
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
-	emit this->jobAdded(ji);
+	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+		emit this->jobAdded(ji);
+	}
 	emit this->jobQueueListChanged();
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
@@ -1307,16 +1321,6 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 		emit this->datedTransfersParsed();
 	}
 
-//	QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
-//	QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
-//
-//	if (DTIDsNew.size() > 0) {
-//		//Die lokal gespeicherten DatedTransfers auch in den Einstellungen merken.
-//		settings->saveDatedTransfersForAccount(DTIDsNew, KtoNr, BLZ);
-//
-//		emit this->datedTransfersParsed();
-//	}
-
 	return cnt;
 }
 
@@ -1393,27 +1397,44 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 		logmsg2.append(strList.join(" - "));
 		this->addlog(logmsg + logmsg2);
 
-		//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
-		this->addlog(QString(
-			"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
-			).arg(AB_Transaction_GetFiId(t)));
-		settings->saveStandingOrder(t);
+
+		switch (AB_Transaction_GetStatus(t)) {
+		case AB_Transaction_StatusRevoked:
+			//Bei der Bank hinterlegter Dauerauftrag wurde gelöscht
+			this->addlog(QString(
+				"Lösche bei der Bank gelöschten Dauerauftrag (ID: %1)"
+				).arg(AB_Transaction_GetFiId(t)));
+			//löscht die Transaction in der settings.ini
+			settings->deleteStandingOrder(t);
+			break;
+		case AB_Transaction_StatusManuallyReconciled:
+		case AB_Transaction_StatusAutoReconciled:
+			//Bei der Bank hinterlegter Dauerauftrag wurde geändert
+			this->addlog(QString(
+				"Speichere bei der Bank geänderten Dauerauftrag (ID: %1)"
+				).arg(AB_Transaction_GetFiId(t)));
+			//einfach löschen und dann neu speichern
+			//die neue Transaction hat eine neue ID bekommen, wir
+			//müssen die alte löschen und dann die neue Speichern!
+
+			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
+			//-->die alte wird durch parseJobTypeModifyStandingOrder() gelöscht
+			//settings->deleteDatedTransfer(t);
+			//neue Transaction speichern
+			settings->saveStandingOrder(t);
+			break;
+		default:
+			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
+			this->addlog(QString(
+				"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
+				).arg(AB_Transaction_GetFiId(t)));
+			settings->saveStandingOrder(t);
+			break;
+		}
+
+
 		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 	}
-
-	/* DONE   Das Speichern wird auch ausgeführt wenn keine DAs empfangen
-		  wurden. Somit werden alle vorhandenen DAs gelöscht!
-		  Es muss nur gespeichert werden wenn auch DAs empfangen wurden!
-	*/
-//	if (DAIDs.size() > 0) {
-//		//Die lokal gespeicherten DAs auch in den Einstellungen merken.
-//		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
-//		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
-//
-//		settings->saveStandingOrdersForAccount(DAIDs, KtoNr, BLZ);
-//
-//
-//	}
 
 	emit this->standingOrdersParsed();
 	return cnt;
@@ -1669,7 +1690,7 @@ int abt_job_ctrl::parseJobTypeCreateDatedTransfer(const AB_JOB *j) {
 		//Job has been sent, a response has been received, and everything
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - saving DatedTransfer" << AB_Transaction_GetFiId(t);
+		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
 
 		//Die hier vorhandene Transaktion hat keine FiId!!!!!!
 		//settings->saveDatedTransfer(t);
@@ -1975,7 +1996,8 @@ int abt_job_ctrl::parseJobTypeDeleteStandingOrder(const AB_JOB *j) {
 		//Job has been sent, a response has been received, and everything
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
+		settings->deleteStandingOrder(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
@@ -2033,7 +2055,11 @@ int abt_job_ctrl::parseJobTypeModifyStandingOrder(const AB_JOB *j) {
 		//Job has been sent, a response has been received, and everything
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
+		//Wir löschen einfach den übertragenen Transfer, der neue steckt
+		//im ctx und wird später durch parseCtx gespeichert.
+		settings->deleteDatedTransfer(t);
+
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored

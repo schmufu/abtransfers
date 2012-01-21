@@ -71,9 +71,9 @@ public:
 	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
 
 	void saveStandingOrder(const abt_transaction *t);
-	void saveStandingOrder(AB_TRANSACTION *t);
+	void saveStandingOrder(const AB_TRANSACTION *t);
 	void deleteStandingOrder(const abt_transaction *t);
-	void deleteStandingOrder(AB_TRANSACTION *t);
+	void deleteStandingOrder(const AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
 	static void freeStandingOrdersList(QList<abt_StandingInfo*> *list);
 

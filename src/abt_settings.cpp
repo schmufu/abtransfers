@@ -242,9 +242,9 @@ void abt_settings::saveStandingOrder(const abt_transaction *t)
 	this->Settings->endGroup();
 }
 
-void abt_settings::saveStandingOrder(AB_TRANSACTION *t)
+void abt_settings::saveStandingOrder(const AB_TRANSACTION *t)
 {
-	const abt_transaction *trans = new abt_transaction(t, false);
+	const abt_transaction *trans = new abt_transaction(t);
 	this->saveStandingOrder(trans);
 	delete trans;
 }
@@ -261,9 +261,9 @@ void abt_settings::deleteStandingOrder(const abt_transaction *t)
 	this->Settings->endGroup();
 }
 
-void abt_settings::deleteStandingOrder(AB_TRANSACTION *t)
+void abt_settings::deleteStandingOrder(const AB_TRANSACTION *t)
 {
-	const abt_transaction *trans = new abt_transaction(t, false);
+	const abt_transaction *trans = new abt_transaction(t);
 	this->deleteStandingOrder(trans);
 	delete trans;
 }

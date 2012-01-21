@@ -68,9 +68,11 @@ public:
 	QDate getDate() const;
 
 signals:
+	void dateChanged(const QDate newDate) const;
 
 private slots:
 	void calenderPopupPageChanged(int year, int month);
+	void dateEditDateChanged(const QDate newDate) const;
 
 public slots:
 	void setDate(const QDate &date);
