@@ -163,8 +163,14 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 		struct tm tmtime;
 		tmtime = GWEN_Time_toTm(gwentime);
 		date.setDate(tmtime.tm_year+1900, tmtime.tm_mon+1, tmtime.tm_mday);
+		qDebug() << "Year:" << tmtime.tm_year+1900
+			 << "Month:" << tmtime.tm_mon+1
+			 << "Day:" << tmtime.tm_mday
+			 << "Hour:" << tmtime.tm_hour
+			 << "Minute:" << tmtime.tm_min
+			 << "Sec:" << tmtime.tm_sec;
 	} else {
-		date.setDate(2011,2,30); //invalid Date wenn gwen_date==NULL
+		date.setDate(2011,2,30); //invalid Date wenn gwentime==NULL
 	}
 
 	return date;
@@ -178,8 +184,9 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
 	GWEN_TIME *gwt;
-	gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 10, 0, 0, 0);
+	gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 0);
 	abt_conv::gwen_timelist->append(gwt);
+	qDebug() << "GWEN_TIME created! Address:" << gwt;
 	return gwt;
 }
 

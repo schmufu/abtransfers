@@ -1090,8 +1090,11 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 	t->setCycle(sender->recurrence->getCycle());
 	t->setPeriod(sender->recurrence->getPeriod());
 	t->setExecutionDay(sender->recurrence->getExecutionDay());
+	t->setDate(sender->recurrence->getFirstExecutionDate());
+	t->setValutaDate(sender->recurrence->getFirstExecutionDate());
 	t->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
 	t->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
+	t->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
 
 	this->jobctrl->addCreateStandingOrder(acc, t);
 
@@ -1188,6 +1191,7 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 	newT->setExecutionDay(sender->recurrence->getExecutionDay());
 	newT->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
 	newT->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
+	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
 
 	this->jobctrl->addModifyStandingOrder(acc, newT);
 
