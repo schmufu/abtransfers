@@ -370,6 +370,17 @@
     <property name="title">
      <string>Datei</string>
     </property>
+    <addaction name="actionEinstellungen"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <widget class="QMenu" name="menuTEST">
+    <property name="title">
+     <string>TEST</string>
+    </property>
+    <addaction name="actionAddGetDAs"/>
+    <addaction name="actionAddGetDated"/>
+    <addaction name="actionExecQueued"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -379,14 +390,6 @@
     <addaction name="separator"/>
     <addaction name="actionAbout_Qt"/>
     <addaction name="actionAbout_abTransfers"/>
-   </widget>
-   <widget class="QMenu" name="menuTEST">
-    <property name="title">
-     <string>TEST</string>
-    </property>
-    <addaction name="actionAddGetDAs"/>
-    <addaction name="actionAddGetDated"/>
-    <addaction name="actionExecQueued"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHelp"/>
@@ -423,10 +426,37 @@
     <string>ExecQueued</string>
    </property>
   </action>
+  <action name="actionEinstellungen">
+   <property name="text">
+    <string>Einstellungen</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionBeenden</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

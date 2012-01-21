@@ -55,6 +55,9 @@ public:
 	const QStringList* getInfo() const;
 	AB_JOB *getJob() const;
 
+	const QString getKontoNr() const;
+	const QString getBLZ() const;
+
 	static QString createJobInfoString(const abt_transaction *t);
 };
 
@@ -117,6 +120,7 @@ private:
 
 	bool checkJobStatus(AB_JOB_LIST2 *jl);
 
+	bool isJobTypeInQueue(const AB_JOB_TYPE type, const abt_job_info *ji) const;
 
 	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
 	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
@@ -152,7 +156,7 @@ public slots:
 	void addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
-	void addGetDatedTransfers(const aqb_AccountInfo *acc);
+	void addGetDatedTransfers(const aqb_AccountInfo *acc, bool withoutInfo = false);
 
 	void addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t);

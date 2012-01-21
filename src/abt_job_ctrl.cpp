@@ -103,6 +103,16 @@ AB_JOB *abt_job_info::getJob() const
 	return this->job;
 }
 
+const QString abt_job_info::getKontoNr() const
+{
+	return QString(AB_Account_GetAccountNumber(AB_Job_GetAccount(this->job)));
+}
+const QString abt_job_info::getBLZ() const
+{
+	return QString(AB_Account_GetBankCode(AB_Job_GetAccount(this->job)));
+}
+
+
 //static
 QString abt_job_info::createJobInfoString(const abt_transaction *t)
 {
@@ -591,6 +601,13 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
+
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji)) {
+		//nach dem erstellen muss eine Aktualisierung stattfinden.
+		this->addGetDatedTransfers(acc, true);
+	}
+
+
 }
 
 //SLOT
@@ -642,6 +659,12 @@ void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
+
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji)) {
+		//nach dem ändern muss eine Aktualisierung stattfinden.
+		this->addGetDatedTransfers(acc, true);
+	}
+
 }
 
 //SLOT
@@ -697,7 +720,7 @@ void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_
 }
 
 //SLOT
-void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc)
+void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
 {
 	int rv;
 
@@ -725,7 +748,9 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc)
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
 	this->jobqueue->append(ji);
-	emit this->jobAdded(ji);
+	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+		emit this->jobAdded(ji);
+	}
 	emit this->jobQueueListChanged();
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
@@ -1072,12 +1097,13 @@ bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
 
 	ai=AB_ImExporterContext_GetFirstAccountInfo(ctx);
 	while(ai) {
+		//Beim Anlegen einer Terminüberweisung wird hierher nicht verzweigt!
 		this->parseImExporterAccountInfo_Status(ai);
-		this->parseImExporterAccountInfo_DatedTransfers(ai);
-		this->parseImExporterAccountInfo_NotedTransactions(ai);
-		this->parseImExporterAccountInfo_StandingOrders(ai);
-		this->parseImExporterAccountInfo_Transactions(ai);
-		this->parseImExporterAccountInfo_Transfers(ai);
+		this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
+		this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
+		this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
+		this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
+		this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
 
 		ai=AB_ImExporterContext_GetNextAccountInfo(ctx);
 	} /* while ai */
@@ -1258,6 +1284,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 			//müssen die alte löschen und dann die neue Speichern!
 
 			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
+			//-->die alte wird durch parseJobTypeModifyDatedTransfer() gelöscht
 			//settings->deleteDatedTransfer(t);
 			//neue Transaction speichern
 			settings->saveDatedTransfer(t);
@@ -1519,6 +1546,30 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 	return res;
 }
 
+/** prüft ob ein job vom typ \a type in der queuelist vorhanden ist und ob
+  dieser Job auch für dasselbe Konto wie der Job \a ji ist.
+
+  Kann genutzt werden um zu überprüfen ob bereits ein Aktualisierungs-Job
+  in der queuelist vorhanden ist oder nicht. */
+bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_job_info *ji) const
+{
+	//Kontrollieren ob ein AktualisierungsAuftrag bereits vorhanden ist
+
+	for(int i=0; i<this->jobqueue->size(); i++) {
+		//jiiq = JobInfoInQueue
+		const abt_job_info *jiiq = this->jobqueue->at(i);
+
+		if (jiiq->getAbJobType() == type) {
+			//job ist vorhanden, ist er auch für dasselbe Konto?
+			if ((jiiq->getKontoNr() == ji->getKontoNr()) &&
+			    (jiiq->getBLZ() == ji->getBLZ())) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
 
 /** verschiebt den Job von \a jobListPos um \a updown nach oben oder unten */
 //public slot
@@ -1744,7 +1795,10 @@ int abt_job_ctrl::parseJobTypeModifyDatedTransfer(const AB_JOB *j) {
 		//Job has been sent, a response has been received, and everything
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
+		//Wir löschen einfach den übertragenen Transfer, der neue steckt
+		//im ctx und wird später durch parseCtx gespeichert.
+		settings->deleteDatedTransfer(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
