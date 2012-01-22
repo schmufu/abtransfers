@@ -653,6 +653,31 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		if (allEmpty) {
 			errorMsg.append(tr(" - Verwendungszweck fehlt<br />"));
 		}
+
+		//Überprüfung das keine Zeile länger ist als erlaubt
+		QList<int> tooLong;
+		for (int i=0; i<purpose.size(); ++i) {
+			if (purpose.at(i).length() > this->m_limits->MaxLenPurpose) {
+				tooLong.append(i+1);
+			}
+		}
+		if (!tooLong.isEmpty()) {
+			QString colNum;
+			for(int i=0; i<tooLong.size(); ++i) {
+				if (i == tooLong.size()-1) {
+					colNum.append(QString("%1").arg(i+1));
+				} else {
+					colNum.append(QString("%1, ").arg(i+1));
+				}
+			}
+
+			if (tooLong.size() == 1) {
+				errorMsg.append(tr(" - Verwendungszweckzeile %1 ist zu lang<br />").arg(colNum));
+			} else {
+				errorMsg.append(tr(" - Verwendungszweckzeilen %1 sind zu lang<br />").arg(colNum));
+			}
+		}
+
 	} else {
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> Verwendungszweck Widget fehlt!<br />"));
 	}

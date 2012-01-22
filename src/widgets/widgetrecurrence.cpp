@@ -417,6 +417,8 @@ int widgetRecurrence::getExecutionDay() const
 		qWarning("Conversion from ComboBoxIndex to int not Successfull!");
 	}
 
+	return 1; //return default if conversion failed
+
 }
 
 //public slot

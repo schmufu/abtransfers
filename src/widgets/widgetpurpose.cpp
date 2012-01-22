@@ -49,7 +49,7 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	QWidget(parent)
 {
 	this->textEdit = new QTextEdit(this);
-	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen in %4 Zeilen übrig]"));
+	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen übrig]"));
 	this->statusLabel = new QLabel(this);
 	QFont labelFont(this->statusLabel->font());
 	labelFont.setPointSize(7);
@@ -63,6 +63,9 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
 	this->textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
 	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
+	this->textEdit->setAcceptRichText(false);
+	this->textEdit->document()->defaultTextOption().setUseDesignMetrics(true);
+	this->textEdit->document()->defaultTextOption().setWrapMode(QTextOption::WordWrap);
 
 	this->textEdit->installEventFilter(this);
 
@@ -102,6 +105,7 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 
 //	qDebug() << "Eingabe:" << ev->key() << "Zeichen:" << ev->text();
 
+	//ev->setModifiers(Qt::ShiftModifier);
 	if (regex.indexIn(ev->text()) != -1) { //Zeichen ist erlaubt!
 		return false;
 	}
@@ -136,12 +140,20 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 //private
 void widgetPurpose::updateStatusLabel()
 {
+	int remainingChars = (this->maxLines * this->maxLength) -
+			     this->textEdit->toPlainText().length();
+
+	int linecnt = 0;
+	for (int block=0; block < this->textEdit->document()->blockCount(); ++block) {
+		linecnt += this->textEdit->document()->findBlockByNumber(block).layout()->lineCount();
+	}
+
 	this->statusLabel->setText(
-			this->statusString->arg(
-				this->maxLines).arg(
-				this->maxLength).arg(
-				(this->maxLines*this->maxLength)-
-				this->textEdit->toPlainText().length()));
+			this->statusString
+				->arg(this->maxLines)
+				.arg(this->maxLength)
+				.arg(remainingChars)
+				.arg(this->maxLines - linecnt));
 
 }
 
@@ -160,7 +172,7 @@ QStringList widgetPurpose::getPurpose() const
 	//qDebug() << "blockCnt:" << blockCnt;
 	for (int block=0; block<blockCnt; ++block) {
 		//qDebug() << "block:" << block;
-		QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
+		const QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
 		int lineCnt = textBlock->layout()->lineCount();
 		//qDebug() << "lineCnt:" << lineCnt;
 		for (int line=0; line<lineCnt; ++line) {
@@ -184,7 +196,15 @@ bool widgetPurpose::hasChanges() const
 //private slot
 void widgetPurpose::plainTextEdit_TextChanged()
 {
+	//Test um alles in UpperCase zu haben, der Cursor versetzt sich
+	//beim löschen von Zeichen aber immer wieder ans Ende
+//	this->textEdit->blockSignals(true);
+//	//would be a recursive loop!
+//	QTextCursor oldpos = this->textEdit->textCursor();
+//	this->textEdit->setPlainText(this->textEdit->toPlainText().toUpper());
 	this->updateStatusLabel();
+//	this->textEdit->setTextCursor(oldpos);
+//	this->textEdit->blockSignals(false);
 }
 
 //public slot
