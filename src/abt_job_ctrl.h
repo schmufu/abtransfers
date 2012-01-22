@@ -170,4 +170,9 @@ public slots:
 
 };
 
+Q_DECLARE_METATYPE(abt_job_info*);
+Q_DECLARE_METATYPE(const abt_job_info*);
+//qRegisterMetaType<const abt_job_info*>("const abt_job_info*");
+
+
 #endif // ABT_JOB_CTRL_H

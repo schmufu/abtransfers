@@ -132,17 +132,32 @@ void Page_Ausgang::refreshTreeWidget()
 		return; //fertig
 	}
 
-	//! \todo der Status des Items sollte erhalten bleiben (expanded/selected)
-	this->ui->treeWidget->clear(); //erstmal alle löschen
+	// der Status des Items soll erhalten bleiben (expanded/selected)
+	// alle expandierten abt_job_info Adressen in einer Liste speichern
+	QList<const abt_job_info*> expanded;
+	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
+		if (this->ui->treeWidget->topLevelItem(i)->isExpanded()) {
+			QVariant tliVar = this->ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole);
+			expanded.append(tliVar.value<abt_job_info*>());
+		}
+
+	}
+
+	this->ui->treeWidget->clear(); //alle Items löschen
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 
-	for (int i=0; i<this->jobctrl->jobqueueList()->size(); ++i) {
+	const QList<abt_job_info*> *jql = this->jobctrl->jobqueueList();
+	for (int i=0; i<jql->size(); ++i) {
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole, tr("%1").arg(i+1));
-		topItem->setData(1, Qt::DisplayRole, this->jobctrl->jobqueueList()->at(i)->getType());
-		topItem->setData(2, Qt::DisplayRole, this->jobctrl->jobqueueList()->at(i)->getStatus());
+		topItem->setData(1, Qt::DisplayRole, jql->at(i)->getType());
+		topItem->setData(2, Qt::DisplayRole, jql->at(i)->getStatus());
+		//Die Adresse des abt_job_info Objects in der UserRole merken
+		QVariant var;
+		var.setValue(jql->at(i));
+		topItem->setData(0, Qt::UserRole, var);
 
-		JobInfo = this->jobctrl->jobqueueList()->at(i)->getInfo();
+		JobInfo = jql->at(i)->getInfo();
 		for (int j=0; j<JobInfo->size(); j++) {
 			item = new QTreeWidgetItem();
 			item->setData(0, Qt::DisplayRole, "");
@@ -152,6 +167,11 @@ void Page_Ausgang::refreshTreeWidget()
 		}
 
 		ui->treeWidget->addTopLevelItem(topItem);
+
+		//den zustand wie vor dem refresh wieder herstellen
+		if (expanded.contains(jql->at(i))) {
+			topItem->setExpanded(true);
+		}
 
 		if (this->selectedItem == i) {
 			//die vorherige Selection wieder herstellen
