@@ -100,7 +100,7 @@ private:
 public:
 	AB_TRANSACTION_PERIOD getPeriod() const	{ return (AB_TRANSACTION_PERIOD)this->radio_group->checkedId(); };
 	int getCycle() const { return this->spinBox->value(); };
-	int getExecutionDay() const { return this->comboBox->currentIndex()+1; };
+	int getExecutionDay() const;
 	const QDate getFirstExecutionDate() const { return this->dateFirst->getDate(); };
 	const QDate getLastExecutionDate() const { return this->dateLast->getDate(); };
 	const QDate getNextExecutionDate() const { return this->dateNext->getDate(); };

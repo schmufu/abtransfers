@@ -283,7 +283,7 @@ void widgetRecurrence::updateComboBoxItems(int period)
 				break;
 			default:
 				itemtext = QString("%1").arg(day);
-				itemhint.clear();
+				itemhint = QString("Immer am %1. des Monats").arg(day);
 				break;
 			}
 
@@ -403,6 +403,21 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 	this->spinBox->blockSignals(false); //Signals wieder zulässig
 }
 
+
+//public
+int widgetRecurrence::getExecutionDay() const
+{
+	bool convOK = false;
+	int cbidx = this->comboBox->currentIndex();
+	int cbValue = this->comboBox->itemData(cbidx, Qt::UserRole).toInt(&convOK);
+
+	if (convOK) {
+		return cbValue;
+	} else {
+		qWarning("Conversion from ComboBoxIndex to int not Successfull!");
+	}
+
+}
 
 //public slot
 void widgetRecurrence::setPeriod(AB_TRANSACTION_PERIOD period)
