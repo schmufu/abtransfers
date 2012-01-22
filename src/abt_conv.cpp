@@ -160,15 +160,24 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 {
 	QDate date;
 	if (gwentime) {
-		struct tm tmtime;
-		tmtime = GWEN_Time_toTm(gwentime);
-		date.setDate(tmtime.tm_year+1900, tmtime.tm_mon+1, tmtime.tm_mday);
-		qDebug() << "Year:" << tmtime.tm_year+1900
-			 << "Month:" << tmtime.tm_mon+1
-			 << "Day:" << tmtime.tm_mday
-			 << "Hour:" << tmtime.tm_hour
-			 << "Minute:" << tmtime.tm_min
-			 << "Sec:" << tmtime.tm_sec;
+		GWEN_BUFFER *gbuf = GWEN_Buffer_new(NULL, 100, 0, 0);
+
+		GWEN_Time_toUtcString(gwentime, "YYYYMMDD", gbuf);
+		std::string stdDatetime(GWEN_Buffer_GetStart(gbuf));
+		QString strDate = QString::fromStdString(stdDatetime);
+		qDebug() << "StringFromGwenTime: " << strDate;
+		date = QDate::fromString(strDate, "yyyyMMdd");
+		GWEN_Buffer_free(gbuf);
+
+//		struct tm tmtime;
+//		tmtime = GWEN_Time_toTm(gwentime);
+//		date.setDate(tmtime.tm_year+1900, tmtime.tm_mon+1, tmtime.tm_mday);
+//		qDebug() << "Year:" << tmtime.tm_year+1900
+//			 << "Month:" << tmtime.tm_mon+1
+//			 << "Day:" << tmtime.tm_mday
+//			 << "Hour:" << tmtime.tm_hour
+//			 << "Minute:" << tmtime.tm_min
+//			 << "Sec:" << tmtime.tm_sec;
 	} else {
 		date.setDate(2011,2,30); //invalid Date wenn gwentime==NULL
 	}
@@ -184,9 +193,21 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
 	GWEN_TIME *gwt;
-	gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 0);
+	QString datestr;
+	datestr = QString("%1%2%3")
+		  .arg(date.year(), 4, 10, QLatin1Char('0'))
+		  .arg(date.month(), 2, 10, QLatin1Char('0'))
+		  .arg(date.day(), 2, 10, QLatin1Char('0'));
+
+	datestr.append("-12:00");
+	qDebug() << "QString Date: " << datestr;
+
+	gwt = GWEN_Time_fromUtcString(datestr.toStdString().c_str(), "YYYYMMDD-hh:mm");
+	//gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 1);
+
 	abt_conv::gwen_timelist->append(gwt);
 	qDebug() << "GWEN_TIME created! Address:" << gwt;
+	qDebug() << "GWEN_TIME debug - Date=" << abt_conv::GwenTimeToQDate(gwt);
 	return gwt;
 }
 

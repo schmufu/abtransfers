@@ -784,6 +784,13 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 
 	//Create Info
 	QString info = abt_job_info::createJobInfoString(t);
+	info.append(";");
+	info.append("Date: " + t->getDate().toString() + ";");
+	info.append("FirstDate: " + t->getFirstExecutionDate().toString() + ";");
+	info.append("LastDate: " + t->getLastExecutionDate().toString() + ";");
+	info.append("NextDate: " + t->getNextExecutionDate().toString() + ";");
+	info.append(QString("Cycle: %1;").arg(t->getCycle()));
+	info.append(QString("Tag: %1;").arg(t->getExecutionDay()));
 
 	abt_job_info *ji = new abt_job_info(job, info);
 
