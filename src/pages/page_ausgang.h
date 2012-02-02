@@ -78,10 +78,7 @@ private slots:
 	void onActionUpTriggered();
 	void onActionDownTriggered();
 
-	void on_pushButton_del_clicked();
 	void on_treeWidget_customContextMenuRequested(QPoint pos);
-	void on_pushButton_down_clicked();
-	void on_pushButton_up_clicked();
 	void on_treeWidget_itemSelectionChanged();
 };
 

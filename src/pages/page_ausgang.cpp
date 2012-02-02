@@ -44,16 +44,20 @@ Page_Ausgang::Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent) :
 {
 	ui->setupUi(this);
 	this->jobctrl = jobctrl;
+	this->createAllActions();
 
 	this->refreshTreeWidget();
 
-	//Alle Buttons disablen, werden aktiviert wenn sie sinnvoll sind.
-	this->ui->pushButton_del->setEnabled(false);
-	this->ui->pushButton_down->setEnabled(false);
-	this->ui->pushButton_up->setEnabled(false);
 	this->ui->pushButton_exec->setEnabled(false);
 
-	this->createAllActions();
+	this->on_treeWidget_itemSelectionChanged(); //en-/disable actions and buttons
+
+	connect(this->ui->pushButton_del, SIGNAL(clicked()),
+		this->actDelete, SLOT(trigger()));
+	connect(this->ui->pushButton_up, SIGNAL(clicked()),
+		this->actUp, SLOT(trigger()));
+	connect(this->ui->pushButton_down, SIGNAL(clicked()),
+		this->actDown, SLOT(trigger()));
 
 	connect(ui->pushButton_exec, SIGNAL(clicked()),
 		this->jobctrl, SLOT(execQueuedTransactions()));
@@ -70,6 +74,11 @@ Page_Ausgang::~Page_Ausgang()
 		   this->jobctrl, SLOT(execQueuedTransactions()));
 	disconnect(this->jobctrl, SIGNAL(jobQueueListChanged()),
 		   this, SLOT(refreshTreeWidget()));
+
+	delete this->actDelete;
+	delete this->actEdit;
+	delete this->actDown;
+	delete this->actUp;
 }
 
 void Page_Ausgang::changeEvent(QEvent *e)
@@ -231,10 +240,15 @@ void Page_Ausgang::on_treeWidget_itemSelectionChanged()
 	this->ui->pushButton_del->setEnabled(enabled);
 	this->ui->pushButton_up->setEnabled(enabled);
 	this->ui->pushButton_down->setEnabled(enabled);
+
+	this->actUp->setEnabled(enabled);
+	this->actDown->setEnabled(enabled);
+	this->actEdit->setEnabled(enabled);
+	this->actDelete->setEnabled(enabled);
 }
 
 /** Den aktuell ausgewählten Eintrag um 1 nach oben verschieben */
-void Page_Ausgang::on_pushButton_up_clicked()
+void Page_Ausgang::onActionUpTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
 	//repräsentiert auch gleichzeitig die Position in der jobqueliste
@@ -245,14 +259,8 @@ void Page_Ausgang::on_pushButton_up_clicked()
 	this->jobctrl->moveJob(itemNr, -1);
 }
 
-/** Den aktuell ausgewählten Eintrag um 1 nach oben verschieben */
-void Page_Ausgang::onActionUpTriggered()
-{
-	this->on_pushButton_up_clicked();
-}
-
 /** Den aktuell ausgewählten Eintrag um 1 nach unten verschieben */
-void Page_Ausgang::on_pushButton_down_clicked()
+void Page_Ausgang::onActionDownTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
 	//repräsentiert auch gleichzeitig die Position in der jobqueliste
@@ -263,15 +271,8 @@ void Page_Ausgang::on_pushButton_down_clicked()
 	this->jobctrl->moveJob(itemNr, 1);
 }
 
-/** Den aktuell ausgewählten Eintrag um 1 nach unten verschieben */
-void Page_Ausgang::onActionDownTriggered()
-{
-	this->on_pushButton_down_clicked();
-}
-
-
 /** Den aktuell ausgewählten Eintrag löschen */
-void Page_Ausgang::on_pushButton_del_clicked()
+void Page_Ausgang::onActionDeleteTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
 	//repräsentiert auch gleichzeitig die Position in der jobqueliste
@@ -291,12 +292,6 @@ void Page_Ausgang::on_pushButton_del_clicked()
 	}
 
 	this->jobctrl->deleteJob(itemNr);
-}
-
-/** Den aktuell ausgewählten Eintrag löschen */
-void Page_Ausgang::onActionDeleteTriggered()
-{
-	this->on_pushButton_del_clicked();
 }
 
 
