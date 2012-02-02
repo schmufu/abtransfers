@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTreeWidgetItem>
+#include <QMenu>
 #include "../abt_conv.h"
 #include "../abt_settings.h"
 
@@ -51,6 +52,8 @@ Page_Ausgang::Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent) :
 	this->ui->pushButton_down->setEnabled(false);
 	this->ui->pushButton_up->setEnabled(false);
 	this->ui->pushButton_exec->setEnabled(false);
+
+	this->createAllActions();
 
 	connect(ui->pushButton_exec, SIGNAL(clicked()),
 		this->jobctrl, SLOT(execQueuedTransactions()));
@@ -86,6 +89,40 @@ void Page_Ausgang::resizeEvent(QResizeEvent *event)
 	this->setTreeWidgetColWidths();
 	QFrame::resizeEvent(event);
 }
+
+//private
+void Page_Ausgang::createAllActions()
+{
+	this->actDelete = new QAction(this);
+	this->actDelete->setText(tr("Löschen"));
+	this->actDelete->setToolTip(tr("Ausgewählten Job löschen"));
+	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+	connect(this->actDelete, SIGNAL(triggered()),
+		this, SLOT(onActionDeleteTriggered()));
+
+	this->actEdit = new QAction(this);
+	this->actEdit->setText(tr("Ändern"));
+	this->actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
+	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
+	connect(this->actEdit, SIGNAL(triggered()),
+		this, SLOT(onActionEditTriggered()));
+
+	this->actUp = new QAction(this);
+	this->actUp->setText(tr("Auf"));
+	this->actUp->setToolTip(tr("Ausgewählten Job nach oben verschieben"));
+	this->actUp->setIcon(QIcon(":/icons/up"));
+	connect(this->actUp, SIGNAL(triggered()),
+		this, SLOT(onActionUpTriggered()));
+
+	this->actDown = new QAction(this);
+	this->actDown->setText(tr("Ab"));
+	this->actDown->setToolTip(tr("Ausgewählten Job nach unten verschieben"));
+	this->actDown->setIcon(QIcon(":/icons/down"));
+	connect(this->actDown, SIGNAL(triggered()),
+		this, SLOT(onActionDownTriggered()));
+
+}
+
 
 void Page_Ausgang::setDefaultTreeWidgetHeader()
 {
@@ -208,6 +245,12 @@ void Page_Ausgang::on_pushButton_up_clicked()
 	this->jobctrl->moveJob(itemNr, -1);
 }
 
+/** Den aktuell ausgewählten Eintrag um 1 nach oben verschieben */
+void Page_Ausgang::onActionUpTriggered()
+{
+	this->on_pushButton_up_clicked();
+}
+
 /** Den aktuell ausgewählten Eintrag um 1 nach unten verschieben */
 void Page_Ausgang::on_pushButton_down_clicked()
 {
@@ -219,6 +262,13 @@ void Page_Ausgang::on_pushButton_down_clicked()
 	this->selectedItem = itemNr+1;
 	this->jobctrl->moveJob(itemNr, 1);
 }
+
+/** Den aktuell ausgewählten Eintrag um 1 nach unten verschieben */
+void Page_Ausgang::onActionDownTriggered()
+{
+	this->on_pushButton_down_clicked();
+}
+
 
 /** Den aktuell ausgewählten Eintrag löschen */
 void Page_Ausgang::on_pushButton_del_clicked()
@@ -243,3 +293,32 @@ void Page_Ausgang::on_pushButton_del_clicked()
 	this->jobctrl->deleteJob(itemNr);
 }
 
+/** Den aktuell ausgewählten Eintrag löschen */
+void Page_Ausgang::onActionDeleteTriggered()
+{
+	this->on_pushButton_del_clicked();
+}
+
+
+/** Den aktuell ausgewählten Eintrag bearbeiten */
+void Page_Ausgang::onActionEditTriggered()
+{
+	/** \todo must be implemented */
+}
+
+void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
+{
+	//Context-Menu zum Ändern/Löschen/Rauf/runter anzeigen
+	bool dis = this->ui->treeWidget->selectedItems().size() == 0;
+	this->actEdit->setDisabled(dis);
+	this->actDelete->setDisabled(dis);
+	this->actUp->setDisabled(dis);
+	this->actDown->setDisabled(dis);
+
+	QMenu *contextMenu = new QMenu();
+	contextMenu->addAction(this->actUp);
+	contextMenu->addAction(this->actDown);
+	contextMenu->addAction(this->actEdit);
+	contextMenu->addAction(this->actDelete);
+	contextMenu->exec(this->ui->treeWidget->viewport()->mapToGlobal(pos));
+}

@@ -32,6 +32,7 @@
 #define PAGE_AUSGANG_H
 
 #include <QFrame>
+#include <QAction>
 #include "../abt_job_ctrl.h"
 
 namespace Ui {
@@ -44,8 +45,14 @@ private:
 	abt_job_ctrl *jobctrl;
 	int selectedItem; //!< temporaly var for the currently selected item
 
+	QAction *actEdit;
+	QAction *actDelete;
+	QAction *actUp;
+	QAction *actDown;
+
 	void setDefaultTreeWidgetHeader();
 	void setTreeWidgetColWidths();
+	void createAllActions();
 
 public:
 	Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent = 0);
@@ -66,7 +73,13 @@ public slots:
 
 
 private slots:
+	void onActionDeleteTriggered();
+	void onActionEditTriggered();
+	void onActionUpTriggered();
+	void onActionDownTriggered();
+
 	void on_pushButton_del_clicked();
+	void on_treeWidget_customContextMenuRequested(QPoint pos);
 	void on_pushButton_down_clicked();
 	void on_pushButton_up_clicked();
 	void on_treeWidget_itemSelectionChanged();
