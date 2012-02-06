@@ -1060,7 +1060,7 @@ bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEX
 		//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
 		case AB_Job_TypeTransfer:
 			this->parseJobTypeTransfer(j);
-
+			break;
 		case AB_Job_TypeEuTransfer:
 			this->parseJobTypeEuTransfer(j);
 			break;
