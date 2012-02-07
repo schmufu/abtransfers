@@ -298,7 +298,32 @@ void Page_Ausgang::onActionDeleteTriggered()
 /** Den aktuell ausgewählten Eintrag bearbeiten */
 void Page_Ausgang::onActionEditTriggered()
 {
-	/** \todo must be implemented */
+	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
+	//repräsentiert auch gleichzeitig die Position in der jobqueliste
+	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
+
+	QMessageBox msg;
+	msg.setIcon(QMessageBox::Question);
+	msg.setWindowTitle(tr("Aufrag Bearbeiten"));
+	msg.setText(tr("Die löscht den ausgewählten Auftrag aus dem Ausgang"
+		       "und öffnet Ihn zum Bearbeiten.\n"
+		       "Wenn der Auftrag beim Bearbeiten nicht mit Speichern"
+		       "beendet wird, wird dieser gelöscht!\n"
+		       "Soll der Auftrag bearbeitet werden?"));
+	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	msg.setDefaultButton(QMessageBox::Yes);
+
+	int ret = msg.exec();
+
+	if (ret != QMessageBox::Yes) {
+		return; //Abbruch
+	}
+
+	abt_job_info *job = this->jobctrl->jobqueueList()->at(itemNr);
+
+	emit edit_Job(job);
+
+	this->jobctrl->deleteJob(itemNr);
 }
 
 void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)

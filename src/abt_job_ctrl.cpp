@@ -103,6 +103,69 @@ AB_JOB *abt_job_info::getJob() const
 	return this->job;
 }
 
+const abt_transaction* abt_job_info::getAbtTransaction() const
+{
+	const AB_TRANSACTION *t = NULL;
+
+	switch (this->getAbJobType()) {
+	case AB_Job_TypeCreateDatedTransfer:
+		t = AB_JobCreateDatedTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeCreateStandingOrder:
+		t = AB_JobCreateStandingOrder_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeDebitNote:
+		t = AB_JobSingleDebitNote_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeDeleteDatedTransfer:
+		t = AB_JobDeleteDatedTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeDeleteStandingOrder:
+		t = AB_JobDeleteStandingOrder_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeEuTransfer:
+		t = AB_JobEuTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeGetBalance:
+		break;
+	case AB_Job_TypeGetDatedTransfers:
+		break;
+	case AB_Job_TypeGetStandingOrders:
+		break;
+	case AB_Job_TypeGetTransactions:
+		break;
+	case AB_Job_TypeInternalTransfer:
+		t = AB_JobInternalTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeLoadCellPhone:
+		break;
+	case AB_Job_TypeModifyDatedTransfer:
+		t = AB_JobModifyDatedTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeModifyStandingOrder:
+		t = AB_JobModifyStandingOrder_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeSepaDebitNote:
+		break;
+	case AB_Job_TypeSepaTransfer:
+		t = AB_JobSepaTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeTransfer:
+		t = AB_JobSingleTransfer_GetTransaction(this->job);
+		break;
+	case AB_Job_TypeUnknown:
+		t = NULL;
+		break;
+	}
+
+	if (t == NULL) {
+		return NULL;
+	}
+
+	const abt_transaction *trans = new abt_transaction(t);
+	return trans;
+}
+
 const QString abt_job_info::getKontoNr() const
 {
 	return QString(AB_Account_GetAccountNumber(AB_Job_GetAccount(this->job)));
@@ -1633,6 +1696,7 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 		qWarning().nospace() << "abt_job_ctrl::deleteJob - JobListPos ["
 				<< JobListPos << "] is greater than the jobqueue->size() ["
 				<< this->jobqueue->size() << "] (or less than zero)";
+		return; //cancel remove, job doesnt exist!
 	}
 
 	abt_job_info *jobinfo;

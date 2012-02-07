@@ -159,6 +159,9 @@ private slots:
 	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
 
+
+	void onEditJobFromOutbox(const abt_job_info* job);
+
 };
 
 #endif // MAINWINDOW_H

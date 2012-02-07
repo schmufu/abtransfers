@@ -100,6 +100,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
+	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
+	connect(this->outw, SIGNAL(edit_Job(const abt_job_info*)),
+		this, SLOT(onEditJobFromOutbox(const abt_job_info*)));
+
 	//Default-Entry Überweisung auswählen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 
@@ -521,6 +525,7 @@ void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current, QLis
 	if (!current)
 		current = previous;
 
+	qDebug() << Q_FUNC_INFO << "current changed to:" << current;
 	this->ui->stackedWidget->setCurrentIndex(this->ui->listWidget->row(current));
 }
 
@@ -983,7 +988,45 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
 }
 
+//private Slot
+void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
+{
+	widgetTransfer *transW;
+	const aqb_AccountInfo *acc = NULL;
 
+	QString jobAccBankcode, jobAccNumber;
+	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
+	jobAccNumber =AB_Account_GetAccountNumber(AB_Job_GetAccount(job->getJob()));
+
+	//Wir suchen den Account der zu dem bereits erstellten Job gehört
+	QHashIterator<int, aqb_AccountInfo*> i(this->accounts->getAccountHash());
+	//Alle Accounts durchgehen
+	while (i.hasNext()) {
+		i.next();
+		if ((i.value()->BankCode() == jobAccBankcode) &&
+		    (i.value()->Number() == jobAccNumber)) {
+			//we found the account
+			acc = i.value();
+			break; //leave while, we have the account
+		}
+	}
+
+	if (acc == NULL) {
+		//account not found
+		qWarning() << Q_FUNC_INFO << "account from the job not found, aborting";
+		return;
+	}
+
+	AB_JOB_TYPE jobtype = job->getAbJobType();
+
+	transW = this->createTransferWidgetAndAddTab(job->getAbJobType(), acc);
+
+	transW->setValuesFromTransaction(job->getAbtTransaction());
+
+	//den neuen tab gleich darstellen
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
+
+}
 
 
 //private

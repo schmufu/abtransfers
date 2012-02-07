@@ -55,6 +55,8 @@ public:
 	const QStringList* getInfo() const;
 	AB_JOB *getJob() const;
 
+	const abt_transaction* getAbtTransaction() const;
+
 	const QString getKontoNr() const;
 	const QString getBLZ() const;
 

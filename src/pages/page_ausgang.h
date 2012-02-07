@@ -67,6 +67,7 @@ private:
 
 signals:
 	void Execute_Clicked();
+	void edit_Job(const abt_job_info* job);
 
 public slots:
 	void refreshTreeWidget();
