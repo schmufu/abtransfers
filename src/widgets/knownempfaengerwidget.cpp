@@ -138,7 +138,10 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/knownEmpfaenger"));
 
-	Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+	drag->exec(Qt::CopyAction);
+	//evt. später auch den return wert auswerten um zu wissen was mit dem
+	//Drag-Objekt gemacht wurde
+	//Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 
 	//qDebug() << this << "dropAction" << dropAction;
 }

@@ -71,7 +71,6 @@ public slots:
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();
- void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 };
 
 #endif // BANKACCOUNTSWIDGET_H

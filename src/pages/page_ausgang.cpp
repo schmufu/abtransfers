@@ -305,10 +305,10 @@ void Page_Ausgang::onActionEditTriggered()
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);
 	msg.setWindowTitle(tr("Aufrag Bearbeiten"));
-	msg.setText(tr("Die löscht den ausgewählten Auftrag aus dem Ausgang"
-		       "und öffnet Ihn zum Bearbeiten.\n"
-		       "Wenn der Auftrag beim Bearbeiten nicht mit Speichern"
-		       "beendet wird, wird dieser gelöscht!\n"
+	msg.setText(tr("Dies entfernt den ausgewählten Auftrag aus dem Ausgang "
+		       "und öffnet ihn zum bearbeiten.\n"
+		       "Wenn der Auftrag beim bearbeiten nicht mit \"Senden\" "
+		       "beendet wird, wird dieser gelöscht!\n\n"
 		       "Soll der Auftrag bearbeitet werden?"));
 	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	msg.setDefaultButton(QMessageBox::Yes);

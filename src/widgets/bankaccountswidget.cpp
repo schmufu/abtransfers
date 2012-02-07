@@ -233,7 +233,11 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/bank-icon"));
 
-	Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+	drag->exec(Qt::CopyAction);
+
+	//evt. später auch den return wert auswerten um zu wissen was mit dem
+	//Drag-Objekt gemacht wurde
+	//Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 
 	//qDebug() << this << "dropAction" << dropAction;
 }
@@ -246,18 +250,6 @@ aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 	}
 	int AccountID = ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
 	return this->m_accounts->getAccountHash().value(AccountID, NULL);
-}
-
-void BankAccountsWidget::on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
-{
-//	if (!current)
-//		current = previous;
-//
-//	int AccountID = current->data(0, Qt::UserRole).toInt();
-//
-//	aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(AccountID, NULL);
-//
-//	emit this->Account_Changed(acc);
 }
 
 /** setzt den aktuell ausgewählten Account auf \a account */

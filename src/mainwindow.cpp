@@ -1025,8 +1025,6 @@ void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
 		return;
 	}
 
-	AB_JOB_TYPE jobtype = job->getAbJobType();
-
 	transW = this->createTransferWidgetAndAddTab(job->getAbJobType(), acc);
 
 	transW->setValuesFromTransaction(job->getAbtTransaction());
@@ -1064,7 +1062,7 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
-void MainWindow::createAndSendEUTransfer(const widgetTransfer *sender)
+void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create EU Transfer not implemented yet!";
 	this->statusBar()->showMessage("create EU Transfer not implemented yet!");
@@ -1154,7 +1152,7 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
-void MainWindow::createAndSendSepaTransfer(const widgetTransfer *sender)
+void MainWindow::createAndSendSepaTransfer(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create SEPA Transfer not implemented yet!";
 	this->statusBar()->showMessage("create SEPA Transfer not implemented yet!");
@@ -1309,7 +1307,7 @@ void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
-void MainWindow::createAndSendSepaDebitNote(const widgetTransfer *sender)
+void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create SEPA Debit Note not implemented yet!";
 	this->statusBar()->showMessage("create SEPA Debit Note not implemented yet!");
