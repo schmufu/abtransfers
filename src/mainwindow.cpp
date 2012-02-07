@@ -737,6 +737,8 @@ void MainWindow::onActionDatedNewTriggered()
 void MainWindow::onActionDatedEditTriggered()
 {
 	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer);
+	//Sicherstellen das "Übersicht" im listWidget ausgewählt ist.
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private slot
@@ -762,6 +764,8 @@ void MainWindow::onActionStandingNewTriggered()
 void MainWindow::onActionStandingEditTriggered()
 {
 	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder);
+	//Sicherstellen das "Übersicht" im listWidget ausgewählt ist.
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private slot
@@ -964,6 +968,8 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
 						     acc);
 	transW->setValuesFromTransaction(da->getTransaction());
+	//Sicherstellen das "Übersicht" im listWidget gewählt ist
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private Slot
@@ -980,6 +986,8 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer,
 						     acc);
 	transW->setValuesFromTransaction(di->getTransaction());
+	//Sicherstellen das "Übersicht" im listWidget gewählt ist
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private Slot
