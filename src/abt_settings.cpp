@@ -64,7 +64,7 @@ abt_settings::abt_settings(QObject *parent) :
 abt_settings::~abt_settings()
 {
 	//Alle Empfaenger aus der EmpängerListe speichern
-	this->saveKnownEmpfaenger(this->EmpfaengerList);
+	this->saveKnownEmpfaenger();
 	//und dann die Objekte löschen
 	while (this->EmpfaengerList->size()) {
 		delete this->EmpfaengerList->takeFirst();
@@ -152,7 +152,7 @@ const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 	return this->EmpfaengerList;
 }
 
-void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)
+void abt_settings::saveKnownEmpfaenger()
 {
 	abt_EmpfaengerInfo *EmpfaengerInfo;
 
@@ -162,8 +162,8 @@ void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)
 
 	QTextStream out(&file);
 
-	for (int i=0; i<list->size(); ++i) {
-		EmpfaengerInfo = list->at(i);
+	for (int i=0; i<this->EmpfaengerList->size(); ++i) {
+		EmpfaengerInfo = this->EmpfaengerList->at(i);
 		out << EmpfaengerInfo->getName() << "\t";
 		out << EmpfaengerInfo->getKontonummer() << "\t";
 		out << EmpfaengerInfo->getBLZ() << "\t";
@@ -174,6 +174,36 @@ void abt_settings::saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo *> *list)
 	}
 
 	file.close();
+}
+
+/**
+  Es wird überprüft ob der Empfänger bereits bekannt ist und wenn er nicht
+  bekannt ist wird er in der EmpfängerListe hinzugefügt.
+
+  Wenn der Empfänger bereits bekannt ist wird die Adresse des breits bekannten
+  EmpfaengerInfo-Objects in \a EmpfaengerInfo gespeichert und das übergebene
+  Object gelöscht.
+*/
+void abt_settings::addKnownEmpfaenger(abt_EmpfaengerInfo *EInfo)
+{
+	int pos = this->EmpfaengerList->indexOf(EInfo);
+	if (pos == -1) { //we must add the unknown receiver to our list
+		this->EmpfaengerList->append(EInfo);
+		emit this->EmpfaengerListChanged();
+	} else {
+		delete EInfo;
+		EInfo = this->EmpfaengerList->at(pos);
+	}
+}
+
+//public slot
+void abt_settings::onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE)
+{
+	abt_EmpfaengerInfo *oldListEntry;
+	oldListEntry = this->EmpfaengerList->at(position);
+	this->EmpfaengerList->replace(position, newE);
+	delete oldListEntry;
+	emit this->EmpfaengerListChanged();
 }
 
 

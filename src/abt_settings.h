@@ -58,7 +58,9 @@ public:
 	~abt_settings();
 
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
-	void saveKnownEmpfaenger(const QList<abt_EmpfaengerInfo*> *list);
+	void saveKnownEmpfaenger();
+	void addKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
+
 
 	const QString *getDataDir() const;
 
@@ -99,8 +101,10 @@ public:
 	QByteArray loadWindowGeometry();
 
 signals:
+	void EmpfaengerListChanged();
 
 public slots:
+	void onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE);
 
 };
 

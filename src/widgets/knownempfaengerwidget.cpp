@@ -32,16 +32,22 @@
 #include "ui_knownempfaengerwidget.h"
 
 #include "../abt_settings.h"
+#include "widgetaccountdata.h"
 
 #include <QMouseEvent>
 #include <QDebug>
 #include <QString>
+#include <QMenu>
+#include <QDialog>
+#include <QLayout>
+#include <QPushButton>
 
 KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
     ui(new Ui::KnownEmpfaengerWidget)
 {
 	ui->setupUi(this);
+	this->CreateAllActions();
 	this->EmpfaengerList = list; //could be NULL!
 	this->DisplayEmpfaenger();
 
@@ -49,6 +55,9 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 	this->dragObj = NULL;
 //	this->ui->treeWidget->setDragEnabled(true);
 	this->ui->treeWidget->viewport()->installEventFilter(this);
+	this->ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(this->ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
+		this, SLOT(onContextMenuRequest(QPoint)));
 	qDebug() << this << "created";
 }
 
@@ -146,11 +155,37 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	//qDebug() << this << "dropAction" << dropAction;
 }
 
+//private
+void KnownEmpfaengerWidget::CreateAllActions()
+{
+	this->actNew = new QAction(this);
+	this->actNew->setText(tr("Neu"));
+	this->actNew->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
+	this->actNew->setIcon(QIcon::fromTheme("document-new"));
+	connect(this->actNew, SIGNAL(triggered()), this, SLOT(onActionNewTriggered()));
+
+	this->actDelete = new QAction(this);
+	this->actDelete->setText(tr("Löschen"));
+	this->actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
+	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+	connect(this->actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
+
+	this->actEdit = new QAction(this);
+	this->actEdit->setText(tr("Ändern"));
+	this->actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
+	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
+	connect(this->actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
+
+}
+
 void KnownEmpfaengerWidget::DisplayEmpfaenger()
 {
 	QStringList headerList;
 	QTreeWidgetItem *Item = NULL;
 	int ItemCount = 0;
+
+	//alle evt. vorhandenen Einträge löschen
+	this->ui->treeWidget->clear();
 
 	if (this->EmpfaengerList == NULL) {
 		/* Anzeigen das keine bekannten Empfänger existieren */
@@ -200,4 +235,88 @@ void KnownEmpfaengerWidget::on_treeWidget_currentItemChanged(QTreeWidgetItem* cu
 		current = previous;
 
 	//emit this->EmpfaengerSelected((abt_EmpfaengerInfo*)current->data(0, Qt::UserRole).toInt());
+}
+
+//public slot
+void KnownEmpfaengerWidget::onEmpfaengerListChanged()
+{
+	this->DisplayEmpfaenger();
+}
+
+//private slot
+void KnownEmpfaengerWidget::onContextMenuRequest(const QPoint &pos)
+{
+	//Actions disablen wenn sie nicht sinnvoll sind
+	bool dis = this->ui->treeWidget->selectedItems().size() == 0;
+	this->actEdit->setDisabled(dis);
+	this->actDelete->setDisabled(dis);
+
+	QMenu *contextMenu = new QMenu();
+	contextMenu->addAction(this->actNew);
+	contextMenu->addAction(this->actEdit);
+	contextMenu->addAction(this->actDelete);
+
+	contextMenu->exec(this->ui->treeWidget->viewport()->mapToGlobal(pos));
+}
+
+void KnownEmpfaengerWidget::onActionEditTriggered()
+{
+	abt_EmpfaengerInfo *origReceiver = NULL;
+	abt_EmpfaengerInfo *newReceiver = NULL;
+
+	//Pointer zum abt_EmpfaengerInfo wurde in der Qt::UserRole gespeichert
+	origReceiver = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
+
+	QDialog *d = new QDialog(this);
+
+	QHBoxLayout *btnLayout = new QHBoxLayout();
+	QPushButton *btnSave = new QPushButton(tr("Speichern"), d);
+	btnSave->setDefault(true);
+	QPushButton *btnCancel = new QPushButton(tr("Abbrechen"), d);
+	connect(btnSave, SIGNAL(clicked()), d, SLOT(accept()));
+	connect(btnCancel, SIGNAL(clicked()), d, SLOT(reject()));
+
+	btnLayout->addWidget(btnSave, 0, Qt::AlignCenter);
+	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
+
+	QVBoxLayout *layout = new QVBoxLayout();
+	widgetAccountData *acc = new widgetAccountData(d);
+	acc->setAllowDropAccount(false);
+	acc->setAllowDropKnownRecipient(false);
+	acc->setName(origReceiver->getName());
+	acc->setAccountNumber(origReceiver->getKontonummer());
+	acc->setBankCode(origReceiver->getBLZ());
+	acc->setBankName("");
+
+	layout->addWidget(acc);
+
+	layout->addLayout(btnLayout);
+
+	d->setLayout(layout);
+
+
+
+	if (d->exec() == QDialog::Accepted) {
+		newReceiver = new abt_EmpfaengerInfo();
+		newReceiver->setName(acc->getName());
+		newReceiver->setKontonummer(acc->getAccountNumber());
+		newReceiver->setBLZ(acc->getBankCode());
+		int pos = this->EmpfaengerList->indexOf(origReceiver);
+		emit replaceKnownEmpfaenger(pos, newReceiver);
+	}
+	// ansonsten Änderungen einfach verwerfen.
+
+
+	delete d;
+
+}
+
+void KnownEmpfaengerWidget::onActionDeleteTriggered()
+{
+
+}
+
+void KnownEmpfaengerWidget::onActionNewTriggered()
+{
+
 }

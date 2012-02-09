@@ -47,6 +47,10 @@ private:
 	Ui::KnownEmpfaengerWidget *ui;
 	const QList<abt_EmpfaengerInfo*> *EmpfaengerList;
 
+	QAction *actNew;
+	QAction *actEdit;
+	QAction *actDelete;
+
 public:
 	KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
 	~KnownEmpfaengerWidget();
@@ -61,13 +65,24 @@ protected:
 	void twMousePressEvent(QMouseEvent *event);
 
 private:
+	void CreateAllActions();
 	void DisplayEmpfaenger();
+
 
 signals:
 	void EmpfaengerSelected(const abt_EmpfaengerInfo *data);
+	void replaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE);
 
 private slots:
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void onContextMenuRequest(const QPoint &pos);
+	void onActionEditTriggered();
+	void onActionDeleteTriggered();
+	void onActionNewTriggered();
+
+
+public slots:
+	void onEmpfaengerListChanged();
 };
 
 #endif // KNOWNEMPFAENGERWIDGET_H

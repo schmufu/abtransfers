@@ -121,6 +121,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->dock_KnownRecipient->setObjectName("KnownRecipients");
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
+	//Änderungen der EmpfängerListe dem Widget bekanntgeben
+	connect(settings, SIGNAL(EmpfaengerListChanged()),
+		kew, SLOT(onEmpfaengerListChanged()));
+	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
+		settings, SLOT(onReplaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)));
 	this->dock_KnownRecipient->setWidget(kew);
 	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
