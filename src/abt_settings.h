@@ -59,7 +59,6 @@ public:
 
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
-	void addKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
 
 
 	const QString *getDataDir() const;
@@ -105,7 +104,8 @@ signals:
 
 public slots:
 	void onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE);
-
+	void addKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
+	void deleteKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
 };
 
 #endif // TRANS_SETTINGS_H

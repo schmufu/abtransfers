@@ -72,6 +72,8 @@ private:
 signals:
 	void EmpfaengerSelected(const abt_EmpfaengerInfo *data);
 	void replaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE);
+	void addNewKnownEmpfaenger(abt_EmpfaengerInfo *newE);
+	void deleteKnownEmpfaenger(abt_EmpfaengerInfo *receiver);
 
 private slots:
 	void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);

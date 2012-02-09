@@ -184,6 +184,7 @@ void abt_settings::saveKnownEmpfaenger()
   EmpfaengerInfo-Objects in \a EmpfaengerInfo gespeichert und das übergebene
   Object gelöscht.
 */
+//public slot
 void abt_settings::addKnownEmpfaenger(abt_EmpfaengerInfo *EInfo)
 {
 	int pos = this->EmpfaengerList->indexOf(EInfo);
@@ -205,6 +206,18 @@ void abt_settings::onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *ne
 	delete oldListEntry;
 	emit this->EmpfaengerListChanged();
 }
+
+//public slot
+void abt_settings::deleteKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo)
+{
+	abt_EmpfaengerInfo *oldEntry;
+	int pos = this->EmpfaengerList->indexOf(EmpfaengerInfo);
+	oldEntry = this->EmpfaengerList->takeAt(pos);
+	delete oldEntry;
+	emit this->EmpfaengerListChanged();
+}
+
+
 
 
 const QString *abt_settings::getDataDir() const

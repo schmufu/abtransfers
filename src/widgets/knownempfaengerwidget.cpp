@@ -295,7 +295,6 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 	d->setLayout(layout);
 
 
-
 	if (d->exec() == QDialog::Accepted) {
 		newReceiver = new abt_EmpfaengerInfo();
 		newReceiver->setName(acc->getName());
@@ -313,10 +312,53 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 
 void KnownEmpfaengerWidget::onActionDeleteTriggered()
 {
+	abt_EmpfaengerInfo *Receiver = NULL;
 
+	//Pointer zum abt_EmpfaengerInfo wurde in der Qt::UserRole gespeichert
+	Receiver = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
+
+	emit this->deleteKnownEmpfaenger(Receiver);
 }
 
 void KnownEmpfaengerWidget::onActionNewTriggered()
 {
+	abt_EmpfaengerInfo *newReceiver = NULL;
+
+	QDialog *d = new QDialog(this);
+
+	QHBoxLayout *btnLayout = new QHBoxLayout();
+	QPushButton *btnSave = new QPushButton(tr("Speichern"), d);
+	btnSave->setDefault(true);
+	QPushButton *btnCancel = new QPushButton(tr("Abbrechen"), d);
+	connect(btnSave, SIGNAL(clicked()), d, SLOT(accept()));
+	connect(btnCancel, SIGNAL(clicked()), d, SLOT(reject()));
+
+	btnLayout->addWidget(btnSave, 0, Qt::AlignCenter);
+	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
+
+	QVBoxLayout *layout = new QVBoxLayout();
+	widgetAccountData *acc = new widgetAccountData(d);
+	acc->setAllowDropAccount(false);
+	acc->setAllowDropKnownRecipient(false);
+
+	layout->addWidget(acc);
+
+	layout->addLayout(btnLayout);
+
+	d->setLayout(layout);
+
+
+	if (d->exec() == QDialog::Accepted) {
+		newReceiver = new abt_EmpfaengerInfo();
+		newReceiver->setName(acc->getName());
+		newReceiver->setKontonummer(acc->getAccountNumber());
+		newReceiver->setBLZ(acc->getBankCode());
+
+		emit addNewKnownEmpfaenger(newReceiver);
+	}
+	// ansonsten Änderungen einfach verwerfen.
+
+
+	delete d;
 
 }

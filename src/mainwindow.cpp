@@ -126,6 +126,10 @@ MainWindow::MainWindow(QWidget *parent) :
 		kew, SLOT(onEmpfaengerListChanged()));
 	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
 		settings, SLOT(onReplaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)));
+	connect(kew, SIGNAL(addNewKnownEmpfaenger(abt_EmpfaengerInfo*)),
+		settings, SLOT(addKnownEmpfaenger(abt_EmpfaengerInfo*)));
+	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
+		settings, SLOT(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)));
 	this->dock_KnownRecipient->setWidget(kew);
 	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
