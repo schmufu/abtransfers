@@ -52,3 +52,12 @@ abt_EmpfaengerInfo::~abt_EmpfaengerInfo()
 
 }
 
+bool abt_EmpfaengerInfo::operator ==(const abt_EmpfaengerInfo& e) const
+{
+	//Ein Empfänger wird anhand der Kontonummer und BLZ identifiziert, wenn
+	//diese beiden gleich sind handelt es sich um ein und denselben
+	//Empfänger
+	return (this->getKontonummer() == e.getKontonummer()) &&
+		(this->getBLZ() == e.getBLZ());
+
+}

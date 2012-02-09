@@ -73,6 +73,7 @@ public:
 	void setVerw3(const QString &Verw) { this->m_Verw3 = Verw; }
 	void setVerw4(const QString &Verw) { this->m_Verw4 = Verw; }
 
+	bool operator ==(const abt_EmpfaengerInfo& e) const;
 };
 
 //damit wir ein abt_EmpfaengerInfo im QVariant verwenden können
