@@ -42,6 +42,17 @@
 
 #include "widgetdate.h"
 
+
+/*! \todo Daten (mehrzahl von Datum) von Daueraufträgen und Terminüberweisungen
+	  werden irgendwie beim Bearbeiten nicht richtig angezeigt.
+	  Aussederdem sollte beim Bearbeiten eines SOs oder einer DT vorher
+	  eine aktualisierung stattfinden, wenn die letzte aktualisierung schon
+	  länger her ist. (NextExecution <= Heute)
+
+*/
+
+
+
 class widgetRecurrence : public QWidget
 {
 	Q_OBJECT
