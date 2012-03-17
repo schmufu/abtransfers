@@ -172,14 +172,15 @@ QStringList widgetPurpose::getPurpose() const
 	//qDebug() << "blockCnt:" << blockCnt;
 	for (int block=0; block<blockCnt; ++block) {
 		//qDebug() << "block:" << block;
-		const QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
-		int lineCnt = textBlock->layout()->lineCount();
+		//the following produces the compile error: taking address of temporary
+		//const QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
+		int lineCnt = this->textEdit->document()->findBlockByNumber(block).layout()->lineCount();
 		//qDebug() << "lineCnt:" << lineCnt;
 		for (int line=0; line<lineCnt; ++line) {
-			int start = textBlock->layout()->lineAt(line).textStart();
-			int len = textBlock->layout()->lineAt(line).textLength();
+			int start = this->textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textStart();
+			int len = this->textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textLength();
 			//qDebug() << "line:" << line << "\t" << "start:" << start << " len:" << len;
-			purposeLines << textBlock->text().mid(start, len).trimmed();
+			purposeLines << this->textEdit->document()->findBlockByNumber(block).text().mid(start, len).trimmed();
 		}
 	}
 

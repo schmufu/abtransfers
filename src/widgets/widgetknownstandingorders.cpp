@@ -98,6 +98,12 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 		return; //Die DAs betreffen nicht den von uns verwalteten account
 	}
 
+	//Wenn kein aktueller Account existiert auch nichts machen
+	if (this->m_account == NULL) {
+		return; //Kein Account vorhanden
+		/** \todo Anzeige das kein Account vorhanden ist einbringen */
+	}
+
 	this->m_StandingOrders = account->getKnownStandingOrders();
 
 
@@ -169,12 +175,15 @@ void widgetKnownStandingOrders::setAccount(const aqb_AccountInfo *account)
 			   this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
 	}
 
-	this->m_account = account; //neuen account merken
-	this->refreshKnownStandingOrders(account); //SOs des account anzeigen
+	if (account != NULL) {
+		this->m_account = account; //neuen account merken
+		this->refreshKnownStandingOrders(account); //SOs des account anzeigen
 
-	//darüber informiert werden wenn sich die SOs des accounts ändern
-	connect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
-		this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
+		//darüber informiert werden wenn sich die SOs des accounts ändern
+		connect(this->m_account, SIGNAL(knownStandingOrdersChanged(const aqb_AccountInfo*)),
+			this, SLOT(refreshKnownStandingOrders(const aqb_AccountInfo*)));
+	}
+
 }
 
 //private slot

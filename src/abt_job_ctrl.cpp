@@ -787,6 +787,13 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool without
 {
 	int rv;
 
+	if (acc == NULL) {
+		//Job is not available!
+		qWarning() << this << "Job AB_Job_TypeGetDatedTransfers is not available (no valid account [NULL])";
+		emit jobNotAvailable(AB_Job_TypeGetDatedTransfers);
+		return; //Abbruch
+	}
+
 	AB_JOB *job = AB_JobGetDatedTransfers_new(acc->get_AB_ACCOUNT());
 
 	rv = AB_Job_CheckAvailability(job);
@@ -942,6 +949,13 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_
 void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
 {
 	int rv;
+
+	if (acc == NULL) {
+		//Job is not available!
+		qWarning() << this << "Job AB_Job_TypeGetStandingOrders is not available (no valid account [NULL])";
+		emit jobNotAvailable(AB_Job_TypeGetStandingOrders);
+		return; //Abbruch
+	}
 
 	AB_JOB *job = AB_JobGetStandingOrders_new(acc->get_AB_ACCOUNT());
 
