@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string notr="true">aqBanking Transfers</string>
+   <string notr="true">abTransfers</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -374,14 +374,6 @@
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
-   <widget class="QMenu" name="menuTEST">
-    <property name="title">
-     <string>TEST</string>
-    </property>
-    <addaction name="actionAddGetDAs"/>
-    <addaction name="actionAddGetDated"/>
-    <addaction name="actionExecQueued"/>
-   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Hilfe</string>
@@ -393,7 +385,6 @@
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHelp"/>
-   <addaction name="menuTEST"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDebug_Info">

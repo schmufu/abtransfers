@@ -191,8 +191,9 @@ void abt_settings::addKnownEmpfaenger(abt_EmpfaengerInfo *EInfo)
 	if (pos == -1) { //we must add the unknown receiver to our list
 		this->EmpfaengerList->append(EInfo);
 		emit this->EmpfaengerListChanged();
-	} else {
-		delete EInfo;
+	} else { // the "unknown" receiver already, exists
+		delete EInfo; //delete the current object
+		//and let point it to the already known object
 		EInfo = this->EmpfaengerList->at(pos);
 	}
 }

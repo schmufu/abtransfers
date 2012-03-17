@@ -91,8 +91,8 @@ private:
 
 	QDockWidget *dock_KnownRecipient;
 	QDockWidget *dock_Accounts;
-	QDockWidget* dock_KnownStandingOrders;
-	QDockWidget* dock_KnownDatedTransfers;
+	QDockWidget *dock_KnownStandingOrders;
+	QDockWidget *dock_KnownDatedTransfers;
 
 	void createActions();
 	void createMenus();
@@ -121,9 +121,6 @@ private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
-	void on_actionExecQueued_triggered();
-	void on_actionAddGetDated_triggered();
-	void on_actionAddGetDAs_triggered();
 	void on_actionAbout_abTransfers_triggered();
 	void on_actionAbout_Qt_triggered();
 	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);

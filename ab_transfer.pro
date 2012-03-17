@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.1.0 # Version of aqBanking-Transfers
-TARGET = ab_transfers
+VERSION = 0.0.1.0 # Version of abTransfers
+TARGET = abTransfers
 DESTDIR = build
 TEMPLATE = app
 SOURCES += src/main.cpp \

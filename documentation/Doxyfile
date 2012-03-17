@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = aqBanking Transfers
+PROJECT_NAME           = abTransfers
 PROJECT_NUMBER         = 0.0.1.0
 #OUTPUT_DIRECTORY       = /home/storage/data/Projects/_svn_programs/mvw2trunk/documentation/doxygen/
 OUTPUT_DIRECTORY       = doxygen/

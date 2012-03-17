@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	#endif
 	app.setOrganizationName("Patrick Wacker");
 	app.setOrganizationDomain("schmufu.dyndns.org");
-	app.setApplicationName("aqBanking Transfers");
+	app.setApplicationName("abTransfers");
 
 	//globale Objecte erzeugen
 	settings = new abt_settings();

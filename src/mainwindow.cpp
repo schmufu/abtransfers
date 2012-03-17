@@ -546,7 +546,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 void MainWindow::on_actionAbout_abTransfers_triggered()
 {
 	QDialog *about = new QDialog(this);
-	about->setWindowTitle("about aqBanking Transfers");
+	about->setWindowTitle("about abTransfers");
 
 	//Lizenz-Text auf Anforderung (Click) anzeigen
 	QDialog *licenseDialog = new QDialog(about);
@@ -556,7 +556,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseText->setText("Copyright (C) 2011 Patrick Wacker<br /><br />"
 			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
 			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
-			     "weitergeben und/oder modifizieren, entweder gemÃ¤ÃŸ Version 2 der Lizenz oder (nach<br />"
+			     "weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach<br />"
 			     "Ihrer Option) jeder späteren Version.<br /><br />"
 			     "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von<br />"
 			     "Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie<br />"
@@ -583,12 +583,12 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	img->setMaximumSize(100, 100);
 	hbox->addWidget(img);
 
-	QLabel *text1 = new QLabel(QString::fromUtf8("<b>aqBanking Transfers</b><br><br>"
-			     "Dieses Programm nutzt die library aqbanking um Online-Banking<br>"
+	QLabel *text1 = new QLabel(QString::fromUtf8("<b>abTransfers</b><br><br>"
+			     "Dieses Programm nutzt die library AqBanking um Online-Banking<br>"
 			     "Transaktionen durchzuführen.<br><br>"
-			     "Es sind alle wesentlichen Vorgänge von aqbanking implementiert,<br>"
-			     "u.a. auch Überweisungen, Lastschriften Daueraufträge usw.<br>"
-			     "Sowie eine selbst Implementierte Verwaltung von Daueraufträgen<br>"
+			     "Es sind alle wesentlichen Vorgänge von AqBanking implementiert,<br>"
+			     "u.a. auch Überweisungen, Lastschriften, Daueraufträge usw.<br>"
+			     "Sowie eine selbst implementierte Verwaltung von Daueraufträgen<br>"
 			     "und Terminierten Überweisungen."));
 	hbox->addWidget(text1, 0, Qt::AlignLeft);
 
@@ -652,40 +652,6 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	about->exec();
 
 	delete about;
-}
-
-#include "pages/pagewidgettests.h"
-
-void MainWindow::on_actionAddGetDAs_triggered()
-{
-	qDebug() << "Nothing to do here";
-	static QDialog *d = NULL;
-
-	if (d == NULL) {
-		d = new QDialog(this);
-		QVBoxLayout *vb = new QVBoxLayout();
-		widgetTransfer *testw = new widgetTransfer(AB_Job_TypeTransfer,
-							   this->accounts->getAccount(5),
-							   this->accounts,
-							   d);
-		vb->addWidget(testw);
-		d->setLayout(vb);
-	}
-	d->showNormal();
-
-}
-
-void MainWindow::on_actionAddGetDated_triggered()
-{
-	this->ui->statusBar->showMessage("DebugOut Limits Transaction");
-//	this->jobctrl->printAllLimits();
-}
-
-void MainWindow::on_actionExecQueued_triggered()
-{
-	this->ui->statusBar->showMessage("Executing queued jobs");
-	this->jobctrl->execQueuedTransactions();
-	this->ui->statusBar->showMessage("queued jobs executed");
 }
 
 //private SLOT
