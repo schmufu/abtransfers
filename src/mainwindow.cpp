@@ -553,7 +553,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	licenseText->setText("Copyright (C) 2011 Patrick Wacker<br /><br />"
+	licenseText->setText("Copyright (C) 2011-2012 Patrick Wacker<br /><br />"
 			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
 			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
 			     "weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach<br />"
@@ -584,12 +584,12 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	hbox->addWidget(img);
 
 	QLabel *text1 = new QLabel(QString::fromUtf8("<b>abTransfers</b><br><br>"
-			     "Dieses Programm nutzt die library AqBanking um Online-Banking<br>"
+			     "Dieses Programm nutzt die Bibliothek AqBanking um Online-Banking-<br>"
 			     "Transaktionen durchzuführen.<br><br>"
 			     "Es sind alle wesentlichen Vorgänge von AqBanking implementiert,<br>"
-			     "u.a. auch Überweisungen, Lastschriften, Daueraufträge usw.<br>"
-			     "Sowie eine selbst implementierte Verwaltung von Daueraufträgen<br>"
-			     "und Terminierten Überweisungen."));
+			     "u.a. auch Überweisungen, Lastschriften, Daueraufträge usw.,<br>"
+			     "sowie eine selbstimplementierte Verwaltung von Daueraufträgen<br>"
+			     "und terminierten Überweisungen."));
 	hbox->addWidget(text1, 0, Qt::AlignLeft);
 
 	QVBoxLayout *vbox = new QVBoxLayout(about);
