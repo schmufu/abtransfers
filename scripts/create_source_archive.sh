@@ -14,7 +14,7 @@
 # supplied folder.
 
 function echo_usage() {
-	echo "usage: $0 version folder_to_store_archive"
+	echo "usage: ${0} version folder_to_store_archive"
 	echo ""
 	echo -e "\tversion:"
 	echo -e "\t\tthe version that should be checked out for archive creation"
@@ -24,6 +24,23 @@ function echo_usage() {
 	echo -e "\n"
 
 }
+
+if [[ -z "${1}" || -z "${2}" ]]; then
+	echo_usage
+	exit 1
+fi
+
+
+VERSION="${1}"
+DESTDIR="${2}"
+
+#the path where we started is the current path
+STARTPATH=$(pwd)
+
+SVNURL="http://schmufu.dyndns.org/svn/ab_transfers/tags/"
+PROGRAMNAME="abtransfers"
+TMPCHKOUTDIR="/tmp/${PROGRAMNAME}"
+
 
 function modify_dynamic_project_rules() {
 	if [[ -z "${1}" ]]; then
@@ -49,28 +66,15 @@ function remove_files_only_for_development() {
 	
 }
 	
-
 function cleanup() {
 	cd /	#to be in a defined directory
 	rm -rf ${TMPCHKOUTDIR}
 }
-	
-
-if [[ -z "$1" || -z "$2" ]]; then
-	echo_usage
-	exit 1
-fi
 
 
-VERSION=$1
-DESTDIR=$2
-
-SVNURL="http://schmufu.dyndns.org/svn/ab_transfers/tags/"
-PROGRAMNAME="abtransfers"
-TMPCHKOUTDIR="/tmp/${PROGRAMNAME}"
 
 
-#check out the supplied version and change in this directory
+#checkout the supplied version and change in this directory
 svn co ${SVNURL}${VERSION} ${TMPCHKOUTDIR}
 
 if [[ $? -ne 0 ]]; then
@@ -99,7 +103,16 @@ if [[ $? -ne 0 ]]; then
 fi
 
 #create the new archive in the supplied directory
-tar -cjf "${DESTDIR}/${PROGRAMNAME}-${VERSION}.tar.bz2" "${PROGRAMNAME}-${VERSION}"
+# the supplied destination directory could be relative
+if [[ "${DESTDIR:0:1}" == "/" ]]; then
+	#absolute destdir supplied
+	tar -cjf "${DESTDIR}/${PROGRAMNAME}-${VERSION}.tar.bz2" "${PROGRAMNAME}-${VERSION}"
+else
+	#relative destdir!
+	tar -cjf "${STARTPATH}/${DESTDIR}/${PROGRAMNAME}-${VERSION}.tar.bz2" "${PROGRAMNAME}-${VERSION}"
+fi
+
+
 
 if [[ $? -ne 0 ]]; then
 	echo "ERROR: creating the archive ${DESTDIR}/${PROGRAMNAME}-${VERSION} failed"
