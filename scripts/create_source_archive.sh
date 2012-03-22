@@ -85,8 +85,12 @@ fi
 
 cd ${TMPCHKOUTDIR}
 
-#get the subersion revision and set it static in project file
-SVNREV=$(svnversion -n)
+#get the subersion revision of the last change in this path
+SVNREV=$(svn info | grep "Last Changed Rev:" | awk '{ print $4 }')
+
+echo "checked out version $VERSION, which is REV $SVNREV"
+
+#remove the dynamic parts of the project file and make them static
 modify_dynamic_project_rules "$SVNREV"
 
 #delete all files that are only for development (not needed in archive)
