@@ -83,8 +83,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		labelFont.setPixelSize(18);
 		notAvailable->setFont(labelFont);
 		this->layoutMain->addWidget(notAvailable,1,Qt::AlignCenter);
-		type = AB_Job_TypeUnknown;
-		this->m_type = AB_Job_TypeUnknown;
+//		type = AB_Job_TypeUnknown;
+//		this->m_type = AB_Job_TypeUnknown;
 	}
 
 	switch (type) {
@@ -601,7 +601,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		if (this->m_type == AB_Job_TypeInternalTransfer) {
 			if (this->remoteAccount->getAccount() == NULL) {
 				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount->getAccount == NULL<br />"));
-			} else { //Bei Umbuchung muss Absender und Empänger unterschiedlich sein
+			} else { //Bei Umbuchung muss Absender und Empfänger unterschiedlich sein
 				if (this->localAccount != NULL) {
 					if (this->localAccount->getAccount() ==
 					    this->remoteAccount->getAccount()) {
@@ -610,6 +610,9 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 				}
 			}
 		} else {
+			if (this->remoteAccount->getName().isEmpty()) {
+				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
+			}
 			if (this->remoteAccount->getAccountNumber().isEmpty()) {
 				errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben<br />"));
 			}
@@ -618,9 +621,6 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			}
 			if (this->remoteAccount->getBankName().isEmpty()) {
 				errorMsg.append(tr(" - Empfänger Institut nicht eingegeben<br />"));
-			}
-			if (this->remoteAccount->getName().isEmpty()) {
-				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
 			}
 		}
 	} else {
@@ -639,7 +639,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	}
 
 	if (this->purpose != NULL) {
-		QStringList purpose = this->purpose->getPurpose();
+		const QStringList purpose = this->purpose->getPurpose();
 		//Alle Elemente durchgehen und wenn ALLE leer sind ist kein
 		//Verwendungszweck eingegeben.
 		bool allEmpty = true;
@@ -689,7 +689,93 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		}
 	}
 
-	//datedDate und recurrence können nur gültige Werte annehmen!
+	//datedDate kann nur gültige Werte annehmen!
+
+	//Prüfung der Daten von recurrence
+	if (this->recurrence) {
+		const int cycle = this->recurrence->getCycle();
+		const int day = this->recurrence->getExecutionDay();
+		const QDate FirstDate = this->recurrence->getFirstExecutionDate();
+		const QDate LastDate = this->recurrence->getLastExecutionDate();
+		const QDate NextDate = this->recurrence->getNextExecutionDate();
+
+		Qt::DayOfWeek weekday;
+
+		QDate testDate;
+		bool DateTestOK;
+
+		switch (this->recurrence->getPeriod()) {
+		case AB_Transaction_PeriodNone:
+		case AB_Transaction_PeriodUnknown:
+			errorMsg.append(tr(" - <b>Programmierfehler:</b> Value from recurrence->getPeriod not supported<br />"));
+			break;
+		case AB_Transaction_PeriodMonthly:
+			if (FirstDate.day() != day) {
+				errorMsg.append(tr(" - Tag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (LastDate.isValid() && LastDate.day() != day) {
+				errorMsg.append(tr(" - Tag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (NextDate.day() != day) {
+				errorMsg.append(tr(" - Tag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
+			testDate = FirstDate;
+			DateTestOK = false;
+			if (LastDate.isValid()) {
+				while (testDate.year() <= LastDate.year()) {
+					testDate = testDate.addMonths(cycle);
+					if (testDate == LastDate) {
+						DateTestOK = true;
+						break; //while abbrechen, Datum OK
+					}
+				}
+				if (!DateTestOK) {
+					errorMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
+							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
+				}
+			}
+			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
+
+			break;
+		case AB_Transaction_PeriodWeekly:
+			weekday = (Qt::DayOfWeek)day;
+			if (FirstDate.dayOfWeek() != weekday) {
+				errorMsg.append(tr(" - Wochentag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (LastDate.isValid() && LastDate.dayOfWeek() != weekday) {
+				errorMsg.append(tr(" - Wochentag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (NextDate.dayOfWeek() != weekday) {
+				errorMsg.append(tr(" - Wochentag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
+			testDate = FirstDate;
+			DateTestOK = false;
+			if (LastDate.isValid()) {
+				while (testDate.year() <= LastDate.year()) {
+					testDate = testDate.addDays(7*cycle);
+					if (testDate == LastDate) {
+						DateTestOK = true;
+						break; //while abbrechen, Datum OK
+					}
+				}
+				if (!DateTestOK) {
+					errorMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
+							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
+				}
+			}
+			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
+
+			break;
+		}
+	} // if (this->recurrence)
 
 	if (this->m_type == AB_Job_TypeInternalTransfer) {
 		if (this->remoteAccount->getAccount() != NULL) {
