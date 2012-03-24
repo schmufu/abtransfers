@@ -1508,7 +1508,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 			settings->saveStandingOrder(t);
 			break;
 		default:
-			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
+			//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
 			this->addlog(QString(
 				"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));

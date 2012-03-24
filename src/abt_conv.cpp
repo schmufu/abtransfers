@@ -156,6 +156,11 @@ const QString abt_conv::JobStatusToQString(AB_JOB_STATUS status)
 }
 
 //static
+/**
+  * Wandelt die in \a gwentime übergebene Zeit GWEN_TIME in ein QDate.
+  * Wenn \a gwentime NULL ist wird das zurückgegebene Datum auf ein ungültiges
+  * Datum gesetzt!
+  */
 const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 {
 	QDate date;
@@ -187,13 +192,19 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 
 /**
   * Gibt einen GWEN_TIME Object zurück dessen Datum dem übergebenen entspricht.
-  * Die enthaltene Uhrzeit wird auf 10:00:00 gesetzt! (in localTime, nicht UTC!)
+  * Die enthaltene Uhrzeit wird auf 12:00:00 gesetzt! (in UTC!).
+  * Wenn \a date nicht gültig ist wird NULL zurückgegeben!
   */
 //static
 GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
 	GWEN_TIME *gwt;
 	QString datestr;
+
+	if (!date.isValid()) {
+		return NULL;
+	}
+
 	datestr = QString("%1%2%3")
 		  .arg(date.year(), 4, 10, QLatin1Char('0'))
 		  .arg(date.month(), 2, 10, QLatin1Char('0'))
@@ -208,6 +219,7 @@ GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 	abt_conv::gwen_timelist->append(gwt);
 	qDebug() << "GWEN_TIME created! Address:" << gwt;
 	qDebug() << "GWEN_TIME debug - Date=" << abt_conv::GwenTimeToQDate(gwt);
+
 	return gwt;
 }
 

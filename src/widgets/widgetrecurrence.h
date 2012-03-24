@@ -36,6 +36,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
 
 
 #include <aqbanking/transaction.h>
@@ -71,6 +72,7 @@ private:
 	widgetDate *dateFirst;
 	widgetDate *dateLast;
 	widgetDate *dateNext;
+	QCheckBox *checkBoxNoEnd;
 
 	QList<Qt::DayOfWeek> allowedExecutionWeekDays; //!< erlaubte Ausführungstage (ComboBox) in period weekly
 	QList<int> allowedExecutionDays; //!< erlaubte Ausführungstage (ComboBox) in period monthly
@@ -112,15 +114,16 @@ public:
 	AB_TRANSACTION_PERIOD getPeriod() const	{ return (AB_TRANSACTION_PERIOD)this->radio_group->checkedId(); };
 	int getCycle() const { return this->spinBox->value(); };
 	int getExecutionDay() const;
-	const QDate getFirstExecutionDate() const { return this->dateFirst->getDate(); };
-	const QDate getLastExecutionDate() const { return this->dateLast->getDate(); };
-	const QDate getNextExecutionDate() const { return this->dateNext->getDate(); };
+	const QDate getFirstExecutionDate() const;
+	const QDate getLastExecutionDate() const;
+	const QDate getNextExecutionDate() const;
 
 signals:
 
 private slots:
 	void selectedPeriodChanged(int newPeriod);
 	void spinBoxValueChanged(int value);
+	void checkBoxNoEndChanged(bool checked);
 
 public slots:
 	void setPeriod(AB_TRANSACTION_PERIOD period);

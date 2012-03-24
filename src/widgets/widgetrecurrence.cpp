@@ -90,16 +90,20 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	//Datumseingaben
 	this->dateFirst = new widgetDate(tr("Erstmalig"), Qt::AlignTop, this);
 	this->dateLast = new widgetDate(tr("Letztmalig"), Qt::AlignTop, this);
+	this->checkBoxNoEnd = new QCheckBox(tr("bis auf weiteres"), this);
 	this->dateNext = new widgetDate(tr("nächste Ausf."), Qt::AlignTop, this);
 	this->dateNext->setReadOnly(true);
 
 	connect(this->dateFirst, SIGNAL(dateChanged(QDate)),
 		this, SLOT(setNextExecutionDay(QDate)));
+	connect(this->checkBoxNoEnd, SIGNAL(toggled(bool)),
+		this, SLOT(checkBoxNoEndChanged(bool)));
 
 	QGridLayout *layout = new QGridLayout();
 	layout->addLayout(cycleLayout, 0, 0, 1, -1,Qt::AlignCenter);
 	layout->addWidget(this->dateFirst, 1, 0, Qt::AlignCenter);
 	layout->addWidget(this->dateLast, 1, 1, Qt::AlignCenter);
+	layout->addWidget(this->checkBoxNoEnd, 2, 1, Qt::AlignHCenter | Qt::AlignTop);
 	layout->addWidget(this->dateNext, 1, 2, Qt::AlignCenter);
 	layout->setSpacing(0);
 	layout->setContentsMargins(0,0,0,0);
@@ -403,6 +407,11 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 	this->spinBox->blockSignals(false); //Signals wieder zulässig
 }
 
+//private slot
+void widgetRecurrence::checkBoxNoEndChanged(bool checked)
+{
+	this->dateLast->setEnabled(!checked);
+}
 
 //public
 int widgetRecurrence::getExecutionDay() const
@@ -420,6 +429,30 @@ int widgetRecurrence::getExecutionDay() const
 	return 1; //return default if conversion failed
 
 }
+
+//public
+const QDate widgetRecurrence::getFirstExecutionDate() const
+{
+	return this->dateFirst->getDate();
+}
+
+//public
+const QDate widgetRecurrence::getLastExecutionDate() const
+{
+	if (this->checkBoxNoEnd->isChecked()) {
+		//Dauerauftrag bis auf weiteres ausführen
+		return QDate(2011, 2, 30); //invalid date!
+	}
+
+	return this->dateLast->getDate();
+}
+
+//public
+const QDate widgetRecurrence::getNextExecutionDate() const
+{
+	return this->dateNext->getDate();
+}
+
 
 //public slot
 void widgetRecurrence::setPeriod(AB_TRANSACTION_PERIOD period)
@@ -461,6 +494,8 @@ void widgetRecurrence::setFirstExecutionDay(const QDate &date)
 //public slot
 void widgetRecurrence::setLastExecutionDay(const QDate &date)
 {
+	//Wenn das Datum ungültig ist, gilt der Dauerauftrag bis auf weiteres
+	this->checkBoxNoEnd->setChecked(!date.isValid());
 	this->dateLast->setDate(date);
 }
 
