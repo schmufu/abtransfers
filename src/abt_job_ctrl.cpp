@@ -162,6 +162,7 @@ const abt_transaction* abt_job_info::getAbtTransaction() const
 		return NULL;
 	}
 
+	//wir liefern eine const copy unserer Transaction zurück!
 	const abt_transaction *trans = new abt_transaction(t);
 	return trans;
 }
@@ -1675,6 +1676,31 @@ bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_job_info *
 
 	return false;
 }
+
+/**
+  * mit dieser Funktion kann vor der Bearbeitung eines Dauerauftrags bzw. einer
+  * Terminüberweisung überprüft werden ob diese bereits im Ausgang vorhanden
+  * ist. Wenn dies der Fall ist sollte die weitere Bearbeitung der Daten
+  * unterlassen werden!
+  */
+bool abt_job_ctrl::isTransactionInQueue(const abt_transaction *t) const
+{
+	//Alle Jobs im Queue durchgehen und sobald die FiId
+	for(int i=0; i<this->jobqueue->size(); i++) {
+		//jiiq = JobInfoInQueue
+		const abt_job_info *jiiq = this->jobqueue->at(i);
+
+		if (jiiq->getAbtTransaction()) {
+			//Transaction im Job vorhanden
+			if (jiiq->getAbtTransaction()->getFiId() == t->getFiId()) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 
 /** verschiebt den Job von \a jobListPos um \a updown nach oben oder unten */
 //public slot

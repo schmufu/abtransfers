@@ -939,6 +939,17 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 //private Slot
 void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
 {
+	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
+		QMessageBox::critical(this, tr("Bereits im Ausgang"),
+			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br \><br \>"
+			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
+			   "Wenn die gemachten Änderungen wieder rückgängig gemacht "
+			   "werden sollen muss dieser zuerst aus dem Ausgang entfernt "
+			   "werden"),
+			QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
 						     acc);

@@ -138,6 +138,9 @@ public:
 	static void createTransactionLimitsFor(AB_ACCOUNT *a,
 					       QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah);
 
+	//! zum Prüfen ob ein bestimmter SO oder DT schon in der jobListe vorhanden ist
+	bool isTransactionInQueue(const abt_transaction *t) const;
+
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);
 	void jobQueueListChanged();
