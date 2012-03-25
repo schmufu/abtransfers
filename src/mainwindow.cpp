@@ -941,11 +941,11 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 {
 	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
-			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br \><br \>"
+			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br /><br />"
 			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
-			   "Wenn die gemachten Änderungen wieder rückgängig gemacht "
-			   "werden sollen muss dieser zuerst aus dem Ausgang entfernt "
-			   "werden"),
+			   "Solange sich zu diesem Dauerauftrag bereits eine Änderung "
+			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
+			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
 			QMessageBox::Ok, QMessageBox::Ok);
 		return; //Abbruch
 	}
@@ -961,6 +961,17 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
 {
+	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
+		QMessageBox::critical(this, tr("Bereits im Ausgang"),
+			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br /><br />"
+			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
+			   "Solange sich zu diesem Dauerauftrag bereits eine Änderung "
+			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
+			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
+			QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
 	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }
 
@@ -968,6 +979,17 @@ void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const 
 //private Slot
 void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
 {
+	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
+		QMessageBox::critical(this, tr("Bereits im Ausgang"),
+			tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
+			   "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
+			   "Solange sich zu dieser terminierten Überweisung bereits eine Änderung "
+			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
+			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
+			QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer,
 						     acc);
@@ -979,12 +1001,28 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
 {
+	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
+		QMessageBox::critical(this, tr("Bereits im Ausgang"),
+			tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
+			   "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
+			   "Solange sich zu dieser terminierten Überweisung bereits eine Änderung "
+			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
+			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
+			QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
 	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
 }
 
 //private Slot
 void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
 {
+	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
+		  dies sollte in diesem auch gesetzt werden, damit bei Klick
+		  auf Abbruch eine Warnung erscheint!
+	*/
+
 	widgetTransfer *transW;
 	const aqb_AccountInfo *acc = NULL;
 
