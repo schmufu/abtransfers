@@ -70,19 +70,17 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	if (this->m_limits == NULL) {
 		//Wenn die limits nicht existieren oder kein Account übergeben
 		//wurde wird der Job von der Bank nicht unterstützt.
-		QLabel *notAvailable = new QLabel(tr("Der \"Job\" '%1' ist bei "
-						     "dem ausgewähltem Konto "
-						     "nicht verfügbar!\n\n"
-						     "(Oder es wurde kein gültiger "
-						     "Account dem widgetTransfer() "
-						     "übergeben!)").arg(
-							abt_conv::JobTypeToQString(type)), this);
+		QLabel *notAvailable = new QLabel(tr(
+				"Der \"Job\" '%1' ist bei dem ausgewähltem Konto "
+				"nicht verfügbar!\n\n"
+				"(Oder es wurde kein gültiger Account dem widgetTransfer() "
+				"übergeben!)").arg(abt_conv::JobTypeToQString(type)), this);
 		notAvailable->setWordWrap(true);
 		QFont labelFont(notAvailable->font());
 		labelFont.setBold(true);
 		labelFont.setPixelSize(18);
 		notAvailable->setFont(labelFont);
-		this->layoutMain->addWidget(notAvailable,1,Qt::AlignCenter);
+		this->layoutMain->addWidget(notAvailable, 0, Qt::AlignCenter);
 //		type = AB_Job_TypeUnknown;
 //		this->m_type = AB_Job_TypeUnknown;
 	}
@@ -118,18 +116,16 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
 		this->setWindowTitle(tr("nicht Implementiert"));
-		QLabel *notImplementet = new QLabel(tr("Der \"Job\" '%1' ist leider "
-						     "noch nicht implementiert.\n"
-						     "Bitte haben Sie noch etwas "
-						     "Geduld und warten auf eine "
-						     "Aktualisierung").arg(
-							abt_conv::JobTypeToQString(type)), this);
+		QLabel *notImplementet = new QLabel(tr(
+				"Der \"Job\" '%1' ist leider noch nicht implementiert.\n"
+				"Bitte haben Sie noch etwas Geduld und warten auf eine "
+				"Aktualisierung").arg(abt_conv::JobTypeToQString(type)), this);
 		notImplementet->setWordWrap(true);
 		QFont labelFontNI(notImplementet->font());
 		labelFontNI.setBold(true);
 		labelFontNI.setPixelSize(14);
 		notImplementet->setFont(labelFontNI);
-		this->layoutMain->addWidget(notImplementet,1, Qt::AlignLeft | Qt::AlignVCenter);
+		this->layoutMain->insertWidget(0, notImplementet, 0, Qt::AlignLeft | Qt::AlignVCenter);
 		this->m_type = AB_Job_TypeUnknown;
 		}
 		break;
@@ -143,17 +139,16 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeGetBalance : {
 		qWarning() << "type" << type << "not supported for widgetTransfer!";
 		this->setWindowTitle(tr("Programmierfehler"));
-		QLabel *programError = new QLabel(tr("PROGRAMMIERFEHLER!\n"
-						     "Der \"Job\" '%1' wird von "
-						     "widgetTransfer nicht "
-						     "unterstützt!").arg(
-							abt_conv::JobTypeToQString(type)), this);
+		QLabel *programError = new QLabel(tr(
+				"PROGRAMMIERFEHLER!\n"
+				"Der \"Job\" '%1' wird von widgetTransfer nicht"
+				"unterstützt!").arg(abt_conv::JobTypeToQString(type)), this);
 		programError->setWordWrap(true);
 		QFont labelFontPE(programError->font());
 		labelFontPE.setBold(true);
 		labelFontPE.setPixelSize(18);
 		programError->setFont(labelFontPE);
-		this->layoutMain->addWidget(programError,1, Qt::AlignLeft | Qt::AlignVCenter);
+		this->layoutMain->insertWidget(0, programError, 0, Qt::AlignLeft | Qt::AlignVCenter);
 		this->m_type = AB_Job_TypeUnknown;
 		}
 		break;
