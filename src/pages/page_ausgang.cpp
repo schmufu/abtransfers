@@ -110,7 +110,7 @@ void Page_Ausgang::createAllActions()
 		this, SLOT(onActionDeleteTriggered()));
 
 	this->actEdit = new QAction(this);
-	this->actEdit->setText(tr("Ändern"));
+	this->actEdit->setText(tr("Bearbeiten"));
 	this->actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
 	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
 	connect(this->actEdit, SIGNAL(triggered()),
@@ -306,9 +306,9 @@ void Page_Ausgang::onActionEditTriggered()
 	msg.setIcon(QMessageBox::Question);
 	msg.setWindowTitle(tr("Aufrag Bearbeiten"));
 	msg.setText(tr("Dies entfernt den ausgewählten Auftrag aus dem Ausgang "
-		       "und öffnet ihn zum bearbeiten.\n"
+		       "und öffnet ihn zum bearbeiten.<br />"
 		       "Wenn der Auftrag beim bearbeiten nicht mit \"Senden\" "
-		       "beendet wird, wird dieser gelöscht!\n\n"
+		       "beendet wird, wird dieser nicht zur Bank gesendet!<br /><br />"
 		       "Soll der Auftrag bearbeitet werden?"));
 	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	msg.setDefaultButton(QMessageBox::Yes);
