@@ -54,6 +54,9 @@ private:
 	void setTreeWidgetColWidths();
 	void createAllActions();
 
+	//! Gibt true zurück wenn der übergebene \a type bearbeitbar ist
+	static bool isJobTypeEditable(const AB_JOB_TYPE type);
+
 public:
 	Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent = 0);
 	~Page_Ausgang();

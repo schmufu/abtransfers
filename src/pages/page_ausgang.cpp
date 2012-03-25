@@ -326,11 +326,34 @@ void Page_Ausgang::onActionEditTriggered()
 	this->jobctrl->deleteJob(itemNr);
 }
 
+//static  private
+bool Page_Ausgang::isJobTypeEditable(const AB_JOB_TYPE type)
+{
+	switch (type) {
+	case AB_Job_TypeDeleteStandingOrder:
+	case AB_Job_TypeDeleteDatedTransfer:
+	case AB_Job_TypeGetBalance:
+	case AB_Job_TypeGetDatedTransfers:
+	case AB_Job_TypeGetStandingOrders:
+	case AB_Job_TypeGetTransactions:
+	case AB_Job_TypeUnknown:
+		return false;
+		break;
+	default:
+		return true;
+	}
+}
+
 void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 {
 	//Context-Menu zum Ändern/Löschen/Rauf/runter anzeigen
 	bool dis = this->ui->treeWidget->selectedItems().size() == 0;
-	this->actEdit->setDisabled(dis);
+	//repräsentiert auch gleichzeitig die Position in der jobqueliste
+	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
+	const AB_JOB_TYPE jobType = this->jobctrl->jobqueueList()->at(itemNr)->getAbJobType();
+	bool editable = this->isJobTypeEditable(jobType);
+
+	this->actEdit->setEnabled(editable);
 	this->actDelete->setDisabled(dis);
 	this->actUp->setDisabled(dis);
 	this->actDown->setDisabled(dis);
