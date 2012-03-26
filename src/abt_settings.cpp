@@ -59,6 +59,16 @@ abt_settings::abt_settings(QObject *parent) :
 
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
+
+	//Sicherstellen das die Dateiberechtigungen stimmen
+	bool ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers/settings.ini",
+					 QFile::ReadOwner | QFile::ReadUser |
+					 QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers",
+				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
 }
 
 abt_settings::~abt_settings()
@@ -81,6 +91,16 @@ abt_settings::~abt_settings()
 
 	//und danach das Object wieder löschen
 	delete this->Settings;
+
+	//Sicherstellen das die Dateiberechtigungen stimmen
+	bool ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers/settings.ini",
+					 QFile::ReadOwner | QFile::ReadUser |
+					 QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers",
+				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
 }
 
 void abt_settings::loadTextKeyDescriptions()
