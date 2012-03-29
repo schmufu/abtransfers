@@ -1033,6 +1033,7 @@ void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
 	//Wir suchen den Account der zu dem bereits erstellten Job gehört
 	QHashIterator<int, aqb_AccountInfo*> i(this->accounts->getAccountHash());
 	//Alle Accounts durchgehen
+	i.toFront();
 	while (i.hasNext()) {
 		i.next();
 		if ((i.value()->BankCode() == jobAccBankcode) &&

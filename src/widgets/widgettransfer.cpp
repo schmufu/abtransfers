@@ -868,10 +868,27 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 	this->m_origTransaction = t;
 
 	if (this->localAccount != NULL) {
-		if (this->localAccount->getAccountNumber() !=
-		    t->getLocalAccountNumber()) {
-			qWarning() << "SETTING VALUES FROM A TRANSACTION THAT IS NOT FOR THE SELECTED ACCOUNT";
+		//den local account suchen der dem Absender in der
+		//abt_transaction entspricht
+		aqb_AccountInfo* acc = NULL;
+
+		//wenn keine Accounts bekannt, abbrechen
+		if (this->m_allAccounts == NULL) return;
+
+		const QHash<int, aqb_AccountInfo*> accs = this->m_allAccounts->getAccountHash();
+
+		QHashIterator<int, aqb_AccountInfo*> i(accs);
+		i.toFront();
+		while (i.hasNext()) {
+			i.next();
+			if (t->getLocalAccountNumber() == i.value()->Number() &&
+			    t->getLocalBankCode() == i.value()->BankCode()) {
+				acc = i.value();
+				break; //account gefunden, abbruch.
+			}
 		}
+
+		this->localAccount->setAccount(acc);
 	}
 
 	if (this->remoteAccount != NULL) {

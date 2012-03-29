@@ -33,10 +33,11 @@
 
 #include <QWidget>
 
+#include "../aqb_accounts.h"
+
 class widgetLineEditWithLabel;
 class widgetAccountComboBox;
 class aqb_AccountInfo;
-class aqb_Accounts;
 class QLabel;
 class QComboBox;
 
@@ -113,6 +114,7 @@ public slots:
 	void setReadOnly(bool b);
 	void clearAllEdits();
 
+	void setAccount(const aqb_AccountInfo* account);
 	void setName(const QString &text);
 	void setAccountNumber(const QString &text);
 	void setBankCode(const QString &text);

@@ -363,6 +363,14 @@ void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 }
 
 
+void widgetAccountData::setAccount(const aqb_AccountInfo* account)
+{
+	//Nur wenn wir ein localAccountWidget sind
+	if (this->comboBoxAccounts == NULL) return;
+
+	this->comboBoxAccounts->setSelectedAccount(account);
+}
+
 //public slot
 void widgetAccountData::setName(const QString &text)
 {

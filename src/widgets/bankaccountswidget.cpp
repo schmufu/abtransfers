@@ -74,6 +74,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	//der Bank hinzu.
 	QStringList BLZs;
 	QHashIterator<int, aqb_AccountInfo*> i(this->m_accounts->getAccountHash());
+	i.toFront();
 	while (i.hasNext()) {
 	     i.next();
 	     BLZs.append(i.value()->BankCode());
@@ -89,6 +90,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	for (int s=0; s<BLZs.size(); ++s) {
 		doTop = true;
 		QHashIterator<int, aqb_AccountInfo*> i(this->m_accounts->getAccountHash());
+		i.toFront();
 		//Alle Konten durchgehen
 		while (i.hasNext()) {
 			i.next();
