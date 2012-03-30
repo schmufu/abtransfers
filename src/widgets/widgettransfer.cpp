@@ -660,9 +660,9 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			QString colNum;
 			for(int i=0; i<tooLong.size(); ++i) {
 				if (i == tooLong.size()-1) {
-					colNum.append(QString("%1").arg(i+1));
+					colNum.append(QString("%1").arg(tooLong.at(i)));
 				} else {
-					colNum.append(QString("%1, ").arg(i+1));
+					colNum.append(QString("%1, ").arg(tooLong.at(i)));
 				}
 			}
 
