@@ -654,6 +654,53 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	delete about;
 }
 
+//private slot
+void MainWindow::on_actionHelp_triggered()
+{
+	//hier eine Hilfe über die Vorgehensweise in AB-Transfers anzeigen
+	//sowie oft gestellte Fragen beantworten.
+
+	QDialog *helpDialog = new QDialog(this);
+	helpDialog->setWindowTitle(tr("Hilfe / FAQ"));
+
+	//Horizontal Layout
+	QVBoxLayout *vbox = new QVBoxLayout(helpDialog);
+
+	//ScrollArea zur Anzeige des Textes
+	QScrollArea *scroll = new QScrollArea();
+	scroll->setWidgetResizable(true);
+	scroll->setMinimumSize(520, 600);
+	scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	vbox->addWidget(scroll);
+
+	// Der eigentliche HilfeText ist als ressource eingebunden und stammt
+	// aus der Datei helpText.html im src Verzeichnis
+	QLabel *text1 = new QLabel();
+	text1->setWordWrap(true);
+	text1->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	text1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	text1->setTextFormat(Qt::RichText);
+	QFile helpText(":/text/help");
+	if (helpText.open(QFile::ReadOnly)) {
+		QTextStream stream(&helpText);
+		text1->setText(stream.readAll());
+		scroll->setWidget(text1);
+	}
+
+	vbox->addSpacing(10);
+
+	QPushButton *ok = new QPushButton(tr("OK"));
+	connect(ok, SIGNAL(clicked()), helpDialog, SLOT(accept()));
+	vbox->addWidget(ok, 0, Qt::AlignHCenter);
+
+	vbox->addSpacing(6);
+
+	helpDialog->exec();
+
+	delete helpDialog;
+}
+
+
 //private SLOT
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 {

@@ -125,6 +125,7 @@ private slots:
 	void on_actionAbout_Qt_triggered();
 	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionDebug_Info_triggered();
+	void on_actionHelp_triggered();
 
 	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);

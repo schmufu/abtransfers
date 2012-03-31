@@ -72,7 +72,8 @@ FORMS += src/mainwindow.ui \
     src/pages/page_log.ui \
     src/pages/page_ausgang.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
-    documentation/Doxyfile
+    documentation/Doxyfile \
+    src/helpText.html
 RESOURCES += src/resources.qrc
 INCLUDEPATH += /usr/include/aqbanking5 \
     /usr/include/gwenhywfar4
