@@ -673,6 +673,11 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			}
 		}
 
+		//Überprüfung das nicht mehr Zeilen eingegeben wurden als Erlaubt
+		if (purpose.size() > this->m_limits->MaxLinesPurpose) {
+			errorMsg.append(tr(" - Zu viele Zeilen (%1) im Verwendungszweck<br />").arg(purpose.size()));
+		}
+
 	} else {
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> Verwendungszweck Widget fehlt!<br />"));
 	}

@@ -161,9 +161,9 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 		charCntLine.size()	Anzahl an Zeilen
 		charCntLine.at(x)	Anzahl der Zeichen in der Zeile
 	*/
-	qDebug() << "curLinePos: " << curLinePos;
-	qDebug() << "curPos    : " << curPos;
-	qDebug() << "curLine   : " << curLine;
+//	qDebug() << "curLinePos: " << curLinePos;
+//	qDebug() << "curPos    : " << curPos;
+//	qDebug() << "curLine   : " << curLine;
 
 //	int currLine = this->textEdit->document()->;
 
