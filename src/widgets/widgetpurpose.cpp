@@ -100,21 +100,11 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 	if (event->type() != QEvent::KeyPress) return false;
 
 	QKeyEvent *ev = dynamic_cast<QKeyEvent*>(event);
-	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
-	QRegExp regex("^[-+ .,/*&%0-9A-Za-z]$", Qt::CaseSensitive);
 
-//	qDebug() << "Eingabe:" << ev->key() << "Zeichen:" << ev->text();
-
-	//ev->setModifiers(Qt::ShiftModifier);
-	if (regex.indexIn(ev->text()) != -1) { //Zeichen ist erlaubt!
-		return false;
-	}
-
+	//wenn keine neuen Zeichen hinzugefügt werden ist dies immer erlaubt!
 	switch (ev->key()) {
 	case Qt::Key_Backspace:
-	case Qt::Key_Return:
 	case Qt::Key_Delete:
-	case Qt::Key_Enter:
 	case Qt::Key_Left:
 	case Qt::Key_Right:
 	case Qt::Key_Up:
@@ -123,17 +113,106 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 	case Qt::Key_PageDown:
 	case Qt::Key_End:
 	case Qt::Key_Home:
-	case Qt::Key_Insert:
 	case Qt::Key_Control:	//for copy,paste,cut
 	case Qt::Key_C:	//copy
-	case Qt::Key_V:	//pase
 	case Qt::Key_X:	//cut
+		return false; //Zeichen erlaubt
+		break;
+	}
+
+	//Sind bereits die maximal erlaubten Zeichen (insgesamt) erreicht
+	const int charsTotal = this->textEdit->document()->characterCount();
+	if (charsTotal >= (this->maxLength * this->maxLines)) {
+		//Maximale Anzahl an Zeichen erreicht -> keine weiteren erlaubt
+		ev->ignore(); //Eingabe unterbinden.
+		return true;
+	}
+
+	//Anzahl der Zeichen pro Zeile ermitteln
+	QList<int> charCntLine;
+	QTextDocument *doc = this->textEdit->document();
+	//qDebug() << "blockCnt:" << blockCnt;
+	for (int block=0; block<doc->blockCount(); ++block) {
+		const int lineCnt = doc->findBlockByNumber(block).layout()->lineCount();
+		for (int line=0; line<lineCnt; ++line) {
+			charCntLine.append(doc->findBlockByNumber(block).layout()->lineAt(line).textLength());
+		}
+	}
+
+	QTextCursor cur = this->textEdit->cursorForPosition(this->textEdit->cursorRect().center());
+	const int curLinePos = cur.columnNumber();
+	const int curPos = cur.position();
+
+	int curLine;
+	int chars = 0;
+	for (int i=0; i<charCntLine.size(); ++i) {
+		chars += charCntLine.at(i);
+		qDebug() << "chars: " << chars << " -- curLinePos: " << curLinePos;
+		if (chars >= curPos) {
+			curLine = i;
+			break;
+		}
+	}
+
+	/* Jetzt haben wir folgende Daten:
+		curPos			Absolute Position innerhalb des Textes
+		curLinePos		Position in der aktuellen Zeile
+		curLine			Zeile in der wir uns befinden
+		charCntLine.size()	Anzahl an Zeilen
+		charCntLine.at(x)	Anzahl der Zeichen in der Zeile
+	*/
+	qDebug() << "curLinePos: " << curLinePos;
+	qDebug() << "curPos    : " << curPos;
+	qDebug() << "curLine   : " << curLine;
+
+//	int currLine = this->textEdit->document()->;
+
+	//Alle löschenden und den Cursor bewegenden Tasten wurden oben bereits
+	//zugelassen, hierher gelangen wir nur noch wenn eine Eingabe getätigt
+	//werden soll.
+
+	/** \todo Überprüfung auf Länge und Zeilenanzahl
+		  Dies wird allerdings schwierig, da ein automatischer Umbruch
+		  in dem textEdit stattfindet!
+		  Wenn alle Zeilen ausgefüllt sind darf dies nicht durch das
+		  Editieren einer Zeile, in der noch Zeichen erlaubt sind,
+		  stattfinden.
+		  -->	Erstmal keine Überprüfung "on the fly" sondern in der
+			Eingabeprüfung die beim Klick auf Senden in widgetTransfer
+			stattfindet.
+	*/
+
+
+//	if (charCntLine.size() >= this->maxLines &&
+//	    charCntLine.size() == curLine &&
+//	    charCntLine.last() == curLinePos) {
+//		//keine weiteren Zeichen erlaubt
+//		ev->ignore(); //Eingabe unterbinden.
+//		return true;
+//	}
+
+//	qDebug() << "Eingabe:" << ev->key() << "Zeichen:" << ev->text();
+
+	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
+	QRegExp regex("^[-+ .,/*&%0-9A-Za-z]$", Qt::CaseSensitive);
+
+	//ev->setModifiers(Qt::ShiftModifier);
+	if (regex.indexIn(ev->text()) != -1) { //Zeichen ist erlaubt!
+		return false;
+	}
+
+	switch (ev->key()) {
+	case Qt::Key_Return:
+	case Qt::Key_Enter:
+	case Qt::Key_Insert:
+	case Qt::Key_Control:	//for copy,paste,cut
+	case Qt::Key_V:	//pase
 		return false; //Zeichen ist Steuerzeichen und auch erlaubt
 		break;
 	}
 
 	//Wenn wir hierher kommen ist das Zeichen nicht erlaubt.
-	ev->setAccepted(false); //Eingabe unterbinden.
+	ev->ignore(); //Eingabe unterbinden.
 	return true; //Weitere Behandlung nicht erforderlich!
 }
 
@@ -141,7 +220,7 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 void widgetPurpose::updateStatusLabel()
 {
 	int remainingChars = (this->maxLines * this->maxLength) -
-			     this->textEdit->toPlainText().length();
+			     this->textEdit->document()->characterCount();
 
 	int linecnt = 0;
 	for (int block=0; block < this->textEdit->document()->blockCount(); ++block) {
