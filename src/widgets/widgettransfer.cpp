@@ -67,8 +67,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->pushButtonRevert = NULL;
 	this->layoutMain = new QVBoxLayout(this);
 	this->layoutMain->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-	qDebug() << "direction: " << this->layoutMain->direction();
-	qDebug() << "expanding direction: " << this->layoutMain->expandingDirections();
 
 	if (this->m_limits == NULL) {
 		//Wenn die limits nicht existieren oder kein Account übergeben
@@ -131,13 +129,9 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		break;
 	case AB_Job_TypeCreateDatedTransfer :
 		this->my_create_dated_transfer_form(true);
-//		this->m_limits->printAllAsDebug();
 		break;
 	case AB_Job_TypeModifyDatedTransfer :
 		this->my_create_dated_transfer_form(false);
-//		qDebug() << "acc =" << m_accountAtCreation->OwnerName();
-//		qDebug() << "type =" << abt_conv::JobTypeToQString(m_type);
-//		this->m_limits->printAllAsDebug();
 		break;
 
 
@@ -219,8 +213,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->layoutButtons->addWidget(this->pushButtonOK);
 
 	this->layoutMain->addLayout(this->layoutButtons);
-
-	//this->setLayout(this->layoutMain);
 
 }
 
