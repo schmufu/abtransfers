@@ -426,7 +426,10 @@ void MainWindow::createDockStandingOrders()
 	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
 								       this->accounts);
 	widgetKnownStandingOrders *StandingOrders;
-	StandingOrders = new widgetKnownStandingOrders(lastAcc);
+	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
+	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
+	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
+	StandingOrders = new widgetKnownStandingOrders(accComboBox->getAccount());
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
@@ -477,7 +480,10 @@ void MainWindow::createDockDatedTransfers()
 	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
 								       this->accounts);
 	widgetKnownDatedTransfers *DatedTransfers;
-	DatedTransfers = new widgetKnownDatedTransfers(lastAcc);
+	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
+	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
+	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
+	DatedTransfers = new widgetKnownDatedTransfers(accComboBox->getAccount());
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
