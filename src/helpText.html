@@ -16,13 +16,13 @@ Von der Bank wird bekannt gegeben welche Transaktionen (Überweisung,
 Daueraufträge etc.) unterstützt werden. Wenn eine Transaktion durchgeführt
 werden soll die zwar durch AB-Transfers unterstützt wird aber von der Bank nicht
 wird ein entsprechender Hinweis angezeigt.<br />
-Außerdem werden von der Bank Limitierungen vorgegeben bezüglich der Daten die
-in den einzelnen Transaktionen eingegeben werden dürfen. Auch diese
+Außerdem werden von der Bank Limitierungen, bezüglich der Daten die in den
+einzelnen Transaktionen eingegeben werden dürfen vorgegeben. Auch diese
 Limitierungen werden von AB-Transfers ausgewertet und in den meisten Fällen sind
-dann nur Eingaben erlaubt die zu diesen Limitierungen passen. Dies geschieht
-einerseits bereits bei der Eingabe der Daten, zusätzlich aber nochmals beim
-"Senden" der Transaktion (dort werden dann insbesondere Eingaben geprüft die
-während der Eingabe nur schwer zu kontrollieren sind).<br />
+dann nur Eingaben erlaubt die zu diesen Limitierungen konsistent sind. Dies
+geschieht einerseits bereits bei der Eingabe der Daten, zusätzlich aber nochmals
+beim Einstellen der Transaktion in den Ausgang (dort werden dann insbesondere
+Eingaben geprüft die während der Eingabe nur schwer zu kontrollieren sind).<br />
 <br />
 
 
@@ -31,6 +31,24 @@ während der Eingabe nur schwer zu kontrollieren sind).<br />
 AB-Transfers hat keinen Einfluss darauf ob Sammelüberweisungen durchgeführt
 werden oder nicht. Dies ist abhängig vom verwendeten Backend in AqBanking und
 davon ob dies von der Bank unterstützt wird.<br />
-In AqBanking existiert die Möglichkeit dem Bankend mitzuteilen das einfache
+In AqBanking existiert die Möglichkeit dem Bankend mitzuteilen das einzelne
 Überweisungen bevorzugt werden soll ("PreferSingleTransfer" in den
 Config-Dateien von AqBanking).
+<br />
+
+
+<h4>Aktualisieren von Daueraufträgen und Terminüberweisungen</h4>
+
+Die Schaltflächen zum Aktualiseren von Dauerauftragen bzw. Terminüberweisungen
+beziehen sich immer auf das in "Online-Konten" gewählte Konto.<br />
+Wenn also die Daueraufträge aktualisiert werden sollen muss zuerst das Konto
+ausgewählt und dann auf "Aktualiseren" geklickt werden. Um die Daueraufträge
+für alle Konten zu Aktualisieren muss dies für jedes Konto durchgeführt werden
+und danach im Ausgang auf "Ausführen" geklickt werden.<br />
+Irgendwann wird sich das Layout der Übersichtsseite aber noch ändern, wie genau
+die Darstellung dann erfolgen wird weiß ich zur Zeit aber auch nocht nicht.
+Wenn jemand dazu einen Vorschlag hat wie dies besser gestaltet werden könnte,
+dies bitte als EMail an mich (schmufu.d@gmx.de) schicken. Vielen Dank.
+
+
+
