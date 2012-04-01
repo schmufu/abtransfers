@@ -34,6 +34,7 @@
 #include <QString>
 #include <QObject>
 #include <QMetaType>
+#include <QHash>
 
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
@@ -102,6 +103,7 @@ private:
 	QList<abt_StandingInfo*> *m_KnownStandingOrders;
 	QList<abt_DatedInfo*> *m_KnownDatedTransfers;
 	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
+	QHash<AB_JOB_TYPE, bool> *m_AvailableJobs;
 
 public:
 	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
@@ -126,6 +128,8 @@ public:
 	int get_ID() const { return this->m_ID; }
 
 	const abt_transactionLimits* limits(AB_JOB_TYPE type) const;
+	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_AvailableJobs; };
+	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_AvailableJobs->value(type, false); };
 
 public slots:
 	void loadKnownStandingOrders();

@@ -134,6 +134,7 @@ public:
 
 	const QList<abt_job_info*> *jobqueueList() const { return this->jobqueue; }
 
+	static void createAvailableHashFor(AB_ACCOUNT *a, QHash<AB_JOB_TYPE, bool> *hash);
 	//! Static function for creating every TransactionLimit for an Account
 	static void createTransactionLimitsFor(AB_ACCOUNT *a,
 					       QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah);

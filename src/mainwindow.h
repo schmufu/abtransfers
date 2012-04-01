@@ -81,7 +81,7 @@ private:
 	QAction *actDebitNote;
 	QAction *actDebitNoteSepa;
 	QAction *actUpdateBalance;
-//	QAction *act;
+	QAction *actShowAvailableJobs;
 //	QAction *act;
 //	QAction *act;
 //	QAction *act;
@@ -151,6 +151,7 @@ private slots:
 	void onActionDebitNoteTriggered();
 	void onActionDebitNoteSepaTriggered();
 	void onActionUpdateBalanceTriggered();
+	void onActionShowAvailableJobsTriggered();
 
 	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
 	void onWidgetTransferCancelClicked(widgetTransfer* sender);

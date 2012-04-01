@@ -319,6 +319,12 @@ void MainWindow::createActions()
 	actUpdateBalance->setText(tr("Kontostand aktualisieren"));
 	actUpdateBalance->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
+
+	actShowAvailableJobs = new QAction(this);
+	actShowAvailableJobs->setText(tr("Unterstütze Transaktionen"));
+	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
+
 }
 
 
@@ -346,6 +352,7 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addAction(this->actDebitNoteSepa);
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
+	this->accountContextMenu->addAction(this->actShowAvailableJobs);
 //	this->accountContextMenu->addSeparator();
 //	this->accountContextMenu->addAction("Text1");
 //	this->accountContextMenu->addAction("Text2");
@@ -856,6 +863,42 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 void MainWindow::onActionUpdateBalanceTriggered()
 {
 
+}
+
+//private slot
+void MainWindow::onActionShowAvailableJobsTriggered()
+{
+	//Alle unterstützen bzw. nicht unterstützen Jobs für das gewählte
+	//Konto anzeigen
+	BankAccountsWidget *BAW = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	aqb_AccountInfo *acc = BAW->getSelectedAccount();
+
+	QDialog *dialog = new QDialog(this);
+
+	QGridLayout *gl = new QGridLayout(dialog);
+
+	QHashIterator<AB_JOB_TYPE, bool> it(*acc->availableJobsHash());
+	it.toFront();
+	int i = 0;
+	while (it.hasNext()) {
+		it.next();
+		QLabel *txt = new QLabel(abt_conv::JobTypeToQString(it.key()));
+		QLabel *sup = new QLabel();
+		QIcon *ico;
+		if (it.value()) {
+			ico = new QIcon(QIcon::fromTheme("dialog-ok-apply"));
+		} else {
+			ico = new QIcon(QIcon::fromTheme("edit-delete"));
+		}
+		sup->setPixmap(ico->pixmap(16));
+
+		gl->addWidget(sup, i, 0, Qt::AlignCenter);
+		gl->addWidget(txt, i++, 1, Qt::AlignLeft | Qt::AlignVCenter);
+	}
+
+	dialog->exec();
+
+	delete dialog;
 }
 
 //private slot

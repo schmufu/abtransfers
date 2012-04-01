@@ -40,6 +40,10 @@
 #include <aqbanking/jobinternaltransfer.h>
 #include <aqbanking/jobeutransfer.h>
 #include <aqbanking/jobsepatransfer.h>
+#include <aqbanking/jobsepadebitnote.h>
+#include <aqbanking/jobgetbalance.h>
+#include <aqbanking/jobgettransactions.h>
+#include <aqbanking/jobloadcellphone.h>
 
 #include <aqbanking/jobcreatedatedtransfer.h>
 #include <aqbanking/jobmodifydatedtransfer.h>
@@ -233,6 +237,109 @@ abt_job_ctrl::~abt_job_ctrl()
 
 	qDebug() << this << "deleted";
 }
+
+//static public
+/**
+ * Speichert in dem Übergebenen QHash \a hash zu jeden AB_JOB_TYPE ob dieser
+ * von der Bank unterstützt wird oder nicht.
+ */
+void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
+					  QHash<AB_JOB_TYPE, bool> *hash)
+{
+	AB_JOB *j = NULL;
+
+	j = AB_JobCreateDatedTransfer_new(a);
+	hash->insert(AB_Job_TypeCreateDatedTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobCreateStandingOrder_new(a);
+	hash->insert(AB_Job_TypeCreateStandingOrder, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSingleDebitNote_new(a);
+	hash->insert(AB_Job_TypeDebitNote, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobDeleteDatedTransfer_new(a);
+	hash->insert(AB_Job_TypeDeleteDatedTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobDeleteStandingOrder_new(a);
+	hash->insert(AB_Job_TypeDeleteStandingOrder, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobEuTransfer_new(a);
+	hash->insert(AB_Job_TypeEuTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobGetBalance_new(a);
+	hash->insert(AB_Job_TypeGetBalance, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobGetDatedTransfers_new(a);
+	hash->insert(AB_Job_TypeGetDatedTransfers, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobGetStandingOrders_new(a);
+	hash->insert(AB_Job_TypeGetStandingOrders, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobGetBalance_new(a);
+	hash->insert(AB_Job_TypeGetTransactions, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobInternalTransfer_new(a);
+	hash->insert(AB_Job_TypeInternalTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobLoadCellPhone_new(a);
+	hash->insert(AB_Job_TypeLoadCellPhone, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobModifyDatedTransfer_new(a);
+	hash->insert(AB_Job_TypeModifyDatedTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobModifyStandingOrder_new(a);
+	hash->insert(AB_Job_TypeModifyStandingOrder, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSepaDebitNote_new(a);
+	hash->insert(AB_Job_TypeSepaDebitNote, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSepaTransfer_new(a);
+	hash->insert(AB_Job_TypeSepaTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSingleTransfer_new(a);
+	hash->insert(AB_Job_TypeTransfer, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+
+//
+//	case AB_Job_TypeCreateDatedTransfer :
+//	case AB_Job_TypeCreateStandingOrder :
+//	case AB_Job_TypeDebitNote :
+//	case AB_Job_TypeDeleteDatedTransfer :
+//	case AB_Job_TypeDeleteStandingOrder :
+//	case AB_Job_TypeEuTransfer :
+//	case AB_Job_TypeGetBalance :
+//	case AB_Job_TypeGetDatedTransfers :
+//	case AB_Job_TypeGetStandingOrders :
+//	case AB_Job_TypeGetTransactions :
+//	case AB_Job_TypeInternalTransfer :
+//	case AB_Job_TypeLoadCellPhone :
+//	case AB_Job_TypeModifyDatedTransfer :
+//	case AB_Job_TypeModifyStandingOrder :
+//	case AB_Job_TypeSepaDebitNote :
+//	case AB_Job_TypeSepaTransfer :
+//	case AB_Job_TypeTransfer :
+//	case AB_Job_TypeUnknown :
+//
+
+}
+
 
 /**
  * Erstellt alle TransactionLimits die für einen Account verfügbar sind und

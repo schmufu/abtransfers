@@ -65,6 +65,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_ID = AB_Account_GetUniqueId(this->m_account);
 	this->m_KnownStandingOrders = NULL;
 	this->m_KnownDatedTransfers = NULL;
+	this->m_AvailableJobs = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
 	this->m_BankName = QString::fromUtf8(AB_Account_GetBankName(this->m_account));
@@ -109,6 +110,10 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken
 	this->m_limits = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
 	abt_job_ctrl::createTransactionLimitsFor(this->m_account, this->m_limits);
+
+	//alle unterstützen Transaktionen für diesen Account merken
+	this->m_AvailableJobs = new QHash<AB_JOB_TYPE, bool>;
+	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_AvailableJobs);
 
 	qDebug() << "AccountInfo for Account" << this->Number() << "created.";
 }
