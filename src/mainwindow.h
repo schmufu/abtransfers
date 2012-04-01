@@ -130,6 +130,10 @@ private slots:
 	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
 
+	//! wird aufgerufen wenn sich der Account im dockWidget von Daueraufträge ändert
+	void selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc);
+	//! wird aufgerufen wenn sich der Account im dockWidget von Terminüberweisungen ändert
+	void selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc);
 
 	//Slots für die verschiedenen Actions
 	void onActionTransferNationalTriggered();

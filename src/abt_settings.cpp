@@ -101,6 +101,8 @@ abt_settings::~abt_settings()
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
 				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
 	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+
+	qDebug() << Q_FUNC_INFO << "deleted";
 }
 
 void abt_settings::loadTextKeyDescriptions()
@@ -450,15 +452,36 @@ void abt_settings::saveWindowStateGeometry(QByteArray state,
 	this->Settings->setValue("Main/WindowGeometry", geometry);
 }
 
-QByteArray abt_settings::loadWindowState()
+QByteArray abt_settings::loadWindowState() const
 {
 	return this->Settings->value("Main/WindowState", QVariant()).toByteArray();
 }
 
-QByteArray abt_settings::loadWindowGeometry()
+QByteArray abt_settings::loadWindowGeometry() const
 {
 	return this->Settings->value("Main/WindowGeometry", QVariant()).toByteArray();
 }
+
+
+
+
+void abt_settings::saveSelAccountInWidget(const QString &widgetName, const aqb_AccountInfo *acc)
+{
+	QString groupname("Main/Widget");
+	groupname.append(widgetName);
+	this->Settings->setValue(groupname, acc->get_ID());
+}
+
+int abt_settings::loadSelAccountInWidget(const QString &widgetName) const
+{
+	QString groupname("Main/Widget");
+	groupname.append(widgetName);
+	return this->Settings->value(groupname, -1).toInt();
+}
+
+
+
+
 
 //static
 void abt_settings::resizeColToContentsFor(QTreeWidget *w)

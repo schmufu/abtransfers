@@ -96,8 +96,11 @@ public:
 	static void resizeColToContentsFor(QTreeWidget *w);
 
 	void saveWindowStateGeometry(const QByteArray state, const QByteArray geometry);
-	QByteArray loadWindowState();
-	QByteArray loadWindowGeometry();
+	QByteArray loadWindowState() const;
+	QByteArray loadWindowGeometry() const;
+
+	void saveSelAccountInWidget(const QString &widgetName, const aqb_AccountInfo *acc);
+	int loadSelAccountInWidget(const QString &widgetName) const;
 
 signals:
 	void EmpfaengerListChanged();

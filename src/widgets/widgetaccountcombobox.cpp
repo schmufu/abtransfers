@@ -51,7 +51,7 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 	//Alle Accounts in der ComboBox darstellen
 	foreach(const aqb_AccountInfo *account, allAccounts->getAccountHash().values()) {
 		QString cbText = QString("%1").arg(account->Name());
-		this->comboBox->insertItem(200, cbText, QVariant::fromValue(account));
+		this->comboBox->addItem(cbText, QVariant::fromValue(account));
 	}
 
 	layoutMain->addWidget(this->comboBox);

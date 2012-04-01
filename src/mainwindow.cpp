@@ -208,6 +208,8 @@ MainWindow::~MainWindow()
 	delete this->jobctrl;	//jobControl-Object löschen
 	delete this->accounts;	//account-Object löschen
 	delete ui;
+
+	qDebug() << Q_FUNC_INFO << "deleted";
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -416,13 +418,21 @@ void MainWindow::createDockStandingOrders()
 	QVBoxLayout *layoutDock = new QVBoxLayout();
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL,
+
+	//den zuletzt gewählten Account wieder anzeigen
+	int SelAccID = settings->loadSelAccountInWidget("StandingOrders");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
 								       this->accounts);
 	widgetKnownStandingOrders *StandingOrders;
-	StandingOrders = new widgetKnownStandingOrders(accComboBox->getAccount());
+	StandingOrders = new widgetKnownStandingOrders(lastAcc);
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
+	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
+	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
+		this, SLOT(selectedStandingOrdersAccountChanged(const aqb_AccountInfo*)));
 
 	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
@@ -459,13 +469,21 @@ void MainWindow::createDockDatedTransfers()
 	QVBoxLayout *layoutDock = new QVBoxLayout();
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL,
+
+	//den zuletzt gewählten Account wieder anzeigen
+	int SelAccID = settings->loadSelAccountInWidget("DatedTransfers");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
 								       this->accounts);
 	widgetKnownDatedTransfers *DatedTransfers;
-	DatedTransfers = new widgetKnownDatedTransfers(accComboBox->getAccount());
+	DatedTransfers = new widgetKnownDatedTransfers(lastAcc);
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
+	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
+	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
+		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
 
 	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
@@ -719,6 +737,19 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 		this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
 	}
 }
+
+//private slot
+void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
+{
+	settings->saveSelAccountInWidget("StandingOrders", acc);
+}
+
+//private slot
+void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
+{
+	settings->saveSelAccountInWidget("DatedTransfers", acc);
+}
+
 //private slot
 void MainWindow::onActionTransferNationalTriggered()
 {
