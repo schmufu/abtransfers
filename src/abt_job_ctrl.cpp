@@ -487,6 +487,37 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	}
 	AB_Job_free(j);
 
+//	j = AB_JobEuTransfer_new(a);
+//	if (AB_Job_CheckAvailability(j)) {
+//		qDebug("Job EuTransfer not available");
+//	} else {
+//		AB_JobEuTransfer_SetTransaction(j, t);
+//		tl = AB_JobSingleTransfer_GetFieldLimits(j);
+//		if (tl) {
+//			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+//			ah->insert(AB_Job_TypeEuTransfer, limits);
+//		} else {
+//			qDebug("tl not set!");
+//		}
+//	}
+//	AB_Job_free(j);
+
+	j = AB_JobSepaDebitNote_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SepaDebitNote not available");
+	} else {
+		AB_JobSepaDebitNote_SetTransaction(j, t);
+		tl = AB_JobSepaDebitNote_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeSepaDebitNote, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
 	AB_Transaction_free(t);
 }
 
