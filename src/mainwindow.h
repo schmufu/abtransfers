@@ -94,6 +94,8 @@ private:
 	QDockWidget *dock_KnownStandingOrders;
 	QDockWidget *dock_KnownDatedTransfers;
 
+	QTimer *timer;
+
 	void createActions();
 	void createMenus();
 	void createDockToolbar();

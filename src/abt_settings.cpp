@@ -481,6 +481,18 @@ int abt_settings::loadSelAccountInWidget(const QString &widgetName) const
 
 
 
+bool abt_settings::showDialog(const QString &dialogType) const
+{
+	return this->Settings->value(QString("Dialogs/Show").append(dialogType),
+				     true).toBool();
+}
+
+void abt_settings::setShowDialog(const QString &dialogType, bool show)
+{
+	this->Settings->setValue(QString("Dialogs/Show").append(dialogType), show);
+}
+
+
 
 
 //static

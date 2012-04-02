@@ -102,6 +102,9 @@ public:
 	void saveSelAccountInWidget(const QString &widgetName, const aqb_AccountInfo *acc);
 	int loadSelAccountInWidget(const QString &widgetName) const;
 
+	bool showDialog(const QString &dialogType) const;
+	void setShowDialog(const QString &dialogType, bool show);
+
 signals:
 	void EmpfaengerListChanged();
 

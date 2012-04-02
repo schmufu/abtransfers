@@ -2,15 +2,24 @@
      a help text in the specific dialog.
      The basic html-tags that are supported by Qt are allowed. !-->
 
-<h3>AB-Transfers Hilfe</h3>
+<h2>AB-Transfers Hilfe</h2>
 
 <pre>
 Hier wird Zukünftig eine kleine Hilfe zu AB-Transfers angezeigt werden.
 Bis diese fertig erstellt ist kann es aber noch eine Weile dauern.
 </pre>
 
+<h3>Aufträge können gebührenpflichtig sein</h3>
+Bei einigen Kreditinstituten/Banken können Gebühren für bestimmte Aufträge
+(Einrichtung von Daueraufträgen, Sammelüberweisungen, etc.) anfallen.<br />
+Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten
+für welche Aufträge anfallen!<br />
+<br />
+<b>Ich übernehme keine Haftung für eventuell entstehende Kosten!</b>
+<br />
 
-<h4>Generelle Hinweise</h4>
+
+<h3>Generelle Hinweise</h3>
 
 Von der Bank wird bekannt gegeben welche Transaktionen (Überweisung,
 Daueraufträge etc.) unterstützt werden. Wenn eine Transaktion durchgeführt
@@ -22,22 +31,24 @@ Limitierungen werden von AB-Transfers ausgewertet und in den meisten Fällen sin
 dann nur Eingaben erlaubt die zu diesen Limitierungen konsistent sind. Dies
 geschieht einerseits bereits bei der Eingabe der Daten, zusätzlich aber nochmals
 beim Einstellen der Transaktion in den Ausgang (dort werden dann insbesondere
-Eingaben geprüft die während der Eingabe nur schwer zu kontrollieren sind).<br />
+Eingaben geprüft die während der Eingabe nur schwer zu kontrollieren sind).
 <br />
 
 
-<h4>Sammelüberweisungen</h4>
+<h3>Sammelüberweisungen</h3>
 
 AB-Transfers hat keinen Einfluss darauf ob Sammelüberweisungen durchgeführt
 werden oder nicht. Dies ist abhängig vom verwendeten Backend in AqBanking und
 davon ob dies von der Bank unterstützt wird.<br />
 In AqBanking existiert die Möglichkeit dem Bankend mitzuteilen das einzelne
-Überweisungen bevorzugt werden soll ("PreferSingleTransfer" in den
-Config-Dateien von AqBanking).
+Überweisungen den Sammelüberweisungen bevorzugt werden sollen
+("PreferSingleTransfer"). Dies kann z.B. über den Befehl
+'aqhbci-tool4 addaccountflags -a <i>KONTONUMMER</i> -f "preferSingleTransfer"'
+eingestellt werden. (Genaueres siehe Hilfe von AqBanking).
 <br />
 
 
-<h4>Aktualisieren von Daueraufträgen und Terminüberweisungen</h4>
+<h3>Aktualisieren von Daueraufträgen und Terminüberweisungen</h3>
 
 Die Schaltflächen zum Aktualiseren von Dauerauftragen bzw. Terminüberweisungen
 beziehen sich immer auf das in "Online-Konten" gewählte Konto.<br />
@@ -49,6 +60,6 @@ Irgendwann wird sich das Layout der Übersichtsseite aber noch ändern, wie gena
 die Darstellung dann erfolgen wird weiß ich zur Zeit aber auch nocht nicht.
 Wenn jemand dazu einen Vorschlag hat wie dies besser gestaltet werden könnte,
 dies bitte als EMail an mich (schmufu.d@gmx.de) schicken. Vielen Dank.
-
+<br />
 
 
