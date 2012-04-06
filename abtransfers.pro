@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.2.0 # Version of abTransfers
-TARGET = abTransfers
+VERSION = 0.0.3.0 # Version of AB-Transfers
+TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
 SOURCES += src/main.cpp \
