@@ -380,7 +380,7 @@ void MainWindow::createActions()
 	connect(actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
 
 	actShowAvailableJobs = new QAction(this);
-	actShowAvailableJobs->setText(tr("Unterstütze Transaktionen"));
+	actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
 	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
 
@@ -933,28 +933,104 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	aqb_AccountInfo *acc = BAW->getSelectedAccount();
 
 	QDialog *dialog = new QDialog(this);
-
+	dialog->setWindowTitle(tr("Unterstützte Aufträge"));
 	QGridLayout *gl = new QGridLayout(dialog);
 
+	//Text als Einleitung
+	QLabel *text = new QLabel(tr("Anzeige der vom Institut unterstützten "
+				     "Aufträge für das Konto %1 (%2). "
+				     "Nicht alle Aufträge werden auch von "
+				     "%3 unterstützt!").arg(
+					acc->Number(), acc->Name(),
+					qApp->applicationName()));
+	text->setWordWrap(true);
+	gl->addWidget(text, 0, 0, 1, -1); //use the text as a header
+	gl->setRowMinimumHeight(1, 12); //one row as seperator
+
+	//mögliche Icons erstellen
+	QIcon *icoSup = new QIcon(QIcon::fromTheme("dialog-ok-apply"));
+	QIcon *icoNotSup = new QIcon(QIcon::fromTheme("edit-delete"));
+	const QPixmap pixSup = icoSup->pixmap(16, QIcon::Normal); //supported
+	const QPixmap pixNotSup = icoNotSup->pixmap(16, QIcon::Normal); //not supported
+	const QPixmap pixLatSup = icoSup->pixmap(16, QIcon::Disabled); //later supported
+
+	//Spaltenüberschriften erstellen und anzeigen
+	QLabel *text_bank = new QLabel(tr("Institut"));
+	QLabel *text_abtransfer = new QLabel(tr("%1").arg(qApp->applicationName()));
+	QLabel *text_description = new QLabel(tr("Auftrag"));
+	gl->addWidget(text_bank, 2, 0, Qt::AlignCenter);
+	gl->addWidget(text_abtransfer, 2, 1, Qt::AlignCenter);
+	gl->addWidget(text_description, 2, 2, Qt::AlignLeft | Qt::AlignVCenter);
+	gl->setRowMinimumHeight(3, 5); //kleine Unterteilung
+
+	gl->setHorizontalSpacing(10); //Abstand zwischen den Feldern
+
+	//Alle Aufträge von AqBanking durchgehen und entsprechend anzeigen
 	QHashIterator<AB_JOB_TYPE, bool> it(*acc->availableJobsHash());
 	it.toFront();
-	int i = 0;
+	int row = gl->rowCount(); //neue Widgets anfügen
 	while (it.hasNext()) {
 		it.next();
 		QLabel *txt = new QLabel(abt_conv::JobTypeToQString(it.key()));
-		QLabel *sup = new QLabel();
-		QIcon *ico;
-		if (it.value()) {
-			ico = new QIcon(QIcon::fromTheme("dialog-ok-apply"));
-		} else {
-			ico = new QIcon(QIcon::fromTheme("edit-delete"));
-		}
-		sup->setPixmap(ico->pixmap(16));
+		QLabel *IcoBank = new QLabel();
+		QLabel *IcoABT = new QLabel();
 
-		gl->addWidget(sup, i, 0, Qt::AlignCenter);
-		gl->addWidget(txt, i++, 1, Qt::AlignLeft | Qt::AlignVCenter);
+		//Icons für vom Institut unterstützte Aufträge
+		if (it.value()) {
+			IcoBank->setPixmap(pixSup);
+		} else {
+			IcoBank->setPixmap(pixNotSup);
+		}
+
+		//Icons für von AB-Transfers unterstützte Aufträge
+		switch (abt_settings::supportedByAbtransfers(it.key())) {
+		case 1: IcoABT->setPixmap(pixSup);;
+			break;
+		case 2: IcoABT->setPixmap(pixLatSup);
+			break;
+		default:
+			IcoABT->setPixmap(pixNotSup);
+			break;
+		}
+
+		//Icons und Text ausgeben
+		gl->addWidget(IcoBank, row, 0, Qt::AlignCenter);
+		gl->addWidget(IcoABT, row, 1, Qt::AlignCenter);
+		gl->addWidget(txt, row, 2, Qt::AlignLeft | Qt::AlignVCenter);
+
+		row++; //nächste Zeile
 	}
 
+	//Symbolbedeutungen erklären
+	gl->setRowMinimumHeight(row++, 12); //Abstand zur Liste
+	QLabel *labelTextDescription = new QLabel(tr("Symbolbedeutungen"));
+	gl->addWidget(labelTextDescription, row++, 0, 1, -1, Qt::AlignLeft | Qt::AlignBottom);
+
+	QLabel *labelTextSup = new QLabel(tr("unterstützt"));
+	QLabel *labelTextNotSup = new QLabel(tr("nicht unterstützt"));
+	QLabel *labelTextLatSup = new QLabel(tr("in zukünftiger Version geplant"));
+
+	QLabel *labelIcoSup = new QLabel();
+	QLabel *labelIcoNotSup = new QLabel();
+	QLabel *labelIcoLatSup = new QLabel();
+	labelIcoSup->setPixmap(pixSup);
+	labelIcoNotSup->setPixmap(pixNotSup);
+	labelIcoLatSup->setPixmap(pixLatSup);
+
+	gl->addWidget(labelIcoSup, row, 0, 1, 1, Qt::AlignRight | Qt::AlignVCenter);
+	gl->addWidget(labelTextSup, row++, 1, 1, 2, Qt::AlignLeft | Qt::AlignVCenter);
+
+	gl->addWidget(labelIcoNotSup, row, 0, 1, 1, Qt::AlignRight | Qt::AlignVCenter);
+	gl->addWidget(labelTextNotSup, row++, 1, 1, 2, Qt::AlignLeft | Qt::AlignVCenter);
+
+	gl->addWidget(labelIcoLatSup, row, 0, 1, 1, Qt::AlignRight | Qt::AlignVCenter);
+	gl->addWidget(labelTextLatSup, row++, 1, 1, 2, Qt::AlignLeft | Qt::AlignVCenter);
+
+	gl->setColumnStretch(2, 50); //only the description should expand
+
+	//actual size of the GridLayout is the minimum
+	dialog->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	dialog->setMinimumSize(gl->sizeHint());
 	dialog->exec();
 
 	delete dialog;

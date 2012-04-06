@@ -504,3 +504,49 @@ void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 }
 
 
+/**
+ * @return -1: error (not handled \a type passed)
+ *	   0: not supported
+ *	   1: supported
+ *	   2: not yet supported (maybe in future release)
+ *
+ */
+//static public
+int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
+{
+	switch (type) {
+	//supported and implemented types
+	case AB_Job_TypeTransfer :
+	case AB_Job_TypeInternalTransfer :
+
+	case AB_Job_TypeCreateDatedTransfer :
+	case AB_Job_TypeModifyDatedTransfer :
+	case AB_Job_TypeDeleteDatedTransfer :
+	case AB_Job_TypeGetDatedTransfers :
+
+	case AB_Job_TypeCreateStandingOrder :
+	case AB_Job_TypeModifyStandingOrder :
+	case AB_Job_TypeDeleteStandingOrder :
+	case AB_Job_TypeGetStandingOrders :
+		return 1;
+		break;
+
+		//not supported but should be implemented
+	case AB_Job_TypeEuTransfer :
+	case AB_Job_TypeDebitNote :
+	case AB_Job_TypeSepaTransfer :
+	case AB_Job_TypeSepaDebitNote :
+	case AB_Job_TypeLoadCellPhone :
+		return 2;
+		break;
+
+		//not supported (and not planed to be implemented)
+	case AB_Job_TypeGetTransactions :
+	case AB_Job_TypeGetBalance :
+	case AB_Job_TypeUnknown :
+		return 0;
+		break;
+	}
+
+	return -1; //error
+}

@@ -105,6 +105,9 @@ public:
 	bool showDialog(const QString &dialogType) const;
 	void setShowDialog(const QString &dialogType, bool show);
 
+	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
+	static int supportedByAbtransfers(const AB_JOB_TYPE type);
+
 signals:
 	void EmpfaengerListChanged();
 
