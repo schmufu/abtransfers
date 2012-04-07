@@ -41,6 +41,10 @@
 #include "globalvars.h"
 #undef DEFINEGLOBALSHERE
 
+
+/** a message handler to display the qDebug(), qWarning() etc. in the debug-Dialog */
+void myMessageHandler(QtMsgType type, const char *msg);
+
 int main(int argc, char *argv[])
 {
 	int apprv;
@@ -52,6 +56,9 @@ int main(int argc, char *argv[])
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
 
 	//qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
+
+	debugDialog = new DebugDialogWidget();
+	qInstallMsgHandler(myMessageHandler);
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);
@@ -67,7 +74,6 @@ int main(int argc, char *argv[])
 	banking = new aqb_banking();
 
 	MainWindow w;
-	debugDialog = new DebugDialogWidget(&w);
 
 	//Letzten Zustand wieder herstellen
 	qDebug("RESTORING LAST STATE");
@@ -90,5 +96,35 @@ int main(int argc, char *argv[])
 	//Alle erstellten GWEN_STRINGLIST und GWEN_TIME Objecte wieder löschen
 	abt_conv::freeAllGwenLists();
 
+
+	//den msgHandler wieder entfernen
+	qInstallMsgHandler(NULL);
+	delete debugDialog;
+
 	return apprv;
+}
+
+
+void myMessageHandler(QtMsgType type, const char *msg)
+{
+	fprintf(stderr, "%s\n", msg); //always show the messages at stderr
+
+	//only show the messages if wanted
+	//! \todo implement the option to deaktivate debug messges
+	//if (!settings->displayDebugMessages()) return;
+
+	switch(type) {
+	case QtDebugMsg:
+		debugDialog->appendMsg(QString("DEBUG: ").append(msg));
+		break;
+	case QtWarningMsg:
+		debugDialog->appendMsg(QString("WARNING: ").append(msg));
+		break;
+	case QtCriticalMsg:
+		debugDialog->appendMsg(QString("CRITICAL: ").append(msg));
+		break;
+	case QtFatalMsg:
+		fprintf(stderr, "Fatal: %s\n", msg);
+		abort();
+	}
 }
