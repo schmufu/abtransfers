@@ -169,6 +169,8 @@ public slots:
 	void addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addGetStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo = false);
 
+	void addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo = false);
+
 	void execQueuedTransactions();
 
 	void moveJob(int JobListPos, int updown);
