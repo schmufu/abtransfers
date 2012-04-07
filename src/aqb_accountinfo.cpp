@@ -115,7 +115,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_AvailableJobs = new QHash<AB_JOB_TYPE, bool>;
 	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_AvailableJobs);
 
-	qDebug() << "AccountInfo for Account" << this->Number() << "created.";
+	qDebug() << "AccountInfo for Account" << this->Number() << "created. (ID:" << this->get_ID() << ")";
 }
 
 aqb_AccountInfo::~aqb_AccountInfo()

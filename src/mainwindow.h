@@ -42,6 +42,8 @@
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
 
+#define TESTWIDGETACCESS
+
 class widgetTransfer;
 
 namespace Ui {
@@ -86,6 +88,10 @@ private:
 //	QAction *act;
 //	QAction *act;
 
+#ifdef TESTWIDGETACCESS
+	QAction *actTestWidgetAccess;
+#endif
+
 	QMenu *accountContextMenu;
 	QToolBar *dockToolbar;
 
@@ -123,11 +129,12 @@ private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
+	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionAbout_abTransfers_triggered();
 	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionDebug_Info_triggered();
 	void on_actionHelp_triggered();
+	void on_actionEinstellungen_triggered();
 
 	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
@@ -154,6 +161,10 @@ private slots:
 	void onActionDebitNoteSepaTriggered();
 	void onActionUpdateBalanceTriggered();
 	void onActionShowAvailableJobsTriggered();
+
+#ifdef TESTWIDGETACCESS
+	void onActionTestWidgetAccessTriggered();
+#endif
 
 	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
 	void onWidgetTransferCancelClicked(widgetTransfer* sender);

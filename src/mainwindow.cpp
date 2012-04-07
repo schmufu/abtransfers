@@ -61,6 +61,12 @@
 #include "widgets/widgetknowndatedtransfers.h"
 #include "widgets/widgetaccountcombobox.h"
 
+
+#ifdef TESTWIDGETACCESS
+	 //nur zum Testen!
+#include "pages/pagewidgettests.h"
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -198,6 +204,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->timer->setSingleShot(true);
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
 	this->timer->start(10);
+
+#ifdef TESTWIDGETACCESS
+	this->ui->menuBar->addAction(this->actTestWidgetAccess);
+#endif
 
 }
 
@@ -383,6 +393,12 @@ void MainWindow::createActions()
 	actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
 	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
+
+#ifdef TESTWIDGETACCESS
+	actTestWidgetAccess = new QAction(tr("TestWidget"), this);
+	connect(actTestWidgetAccess, SIGNAL(triggered()), this, SLOT(onActionTestWidgetAccessTriggered()));
+#endif
+
 
 }
 
@@ -790,6 +806,11 @@ void MainWindow::on_actionHelp_triggered()
 	delete helpDialog;
 }
 
+//private SLOT
+void MainWindow::on_actionEinstellungen_triggered()
+{
+
+}
 
 //private SLOT
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
@@ -1035,6 +1056,22 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 
 	delete dialog;
 }
+
+#ifdef TESTWIDGETACCESS
+//private slot (ONLY FOR TESTING!)
+void MainWindow::onActionTestWidgetAccessTriggered()
+{
+	//Nur zum Testen verwendet!
+	QDialog *dialog = new QDialog(this);
+	QVBoxLayout *vb = new QVBoxLayout(dialog);
+	pageWidgetTests *page = new pageWidgetTests(this->accounts->getAccount(5));
+	vb->addWidget(page);
+
+	dialog->exec();
+
+	delete dialog;
+}
+#endif
 
 //private slot
 /** Tab soll gelöscht werden
@@ -1620,4 +1657,8 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //
 //	delete t;
 }
+
+
+
+
 

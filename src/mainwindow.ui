@@ -20,7 +20,7 @@
    <string notr="true">AB-Transfers</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
   </property>
   <property name="locale">
@@ -94,7 +94,7 @@
           <string>Übersicht</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/ueberweisung</normaloff>:/icons/ueberweisung</iconset>
          </property>
         </item>
@@ -103,7 +103,7 @@
           <string>Ausgang</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
          </property>
         </item>
@@ -112,7 +112,7 @@
           <string>Log</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset>
            <normaloff>:/icons/Log-Icon</normaloff>:/icons/Log-Icon</iconset>
          </property>
         </item>
@@ -366,14 +366,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDatei">
-    <property name="title">
-     <string>Datei</string>
-    </property>
-    <addaction name="actionEinstellungen"/>
-    <addaction name="separator"/>
-    <addaction name="actionBeenden"/>
-   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Hilfe</string>
@@ -384,6 +376,14 @@
     <addaction name="separator"/>
     <addaction name="actionAbout_Qt"/>
     <addaction name="actionAbout_abTransfers"/>
+   </widget>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionEinstellungen"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHelp"/>
@@ -436,9 +436,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionBeenden</sender>

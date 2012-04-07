@@ -29,85 +29,192 @@
  ******************************************************************************/
 
 #include "pagewidgettests.h"
-#include <QtGui/QLayout>
-#include <QtCore/QDebug>
 
-#include "../widgets/widgetaccountdata.h"
-#include "../widgets/widgettextkey.h"
-#include "../widgets/widgetvalue.h"
-#include "../widgets/widgetdate.h"
-#include "../widgets/widgetrecurrence.h"
+#include <QList>
 
 
-pageWidgetTests::pageWidgetTests(QWidget *parent) :
+pageWidgetTests::pageWidgetTests(aqb_AccountInfo *acc, QWidget *parent) :
     QWidget(parent)
 {
+	qDebug() << Q_FUNC_INFO << "constructor started";
+	QHBoxLayout *hb = new QHBoxLayout();
+	this->button1 = new QPushButton("Button 1");
+	this->button2 = new QPushButton("Button 2");
+	this->button3 = new QPushButton("Button 3");
+	this->button4 = new QPushButton("Button 4");
+	this->button5 = new QPushButton("Button 5");
+	this->button6 = new QPushButton("Button 6");
+	this->button7 = new QPushButton("Button 7");
+	this->button8 = new QPushButton("Button 8");
+	hb->addWidget(this->button1);
+	hb->addWidget(this->button2);
+	hb->addWidget(this->button3);
+	hb->addWidget(this->button4);
+	hb->addWidget(this->button5);
+	hb->addWidget(this->button6);
+	hb->addWidget(this->button7);
+	hb->addWidget(this->button8);
 
-	widgetAccountData *accData = new widgetAccountData(this);
-	accData->setAllowDropKnownRecipient(false);
-	accData->setAllowDropAccount(true);
+	connect(this->button1, SIGNAL(clicked()), this, SLOT(onButton1Clicked()));
+	connect(this->button2, SIGNAL(clicked()), this, SLOT(onButton2Clicked()));
+	connect(this->button3, SIGNAL(clicked()), this, SLOT(onButton3Clicked()));
+	connect(this->button4, SIGNAL(clicked()), this, SLOT(onButton4Clicked()));
+	connect(this->button5, SIGNAL(clicked()), this, SLOT(onButton5Clicked()));
+	connect(this->button6, SIGNAL(clicked()), this, SLOT(onButton6Clicked()));
+	connect(this->button7, SIGNAL(clicked()), this, SLOT(onButton7Clicked()));
+	connect(this->button8, SIGNAL(clicked()), this, SLOT(onButton8Clicked()));
 
-	widgetAccountData *recData = new widgetAccountData(this);
-	recData->setAllowDropKnownRecipient(true);
-	recData->setAllowDropAccount(false);
+	this->textEdit = new QPlainTextEdit();
+	QVBoxLayout *vb = new QVBoxLayout();
+	vb->addLayout(hb);
+	vb->addWidget(this->textEdit);
 
-	widgetValue *value = new widgetValue(this);
+	this->setLayout(vb);
 
-	this->purpose = new widgetPurpose(this);
-	purpose->setPurpose("Nur Nen Test\nmit Zeilenumbruch\nUnd einer sehr langen Zeile die in Block2 bestimmt 2 mal umgebrochen werden muss");
+	this->account = acc;
 
-	widgetDate *date = new widgetDate("Datum", Qt::AlignTop, this);
-	date->setLimitMaxValueSetupTime(60);
-	date->setLimitValuesExecutionDayWeek(QString("1,2,3,4").split(","));
-	date->setLimitValuesExecutionDayMonth(QString("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,98").split(","));
-
-	QList<int> intlist;
-	intlist << 51 << 53 << 54;
-	widgetTextKey *textKey = new widgetTextKey(&intlist, this);
-	textKey->setTextKey(54);
-
-	widgetRecurrence *recurrence = new widgetRecurrence(this);
-	QStringList Monthly;
-	Monthly << "1" << "2" << "3" << "6" << "12";
-	QStringList Weekly;
-	Weekly << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9"
-			 << "10" << "11" << "12" << "15";
-	recurrence->setLimitValuesCycleMonth(Monthly);
-	recurrence->setLimitValuesCycleWeek(Weekly);
-	QStringList weekdays;
-	weekdays << "1" << "2" << "3" << "4" << "5" << "7";
-	QStringList days;
-	days << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9"
-	     << "10" << "11" << "12" << "15" << "16" << "18" << "20" << "30" << "99"<<"98"<<"97";
-	recurrence->setLimitValuesExecutionDayMonth(days);
-	recurrence->setLimitValuesExecutionDayWeek(weekdays);
-
-
-	QHBoxLayout *hl = new QHBoxLayout();
-	hl->addWidget(accData);
-	hl->addWidget(recData);
-
-	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addLayout(hl);
-	layout->addWidget(value);
-	layout->addWidget(purpose);
-	layout->addWidget(textKey);
-	layout->addWidget(date, 0, Qt::AlignCenter);
-	layout->addWidget(recurrence, 0, Qt::AlignCenter);
-
-	this->setLayout(layout);
-	//this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-	qDebug() << "PURPOSE: " << purpose->getPurpose();
+	qDebug() << Q_FUNC_INFO << "constructor ended";
 }
 
 pageWidgetTests::~pageWidgetTests()
 {
+	qDebug() << Q_FUNC_INFO << "destructor started";
+
+
+	qDebug() << Q_FUNC_INFO << "destructor ended";
 
 }
 
-
-QStringList pageWidgetTests::getPurpose()
+void pageWidgetTests::onButton1Clicked()
 {
-	return this->purpose->getPurpose();
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+	if (this->account == NULL) {
+		this->textEdit->appendPlainText("Account == NULL --> abort");
+		return;
+	}
+
+
+	abt_transaction *t = new abt_transaction();
+	t->fillLocalFromAccount(this->account->get_AB_ACCOUNT());
+	t->setRemoteAccountNumber("123456");
+	t->setRemoteBankCode("29050101");
+	t->setRemoteBankName("Sparkasse Bremen");
+	t->setRemoteName(QStringList("Test User"));
+	t->setValue(abt_conv::ABValueFromString("5.44", "EUR"));
+	t->setPurpose(QStringList("Verwendungszweck Test1"));
+	t->setTextKey(51);
+
+
+	this->iec1 = AB_ImExporterContext_new();
+	//AB_ImExporterContext_Add
+	this->iea1 = AB_ImExporterAccountInfo_new();
+	AB_ImExporterAccountInfo_FillFromAccount(this->iea1, this->account->get_AB_ACCOUNT());
+
+
+	AB_ImExporterContext_AddAccountInfo(this->iec1, this->iea1);
+	const QList<abt_StandingInfo*> *stos;
+	stos = this->account->getKnownStandingOrders();
+	for (int i=0; i<stos->size(); i++) {
+		AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
+	}
+
+
+
+
+//	int 	AB_Banking_FillGapsInImExporterContext (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *iec)
+//	int 	AB_Banking_ExportToBuffer (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *ctx, const char *exporterName, const char *profileName, GWEN_BUFFER *buf)
+//	int 	AB_Banking_ExportToFile (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *ctx, const char *exporterName, const char *profileName, const char *fileName)
+//	int 	AB_Banking_ExportToFileWithProfile (AB_BANKING *ab, const char *exporterName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, const char *outputFileName)
+//	int 	AB_Banking_ExportWithProfile (AB_BANKING *ab, const char *exporterName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, GWEN_SYNCIO *sio)
+//	int 	AB_Banking_ImportBuffer (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *ctx, const char *exporterName, const char *profileName, GWEN_BUFFER *buf)
+//	int 	AB_Banking_ImportFileWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, const char *inputFileName)
+//	int 	AB_Banking_ImportWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, GWEN_SYNCIO *sio)
+
+	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->iec1, "csv", "full", "/tmp/exporterFilename.csv");
+
+	this->textEdit->appendPlainText(QString("%1").arg(ret));
+
+
+	delete t;
+	AB_ImExporterContext_free(this->iec1);
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton2Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+	this->iec2 = AB_ImExporterContext_new();
+	int ret = AB_Banking_ImportFileWithProfile(banking->getAqBanking(), "csv", this->iec2, "full", NULL, "/tmp/exporterFilename.csv");
+
+	this->textEdit->appendPlainText(QString("return value from import: %1").arg(ret));
+
+	//parse the incoming context
+
+
+
+
+	AB_ImExporterContext_free(this->iec2);
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton3Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton4Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton5Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton6Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton7Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+}
+
+void pageWidgetTests::onButton8Clicked()
+{
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+
+
+
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }

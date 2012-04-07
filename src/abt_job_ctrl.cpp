@@ -1329,6 +1329,9 @@ bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
 	QString log = AB_ImExporterContext_GetLog(ctx);
 	this->addlog(QString("CTX-LOG: ").append(log));
 
+	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), ctx, "ctxfile", "default", "/tmp/exporterTest_ctxfile.ctx");
+	qDebug() << Q_FUNC_INFO << "Context Export ret:" << ret;
+
 	this->parseImExporterContext_Messages(ctx);
 	this->parseImExporterContext_Securitys(ctx);
 
