@@ -31,28 +31,53 @@
 #include "debugdialogwidget.h"
 #include "ui_debugdialogwidget.h"
 #include <QDebug>
+#include <QFileDialog>
 
 DebugDialogWidget::DebugDialogWidget(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DebugDialogWidget)
+	QDialog(parent),
+	ui(new Ui::DebugDialogWidget)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 }
 
 DebugDialogWidget::~DebugDialogWidget()
 {
-    delete ui;
-    qDebug() << this << "deleted";
+	delete ui;
+	qDebug() << this << "deleted";
 }
 
 void DebugDialogWidget::changeEvent(QEvent *e)
 {
-    QDialog::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
+	QDialog::changeEvent(e);
+	switch (e->type()) {
+	case QEvent::LanguageChange:
+		ui->retranslateUi(this);
+		break;
+	default:
+		break;
+	}
+}
+
+
+void DebugDialogWidget::appendMsg(const QString &msg)
+{
+	this->ui->textBrowser->append(msg);
+}
+
+void DebugDialogWidget::on_pushButton_save_clicked()
+{
+	QString filename = QFileDialog::getSaveFileName(this,
+							tr("Speichern unter ..."),
+							QDir::homePath(),
+							tr("Textdateien (*.txt *.log)"));
+	QFile data(filename);
+	if (data.open(QFile::WriteOnly | QFile::Truncate | QIODevice::Text)) {
+		QTextStream out(&data);
+		out << this->ui->textBrowser->toPlainText();
+
+		//all written
+		data.flush();
+		data.close();
+	}
+
 }

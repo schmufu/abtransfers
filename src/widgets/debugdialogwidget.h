@@ -34,20 +34,26 @@
 #include <QDialog>
 
 namespace Ui {
-    class DebugDialogWidget;
+	class DebugDialogWidget;
 }
 
 class DebugDialogWidget : public QDialog {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    DebugDialogWidget(QWidget *parent = 0);
-    ~DebugDialogWidget();
+	DebugDialogWidget(QWidget *parent = 0);
+	~DebugDialogWidget();
 
 protected:
-    void changeEvent(QEvent *e);
+	void changeEvent(QEvent *e);
 
 private:
-    Ui::DebugDialogWidget *ui;
+	Ui::DebugDialogWidget *ui;
+
+public slots:
+	void appendMsg(const QString &msg);
+
+private slots:
+	void on_pushButton_save_clicked();
 };
 
 #endif // DEBUGDIALOGWIDGET_H
