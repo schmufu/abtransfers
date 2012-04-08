@@ -942,7 +942,8 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 //private slot
 void MainWindow::onActionUpdateBalanceTriggered()
 {
-
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	this->jobctrl->addGetBalance(acc->getSelectedAccount());
 }
 
 //private slot

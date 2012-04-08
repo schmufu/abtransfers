@@ -1132,6 +1132,48 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 }
 
 
+//SLOT
+void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
+{
+	int rv;
+
+	if (acc == NULL) {
+		//Job is not available!
+		qWarning() << this << "Job AB_Job_TypeGetBalance is not available (no valid account [NULL])";
+		emit jobNotAvailable(AB_Job_TypeGetBalance);
+		return; //Abbruch
+	}
+
+	AB_JOB *job = AB_JobGetBalance_new(acc->get_AB_ACCOUNT());
+
+	rv = AB_Job_CheckAvailability(job);
+
+	if (rv) {
+		//Job is not available!
+		qWarning() << this << "Job is not available (" << rv << ")";
+		emit jobNotAvailable(AB_Job_TypeGetBalance);
+		return; //Abbruch
+	}
+
+	//Create Info
+	QString info;
+	info.append("Holt alle den aktuellen Saldo für das Konto ");
+	info.append(acc->Number());
+	info.append(" (" + acc->Name() + ")");
+
+	abt_job_info *ji = new abt_job_info(job, info);
+
+	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
+	//AB_JOB_LIST gebaut)
+	this->jobqueue->append(ji);
+	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+		emit this->jobAdded(ji);
+	}
+	emit this->jobQueueListChanged();
+
+}
+
+
 
 /******** Ausführung *******/
 
@@ -1422,34 +1464,54 @@ int abt_job_ctrl::parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *a
 
 	s = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
 	while (s) {
-		logmsg2 = QString("BankLine:\t");
+
+		logmsg2 = QString("Balance for: ");
+		logmsg2.append(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+		logmsg2.append("(");
+		logmsg2.append(AB_ImExporterAccountInfo_GetAccountName(ai));
+		logmsg2.append(")");
+		this->addlog(logmsg + logmsg2);
 
 		v = AB_AccountStatus_GetBankLine(s);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
+		if (v != NULL) {
+			logmsg2 = QString("BankLine:\t");
+			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+			this->addlog(logmsg + logmsg2);
+		}
 
-		logmsg2 = QString("NotedBalance:\t");
 		b = AB_AccountStatus_GetNotedBalance(s);
-		v = AB_Balance_GetValue(b);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
+		if (b != NULL) {
+			v = AB_Balance_GetValue(b);
+			if (v != NULL) {
+				logmsg2 = QString("NotedBalance:\t");
+				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+				this->addlog(logmsg + logmsg2);
+			}
+		}
 
-		logmsg2 = QString("BookedBalance:\t");
 		b = AB_AccountStatus_GetBookedBalance(s);
-		v = AB_Balance_GetValue(b);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
+		if (b != NULL) {
+			v = AB_Balance_GetValue(b);
+			if (v != NULL) {
+				logmsg2 = QString("BookedBalance:\t");
+				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+				this->addlog(logmsg + logmsg2);
+			}
+		}
 
-		logmsg2 = QString("Disposable:\t");
 		v = AB_AccountStatus_GetDisposable(s);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
+		if (v != NULL) {
+			logmsg2 = QString("Disposable:\t");
+			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+			this->addlog(logmsg + logmsg2);
+		}
 
-		logmsg2 = QString("Disposed:\t");
 		v = AB_AccountStatus_GetDisposed(s);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
+		if (v != NULL) {
+			logmsg2 = QString("Disposed:\t");
+			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+			this->addlog(logmsg + logmsg2);
+		}
 
 		logmsg2 = QString("Time:\t");
 		logmsg2.append(abt_conv::GwenTimeToQDate(
