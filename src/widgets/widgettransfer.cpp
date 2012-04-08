@@ -40,19 +40,19 @@
 #include "../aqb_accountinfo.h"
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
-			       const aqb_AccountInfo *localAccount,
+			       const aqb_AccountInfo *lclAccount,
 			       const aqb_Accounts *allAccounts,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	if (localAccount == NULL) {
+	if (lclAccount == NULL) {
 		this->m_limits = NULL;
 	} else {
-		this->m_limits = localAccount->limits(type);
+		this->m_limits = lclAccount->limits(type);
 	}
 
 	this->m_allAccounts = allAccounts; //could be NULL!
-	this->m_accountAtCreation = localAccount; //could be NULL!
+	this->m_accountAtCreation = lclAccount; //could be NULL!
 	this->m_type = type;
 	this->m_origTransaction = NULL;
 	this->localAccount = NULL;
@@ -68,53 +68,47 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->layoutMain = new QVBoxLayout(this);
 	this->layoutMain->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-	if (this->m_limits == NULL) {
-		//Wenn die limits nicht existieren oder kein Account übergeben
-		//wurde wird der Job von der Bank nicht unterstützt.
-		QLabel *notAvailable = new QLabel(tr(
-				"<h2>Der Auftrag '%1' ist bei dem ausgewähltem Konto "
-				"nicht verfügbar!</h2>"
-				).arg(abt_conv::JobTypeToQString(type)));
-		notAvailable->setWordWrap(true);
-		notAvailable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-		notAvailable->setMinimumWidth(350);
-		notAvailable->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-		this->layoutMain->addWidget(notAvailable);
-		QString BankName, KontoName;
-		if (localAccount == NULL) {
-			BankName = "NULL";
-			KontoName = "NULL";
-		} else {
-			BankName = localAccount->BankName();
-			KontoName = localAccount->Name();
+	//Die noch nicht implementierten Aufträge gesondert behandeln
+	switch(this->m_type) {
+	case AB_Job_TypeSepaTransfer :
+	case AB_Job_TypeEuTransfer :
+	case AB_Job_TypeDebitNote :
+	case AB_Job_TypeSepaDebitNote : {
+		this->setWindowTitle(tr("nicht Implementiert"));
+		QLabel *notImplementet = new QLabel(tr(
+				"<h3><font color=red>"
+				"Der \"Job\" '%1' ist leider noch nicht "
+				"implementiert.<br />"
+				"Bitte haben Sie noch etwas Geduld und warten "
+				"auf eine Aktualisierung.</font></h3>"
+				"(Eventuell folgende Texte sind ablaufbedingt "
+				"und können ignoriert werden)"
+				).arg(abt_conv::JobTypeToQString(this->m_type)));
+		notImplementet->setWordWrap(true);
+		notImplementet->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+		notImplementet->setMinimumWidth(350);
+		notImplementet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+		this->layoutMain->insertWidget(0, notImplementet);
+		this->layoutMain->insertSpacing(1,20);
+		this->m_type = AB_Job_TypeUnknown; //noch nicht unterstützt
 		}
-		QLabel *description = new QLabel(tr(
-				"AB-Transfers unterstützt zwar die Verwendung "
-				"von '%1', aber über die 'BankParameterDaten' "
-				"(BPD) wurde von dem Institut (%2) mitgeteilt "
-				"das dieser Auftrag bei dem gewählten Konto "
-				"(%3) nicht unterstützt wird.<br />"
-				"Die BPD werden von Zeit zu Zeit aktualisert. "
-				"Eventuell wird zu einem späteren Zeitpunkt "
-				"der Auftrag vom Institut unterstützt werden. "
-				"Dies ist aber abhängig vom Institut und kann "
-				"von AB-Transfers nicht beeinflusst werden."
-				).arg(abt_conv::JobTypeToQString(type)
-				).arg(BankName
-				).arg(KontoName));
-		description->setWordWrap(true);
-		description->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-		description->setMinimumWidth(350);
-		description->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		this->layoutMain->addWidget(description);
-		this->layoutMain->addSpacerItem(new QSpacerItem(10, 1,
-								QSizePolicy::Fixed,
-								QSizePolicy::MinimumExpanding));
-//		type = AB_Job_TypeUnknown;
-//		this->m_type = AB_Job_TypeUnknown;
+		break;
+	default:
+		break;
 	}
 
-	switch (type) {
+	if (this->m_accountAtCreation == NULL ||
+	    !this->m_accountAtCreation->isAvailable(this->m_type)) {
+		//es wurde kein Account übergeben oder der vorhandene Job
+		//ist nicht verfügbar.
+		this->my_createNotAvailableJobText();
+		//type auf unknown setzen, damit keine weiteren widgets
+		//erstellt werden
+		this->m_type = AB_Job_TypeUnknown;
+	}
+
+	switch (this->m_type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
 		break;
@@ -134,33 +128,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		this->my_create_dated_transfer_form(false);
 		break;
 
-
-	case AB_Job_TypeSepaTransfer :
-	case AB_Job_TypeEuTransfer :
-
-	case AB_Job_TypeDebitNote :
-	case AB_Job_TypeSepaDebitNote : {
-		this->setWindowTitle(tr("nicht Implementiert"));
-		QLabel *notImplementet = new QLabel(tr(
-				"<h3><font color=red>"
-				"Der \"Job\" '%1' ist leider noch nicht "
-				"implementiert.<br />"
-				"Bitte haben Sie noch etwas Geduld und warten "
-				"auf eine Aktualisierung.</font></h3>"
-				"(Eventuell folgende Texte sind ablaufbedingt "
-				"und können ignoriert werden)"
-				).arg(abt_conv::JobTypeToQString(type)));
-		notImplementet->setWordWrap(true);
-		notImplementet->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-		notImplementet->setMinimumWidth(350);
-		notImplementet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-
-		this->layoutMain->insertWidget(0, notImplementet);
-		this->layoutMain->insertSpacing(1,20);
-		this->m_type = AB_Job_TypeUnknown;
-		}
-		break;
-
 	case AB_Job_TypeLoadCellPhone:
 	case AB_Job_TypeGetTransactions :
 	case AB_Job_TypeGetStandingOrders :
@@ -168,12 +135,12 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeGetDatedTransfers :
 	case AB_Job_TypeDeleteDatedTransfer :
 	case AB_Job_TypeGetBalance : {
-		qWarning() << "type" << type << "not supported for widgetTransfer!";
+		qWarning() << "type" << this->m_type << "not supported for widgetTransfer!";
 		this->setWindowTitle(tr("Programmierfehler"));
 		QLabel *programError = new QLabel(tr(
 				"<h2>PROGRAMMIERFEHLER!</h2>"
 				"Der \"Job\" '%1' wird von widgetTransfer nicht"
-				"unterstützt!").arg(abt_conv::JobTypeToQString(type)));
+				"unterstützt!").arg(abt_conv::JobTypeToQString(this->m_type)));
 		programError->setWordWrap(true);
 		this->layoutMain->insertWidget(0, programError, 0, Qt::AlignLeft | Qt::AlignVCenter);
 		this->m_type = AB_Job_TypeUnknown;
@@ -200,7 +167,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	connect(this->pushButtonRevert, SIGNAL(clicked()),
 		this, SLOT(onRevertButtonPressed()));
 
-	//OK und revert disablen wenn type == unknown
+	//OK und revert disablen wenn m_type == unknown
 	this->pushButtonOK->setDisabled(this->m_type == AB_Job_TypeUnknown);
 	this->pushButtonRevert->setDisabled(this->m_type == AB_Job_TypeUnknown);
 
@@ -213,7 +180,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->layoutButtons->addWidget(this->pushButtonOK);
 
 	this->layoutMain->addLayout(this->layoutButtons);
-
 }
 
 widgetTransfer::~widgetTransfer()
@@ -225,6 +191,49 @@ widgetTransfer::~widgetTransfer()
 //	delete this->groupBoxRemote;
 //	delete this->groubBoxRecurrence;
 	qDebug() << this << "deleted";
+}
+
+//private
+/** Anzeige das der Auftrag von der Bank nicht unterstützt wird */
+void widgetTransfer::my_createNotAvailableJobText()
+{
+	QLabel *notAvailable = new QLabel(tr(
+			"<h2>Der Auftrag '%1' ist bei dem ausgewähltem Konto "
+			"nicht verfügbar!</h2>"
+			).arg(abt_conv::JobTypeToQString(this->m_type)));
+	notAvailable->setWordWrap(true);
+	notAvailable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	notAvailable->setMinimumWidth(350);
+	notAvailable->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+	this->layoutMain->addWidget(notAvailable);
+	QString BankName, KontoName;
+	if (this->m_accountAtCreation == NULL) {
+		BankName = tr("unbekannt");
+		KontoName = tr("unbekannt");
+	} else {
+		BankName = this->m_accountAtCreation->BankName();
+		KontoName = this->m_accountAtCreation->Name();
+	}
+	QLabel *description = new QLabel(tr(
+			"AB-Transfers unterstützt zwar die Verwendung von '%1', "
+			"aber über die 'BankParameterDaten' (BPD) wurde von dem "
+			"Institut (%2) mitgeteilt das dieser Auftrag bei dem "
+			"gewählten Konto (%3) nicht unterstützt wird.<br />"
+			"Die BPD werden von Zeit zu Zeit aktualisert. Eventuell "
+			"wird zu einem späteren Zeitpunkt der Auftrag vom "
+			"Institut unterstützt werden. Dies ist aber abhängig "
+			"vom Institut und kann von AB-Transfers nicht "
+			"beeinflusst werden.").arg(
+					abt_conv::JobTypeToQString(this->m_type),
+					BankName, KontoName));
+	description->setWordWrap(true);
+	description->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	description->setMinimumWidth(350);
+	description->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	this->layoutMain->addWidget(description);
+	this->layoutMain->addSpacerItem(new QSpacerItem(10, 1,
+							QSizePolicy::Fixed,
+							QSizePolicy::MinimumExpanding));
 }
 
 //private

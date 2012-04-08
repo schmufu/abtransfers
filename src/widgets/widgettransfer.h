@@ -106,6 +106,7 @@ private:
 	void my_create_textKey();
 	void my_create_recurrence();
 
+	void my_createNotAvailableJobText();
 
 	void setAllLimits(const abt_transactionLimits *limits);
 	//! \deprecated
