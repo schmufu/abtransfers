@@ -38,30 +38,7 @@
 #include "abt_transactionlimits.h"
 #include "aqb_accountinfo.h"
 
-class abt_job_info
-{
-private:
-	AB_JOB *job;
-	QStringList *jobInfo;
-
-public:
-	abt_job_info(AB_JOB *j, const QString &Info);
-	~abt_job_info();
-
-	AB_JOB_STATUS getAbJobStatus() const;
-	const QString getStatus() const;
-	AB_JOB_TYPE getAbJobType() const;
-	const QString getType() const;
-	const QStringList* getInfo() const;
-	AB_JOB *getJob() const;
-
-	const abt_transaction* getAbtTransaction() const;
-
-	const QString getKontoNr() const;
-	const QString getBLZ() const;
-
-	static QString createJobInfoString(const abt_transaction *t);
-};
+#include "abt_info_class.h"
 
 class abt_job_ctrl : public QObject
 {

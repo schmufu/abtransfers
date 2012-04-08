@@ -100,6 +100,11 @@ private:
 	AB_IMEXPORTER_ACCOUNTINFO *iea3;
 
 
+
+
+	void addlog(const QString &logMsg);
+	void parseContext(AB_IMEXPORTER_CONTEXT *ctx);
+
 signals:
 
 private slots:
