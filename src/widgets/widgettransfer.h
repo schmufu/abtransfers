@@ -108,7 +108,7 @@ private:
 
 
 	void setAllLimits(const abt_transactionLimits *limits);
-	//! \obsolete
+	//! \deprecated
 	void setLocalFromAccount(const aqb_AccountInfo *acc);
 
 signals:

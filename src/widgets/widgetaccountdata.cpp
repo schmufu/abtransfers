@@ -203,6 +203,7 @@ void widgetAccountData::comboBoxNewAccountSelected(const aqb_AccountInfo *selAcc
 		this->localBankCode->setText(selAcc->BankCode());
 		this->localBankName->setText(selAcc->BankName());
 	}
+	emit this->accountChanged(selAcc);
 }
 
 //private
