@@ -33,7 +33,7 @@
 #include <QList>
 
 
-pageWidgetTests::pageWidgetTests(aqb_AccountInfo *acc, QWidget *parent) :
+pageWidgetTests::pageWidgetTests(aqb_Accounts *accs, QWidget *parent) :
     QWidget(parent)
 {
 	qDebug() << Q_FUNC_INFO << "constructor started";
@@ -71,7 +71,7 @@ pageWidgetTests::pageWidgetTests(aqb_AccountInfo *acc, QWidget *parent) :
 
 	this->setLayout(vb);
 
-	this->account = acc;
+	this->accounts = accs;
 
 	qDebug() << Q_FUNC_INFO << "constructor ended";
 }
@@ -89,14 +89,16 @@ void pageWidgetTests::onButton1Clicked()
 {
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
-	if (this->account == NULL) {
+
+	aqb_AccountInfo *acc = this->accounts->getAccount(5);
+
+	if (acc == NULL) {
 		this->textEdit->appendPlainText("Account == NULL --> abort");
 		return;
 	}
 
-
 	abt_transaction *t = new abt_transaction();
-	t->fillLocalFromAccount(this->account->get_AB_ACCOUNT());
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 	t->setRemoteAccountNumber("123456");
 	t->setRemoteBankCode("29050101");
 	t->setRemoteBankName("Sparkasse Bremen");
@@ -109,12 +111,12 @@ void pageWidgetTests::onButton1Clicked()
 	this->iec1 = AB_ImExporterContext_new();
 	//AB_ImExporterContext_Add
 	this->iea1 = AB_ImExporterAccountInfo_new();
-	AB_ImExporterAccountInfo_FillFromAccount(this->iea1, this->account->get_AB_ACCOUNT());
+	AB_ImExporterAccountInfo_FillFromAccount(this->iea1, acc->get_AB_ACCOUNT());
 
 
 	AB_ImExporterContext_AddAccountInfo(this->iec1, this->iea1);
 	const QList<abt_StandingInfo*> *stos;
-	stos = this->account->getKnownStandingOrders();
+	stos = acc->getKnownStandingOrders();
 	for (int i=0; i<stos->size(); i++) {
 		AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
 	}
@@ -131,7 +133,7 @@ void pageWidgetTests::onButton1Clicked()
 //	int 	AB_Banking_ImportFileWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, const char *inputFileName)
 //	int 	AB_Banking_ImportWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, GWEN_SYNCIO *sio)
 
-	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->iec1, "csv", "full", "/tmp/exporterFilename.csv");
+	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->iec1, "ctxfile", "default", "/tmp/exporterFilename.ctx");
 
 	this->textEdit->appendPlainText(QString("%1").arg(ret));
 
@@ -150,7 +152,7 @@ void pageWidgetTests::onButton2Clicked()
 
 
 	this->iec2 = AB_ImExporterContext_new();
-	int ret = AB_Banking_ImportFileWithProfile(banking->getAqBanking(), "csv", this->iec2, "full", NULL, "/tmp/exporterFilename.csv");
+	int ret = AB_Banking_ImportFileWithProfile(banking->getAqBanking(), "ctxfile", this->iec2, "default", NULL, "/tmp/exporterFilename.ctx");
 
 	this->textEdit->appendPlainText(QString("return value from import: %1").arg(ret));
 

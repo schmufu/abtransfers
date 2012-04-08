@@ -59,6 +59,7 @@
 
 #include "../globalvars.h"
 #include "../abt_conv.h"
+#include "../aqb_accounts.h"
 
 /*! \brief NUR FÜR TESTZECKE!
  *
@@ -69,7 +70,7 @@ class pageWidgetTests : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit pageWidgetTests(aqb_AccountInfo *acc, QWidget *parent = 0);
+	explicit pageWidgetTests(aqb_Accounts *accs, QWidget *parent = 0);
 	~pageWidgetTests();
 
 private:
@@ -83,7 +84,7 @@ private:
 	QPushButton *button8;
 	QPlainTextEdit *textEdit;
 
-	aqb_AccountInfo *account;
+	aqb_Accounts *accounts;
 
 
 	AB_IMEXPORTER_CONTEXT *iec1;

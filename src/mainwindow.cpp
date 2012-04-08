@@ -1065,7 +1065,7 @@ void MainWindow::onActionTestWidgetAccessTriggered()
 	//Nur zum Testen verwendet!
 	QDialog *dialog = new QDialog(this);
 	QVBoxLayout *vb = new QVBoxLayout(dialog);
-	pageWidgetTests *page = new pageWidgetTests(this->accounts->getAccount(5));
+	pageWidgetTests *page = new pageWidgetTests(this->accounts);
 	vb->addWidget(page);
 
 	dialog->exec();
