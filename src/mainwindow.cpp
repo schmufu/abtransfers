@@ -481,10 +481,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
-			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
-		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
-			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
+		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
+		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
 
 		lDT->addWidget(DatedTransfers);
 		layoutScrollArea->addWidget(grpDT);
@@ -576,10 +576,10 @@ void MainWindow::createDockDatedTransfers()
 	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
-		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
-	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
-		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
+	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
+		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
+	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
+		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
