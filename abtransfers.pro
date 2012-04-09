@@ -35,7 +35,8 @@ SOURCES += src/main.cpp \
     src/widgets/widgetknownstandingorders.cpp \
     src/widgets/widgetaccountcombobox.cpp \
     src/widgets/widgetknowndatedtransfers.cpp \
-    src/abt_jobinfo.cpp
+    src/abt_jobinfo.cpp \
+    src/abt_parser.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -66,7 +67,8 @@ HEADERS += src/mainwindow.h \
     src/widgets/widgetknownstandingorders.h \
     src/widgets/widgetaccountcombobox.h \
     src/widgets/widgetknowndatedtransfers.h \
-    src/abt_jobinfo.h
+    src/abt_jobinfo.h \
+    src/abt_parser.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
