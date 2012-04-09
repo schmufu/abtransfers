@@ -63,7 +63,7 @@
 abt_job_ctrl::abt_job_ctrl(QObject *parent) :
     QObject(parent)
 {
-	this->jobqueue = new QList<abt_job_info*>;
+	this->jobqueue = new QList<abt_jobInfo*>;
 
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
@@ -79,7 +79,7 @@ abt_job_ctrl::~abt_job_ctrl()
 //	}
 
 	while (!this->jobqueue->isEmpty()) {
-		abt_job_info *j = this->jobqueue->takeFirst();
+		abt_jobInfo *j = this->jobqueue->takeFirst();
 		//The job is owned by aqBanking, so we dont free it!
 		//AB_Job_free(j->getJob());
 		delete j;
@@ -445,7 +445,7 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_tr
 	//add transaction to the job
 	rv = AB_JobSingleTransfer_SetTransaction(job, t->getAB_Transaction());
 
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -474,7 +474,7 @@ void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc, const abt_t
 	rv = AB_JobSingleDebitNote_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info for SingleDebitNote
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -503,7 +503,7 @@ void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc, const abt_transa
 	rv = AB_JobEuTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info for EuTransfer
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -533,7 +533,7 @@ void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobInternalTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info for Internal Transfer
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -563,7 +563,7 @@ void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc, const abt_tran
 	rv = AB_JobSepaTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info for SingleTransfer
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -595,7 +595,7 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobCreateDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info for NewDatedTransfer
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -632,7 +632,7 @@ void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobModifyDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -667,7 +667,7 @@ void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobDeleteDatedTransfer_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -701,7 +701,7 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool without
 	}
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
@@ -742,7 +742,7 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobCreateStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -777,7 +777,7 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobModifyStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -812,7 +812,7 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_
 	rv = AB_JobDeleteStandingOrder_SetTransaction(job, t->getAB_Transaction());
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -846,7 +846,7 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 
 	//Create Info
 	QString info;
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -888,7 +888,7 @@ void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*
 	}
 
 	//Create Info
-	abt_job_info *ji = new abt_job_info(job);
+	abt_jobInfo *ji = new abt_jobInfo(job);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
@@ -962,7 +962,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	//Alle Objecte in der jobqueue liste löschen
 	while (!this->jobqueue->isEmpty()) {
-		abt_job_info *j = this->jobqueue->takeFirst();
+		abt_jobInfo *j = this->jobqueue->takeFirst();
 		//AB_Job_free(j->getJob());
 		delete j;
 	}
@@ -1587,13 +1587,13 @@ bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
 
   Kann genutzt werden um zu überprüfen ob bereits ein Aktualisierungs-Job
   in der queuelist vorhanden ist oder nicht. */
-bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_job_info *ji) const
+bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *ji) const
 {
 	//Kontrollieren ob ein AktualisierungsAuftrag bereits vorhanden ist
 
 	for(int i=0; i<this->jobqueue->size(); i++) {
 		//jiiq = JobInfoInQueue
-		const abt_job_info *jiiq = this->jobqueue->at(i);
+		const abt_jobInfo *jiiq = this->jobqueue->at(i);
 
 		if (jiiq->getAbJobType() == type) {
 			//job ist vorhanden, ist er auch für dasselbe Konto?
@@ -1618,11 +1618,11 @@ bool abt_job_ctrl::isTransactionInQueue(const abt_transaction *t) const
 	//Alle Jobs im Queue durchgehen und sobald die FiId
 	for(int i=0; i<this->jobqueue->size(); i++) {
 		//jiiq = JobInfoInQueue
-		const abt_job_info *jiiq = this->jobqueue->at(i);
+		const abt_jobInfo *jiiq = this->jobqueue->at(i);
 
-		if (jiiq->getAbtTransaction()) {
+		if (jiiq->getTransaction()) {
 			//Transaction im Job vorhanden
-			if (jiiq->getAbtTransaction()->getFiId() == t->getFiId()) {
+			if (jiiq->getTransaction()->getFiId() == t->getFiId()) {
 				return true;
 			}
 		}
@@ -1669,7 +1669,7 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 		return; //cancel remove, job doesnt exist!
 	}
 
-	abt_job_info *jobinfo;
+	abt_jobInfo *jobinfo;
 	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
 	AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
 	delete jobinfo; // und jobinfo löschen

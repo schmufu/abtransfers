@@ -99,16 +99,16 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
 	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
-	connect(this->jobctrl, SIGNAL(jobAdded(const abt_job_info*)),
-		this, SLOT(onJobAddedToJobCtrlList(const abt_job_info*)));
+	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
+		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
 
 	//Logs von abt_job_ctrl in der Log-Seite anzeigen
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
 	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
-	connect(this->outw, SIGNAL(edit_Job(const abt_job_info*)),
-		this, SLOT(onEditJobFromOutbox(const abt_job_info*)));
+	connect(this->outw, SIGNAL(edit_Job(const abt_jobInfo*)),
+		this, SLOT(onEditJobFromOutbox(const abt_jobInfo*)));
 
 	//Default-Entry Überweisung auswählen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
@@ -611,7 +611,7 @@ void MainWindow::on_actionDebug_Info_triggered()
 /*!
  * Slot is called when a job is added to the jobctrl
  */
-void MainWindow::onJobAddedToJobCtrlList(const abt_job_info* ji) const
+void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 {
 	QMessageBox *msg = new QMessageBox();
 	msg->setIcon(QMessageBox::Information);
@@ -1316,7 +1316,7 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 }
 
 //private Slot
-void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
+void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 {
 	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
 		  dies sollte in diesem auch gesetzt werden, damit bei Klick
@@ -1352,7 +1352,7 @@ void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
 
 	transW = this->createTransferWidgetAndAddTab(job->getAbJobType(), acc);
 
-	transW->setValuesFromTransaction(job->getAbtTransaction());
+	transW->setValuesFromTransaction(job->getTransaction());
 
 	//den neuen tab gleich darstellen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);

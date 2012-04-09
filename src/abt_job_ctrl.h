@@ -45,7 +45,7 @@ class abt_job_ctrl : public QObject
 Q_OBJECT
 
 private:
-	QList<abt_job_info*> *jobqueue;
+	QList<abt_jobInfo*> *jobqueue;
 
 	void addlog(const QString &str);
 
@@ -99,7 +99,7 @@ private:
 
 	bool checkJobStatus(AB_JOB_LIST2 *jl);
 
-	bool isJobTypeInQueue(const AB_JOB_TYPE type, const abt_job_info *ji) const;
+	bool isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *ji) const;
 
 	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
 	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
@@ -109,7 +109,7 @@ public:
 	explicit abt_job_ctrl(QObject *parent = 0);
 	~abt_job_ctrl();
 
-	const QList<abt_job_info*> *jobqueueList() const { return this->jobqueue; }
+	const QList<abt_jobInfo*> *jobqueueList() const { return this->jobqueue; }
 
 	static void createAvailableHashFor(AB_ACCOUNT *a, QHash<AB_JOB_TYPE, bool> *hash);
 	//! Static function for creating every TransactionLimit for an Account
@@ -122,7 +122,7 @@ public:
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);
 	void jobQueueListChanged();
-	void jobAdded(const abt_job_info *jobInfo);
+	void jobAdded(const abt_jobInfo *jobInfo);
 	void log(const QString &str);
 	//! wird gesendet wenn das parsen der Daueraufträge abgeschlossen ist
 	void standingOrdersParsed();
@@ -155,8 +155,8 @@ public slots:
 
 };
 
-Q_DECLARE_METATYPE(abt_job_info*);
-Q_DECLARE_METATYPE(const abt_job_info*);
+Q_DECLARE_METATYPE(abt_jobInfo*);
+Q_DECLARE_METATYPE(const abt_jobInfo*);
 //qRegisterMetaType<const abt_job_info*>("const abt_job_info*");
 
 

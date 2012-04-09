@@ -52,6 +52,8 @@
 #include <aqbanking/jobgetstandingorders.h>
 
 #include "abt_conv.h"
+#include "aqb_accountinfo.h"
+#include "abt_transaction_base.h"
 
 
 abt_info_class::abt_info_class()
@@ -80,75 +82,75 @@ abt_info_class::abt_info_class()
 
 
 /*********** abt_job_info class *******************/
-abt_job_info::abt_job_info(AB_JOB *j)
-	: job(j)
+abt_jobInfo::abt_jobInfo(AB_JOB *j)
+	: m_job(j)
 {
-	this->jobInfo = new QStringList();
+	//Initialiserung über den AB_JOB
+	this->m_jobInfo = new QStringList();
+	this->m_jobType = AB_Job_GetType(this->m_job);
+	this->m_jobStatus = AB_Job_GetStatus(this->m_job);
+	this->m_ABAccount = AB_Job_GetAccount(this->m_job);
 
-	//create the info stringlist that is displayed at the "Ausgang" page
-	this->createJobInfoStringList(this->jobInfo);
+	//je nachdem welcher Job übergeben wurde hat dieser eine andere
+	//oder keine AB_Transaction. Dies durchgehen und den privaten
+	//Pointer entsprechend setzen
+	this->setMyTransactionFromJob();
+
+	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
+	this->createJobInfoStringList(this->m_jobInfo);
 }
 
-abt_job_info::~abt_job_info()
+abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
+			 const abt_transaction *trans, const AB_ACCOUNT *acc,
+			 QDateTime date)
+	: m_job(NULL),
+	  m_trans(trans),
+	  m_ABAccount(acc),
+	  m_jobType(type),
+	  m_jobStatus(status),
+	  m_date(date)
+{
+	this->m_jobInfo = new QStringList();
+
+	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
+	this->createJobInfoStringList(this->m_jobInfo);
+}
+
+
+abt_jobInfo::~abt_jobInfo()
 {
 	//The job is owned by aqBanking, so we dont free it!
 
+	//we created a copy of the jobs transaction
+	delete this->m_trans; //could be NULL, but it is safe to delete a NULL-Pointer
+
 	//we created the StringList, so we delete it.
-	delete this->jobInfo;
+	delete this->m_jobInfo;
 }
 
-AB_JOB_STATUS abt_job_info::getAbJobStatus() const
+/** \brief setzt den privaten pointer \a this->t auf die Transaction des jobs */
+void abt_jobInfo::setMyTransactionFromJob()
 {
-	return AB_Job_GetStatus(this->job);
-}
-
-const QString abt_job_info::getStatus() const
-{
-	return abt_conv::JobStatusToQString(this->job);
-}
-
-AB_JOB_TYPE abt_job_info::getAbJobType() const
-{
-	return AB_Job_GetType(this->job);
-}
-
-const QString abt_job_info::getType() const
-{
-	return abt_conv::JobTypeToQString(this->job);
-}
-
-const QStringList *abt_job_info::getInfo() const
-{
-	return this->jobInfo;
-}
-
-AB_JOB *abt_job_info::getJob() const
-{
-	return this->job;
-}
-
-const abt_transaction* abt_job_info::getAbtTransaction() const
-{
-	const AB_TRANSACTION *t = NULL;
+	const AB_TRANSACTION *AB_Trans = NULL;
 
 	switch (this->getAbJobType()) {
 	case AB_Job_TypeCreateDatedTransfer:
-		t = AB_JobCreateDatedTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobCreateDatedTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeCreateStandingOrder:
-		t = AB_JobCreateStandingOrder_GetTransaction(this->job);
+		AB_Trans = AB_JobCreateStandingOrder_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeDebitNote:
-		t = AB_JobSingleDebitNote_GetTransaction(this->job);
+		AB_Trans = AB_JobSingleDebitNote_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeDeleteDatedTransfer:
-		t = AB_JobDeleteDatedTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobDeleteDatedTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeDeleteStandingOrder:
-		t = AB_JobDeleteStandingOrder_GetTransaction(this->job);
+		AB_Trans = AB_JobDeleteStandingOrder_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeEuTransfer:
-		t = AB_JobEuTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobEuTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeGetBalance:
 		break;
@@ -159,59 +161,98 @@ const abt_transaction* abt_job_info::getAbtTransaction() const
 	case AB_Job_TypeGetTransactions:
 		break;
 	case AB_Job_TypeInternalTransfer:
-		t = AB_JobInternalTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobInternalTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeLoadCellPhone:
 		break;
 	case AB_Job_TypeModifyDatedTransfer:
-		t = AB_JobModifyDatedTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobModifyDatedTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeModifyStandingOrder:
-		t = AB_JobModifyStandingOrder_GetTransaction(this->job);
+		AB_Trans = AB_JobModifyStandingOrder_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeSepaDebitNote:
+		AB_Trans = AB_JobSepaDebitNote_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeSepaTransfer:
-		t = AB_JobSepaTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobSepaTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeTransfer:
-		t = AB_JobSingleTransfer_GetTransaction(this->job);
+		AB_Trans = AB_JobSingleTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeUnknown:
-		t = NULL;
+		AB_Trans = NULL;
 		break;
 	}
 
-	if (t == NULL) {
-		return NULL;
+	if (AB_Trans == NULL) {
+		//the job does not have a transaction, so do i
+		this->m_trans = NULL;
+		return;
 	}
 
-	//wir liefern eine const copy unserer Transaction zurück!
-	const abt_transaction *trans = new abt_transaction(t);
-	return trans;
+	//wir kopieren die transaction des jobs über den copy-constructor
+	//der abt_transaction Klasse. (AB_Trans darf nicht NULL sein!)
+	const abt_transaction *trans = new abt_transaction(AB_Trans);
+	//diese Transaction merken wir uns und arbeiten dann später mit dieser
+	this->m_trans = trans;
 }
 
-const AB_ACCOUNT* abt_job_info::getAbAccount() const
+
+AB_JOB_STATUS abt_jobInfo::getAbJobStatus() const
 {
-	return AB_Job_GetAccount(this->job);
+	return this->m_jobStatus;
 }
 
-const QString abt_job_info::getKontoNr() const
+const QString abt_jobInfo::getStatus() const
 {
-	return QString::fromUtf8(
-		AB_Account_GetAccountNumber(AB_Job_GetAccount(this->job)));
+	return abt_conv::JobStatusToQString(this->m_jobStatus);
 }
 
-const QString abt_job_info::getBLZ() const
+AB_JOB_TYPE abt_jobInfo::getAbJobType() const
 {
-	return QString::fromUtf8(
-		AB_Account_GetBankCode(AB_Job_GetAccount(this->job)));
+	return this->m_jobType;
 }
 
-void abt_job_info::createJobInfoStringList(QStringList *strList) const
+const QString abt_jobInfo::getType() const
+{
+	return abt_conv::JobTypeToQString(this->m_jobType);
+}
+
+const QStringList *abt_jobInfo::getInfo() const
+{
+	return this->m_jobInfo;
+}
+
+AB_JOB *abt_jobInfo::getJob() const
+{
+	return this->m_job;
+}
+
+const AB_ACCOUNT* abt_jobInfo::getAbAccount() const
+{
+	return this->m_ABAccount;
+}
+
+const QString abt_jobInfo::getKontoNr() const
+{
+	return QString::fromUtf8(AB_Account_GetAccountNumber(this->m_ABAccount));
+}
+
+const QString abt_jobInfo::getBLZ() const
+{
+	return QString::fromUtf8(AB_Account_GetBankCode(this->m_ABAccount));
+}
+
+int abt_jobInfo::getAccountID() const
+{
+	return AB_Account_GetUniqueId(this->m_ABAccount);
+}
+
+void abt_jobInfo::createJobInfoStringList(QStringList *strList) const
 {
 
-	switch (this->getAbJobType()) {
+	switch (this->m_jobType) {
 	case AB_Job_TypeCreateDatedTransfer:
 		this->createJobInfoStringList_CreateDatedTransfer(strList);
 		break;
@@ -271,46 +312,46 @@ void abt_job_info::createJobInfoStringList(QStringList *strList) const
 
 
 /** \brief Fügt den Absender der Stringliste \a strList hinzu */
-void abt_job_info::createJobInfoStringList_Append_From(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Append_From(QStringList *strList) const
 {
+	if (!this->m_trans) return; //only if transaction available
 	QString info;
-	const abt_transaction *t = this->getAbtTransaction();
 
-	info = QObject::tr("Von: %1 (%2 - %3)").arg(t->getLocalName(),
-						    t->getLocalAccountNumber(),
-						    t->getLocalBankCode());
+	info = QObject::tr("Von: %1 (%2 - %3)").arg(this->m_trans->getLocalName(),
+						    this->m_trans->getLocalAccountNumber(),
+						    this->m_trans->getLocalBankCode());
 	strList->append(info);
 }
 
 /** \brief Fügt den Empfänger der Stringliste \a strList hinzu */
-void abt_job_info::createJobInfoStringList_Append_To(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Append_To(QStringList *strList) const
 {
+	if (!this->m_trans) return; //only if transaction available
 	QString info;
-	const abt_transaction *t = this->getAbtTransaction();
 
-	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(t->getRemoteName().at(0),
-						    t->getRemoteAccountNumber(),
-						    t->getRemoteBankCode());
+	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						    this->m_trans->getRemoteAccountNumber(),
+						    this->m_trans->getRemoteBankCode());
 	strList->append(info);
 }
 
 /** \brief Fügt den Verwendungszweck der Stringliste \a strList hinzu */
-void abt_job_info::createJobInfoStringList_Append_Purpose(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Append_Purpose(QStringList *strList) const
 {
-	const abt_transaction *t = this->getAbtTransaction();
+	if (!this->m_trans) return; //only if transaction available
 
 	strList->append(QObject::tr("Verwendungszweck:"));
-	for (int i=0; i<t->getPurpose().size(); ++i) {
-		strList->append("   " + t->getPurpose().at(i));
+	for (int i=0; i<this->m_trans->getPurpose().size(); ++i) {
+		strList->append("    " + this->m_trans->getPurpose().at(i));
 	}
 }
 
 /** \brief Fügt den Betrag und die Währung der Stringliste \a strList hinzu */
-void abt_job_info::createJobInfoStringList_Append_Value(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Append_Value(QStringList *strList) const
 {
+	if (!this->m_trans) return; //only if transaction available
 	QString info;
-	const abt_transaction *t = this->getAbtTransaction();
-	const AB_VALUE *v = t->getValue();
+	const AB_VALUE *v = this->m_trans->getValue();
 
 	info = QObject::tr("Betrag: %1 %2").arg(abt_conv::ABValueToString(v, true),
 						AB_Value_GetCurrency(v));
@@ -324,13 +365,13 @@ void abt_job_info::createJobInfoStringList_Append_Value(QStringList *strList) co
   *
   * \pre
   *     'Von: NAME (KTONR - BLZ)'
-  *	'Zu:  NAME (KTONR - BLT)'
+  *	'Zu:  NAME (KTONR - BLZ)'
   *	'Verwendungszweck:'
   *	     Alle Zeilen des Verwendungszwecks
   *	'Betrag: WERT WÄHRUNG'
   *
   */
-void abt_job_info::createJobInfoStringList_Standard_Text(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Standard_Text(QStringList *strList) const
 {
 	this->createJobInfoStringList_Append_From(strList);
 	this->createJobInfoStringList_Append_To(strList);
@@ -338,11 +379,13 @@ void abt_job_info::createJobInfoStringList_Standard_Text(QStringList *strList) c
 	this->createJobInfoStringList_Append_Value(strList);
 }
 
-/** \brief Erstellt den standart Text für Daueraufträge */
-void abt_job_info::createJobInfoStringList_ForStandingOrders(QStringList *strList) const
+/** \brief Erstellt den Standart Text für Daueraufträge */
+void abt_jobInfo::createJobInfoStringList_ForStandingOrders(QStringList *strList) const
 {
-	//! \todo ist bei allen createJobInfoStringList_*StandingOrder identisch!
-	const abt_transaction *t = this->getAbtTransaction();
+	if (!this->m_trans) return; //only if transaction available
+
+	const abt_transaction *t = this->m_trans;
+
 	this->createJobInfoStringList_Standard_Text(strList);
 	strList->append(""); //leere Zeile
 
@@ -386,82 +429,78 @@ void abt_job_info::createJobInfoStringList_ForStandingOrders(QStringList *strLis
 
 }
 
-void abt_job_info::createJobInfoStringList_CreateDatedTransfer(QStringList *strList) const
+/** \brief Erstellt den Standart Text für terminierte Überweisungen */
+void abt_jobInfo::createJobInfoStringList_ForDatedTransfers(QStringList *strList) const
 {
-	//! \todo ist bei allen createJobInfoStringList_*DatedTransfer identisch!
-	const abt_transaction *t = this->getAbtTransaction();
+	const abt_transaction *t = this->m_trans;
 	this->createJobInfoStringList_Standard_Text(strList);
 	strList->append(QObject::tr("Tag der Ausführung: %1").arg(
 			t->getDate().toString(Qt::DefaultLocaleLongDate)));
 }
 
-void abt_job_info::createJobInfoStringList_CreateStandingOrder(QStringList *strList) const
+
+void abt_jobInfo::createJobInfoStringList_CreateDatedTransfer(QStringList *strList) const
+{
+	this->createJobInfoStringList_ForDatedTransfers(strList);
+}
+
+void abt_jobInfo::createJobInfoStringList_CreateStandingOrder(QStringList *strList) const
 {
 	this->createJobInfoStringList_ForStandingOrders(strList);
 }
 
-void abt_job_info::createJobInfoStringList_DebitNote(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_DebitNote(QStringList *strList) const
 {
 	this->createJobInfoStringList_Standard_Text(strList);
 }
 
-void abt_job_info::createJobInfoStringList_DeleteDatedTransfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_DeleteDatedTransfer(QStringList *strList) const
 {
-	//! \todo ist bei allen createJobInfoStringList_*DatedTransfer identisch!
-	const abt_transaction *t = this->getAbtTransaction();
-	this->createJobInfoStringList_Standard_Text(strList);
-	strList->append(QObject::tr("Tag der Ausführung: %1").arg(
-			t->getDate().toString(Qt::DefaultLocaleLongDate)));
+	this->createJobInfoStringList_ForDatedTransfers(strList);}
 
-}
-
-void abt_job_info::createJobInfoStringList_DeleteStandingOrder(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_DeleteStandingOrder(QStringList *strList) const
 {
 	this->createJobInfoStringList_ForStandingOrders(strList);
 }
 
-void abt_job_info::createJobInfoStringList_EuTransfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_EuTransfer(QStringList *strList) const
 {
-	const abt_transaction *t = this->getAbtTransaction();
 	this->createJobInfoStringList_Append_From(strList);
 	strList->append(QObject::tr("Zu:  %1 (%2 - %3) [%4]").arg(
-			t->getRemoteName().at(0),
-			t->getRemoteAccountNumber(),
-			t->getRemoteBankCode(),
-			t->getRemoteBankLocation()));
+			this->m_trans->getRemoteName().at(0),
+			this->m_trans->getRemoteAccountNumber(),
+			this->m_trans->getRemoteBankCode(),
+			this->m_trans->getRemoteBankLocation()));
 	this->createJobInfoStringList_Append_Purpose(strList);
 	this->createJobInfoStringList_Append_Value(strList);
 }
 
-void abt_job_info::createJobInfoStringList_GetBalance(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_GetBalance(QStringList *strList) const
 {
-	const AB_ACCOUNT *acc = this->getAbAccount();
 	strList->append(QObject::tr("Aktualisiert den aktuellen Saldo für das"));
 	strList->append(QObject::tr("Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(acc),
-			AB_Account_GetAccountName(acc)));
+			AB_Account_GetAccountNumber(this->m_ABAccount),
+			AB_Account_GetAccountName(this->m_ABAccount)));
 }
 
-void abt_job_info::createJobInfoStringList_GetDatedTransfers(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_GetDatedTransfers(QStringList *strList) const
 {
-	const AB_ACCOUNT *acc = this->getAbAccount();
 	strList->append(QObject::tr("Holt alle noch nicht ausgeführten terminierten Überweisungen"));
 	strList->append(QObject::tr("für das Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(acc),
-			AB_Account_GetAccountName(acc)));
+			AB_Account_GetAccountNumber(this->m_ABAccount),
+			AB_Account_GetAccountName(this->m_ABAccount)));
 }
 
-void abt_job_info::createJobInfoStringList_GetStandingOrders(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_GetStandingOrders(QStringList *strList) const
 {
-	const AB_ACCOUNT *acc = this->getAbAccount();
 	strList->append(QObject::tr("Holt alle bei der Bank hinterlegten Daueraufträge"));
 	strList->append(QObject::tr("für das Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(acc),
-			AB_Account_GetAccountName(acc)));
+			AB_Account_GetAccountNumber(this->m_ABAccount),
+			AB_Account_GetAccountName(this->m_ABAccount)));
 
 }
 
-void abt_job_info::createJobInfoStringList_GetTransactions(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_GetTransactions(QStringList *strList) const
 {
 	strList->append(QObject::tr("Hm, sollte nicht vorkommen! Dieser Auftrag wird"));
 	strList->append(QObject::tr("momentan von AB-Transfers nicht unterstützt!"));
@@ -469,12 +508,12 @@ void abt_job_info::createJobInfoStringList_GetTransactions(QStringList *strList)
 	strList->append(QObject::tr("ist welche Fehler eventuell auftreten könnten!"));
 }
 
-void abt_job_info::createJobInfoStringList_InternalTransfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_InternalTransfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Standard_Text(strList);
 }
 
-void abt_job_info::createJobInfoStringList_LoadCellPhone(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_LoadCellPhone(QStringList *strList) const
 {
 	strList->append(QObject::tr("Hm, sollte nicht vorkommen! Dieser Auftrag wird"));
 	strList->append(QObject::tr("momentan von AB-Transfers nicht unterstützt!"));
@@ -482,22 +521,17 @@ void abt_job_info::createJobInfoStringList_LoadCellPhone(QStringList *strList) c
 	strList->append(QObject::tr("ist welche Fehler eventuell auftreten könnten!"));
 }
 
-void abt_job_info::createJobInfoStringList_ModifyDatedTransfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_ModifyDatedTransfer(QStringList *strList) const
 {
-	//! \todo ist bei allen createJobInfoStringList_*DatedTransfer identisch!
-	const abt_transaction *t = this->getAbtTransaction();
-	this->createJobInfoStringList_Standard_Text(strList);
-	strList->append(QObject::tr("Tag der Ausführung: %1").arg(
-			t->getDate().toString(Qt::DefaultLocaleLongDate)));
-
+	this->createJobInfoStringList_ForDatedTransfers(strList);
 }
 
-void abt_job_info::createJobInfoStringList_ModifyStandingOrder(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_ModifyStandingOrder(QStringList *strList) const
 {
 	this->createJobInfoStringList_ForStandingOrders(strList);
 }
 
-void abt_job_info::createJobInfoStringList_SepaDebitNote(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_SepaDebitNote(QStringList *strList) const
 {
 	strList->append(QObject::tr("Hm, sollte nicht vorkommen! Dieser Auftrag wird"));
 	strList->append(QObject::tr("momentan von AB-Transfers nicht unterstützt!"));
@@ -505,17 +539,17 @@ void abt_job_info::createJobInfoStringList_SepaDebitNote(QStringList *strList) c
 	strList->append(QObject::tr("ist welche Fehler eventuell auftreten könnten!"));
 }
 
-void abt_job_info::createJobInfoStringList_SepaTransfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_SepaTransfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Standard_Text(strList);
 }
 
-void abt_job_info::createJobInfoStringList_Transfer(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Transfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Standard_Text(strList);
 }
 
-void abt_job_info::createJobInfoStringList_Unknown(QStringList *strList) const
+void abt_jobInfo::createJobInfoStringList_Unknown(QStringList *strList) const
 {
 	strList->append(QObject::tr("Hm, sollte nicht vorkommen! Dieser Auftrag wird"));
 	strList->append(QObject::tr("momentan von AB-Transfers nicht unterstützt!"));

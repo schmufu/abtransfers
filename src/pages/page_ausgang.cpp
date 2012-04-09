@@ -180,11 +180,11 @@ void Page_Ausgang::refreshTreeWidget()
 
 	// der Status des Items soll erhalten bleiben (expanded/selected)
 	// alle expandierten abt_job_info Adressen in einer Liste speichern
-	QList<const abt_job_info*> expanded;
+	QList<const abt_jobInfo*> expanded;
 	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
 		if (this->ui->treeWidget->topLevelItem(i)->isExpanded()) {
 			QVariant tliVar = this->ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole);
-			expanded.append(tliVar.value<abt_job_info*>());
+			expanded.append(tliVar.value<abt_jobInfo*>());
 		}
 
 	}
@@ -192,7 +192,7 @@ void Page_Ausgang::refreshTreeWidget()
 	this->ui->treeWidget->clear(); //alle Items löschen
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 
-	const QList<abt_job_info*> *jql = this->jobctrl->jobqueueList();
+	const QList<abt_jobInfo*> *jql = this->jobctrl->jobqueueList();
 	for (int i=0; i<jql->size(); ++i) {
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole, tr("%1").arg(i+1));
@@ -319,7 +319,7 @@ void Page_Ausgang::onActionEditTriggered()
 		return; //Abbruch
 	}
 
-	abt_job_info *job = this->jobctrl->jobqueueList()->at(itemNr);
+	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	emit edit_Job(job);
 

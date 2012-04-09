@@ -53,6 +53,9 @@ abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 		this->FreeTransactionOnDelete = freeOnDelete;
 	}
 
+	//Diese Klasse kann auch eine nicht änderbare AB_TRANSACTION verwalten
+	//deswegen setzen wir den const-Zeiger auf denselben Wert.
+	//(Alle nicht ändernden Aktionen werden mit diesem Zeiger durchgeführt)
 	this->aqb_transaction_C = this->aqb_transaction;
 }
 

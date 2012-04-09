@@ -136,7 +136,7 @@ private slots:
 	void on_actionHelp_triggered();
 	void on_actionEinstellungen_triggered();
 
-	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
+	void onJobAddedToJobCtrlList(const abt_jobInfo* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
 
 	//! wird aufgerufen wenn sich der Account im dockWidget von Daueraufträge ändert
@@ -176,7 +176,7 @@ private slots:
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
 
 
-	void onEditJobFromOutbox(const abt_job_info* job);
+	void onEditJobFromOutbox(const abt_jobInfo* job);
 
 };
 
