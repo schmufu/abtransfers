@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,14 +22,13 @@
  * $Rev$
  *
  * description:
- *	classes that store information about dated transfers, messages,
- *	standing orders etc.
+ *	Abstraction of an AB_JOB, used at "Ausgang" and "Historie"
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#include "abt_info_class.h"
+#include "abt_jobinfo.h"
 
 #include <aqbanking/jobsingletransfer.h>
 #include <aqbanking/jobsingledebitnote.h>
@@ -56,32 +55,7 @@
 #include "abt_transaction_base.h"
 
 
-abt_info_class::abt_info_class()
-{
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*********** abt_job_info class *******************/
 abt_jobInfo::abt_jobInfo(AB_JOB *j)
 	: m_job(j)
 {
@@ -556,21 +530,5 @@ void abt_jobInfo::createJobInfoStringList_Unknown(QStringList *strList) const
 	strList->append(QObject::tr("Bitte Löschen Sie diesen Auftrag, da nicht sicher"));
 	strList->append(QObject::tr("ist welche Fehler eventuell auftreten könnten!"));
 }
-
-
-/*********** abt_job_ctrl class *******************/
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

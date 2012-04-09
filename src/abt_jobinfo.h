@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,7 +22,7 @@
  * $Rev$
  *
  * description:
- *
+ *	Abstraction of an AB_JOB, used at "Ausgang" and "Historie"
  *
  * changes not documented here, see svn
  *
@@ -34,15 +34,6 @@
 #include <QString>
 #include <QtCore/QDateTime>
 #include <aqbanking/job.h>
-
-class abt_info_class
-{
-public:
-	explicit abt_info_class();
-	~abt_info_class();
-};
-
-
 
 
 
