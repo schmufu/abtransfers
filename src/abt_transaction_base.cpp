@@ -306,8 +306,10 @@ bool abt_transaction::isModified() const
 
 void abt_transaction::setModified(bool mod)
 {
-	int m;
-	m = (mod) ? 1 : 0;
+	//Funktioniert es wenn anstatt eines int eine bool übergeben wird?
+	//Wenn nicht, kann dort mit dem folgenden Code auch "m" übergeben werden
+	//int m;
+	//m = (mod) ? 1 : 0;
 
 	AB_Transaction_SetModified(this->aqb_transaction, mod);
 }

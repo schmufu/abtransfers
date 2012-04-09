@@ -338,11 +338,15 @@ void widgetTransfer::my_create_local_remote_vertical(bool newTransfer)
 }
 
 //private
-void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allowLocal, bool allowKnownRecipent)
+void widgetTransfer::my_create_localAccount_groupbox(bool /* newTransfer */,
+						     bool /* allowLocal */,
+						     bool /* allowKnownRecipent */)
 {
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
-	this->localAccount = new widgetAccountData(this, this->m_accountAtCreation, this->m_allAccounts);
+	this->localAccount = new widgetAccountData(this,
+						   this->m_accountAtCreation,
+						   this->m_allAccounts);
 	gbll->addWidget(this->localAccount);
 	this->groupBoxLocal->setLayout(gbll);
 
@@ -351,7 +355,9 @@ void widgetTransfer::my_create_localAccount_groupbox(bool newTransfer, bool allo
 }
 
 //private
-void widgetTransfer::my_create_remoteAccount_groupbox(bool newTransfer, bool allowLocal, bool allowKnownRecipent)
+void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
+						      bool allowLocal,
+						      bool allowKnownRecipent)
 {
 	if (allowLocal) {
 		//Wenn der RemoteAccount local drops akzeptiert ist die
@@ -359,7 +365,9 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool newTransfer, bool all
 		//als remoteAccount auch eine LocalAccountAuswahl an
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(this, this->m_accountAtCreation, this->m_allAccounts);
+		this->remoteAccount = new widgetAccountData(this,
+							    this->m_accountAtCreation,
+							    this->m_allAccounts);
 		gbrl->addWidget(this->remoteAccount);
 		this->groupBoxRemote->setLayout(gbrl);
 	} else {
