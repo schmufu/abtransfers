@@ -464,10 +464,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
-		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
+		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
 		lSO->addWidget(StandingOrders);
 		layoutScrollArea->addWidget(grpSO);
@@ -481,10 +481,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
-		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
+			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
+		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
+			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
 
 		lDT->addWidget(DatedTransfers);
 		layoutScrollArea->addWidget(grpDT);
@@ -522,10 +522,10 @@ void MainWindow::createDockStandingOrders()
 	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
-	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
+	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
@@ -576,10 +576,10 @@ void MainWindow::createDockDatedTransfers()
 	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
-	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
+		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
+	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransfersInfo*)),
+		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransfersInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
@@ -1237,7 +1237,7 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 
 
 //private Slot
-void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
+void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
 	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1259,7 +1259,7 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 }
 
 //private Slot
-void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
+void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
 	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1277,7 +1277,7 @@ void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const 
 
 
 //private Slot
-void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
 	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1299,7 +1299,7 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 }
 
 //private Slot
-void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
 	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),

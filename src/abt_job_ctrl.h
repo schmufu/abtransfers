@@ -38,7 +38,7 @@
 #include "abt_transactionlimits.h"
 #include "aqb_accountinfo.h"
 
-#include "abt_info_class.h"
+#include "abt_jobinfo.h"
 
 class abt_job_ctrl : public QObject
 {

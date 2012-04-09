@@ -39,6 +39,8 @@
 
 #include "abt_empfaengerinfo.h"
 #include "aqb_accountinfo.h"
+#include "abt_standingorderinfo.h"
+#include "abt_datedtransferinfo.h"
 
 class abt_settings : public QObject
 {
@@ -67,31 +69,31 @@ public:
 
 	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
+	QList<abt_standingOrderInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
 	//! \overload
-	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
+	QList<abt_standingOrderInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
 
 	void saveStandingOrder(const abt_transaction *t);
 	void saveStandingOrder(const AB_TRANSACTION *t);
 	void deleteStandingOrder(const abt_transaction *t);
 	void deleteStandingOrder(const AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeStandingOrdersList(QList<abt_StandingInfo*> *list);
+	static void freeStandingOrdersList(QList<abt_standingOrderInfo*> *list);
 
 
 
 	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
 	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
+	QList<abt_datedTransferInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
 	//! \overload
-	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
+	QList<abt_datedTransferInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
 
 	void saveDatedTransfer(const abt_transaction *t);
 	void saveDatedTransfer(const AB_TRANSACTION *t);
 	void deleteDatedTransfer(const abt_transaction *t);
 	void deleteDatedTransfer(const AB_TRANSACTION *t);
 	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeDatedTransfersList(QList<abt_DatedInfo*> *list);
+	static void freeDatedTransfersList(QList<abt_datedTransferInfo*> *list);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
 

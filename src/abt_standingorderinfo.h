@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,58 +22,35 @@
  * $Rev$
  *
  * description:
- *
+ *	Speichert Informationen zu einem bekannten Dauerauftrag
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#ifndef WIDGETKNOWNDATEDTRANSFERS_H
-#define WIDGETKNOWNDATEDTRANSFERS_H
 
-#include <QWidget>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QAction>
+#ifndef ABT_STANDINGORDERINFO_H
+#define ABT_STANDINGORDERINFO_H
 
-class aqb_AccountInfo;
-class abt_datedTransferInfo;
+#include "abt_transaction_base.h"
 
-class widgetKnownDatedTransfers : public QWidget
+
+/*! \brief Daten von gespeicherten Daueraufträgen
+ *
+ * Diese Klasse kapselt die Daten eines Dauerauftrages.
+ * Diese werden in einer Liste zu jedem Account geladen und stehen somit über
+ * den jeweiligen account zur Verfügung.
+ */
+
+class abt_standingOrderInfo
 {
-	Q_OBJECT
 public:
-	explicit widgetKnownDatedTransfers(const aqb_AccountInfo *account, QWidget *parent = 0);
-
+	abt_standingOrderInfo(abt_transaction *transaction);
+	~abt_standingOrderInfo();
 private:
-	QTreeWidget *treeWidget;
-	QAction *actEdit;
-	QAction *actDelete;
-	QAction *actRefresh;
-
-	const aqb_AccountInfo *m_account;
-	const QList<abt_datedTransferInfo*> *m_DatedTransfers;
-
-	void createAllActions();
-
-signals:
-	void deleteDatedTransfer(const aqb_AccountInfo *account,
-				 const abt_datedTransferInfo *datedTransfer);
-	void editDatedTransfer(const aqb_AccountInfo *account,
-			       const abt_datedTransferInfo *datedTransfer);
-	void updateDatedTransfers(const aqb_AccountInfo *account);
-
-
-private slots:
-	void onActionEditTriggered();
-	void onActionDeleteTriggered();
-	void onActionRefreshTriggered();
-	void onContextMenuRequest(const QPoint &pos);
-
-public slots:
-	void refreshKnownDatedTransfers(const aqb_AccountInfo *account);
-	void setAccount(const aqb_AccountInfo *account);
-
+	abt_transaction *t;
+public:
+	abt_transaction* getTransaction() const { return this->t; }
 };
 
-
-#endif // WIDGETKNOWNDATEDTRANSFERS_H
+#endif // ABT_STANDINGORDERINFO_H

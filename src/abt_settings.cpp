@@ -259,12 +259,12 @@ const QString *abt_settings::getDataDir() const
 
 
 
-QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
+QList<abt_standingOrderInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
 {
 	return this->getStandingOrdersForAccount(a->Number(), a->BankCode());
 }
 
-QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
+QList<abt_standingOrderInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
 								 const QString &BLZ)
 {
 	const QString SOMainKey = "StandingOrders/" + BLZ + "/" + KtoNr;
@@ -279,14 +279,14 @@ QList<abt_StandingInfo*> *abt_settings::getStandingOrdersForAccount(const QStrin
 	qDebug() << "childGroups von " << KtoNr << " = " << SO_IDs;
 
 
-	abt_StandingInfo *StandingInfo;
-	QList<abt_StandingInfo*> *List = new QList<abt_StandingInfo*>;
+	abt_standingOrderInfo *StandingInfo;
+	QList<abt_standingOrderInfo*> *List = new QList<abt_standingOrderInfo*>;
 
 	foreach(const QString ID, SO_IDs) {
 		const QString SOKey = SOMainKey + "/" + ID;
 		this->Settings->beginGroup(SOKey);
 		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
-		StandingInfo = new abt_StandingInfo(trans);
+		StandingInfo = new abt_standingOrderInfo(trans);
 		List->append(StandingInfo);
 		this->Settings->endGroup();
 	}
@@ -335,7 +335,7 @@ void abt_settings::deleteStandingOrder(const AB_TRANSACTION *t)
 }
 
 //static
-void abt_settings::freeStandingOrdersList(QList<abt_StandingInfo*> *list)
+void abt_settings::freeStandingOrdersList(QList<abt_standingOrderInfo*> *list)
 {
 	if (list == NULL) return; //Liste ist schon leer
 
@@ -353,13 +353,13 @@ void abt_settings::freeStandingOrdersList(QList<abt_StandingInfo*> *list)
 
 
 
-QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const aqb_AccountInfo *a)
+QList<abt_datedTransferInfo*> *abt_settings::getDatedTransfersForAccount(const aqb_AccountInfo *a)
 {
 	return this->getDatedTransfersForAccount(a->Number(), a->BankCode());
 }
 
-QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
-								 const QString &BLZ)
+QList<abt_datedTransferInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
+									 const QString &BLZ)
 {
 	const QString DTMainKey = "DatedTransfers/" + BLZ + "/" + KtoNr;
 	this->Settings->beginGroup(DTMainKey);
@@ -373,14 +373,14 @@ QList<abt_DatedInfo*> *abt_settings::getDatedTransfersForAccount(const QString &
 	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs;
 
 
-	abt_DatedInfo *DatedInfo;
-	QList<abt_DatedInfo*> *List = new QList<abt_DatedInfo*>;
+	abt_datedTransferInfo *DatedInfo;
+	QList<abt_datedTransferInfo*> *List = new QList<abt_datedTransferInfo*>;
 
 	foreach(const QString ID, DT_IDs) {
 		const QString DTKey = DTMainKey + "/" + ID;
 		this->Settings->beginGroup(DTKey);
 		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
-		DatedInfo = new abt_DatedInfo(trans);
+		DatedInfo = new abt_datedTransferInfo(trans);
 		List->append(DatedInfo);
 		this->Settings->endGroup();
 	}
@@ -429,7 +429,7 @@ void abt_settings::deleteDatedTransfer(const AB_TRANSACTION *t)
 }
 
 //static
-void abt_settings::freeDatedTransfersList(QList<abt_DatedInfo *> *list)
+void abt_settings::freeDatedTransfersList(QList<abt_datedTransferInfo*> *list)
 {
 	if (list == NULL) return; //Liste ist schon leer
 

@@ -115,7 +115,7 @@ void pageWidgetTests::onButton1Clicked()
 
 
 	AB_ImExporterContext_AddAccountInfo(this->iec1, this->iea1);
-	const QList<abt_StandingInfo*> *stos;
+	const QList<abt_standingOrderInfo*> *stos;
 	stos = acc->getKnownStandingOrders();
 	for (int i=0; i<stos->size(); i++) {
 		AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));

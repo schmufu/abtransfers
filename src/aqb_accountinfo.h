@@ -39,41 +39,10 @@
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
 
+#include "abt_standingorderinfo.h"
+#include "abt_datedtransferinfo.h"
+
 class abt_transactionLimits;
-
-/*! \brief Daten von gespeicherten Daueraufträgen
- *
- * Diese Klasse kapselt die Daten der lokal gespeicherten Daueraufträge.
- * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
- * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
- */
-class abt_StandingInfo {
-private:
-	abt_transaction *t;
-public:
-	abt_StandingInfo(abt_transaction *transaction);
-	~abt_StandingInfo();
-
-	abt_transaction* getTransaction() const { return this->t; }
-};
-
-
-/*! \brief Daten von gespeicherten Terminierten Überweisungen
- *
- * Diese Klasse kapselt die Daten der lokal gespeicherten Terminüberweisungen.
- * Diese werden dann in der "bekannte Dated"-Groupbox angezeigt.
- * Neue, geänderte und gelöschte Terminüberweisungen müssen in der Datei
- * aktualisiert werden!
- */
-class abt_DatedInfo {
-private:
-	abt_transaction *t;
-public:
-	abt_DatedInfo(abt_transaction *transaction);
-	~abt_DatedInfo();
-
-	abt_transaction* getTransaction() const { return this->t; }
-};
 
 /*! \brief Informationen über eine Account
  *
@@ -100,8 +69,8 @@ private:
 	QString m_Country;
 	QString m_AccountType;
 
-	QList<abt_StandingInfo*> *m_KnownStandingOrders;
-	QList<abt_DatedInfo*> *m_KnownDatedTransfers;
+	QList<abt_standingOrderInfo*> *m_KnownStandingOrders;
+	QList<abt_datedTransferInfo*> *m_KnownDatedTransfers;
 	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
 	QHash<AB_JOB_TYPE, bool> *m_AvailableJobs;
 
@@ -121,8 +90,8 @@ public:
 	const QString& Currency() const { return this->m_Currency; }
 	const QString& Country() const { return this->m_Country; }
 	const QString& AccountType() const { return this->m_AccountType; }
-	const QList<abt_StandingInfo*> *getKnownStandingOrders() const { return this->m_KnownStandingOrders; }
-	const QList<abt_DatedInfo*> *getKnownDatedTransfers() const { return this->m_KnownDatedTransfers; }
+	const QList<abt_standingOrderInfo*> *getKnownStandingOrders() const { return this->m_KnownStandingOrders; }
+	const QList<abt_datedTransferInfo*> *getKnownDatedTransfers() const { return this->m_KnownDatedTransfers; }
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->m_ID; }

@@ -35,29 +35,6 @@
 #include "globalvars.h"
 #include "abt_job_ctrl.h"
 
-abt_StandingInfo::abt_StandingInfo(abt_transaction *transaction)
-{
-	this->t = transaction;
-}
-
-abt_StandingInfo::~abt_StandingInfo()
-{
-	delete this->t;	//abt_Transaction Object löschen
-}
-
-
-abt_DatedInfo::abt_DatedInfo(abt_transaction *transaction)
-{
-	this->t = transaction;
-}
-
-abt_DatedInfo::~abt_DatedInfo()
-{
-	delete this->t;	//abt_Transaction Object löschen
-}
-
-
-
 aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	QObject(parent)
 {
