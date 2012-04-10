@@ -59,12 +59,42 @@
 
 #include "aqb_accounts.h"
 
+
+/** \brief parser zum laden der local gespeicherten Daten sowie zum Auswerten
+  *        der vom Institut gelieferten Daten.
+  *
+  * Über \ref load_local_ctx() können die Daten einer lokal gespeicherten Datei
+  * in den Context (Rückgabewert) geladen werden.
+  *
+  * Dieser Context [ctx] kann dann über \ref parse_ctx() ausgewertet werden.
+  * \ref parse_ctx() setzt dabei alle Werte die im Context gefunden wurden in
+  * den entsprechenden Objekten.
+  *
+  * Außerdem kann \ref parse_ctx() dazu verwendet werden die gelieferten Daten
+  * des Instituts aus zu werten und die entsprechenden Objekte zu aktualisieren.
+  *
+  */
 class abt_parser
 {
+private:
+	//static AB_IMEXPORTER_CONTEXT *ctx;
+
 public:
 	abt_parser();
 
+	/** \brief lädt alle Daten der Datei \a filename mit dem Importer
+	  * \a importerName und dem Profile \a profileName in den \return ctx
+	  */
+	static AB_IMEXPORTER_CONTEXT *load_local_ctx(const QString &filename,
+						     const QString &importerName,
+						     const QString &profileName);
+
+	/** \brief parst den Context \a iec und setzt die entsprechenden Werte
+	  * des entsprechenden Accounts
+	  */
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts);
+
+	static void export_history() { };
 
 };
 

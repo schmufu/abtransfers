@@ -45,10 +45,33 @@
 #include <aqbanking/accstatus.h>
 
 
+
+
 abt_parser::abt_parser()
 {
 }
 
+
+
+/**
+  * Der zurückgegebene Context muss über AB_ImExporterContext_free() wieder
+  * freigegeben werden!
+  */
+//static
+AB_IMEXPORTER_CONTEXT *abt_parser::load_local_ctx(const QString &filename,
+						  const QString &importerName,
+						  const QString &profileName)
+{
+	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
+
+	AB_Banking_ImportFileWithProfile(banking->getAqBanking(),
+					 importerName.toAscii(), ctx,
+					 profileName.toAscii(),
+					 NULL,
+					 filename.toAscii());
+
+	return ctx;
+}
 
 //static
 void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts)
