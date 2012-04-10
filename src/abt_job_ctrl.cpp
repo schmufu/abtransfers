@@ -55,15 +55,18 @@
 #include <aqbanking/jobdeletesto.h>
 #include <aqbanking/jobgetstandingorders.h>
 
+#include "abt_parser.h"
+
 #include "globalvars.h"
 #include "abt_conv.h"
 
 
 
-abt_job_ctrl::abt_job_ctrl(QObject *parent) :
+abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_jobInfo*>;
+	this->m_allAccounts = allAccounts;
 
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
@@ -953,6 +956,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	this->parseExecutedJobListAndContext(jl, ctx);
 	this->parseImExporterContext(ctx);
+	abt_parser::parse_ctx(ctx, this->m_allAccounts);
 
 	this->addlog("Alle Jobs übertragen und Antworten ausgewertet");
 

@@ -55,6 +55,11 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_OwnerName = QString::fromUtf8(AB_Account_GetOwnerName(this->m_account));
 	this->m_Currency = QString::fromUtf8(AB_Account_GetCurrency(this->m_account));
 	this->m_Country = QString::fromUtf8(AB_Account_GetCountry(this->m_account));
+	this->m_BankLine = 0.0;
+	this->m_NotedBalance = 0.0;
+	this->m_BookedBalance = 0.0;
+	this->m_Disposable = 0.0;
+	this->m_Disposed = 0.0;
 
 	AB_ACCOUNT_TYPE type;
 	type = AB_Account_GetAccountType(this->m_account);
@@ -92,27 +97,27 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_AvailableJobs = new QHash<AB_JOB_TYPE, bool>;
 	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_AvailableJobs);
 
-	qDebug() << "AccountInfo for Account" << this->Number() << "created. (ID:" << this->get_ID() << ")";
+	qDebug().nospace() << "AccountInfo for Account " << this->Number() << " created. (ID:" << this->get_ID() << ")";
 }
 
 aqb_AccountInfo::~aqb_AccountInfo()
 {
-	qDebug() << this << "destructor: started";
+	qDebug() << Q_FUNC_INFO << this << "destructor: started";
 	//existierende Daueraufträge für diesen Account speichern
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
 	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
 
-	qDebug() << this << "destructor: " << "before foreach";
+	qDebug() << Q_FUNC_INFO << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
 	int i=0;
 	foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
-		qDebug() << this << "destructor: " << "in foreach -- i="<<i++;
+		qDebug() << Q_FUNC_INFO << this << "destructor: " << "in foreach -- i="<<i++;
 		delete this->m_limits->take(type);
 	}
-	qDebug() << this << "destructor: " << "after foreach";
+	qDebug() << Q_FUNC_INFO << this << "destructor: " << "after foreach";
 	delete this->m_limits;
-	qDebug() << this << "deleted";
+	qDebug() << Q_FUNC_INFO << this << "deleted";
 }
 
 //public slot
@@ -144,3 +149,57 @@ const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 {
 	return this->m_limits->value(type,NULL);
 }
+
+
+
+//protected
+void aqb_AccountInfo::setBankLine(double value)
+{
+	this->m_BankLine = value;
+	emit this->accountDataChanged(this);
+}
+
+//protected
+void aqb_AccountInfo::setNotedBalance(double value)
+{
+	this->m_NotedBalance = value;
+	emit this->accountDataChanged(this);
+}
+
+//protected
+void aqb_AccountInfo::setBookedBalance(double value)
+{
+	this->m_BookedBalance = value;
+	emit this->accountDataChanged(this);
+}
+
+//protected
+void aqb_AccountInfo::setDisposable(double value)
+{
+	this->m_Disposable = value;
+	emit this->accountDataChanged(this);
+}
+
+//protected
+void aqb_AccountInfo::setDisposed(double value)
+{
+	this->m_Disposed = value;
+	emit this->accountDataChanged(this);
+}
+
+//protected
+void aqb_AccountInfo::setDate(QDate date)
+{
+	this->m_Date = date;
+	emit this->accountDataChanged(this);
+}
+
+
+
+
+
+
+
+
+
+

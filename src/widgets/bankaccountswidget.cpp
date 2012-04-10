@@ -59,8 +59,11 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	headerlist.append(tr("Land"));
 	headerlist.append(tr("Besitzer"));
 	headerlist.append(tr("Backend"));
+	headerlist.append(tr("BankLine"));
+	headerlist.append(tr("BookedBalance"));
+	headerlist.append(tr("Date"));
 
-	ui->treeWidget->setColumnCount(7);
+	ui->treeWidget->setColumnCount(10);
 	ui->treeWidget->setHeaderLabels(headerlist);
 
 	ui->treeWidget->setUniformRowHeights(true);
@@ -108,18 +111,8 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 				Q_ASSERT(topItem != NULL);
 				Item = new QTreeWidgetItem;
 				ItemCount++;
-				Item->setData(0, Qt::DisplayRole, i.value()->Number());
-				Item->setData(0, Qt::UserRole, i.value()->get_ID());
-				//pointer zum aqb_AccountInfo Object
-				Item->setData(0, Qt::UserRole+1, QVariant::fromValue(i.value()));
-				//wird anscheinen nirgends verwendet!
-				//Item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
-				Item->setData(1, Qt::DisplayRole, i.value()->Name());
-				Item->setData(2, Qt::DisplayRole, i.value()->AccountType());
-				Item->setData(3, Qt::DisplayRole, i.value()->Currency());
-				Item->setData(4, Qt::DisplayRole, i.value()->Country());
-				Item->setData(5, Qt::DisplayRole, i.value()->OwnerName());
-				Item->setData(6, Qt::DisplayRole, i.value()->BackendName());
+				//Alle Werte für das neu erstellte Item setzen.
+				this->setValuesForItem(Item, i.value());
 
 				if (!FirstItem)
 					FirstItem = Item;
@@ -147,6 +140,17 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	this->setMinimumHeight(ItemHeight*(ItemCount+2) + 8);
 
 	this->ui->treeWidget->viewport()->installEventFilter(this);
+
+	//Alle accounts mit unserem Slot verbinden, damit bei einer Änderung
+	//die angezeigten Werte aktualisert werden können
+	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts->getAccountHash());
+	it.toFront();
+	while (it.hasNext()) {
+	     it.next();
+	     connect(it.value(), SIGNAL(accountDataChanged(const aqb_AccountInfo*)),
+		     this, SLOT(onAccountDataChange(const aqb_AccountInfo*)));
+	}
+
 
 }
 
@@ -244,6 +248,26 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	//qDebug() << this << "dropAction" << dropAction;
 }
 
+//private
+void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
+					  const aqb_AccountInfo *acc) const
+{
+	item->setData(0, Qt::DisplayRole, acc->Number());
+	item->setData(0, Qt::UserRole, acc->get_ID());
+	//pointer zum aqb_AccountInfo Object
+	item->setData(0, Qt::UserRole+1, QVariant::fromValue(acc));
+	//wird anscheinen nirgends verwendet!
+	//item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
+	item->setData(1, Qt::DisplayRole, acc->Name());
+	item->setData(2, Qt::DisplayRole, acc->AccountType());
+	item->setData(3, Qt::DisplayRole, acc->Currency());
+	item->setData(4, Qt::DisplayRole, acc->Country());
+	item->setData(5, Qt::DisplayRole, acc->OwnerName());
+	item->setData(6, Qt::DisplayRole, acc->BackendName());
+	item->setData(7, Qt::DisplayRole, QString("%1").arg(acc->getBankLine(), 0, 'f', 2));
+	item->setData(8, Qt::DisplayRole, QString("%1").arg(acc->getBookedBalance(), 0, 'f', 2));
+	item->setData(9, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString(Qt::DefaultLocaleLongDate)));
+}
 
 aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 {
@@ -280,6 +304,7 @@ void BankAccountsWidget::setSelectedAccount(const aqb_AccountInfo *account)
 	}
 }
 
+//private slot
 void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 {
 	if (this->ui->treeWidget->selectedItems().size() > 0) {
@@ -292,3 +317,30 @@ void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 	}
 }
 
+//private slot
+void BankAccountsWidget::onAccountDataChange(const aqb_AccountInfo *account)
+{
+	//Beim übergebenen account hat sich etwas geändert
+	//Wir suchen das QTreeWidgetItem welches die Werte anzeigt und erstellen
+	//die Werte neu.
+
+	//Item enthält in der row 0 als Qt::UserRole+1 die Addresse des Accounts!
+	QTreeWidgetItem *item = NULL;
+	QTreeWidgetItem *wantedItem = NULL;
+
+	//das Item finden welches für den Account zuständig ist
+	for(int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
+		item = this->ui->treeWidget->topLevelItem(i);
+		for (int j=0; j<item->childCount(); ++j) {
+			if (item->child(j)->data(0, Qt::UserRole+1).value<const aqb_AccountInfo*>() == account) {
+				wantedItem = item->child(j);
+			}
+		}
+	}
+
+	if (wantedItem) {
+		this->setValuesForItem(wantedItem, account);
+	} else {
+		qWarning() << Q_FUNC_INFO << "should update account but no item found!";
+	}
+}

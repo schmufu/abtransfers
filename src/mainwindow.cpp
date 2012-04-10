@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->jobctrl = new abt_job_ctrl(this);
+	this->jobctrl = new abt_job_ctrl(this->accounts, this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;

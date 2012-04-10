@@ -108,3 +108,27 @@ aqb_Accounts::~aqb_Accounts()
 		delete this->m_accounts.take(key);
 	}
 }
+
+aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
+					  const QString &blz,
+					  const QString &owner,
+					  const QString &name) const
+{
+	aqb_AccountInfo *acc = NULL;
+
+	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
+	it.toFront();
+	while (it.hasNext()) {
+	     it.next();
+	     acc = it.value();
+	     if (acc->Number() == kontonummer && acc->BankCode() == blz &&
+		 acc->OwnerName() == owner && acc->Name() == name) {
+		     //Account gefunden
+		     return acc;
+	     }
+	}
+
+	//wenn wir hierher kommen wurde kein Account gefunden!
+	qWarning() << Q_FUNC_INFO << "no account matched! returning NULL!";
+	return NULL;
+}

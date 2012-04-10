@@ -37,6 +37,7 @@
 #include "abt_transactions.h"
 #include "abt_transactionlimits.h"
 #include "aqb_accountinfo.h"
+#include "aqb_accounts.h"
 
 #include "abt_jobinfo.h"
 
@@ -46,6 +47,7 @@ Q_OBJECT
 
 private:
 	QList<abt_jobInfo*> *jobqueue;
+	aqb_Accounts *m_allAccounts;
 
 	void addlog(const QString &str);
 
@@ -106,7 +108,7 @@ private:
 
 
 public:
-	explicit abt_job_ctrl(QObject *parent = 0);
+	explicit abt_job_ctrl(aqb_Accounts *allAccounts, QObject *parent = 0);
 	~abt_job_ctrl();
 
 	const QList<abt_jobInfo*> *jobqueueList() const { return this->jobqueue; }
