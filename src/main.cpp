@@ -57,7 +57,9 @@ int main(int argc, char *argv[])
 
 	//qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
 
+	//hier werden alle über qDebug(), qWarning() etc. ausgegebenen Infos angezeigt
 	debugDialog = new DebugDialogWidget();
+	//damit die Ausgaben auch richtig umgeleitet werden benötigten wir den MsgHandler
 	qInstallMsgHandler(myMessageHandler);
 
 	#ifdef ABTRANSFER_VERSION
@@ -70,8 +72,8 @@ int main(int argc, char *argv[])
 	app.setApplicationName("AB-Transfers");
 
 	//globale Objecte erzeugen
-	settings = new abt_settings();
-	banking = new aqb_banking();
+	settings = new abt_settings(); //für Programmweite Einstellungen
+	banking = new aqb_banking(); //Initialisierung und Verwendung von AqBanking
 
 	MainWindow w;
 
@@ -85,13 +87,14 @@ int main(int argc, char *argv[])
 	qDebug("BEFORE SHOW");
 	w.show();
 	qDebug("AFTER SHOW");
-	apprv = app.exec();
+	apprv = app.exec(); //Ausführung der Anwendung
 	qDebug("AFTER EXEC");
 
+	//Den Zustand des Forms beim Beenden speichern
 	settings->saveWindowStateGeometry(w.saveState(1), w.saveGeometry());
 	qDebug("AFTER SAVING STATE");
-	delete banking;
-	delete settings;
+	delete banking; //AqBanking wird nicht mehr benötigt
+	delete settings; //und auch die Einstellungen nicht
 
 	//Alle erstellten GWEN_STRINGLIST und GWEN_TIME Objecte wieder löschen
 	abt_conv::freeAllGwenLists();
@@ -99,6 +102,7 @@ int main(int argc, char *argv[])
 
 	//den msgHandler wieder entfernen
 	qInstallMsgHandler(NULL);
+	 //sowie den Dialog wo u.a. qDebug() Nachrichten angezeigt werden
 	delete debugDialog;
 
 	return apprv;
@@ -110,7 +114,7 @@ void myMessageHandler(QtMsgType type, const char *msg)
 	fprintf(stderr, "%s\n", msg); //always show the messages at stderr
 
 	//only show the messages if wanted
-	//! \todo implement the option to deaktivate debug messges
+	//! \todo implement the option to deactivate debug messges
 	//if (!settings->displayDebugMessages()) return;
 
 	switch(type) {
