@@ -34,6 +34,7 @@
 
 #include "globalvars.h"
 #include "abt_job_ctrl.h"
+#include "abt_conv.h"
 
 aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	QObject(parent)
@@ -43,6 +44,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_KnownStandingOrders = NULL;
 	this->m_KnownDatedTransfers = NULL;
 	this->m_AvailableJobs = NULL;
+	this->account_status = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
 	this->m_BankName = QString::fromUtf8(AB_Account_GetBankName(this->m_account));
@@ -55,11 +57,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_OwnerName = QString::fromUtf8(AB_Account_GetOwnerName(this->m_account));
 	this->m_Currency = QString::fromUtf8(AB_Account_GetCurrency(this->m_account));
 	this->m_Country = QString::fromUtf8(AB_Account_GetCountry(this->m_account));
-	this->m_BankLine = 0.0;
-	this->m_NotedBalance = 0.0;
-	this->m_BookedBalance = 0.0;
-	this->m_Disposable = 0.0;
-	this->m_Disposed = 0.0;
+
 
 	AB_ACCOUNT_TYPE type;
 	type = AB_Account_GetAccountType(this->m_account);
@@ -153,45 +151,112 @@ const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 
 
 //protected
-void aqb_AccountInfo::setBankLine(double value)
+void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
 {
-	this->m_BankLine = value;
-	emit this->accountDataChanged(this);
+	this->account_status = as;
+	emit this->accountStatusChanged(this);
 }
 
-//protected
-void aqb_AccountInfo::setNotedBalance(double value)
+
+
+//public
+QString aqb_AccountInfo::getBankLine() const
 {
-	this->m_NotedBalance = value;
-	emit this->accountDataChanged(this);
+	if (!this->account_status) return QString();
+
+	const AB_VALUE *v;
+	QString value = ""; //empty string als default
+
+	v = AB_AccountStatus_GetBankLine(this->account_status);
+	if (v) {
+		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+	}
+
+	return value;
 }
 
-//protected
-void aqb_AccountInfo::setBookedBalance(double value)
+//public
+QString aqb_AccountInfo::getNotedBalance() const
 {
-	this->m_BookedBalance = value;
-	emit this->accountDataChanged(this);
+	if (!this->account_status) return QString();
+
+	const AB_VALUE *v;
+	const AB_BALANCE *b;
+	QString value = ""; //empty string als default
+
+	b = AB_AccountStatus_GetNotedBalance(this->account_status);
+	if (b) {
+		v = AB_Balance_GetValue(b);
+		if (v) {
+			value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+		}
+	}
+
+	return value;
 }
 
-//protected
-void aqb_AccountInfo::setDisposable(double value)
+//public
+QString aqb_AccountInfo::getBookedBalance() const
 {
-	this->m_Disposable = value;
-	emit this->accountDataChanged(this);
+	if (!this->account_status) return QString();
+
+	const AB_VALUE *v;
+	const AB_BALANCE *b;
+	QString value = ""; //empty string als default
+
+	b = AB_AccountStatus_GetBookedBalance(this->account_status);
+	if (b) {
+		v = AB_Balance_GetValue(b);
+		if (v) {
+			value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+		}
+	}
+
+	return value;
 }
 
-//protected
-void aqb_AccountInfo::setDisposed(double value)
+//public
+QString aqb_AccountInfo::getDisposable() const
 {
-	this->m_Disposed = value;
-	emit this->accountDataChanged(this);
+	if (!this->account_status) return QString();
+
+	const AB_VALUE *v;
+	QString value = ""; //empty string als default
+
+	v = AB_AccountStatus_GetDisposable(this->account_status);
+	if (v) {
+		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+	}
+
+	return value;
 }
 
-//protected
-void aqb_AccountInfo::setDate(QDate date)
+//public
+QString aqb_AccountInfo::getDisposed() const
 {
-	this->m_Date = date;
-	emit this->accountDataChanged(this);
+	if (!this->account_status) return QString();
+
+	const AB_VALUE *v;
+	QString value = ""; //empty string als default
+
+	v = AB_AccountStatus_GetDisposed(this->account_status);
+	if (v) {
+		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+	}
+
+	return value;
+}
+
+//public
+QDate aqb_AccountInfo::getDate() const
+{
+	if (!this->account_status) return QDate();
+
+	QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(this->account_status));
+
+	//logmsg2 = QString("Time:\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
+
+	return date;
 }
 
 

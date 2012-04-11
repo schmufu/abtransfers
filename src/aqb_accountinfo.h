@@ -53,15 +53,9 @@ class abt_transactionLimits;
  */
 class aqb_AccountInfo : public QObject {
 	Q_OBJECT
-	Q_PROPERTY(double m_BankLine READ getBankLine WRITE setBankLine DESIGNABLE false SCRIPTABLE false);
-	Q_PROPERTY(double m_NotedBalance READ getNotedBalance WRITE setNotedBalance DESIGNABLE false SCRIPTABLE false);
-	Q_PROPERTY(double m_BookedBalance READ getBookedBalance WRITE setBookedBalance DESIGNABLE false SCRIPTABLE false);
-	Q_PROPERTY(double m_Disposable READ getDisposable WRITE setDisposable DESIGNABLE false SCRIPTABLE false);
-	Q_PROPERTY(double m_Disposed READ getDisposed WRITE setDisposed DESIGNABLE false SCRIPTABLE false);
-	Q_PROPERTY(QDate m_Date READ getDate WRITE setDate DESIGNABLE false SCRIPTABLE false);
 
-	//der parser darf unsere protected funktionen nutzen um die Propertys
-	//zu setzen. Ansonsten darf niemand diese Werte ändern.
+	//der parser darf unsere protected funktionen nutzen um den
+	//account_status zu setzen. Ansonsten darf niemand diese Werte ändern.
 	friend class abt_parser;
 
 private:
@@ -79,12 +73,9 @@ private:
 	QString m_Currency;
 	QString m_Country;
 	QString m_AccountType;
-	double m_BankLine;
-	double m_NotedBalance;
-	double m_BookedBalance;
-	double m_Disposable;
-	double m_Disposed;
-	QDate m_Date; //!< DateTime des Kontostandes
+
+	//! Kontostand des Accounts
+	AB_ACCOUNT_STATUS *account_status;
 
 	QList<abt_standingOrderInfo*> *m_KnownStandingOrders;
 	QList<abt_datedTransferInfo*> *m_KnownDatedTransfers;
@@ -118,20 +109,15 @@ public:
 	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_AvailableJobs; };
 	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_AvailableJobs->value(type, false); };
 
-	double getBankLine() const { return this->m_BankLine; };
-	double getNotedBalance() const { return this->m_NotedBalance; };
-	double getBookedBalance() const { return this->m_BookedBalance; };
-	double getDisposable() const { return this->m_Disposable; };
-	double getDisposed() const { return this->m_Disposed; };
-	QDate getDate() const { return this->m_Date; };
+	QString getBankLine() const;
+	QString getNotedBalance() const;
+	QString getBookedBalance() const;
+	QString getDisposable() const;
+	QString getDisposed() const;
+	QDate getDate() const;
 
 protected: //from friend classes useable!
-	void setBankLine(double value);
-	void setNotedBalance(double value);
-	void setBookedBalance(double value);
-	void setDisposable(double value);
-	void setDisposed(double value);
-	void setDate(QDate date);
+	void setAccountStatus(AB_ACCOUNT_STATUS *as);
 
 public slots:
 	void loadKnownStandingOrders();
@@ -143,7 +129,7 @@ signals:
 	//! \brief wird gesendet wenn die DatedTransfers neu geladen wurden.
 	void knownDatedTransfersChanged(const aqb_AccountInfo *account);
 	//! \brief wird gesendet wenn sich Daten des Accounts geändert haben.
-	void accountDataChanged(const aqb_AccountInfo *account);
+	void accountStatusChanged(const aqb_AccountInfo *account);
 };
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);

@@ -163,7 +163,8 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 			QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(as));
 			logmsg2 = QString("Time:\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
 
-			acc->setDate(date);
+			//Den neuen Account_Status im entsprechenden Object setzen
+			acc->setAccountStatus(as);
 
 			qDebug() << logmsg << logmsg2;
 
@@ -172,7 +173,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				logmsg2 = QString("BankLine:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 				qDebug() << logmsg + logmsg2;
-				acc->setBankLine(AB_Value_GetValueAsDouble(v));
 			}
 
 			b = AB_AccountStatus_GetNotedBalance(as);
@@ -182,7 +182,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 					logmsg2 = QString("NotedBalance:\t%1").arg(
 							AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 					qDebug() << logmsg << logmsg2;
-					acc->setNotedBalance(AB_Value_GetValueAsDouble(v));
 				}
 			}
 
@@ -193,7 +192,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 					logmsg2 = QString("BookedBalance:\t%1").arg(
 							AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 					qDebug() << logmsg << logmsg2;
-					acc->setBookedBalance(AB_Value_GetValueAsDouble(v));
 				}
 			}
 
@@ -202,7 +200,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				logmsg2 = QString("Disposable:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 				qDebug() << logmsg << logmsg2;
-				acc->setDisposable(AB_Value_GetValueAsDouble(v));
 			}
 
 			v = AB_AccountStatus_GetDisposed(as);
@@ -210,7 +207,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				logmsg2 = QString("Disposed:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 				qDebug() << logmsg << logmsg2;
-				acc->setDisposed(AB_Value_GetValueAsDouble(v));
 			}
 
 			as = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);

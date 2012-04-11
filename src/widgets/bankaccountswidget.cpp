@@ -147,8 +147,8 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	it.toFront();
 	while (it.hasNext()) {
 	     it.next();
-	     connect(it.value(), SIGNAL(accountDataChanged(const aqb_AccountInfo*)),
-		     this, SLOT(onAccountDataChange(const aqb_AccountInfo*)));
+	     connect(it.value(), SIGNAL(accountStatusChanged(const aqb_AccountInfo*)),
+		     this, SLOT(onAccountStatusChange(const aqb_AccountInfo*)));
 	}
 
 
@@ -264,8 +264,8 @@ void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
 	item->setData(4, Qt::DisplayRole, acc->Country());
 	item->setData(5, Qt::DisplayRole, acc->OwnerName());
 	item->setData(6, Qt::DisplayRole, acc->BackendName());
-	item->setData(7, Qt::DisplayRole, QString("%1").arg(acc->getBankLine(), 0, 'f', 2));
-	item->setData(8, Qt::DisplayRole, QString("%1").arg(acc->getBookedBalance(), 0, 'f', 2));
+	item->setData(7, Qt::DisplayRole, acc->getBankLine());
+	item->setData(8, Qt::DisplayRole, acc->getBookedBalance());
 	item->setData(9, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString(Qt::DefaultLocaleLongDate)));
 }
 
@@ -318,7 +318,7 @@ void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 }
 
 //private slot
-void BankAccountsWidget::onAccountDataChange(const aqb_AccountInfo *account)
+void BankAccountsWidget::onAccountStatusChange(const aqb_AccountInfo *account)
 {
 	//Beim übergebenen account hat sich etwas geändert
 	//Wir suchen das QTreeWidgetItem welches die Werte anzeigt und erstellen

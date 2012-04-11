@@ -73,7 +73,7 @@ public slots:
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();
-	void onAccountDataChange(const aqb_AccountInfo *account);
+	void onAccountStatusChange(const aqb_AccountInfo *account);
 };
 
 #endif // BANKACCOUNTSWIDGET_H
