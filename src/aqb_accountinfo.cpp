@@ -41,9 +41,9 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 {
 	this->m_account = account;
 	this->m_ID = AB_Account_GetUniqueId(this->m_account);
-	this->m_KnownStandingOrders = NULL;
-	this->m_KnownDatedTransfers = NULL;
-	this->m_AvailableJobs = NULL;
+	this->m_standingOrders = NULL;
+	this->m_datedTransfers = NULL;
+	this->m_availableJobs = NULL;
 	this->account_status = NULL;
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
@@ -82,18 +82,18 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 			this->m_AccountType = QObject::tr("type unknown"); break;
 	}
 
-	//alle bekannten Daueraufträge für diesen Account holen
-	this->loadKnownStandingOrders();
-	//alle bekannten Terminüberweisungen für diesen Account holen
-	this->loadKnownDatedTransfers();
+//	//alle bekannten Daueraufträge für diesen Account holen
+//	this->loadKnownStandingOrders();
+//	//alle bekannten Terminüberweisungen für diesen Account holen
+//	this->loadKnownDatedTransfers();
 
 	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken
 	this->m_limits = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
 	abt_job_ctrl::createTransactionLimitsFor(this->m_account, this->m_limits);
 
 	//alle unterstützen Transaktionen für diesen Account merken
-	this->m_AvailableJobs = new QHash<AB_JOB_TYPE, bool>;
-	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_AvailableJobs);
+	this->m_availableJobs = new QHash<AB_JOB_TYPE, bool>;
+	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_availableJobs);
 
 	qDebug().nospace() << "AccountInfo for Account " << this->Number() << " created. (ID:" << this->get_ID() << ")";
 }
@@ -109,7 +109,7 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	//existierende Daueraufträge für diesen Account speichern
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
-	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
+	abt_settings::freeStandingOrdersList(this->m_standingOrders);
 
 	qDebug() << Q_FUNC_INFO << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
@@ -128,9 +128,9 @@ aqb_AccountInfo::~aqb_AccountInfo()
 void aqb_AccountInfo::loadKnownStandingOrders()
 {
 	//Alle SOs löschen
-	abt_settings::freeStandingOrdersList(this->m_KnownStandingOrders);
+	abt_settings::freeStandingOrdersList(this->m_standingOrders);
 	//und neu laden
-	this->m_KnownStandingOrders = settings->getStandingOrdersForAccount(this->m_Number, this->m_BankCode);
+	this->m_standingOrders = settings->getStandingOrdersForAccount(this->m_Number, this->m_BankCode);
 
 	emit knownStandingOrdersChanged(this);
 }
@@ -140,9 +140,9 @@ void aqb_AccountInfo::loadKnownStandingOrders()
 void aqb_AccountInfo::loadKnownDatedTransfers()
 {
 	//Alle DTs löschen
-	abt_settings::freeDatedTransfersList(this->m_KnownDatedTransfers);
+	abt_settings::freeDatedTransfersList(this->m_datedTransfers);
 	//und neu laden
-	this->m_KnownDatedTransfers = settings->getDatedTransfersForAccount(this->m_Number, this->m_BankCode);
+	this->m_datedTransfers = settings->getDatedTransfersForAccount(this->m_Number, this->m_BankCode);
 
 	emit knownDatedTransfersChanged(this);
 }
@@ -189,12 +189,61 @@ AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 
 	  */
 
+	if (this->m_standingOrders) {
+		//alle vorhandenen Daueraufträge dem Context hinzufügen
+		for(int i=0; i<this->m_standingOrders->size(); ++i) {
+			abt_standingOrderInfo *so = this->m_standingOrders->at(i);
+			AB_TRANSACTION *t = AB_Transaction_dup(so->getTransaction()->getAB_Transaction());
+			AB_ImExporterAccountInfo_AddStandingOrder(iea, t);
+		}
+	}
+
+	if (this->m_datedTransfers) {
+		//alle vorhandenen terminierten Überweisungen dem Context hinzufügen
+		for(int i=0; i<this->m_datedTransfers->size(); ++i) {
+			abt_datedTransferInfo *dt = this->m_datedTransfers->at(i);
+			AB_TRANSACTION *t = AB_Transaction_dup(dt->getTransaction()->getAB_Transaction());
+			AB_ImExporterAccountInfo_AddDatedTransfer(iea, t);
+		}
+	}
+
 	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
 	AB_ImExporterContext_AddAccountInfo(ctx, iea);
 
 	return ctx;
 }
 
+/**
+  * fügt einen Dauerauftrag in die Liste dieses Accounts ein
+  */
+//protected
+void aqb_AccountInfo::addStandingOrder(abt_standingOrderInfo *so)
+{
+	if (!so) return; //wenn so == NULL --> Nicht speichern
+
+	if (!this->m_standingOrders) {
+		//die liste existiert noch nicht, wir erstellen eine
+		this->m_standingOrders = new QList<abt_standingOrderInfo*>();
+	}
+	this->m_standingOrders->append(so);
+	emit this->knownStandingOrdersChanged(this);
+}
+
+/**
+  * fügt eine terminierte Überweisung in die Liste dieses Accounts ein
+  */
+//protected
+void aqb_AccountInfo::addDatedTransfer(abt_datedTransferInfo *dt)
+{
+	if (!dt) return; //wenn dt == NULL --> Nicht speichern
+
+	if (!this->m_datedTransfers) {
+		//die liste existiert noch nicht, wir erstellen eine
+		this->m_datedTransfers = new QList<abt_datedTransferInfo*>();
+	}
+	this->m_datedTransfers->append(dt);
+	emit this->knownStandingOrdersChanged(this);
+}
 
 //public
 QString aqb_AccountInfo::getBankLine() const

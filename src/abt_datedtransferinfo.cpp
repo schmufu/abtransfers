@@ -37,6 +37,15 @@ abt_datedTransferInfo::abt_datedTransferInfo(abt_transaction *transaction)
 
 }
 
+abt_datedTransferInfo::abt_datedTransferInfo(AB_TRANSACTION *transaction)
+{
+	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
+	//Kopie und von dieser eine abt_transaction die im destructor wieder
+	//gelöscht wird.
+	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
+	this->t = new abt_transaction(t, true);
+}
+
 abt_datedTransferInfo::~abt_datedTransferInfo()
 {
 	delete this->t;	//abt_Transaction Object löschen

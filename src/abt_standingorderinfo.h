@@ -46,6 +46,7 @@ class abt_standingOrderInfo
 {
 public:
 	abt_standingOrderInfo(abt_transaction *transaction);
+	abt_standingOrderInfo(AB_TRANSACTION *transaction);
 	~abt_standingOrderInfo();
 private:
 	abt_transaction *t;

@@ -294,6 +294,9 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
 		while (t) {
+			//die terminierte Überweisung dem Account zufügen
+			abt_datedTransferInfo *dt = new abt_datedTransferInfo(t);
+			acc->addDatedTransfer(dt);
 
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
@@ -313,25 +316,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
 			qDebug() << logmsg << logmsg2;
-
-//			switch (AB_Transaction_GetStatus(t)) {
-//			case AB_Transaction_StatusRevoked:
-//				//Bei der Bank hinterlegte Terminüberweisung wurde gelöscht
-//				qDebug() << "Lösche bei der Bank gelöschte Terminüberweisung (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			case AB_Transaction_StatusManuallyReconciled:
-//			case AB_Transaction_StatusAutoReconciled:
-//				//Bei der Bank hinterlegte Terminüberweisung wurde geändert
-//				qDebug() << "Speichere bei der Bank geänderte Terminüberweisung (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			default:
-//				//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
-//				qDebug() << "Speichere bei der Bank hinterlegte Terminüberweisung (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			}
 
 			t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
 		}
@@ -390,6 +374,10 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
 		while (t) {
+			//den Dauerauftrag dem Account zufügen
+			abt_standingOrderInfo *so = new abt_standingOrderInfo(t);
+			acc->addStandingOrder(so);
+
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));

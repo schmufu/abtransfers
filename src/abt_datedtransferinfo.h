@@ -46,6 +46,7 @@ class abt_datedTransferInfo
 {
 public:
 	abt_datedTransferInfo(abt_transaction *transaction);
+	abt_datedTransferInfo(AB_TRANSACTION *transaction);
 	~abt_datedTransferInfo();
 private:
 	abt_transaction *t;

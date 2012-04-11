@@ -269,7 +269,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
 	ctx = abt_parser::create_ctx_from(this->accounts);
 
-	abt_parser::save_local_ctx(ctx, "AllAccountData_TEST.ctx",
+	abt_parser::save_local_ctx(ctx, "AllAccountData_TEST_saved.ctx",
 				   "ctxfile", "default");
 
 	//ctx wieder freigeben!

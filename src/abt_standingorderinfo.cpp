@@ -37,6 +37,15 @@ abt_standingOrderInfo::abt_standingOrderInfo(abt_transaction *transaction)
 
 }
 
+abt_standingOrderInfo::abt_standingOrderInfo(AB_TRANSACTION *transaction)
+{
+	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
+	//Kopie und von dieser eine abt_transaction die im destructor wieder
+	//gelöscht wird.
+	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
+	this->t = new abt_transaction(t, true);
+}
+
 abt_standingOrderInfo::~abt_standingOrderInfo()
 {
 	delete this->t;	//abt_Transaction Object löschen
