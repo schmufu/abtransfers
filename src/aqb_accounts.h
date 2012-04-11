@@ -57,6 +57,8 @@ public:
 		{ return this->m_accounts; }
 	aqb_AccountInfo* getAccount(int ID) const
 		{ return this->m_accounts.value(ID, NULL); }
+
+	/** \brief returns the account that matches or NULL */
 	aqb_AccountInfo* getAccount(const QString &kontonummer,
 				    const QString &blz = "",
 				    const QString &owner = "",

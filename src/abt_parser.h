@@ -82,12 +82,28 @@ private:
 public:
 	abt_parser();
 
+	/** \brief erstellt einen AB_IMEXPORTER_CONTEXT für alle in aqb_Accounts
+	  * enhaltenen aqb_AccountInfo Objekte
+	  */
+	static AB_IMEXPORTER_CONTEXT *create_ctx_from(const aqb_Accounts *allAccounts);
+
+
 	/** \brief lädt alle Daten der Datei \a filename mit dem Importer
 	  * \a importerName und dem Profile \a profileName in den \return ctx
 	  */
 	static AB_IMEXPORTER_CONTEXT *load_local_ctx(const QString &filename,
 						     const QString &importerName,
 						     const QString &profileName);
+
+	/** \brief speichert alle Daten des IE-Context \a ctx in der Datei
+	  * \a filename mit dem Importer \a importerName und dem Profile
+	  * \a profileName
+	  */
+	static void save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
+				   const QString &filename,
+				   const QString &exporterName,
+				   const QString &profileName);
+
 
 	/** \brief parst den Context \a iec und setzt die entsprechenden Werte
 	  * des entsprechenden Accounts

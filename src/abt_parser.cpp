@@ -65,10 +65,63 @@ AB_IMEXPORTER_CONTEXT *abt_parser::load_local_ctx(const QString &filename,
 	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
 
 	AB_Banking_ImportFileWithProfile(banking->getAqBanking(),
-					 importerName.toAscii(), ctx,
-					 profileName.toAscii(),
+					 importerName.toUtf8(),
+					 ctx,
+					 profileName.toUtf8(),
 					 NULL,
-					 filename.toAscii());
+					 filename.toUtf8());
+
+	return ctx;
+}
+
+
+//static
+void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
+				const QString &filename,
+				const QString &exporterName,
+				const QString &profileName)
+{
+	int ret;
+
+	ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+						     ctx);
+
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "ERROR:" << ret
+			   << " -- something went wrong on filling the gaps";
+	}
+
+	ret = AB_Banking_ExportToFile(banking->getAqBanking(),
+				      ctx,
+				      exporterName.toUtf8(),
+				      profileName.toUtf8(),
+				      filename.toUtf8());
+
+	if (ret) {
+		//Fehler aufgetreten!
+		qWarning() << Q_FUNC_INFO << "ERROR:" << ret
+			   << " -- something went wrong on storing the ctx to file";
+	}
+
+}
+
+
+/**
+  * Der zurückgegebene Context muss über AB_ImExporterContext_free() wieder
+  * freigegeben werden!
+  */
+//static
+AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccounts)
+{
+	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
+
+	//wir gehen alle Objecte durch und holen uns den jeweiligen IE-Context
+	QHashIterator<int, aqb_AccountInfo*> it(allAccounts->getAccountHash());
+	while (it.hasNext()) {
+		it.next();
+		qDebug() << it.key() << ": " << it.value();
+		AB_ImExporterContext_AddContext(ctx, it.value()->getContext());
+	}
 
 	return ctx;
 }
@@ -144,8 +197,17 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		QString Name = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountName(ai));
 		QString ID = QString("%1").arg(AB_ImExporterAccountInfo_GetAccountId(ai));
 
-		//das interne accountInfo-Object besorgen
+		//das interne accountInfo-Object besorgen (gibt NULL zurück wenn
+		//keins gefunden wurde)
 		acc = allAccounts->getAccount(KtoNr, BLZ, Owner, Name);
+
+		//wenn kein lokaler account gefunden wurde können diesem auch
+		//keine Daten zugewiesen werden
+		if (!acc) {
+			//next account
+			ai=AB_ImExporterContext_GetNextAccountInfo(iec);
+			continue;
+		}
 
 		/**********************************************************************/
 		//this->parseImExporterAccountInfo_Status(ai);

@@ -61,6 +61,7 @@
 #include "widgets/widgetknowndatedtransfers.h"
 #include "widgets/widgetaccountcombobox.h"
 
+#include "abt_parser.h"
 
 #ifdef TESTWIDGETACCESS
 	 //nur zum Testen!
@@ -80,6 +81,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
+
+	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
+	//können die Daten mit dem parser geladen werden
+	AB_IMEXPORTER_CONTEXT *ctx = abt_parser::load_local_ctx(
+						"AllAccountData_TEST.ctx",
+						"ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts);
+	//alle Daten geladen ctx wieder löschen.
+	AB_ImExporterContext_free(ctx);
+
+
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -240,6 +252,31 @@ void MainWindow::changeEvent(QEvent *e)
 	default:
 		break;
 	}
+}
+
+//protected
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+	/** \todo Überprüfung ob Speicherung notwendig
+	  *
+	  * Das speichern sollte in eine separate Funktion und in den
+	  * Einstellungen auch angebar sein dass z.B. nach einem erfolgreichen
+	  * Aktualisiseren automatisch gespeichert wird.
+	  */
+
+	//Bevor wir geschlossen werden noch alle Daten sichern!
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
+	ctx = abt_parser::create_ctx_from(this->accounts);
+
+	abt_parser::save_local_ctx(ctx, "AllAccountData_TEST.ctx",
+				   "ctxfile", "default");
+
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+
+	//jetzt können wir geschlossen werden
+	e->accept();
 }
 
 //private Slot

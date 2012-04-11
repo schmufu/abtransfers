@@ -109,6 +109,11 @@ aqb_Accounts::~aqb_Accounts()
 	}
 }
 
+
+
+/**
+  *
+  */
 aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 					  const QString &blz,
 					  const QString &owner,
@@ -116,13 +121,18 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 {
 	aqb_AccountInfo *acc = NULL;
 
+	//Alle Accounts durchgehen
 	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
 	it.toFront();
 	while (it.hasNext()) {
 	     it.next();
 	     acc = it.value();
-	     if (acc->Number() == kontonummer && acc->BankCode() == blz &&
-		 acc->OwnerName() == owner && acc->Name() == name) {
+	     //Angegebene Werte überprüfen.
+	     //Wenn ein Wert nicht angegeben wurde wird dieser auch nicht geprüft.
+	     if (acc->Number() == kontonummer &&
+		 (blz.isEmpty() || acc->BankCode() == blz) &&
+		 (owner.isEmpty() || acc->OwnerName() == owner) &&
+		 (name.isEmpty() || acc->Name() == name)) {
 		     //Account gefunden
 		     return acc;
 	     }

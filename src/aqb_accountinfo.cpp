@@ -101,6 +101,11 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 aqb_AccountInfo::~aqb_AccountInfo()
 {
 	qDebug() << Q_FUNC_INFO << this << "destructor: started";
+	//der account_status ist eine von uns angelegte Kopie, diese wieder
+	//freigeben
+	if (this->account_status)
+		AB_AccountStatus_free(this->account_status);
+
 	//existierende Daueraufträge für diesen Account speichern
 	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
 	//und die Objecte wieder freigeben
@@ -153,10 +158,42 @@ const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 //protected
 void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
 {
-	this->account_status = as;
+	//if we already have an account-status we must free this first
+	if (this->account_status)
+		AB_AccountStatus_free(this->account_status);
+
+	//we need to store a copy of the supplied status
+	this->account_status = AB_AccountStatus_dup(as);
 	emit this->accountStatusChanged(this);
 }
 
+/**
+  * der zurück gegebene AB_IMEXPORTER_CONTEXT muss über AB_ImExporterContext_free()
+  * wieder freigegeben werden!
+  */
+//protected
+AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
+{
+	AB_IMEXPORTER_ACCOUNTINFO *iea = AB_ImExporterAccountInfo_new();
+	AB_ImExporterAccountInfo_FillFromAccount(iea, this->m_account);
+
+	if (this->account_status) { //Wenn wir einen AB_ACCOUNT_STATUS besitzen
+		//davon eine Kopie erstellen und diese dem AccountInfoContext
+		//hinzufügen (wird beim freigeben des ctx dann auch freigegeben)
+		AB_ACCOUNT_STATUS *status = AB_AccountStatus_dup(this->account_status);
+		AB_ImExporterAccountInfo_AddAccountStatus(iea, status);
+	}
+
+
+	/** \todo Hier dann auch noch die SOs und DTs hinzufügen
+
+	  */
+
+	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
+	AB_ImExporterContext_AddAccountInfo(ctx, iea);
+
+	return ctx;
+}
 
 
 //public

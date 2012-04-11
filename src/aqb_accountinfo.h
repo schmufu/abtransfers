@@ -119,6 +119,10 @@ public:
 protected: //from friend classes useable!
 	void setAccountStatus(AB_ACCOUNT_STATUS *as);
 
+	//! \brief gibt einen AB_IMEXPORTER_CONTEXT mit den Daten des Accounts zurück
+	AB_IMEXPORTER_CONTEXT *getContext() const;
+
+
 public slots:
 	void loadKnownStandingOrders();
 	void loadKnownDatedTransfers();
