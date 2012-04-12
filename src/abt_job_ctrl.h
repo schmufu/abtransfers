@@ -40,6 +40,8 @@
 #include "aqb_accounts.h"
 
 #include "abt_jobinfo.h"
+#include "abt_history.h"
+
 
 class abt_job_ctrl : public QObject
 {
@@ -48,6 +50,7 @@ Q_OBJECT
 private:
 	QList<abt_jobInfo*> *jobqueue;
 	aqb_Accounts *m_allAccounts;
+	abt_history *m_history;
 
 	void addlog(const QString &str);
 
@@ -105,10 +108,12 @@ private:
 
 	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
 	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
-
+	//! Prüft die übergebene ausgeführte JobListe \a jl auf Fehler
+	void parseExecutedJobs(AB_JOB_LIST2 *jl);
 
 public:
-	explicit abt_job_ctrl(aqb_Accounts *allAccounts, QObject *parent = 0);
+	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
+			      QObject *parent = 0);
 	~abt_job_ctrl();
 
 	const QList<abt_jobInfo*> *jobqueueList() const { return this->jobqueue; }
@@ -156,10 +161,5 @@ public slots:
 	void deleteJob(int JobListPos);
 
 };
-
-Q_DECLARE_METATYPE(abt_jobInfo*);
-Q_DECLARE_METATYPE(const abt_jobInfo*);
-//qRegisterMetaType<const abt_job_info*>("const abt_job_info*");
-
 
 #endif // ABT_JOB_CTRL_H

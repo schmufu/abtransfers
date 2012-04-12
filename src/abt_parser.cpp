@@ -150,6 +150,17 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 	int cnt = 0;
 	aqb_AccountInfo *acc;
 
+	//wenn kein gültiger context vorhanden ist brauchen wir auch nichts machen
+	if (!iec) return;
+
+	//eventuelle Lücken im Context füllen (ID, Bankname etc)
+	int ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+							 iec);
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
+			   << " -- something went wrong on filling the gaps";
+	}
+
 
 	/**********************************************************************/
 	//this->parseImExporterContext_Messages(iec);

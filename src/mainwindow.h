@@ -38,6 +38,7 @@
 
 #include "aqb_accounts.h"
 #include "abt_job_ctrl.h"
+#include "abt_history.h"
 
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
@@ -66,6 +67,7 @@ private:
 	Ui::MainWindow *ui;
 	aqb_Accounts *accounts;
 	abt_job_ctrl *jobctrl;
+	abt_history *history;
 	page_log *logw;
 	Page_Ausgang *outw;
 

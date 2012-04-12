@@ -75,7 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->jobctrl = new abt_job_ctrl(this->accounts, this);
+	this->history = new abt_history(this->accounts, this);
+	this->jobctrl = new abt_job_ctrl(this->accounts,this->history, this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;
@@ -235,6 +236,7 @@ MainWindow::~MainWindow()
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
+	delete this->history;
 	delete this->accounts;	//account-Object löschen
 	delete ui;
 
@@ -268,10 +270,15 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
 	ctx = abt_parser::create_ctx_from(this->accounts);
-
 	abt_parser::save_local_ctx(ctx, "AllAccountData_TEST_saved.ctx",
 				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
 
+	//Die History in einer Separaten Datei speichern
+	ctx = this->history->getContext();
+	abt_parser::save_local_ctx(ctx, "AB-Transfers_History.ctx",
+				   "ctxfile", "default");
 	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);
 

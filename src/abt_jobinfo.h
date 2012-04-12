@@ -28,13 +28,14 @@
  *
  ******************************************************************************/
 
-#ifndef ABT_INFO_CLASS_H
-#define ABT_INFO_CLASS_H
+#ifndef ABT_JOBINFO_H
+#define ABT_JOBINFO_H
 
 #include <QString>
 #include <QtCore/QDateTime>
 #include <aqbanking/job.h>
 
+#include <QMetaType>
 
 
 /** \brief Bietet eine Abstrahierung von AB_JOB
@@ -66,14 +67,14 @@ public:
 	abt_jobInfo(AB_JOB *j);
 	/** \brief Constructor zur Verwendung als Historie Object */
 	abt_jobInfo(const AB_JOB_TYPE type, const AB_JOB_STATUS status,
-		    const abt_transaction *trans, const AB_ACCOUNT *acc,
+		    const AB_TRANSACTION *t, const AB_ACCOUNT *acc,
 		    const QDateTime date);
 	~abt_jobInfo();
 
 private:
 	AB_JOB *m_job;
 	QStringList *m_jobInfo;
-	const abt_transaction *m_trans;
+	abt_transaction *m_trans;
 	const AB_ACCOUNT *m_ABAccount;
 	AB_JOB_TYPE m_jobType;
 	AB_JOB_STATUS m_jobStatus;
@@ -135,27 +136,9 @@ public:
 };
 
 
+Q_DECLARE_METATYPE(abt_jobInfo*);
+Q_DECLARE_METATYPE(const abt_jobInfo*);
+//qRegisterMetaType<const abt_job_info*>("const abt_job_info*");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif // ABT_INFO_CLASS_H
+#endif // ABT_JOBINFO_H

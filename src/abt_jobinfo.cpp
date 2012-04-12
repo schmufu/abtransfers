@@ -57,9 +57,13 @@
 
 
 abt_jobInfo::abt_jobInfo(AB_JOB *j)
-	: m_job(j)
 {
-	//Initialiserung über den AB_JOB
+	//wir sind ein container für den job, geben diesen wieder zurück,
+	//löschen ihn aber nicht!
+	this->m_job = j;
+
+	//Alle weiteren Elemente so setzen als währen wir ohne job aufgerufen
+	//worden, bzw. die benötigten Parameter aus dem Job kopieren
 	this->m_jobInfo = new QStringList();
 	this->m_jobType = AB_Job_GetType(this->m_job);
 	this->m_jobStatus = AB_Job_GetStatus(this->m_job);
@@ -67,7 +71,7 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 
 	//je nachdem welcher Job übergeben wurde hat dieser eine andere
 	//oder keine AB_Transaction. Dies durchgehen und den privaten
-	//Pointer entsprechend setzen
+	//Pointer (this->m_trans) entsprechend setzen
 	this->setMyTransactionFromJob();
 
 	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
@@ -75,16 +79,17 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 }
 
 abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
-			 const abt_transaction *trans, const AB_ACCOUNT *acc,
+			 const AB_TRANSACTION *t, const AB_ACCOUNT *acc,
 			 QDateTime date)
 	: m_job(NULL),
-	  m_trans(trans),
 	  m_ABAccount(acc),
 	  m_jobType(type),
 	  m_jobStatus(status),
 	  m_date(date)
 {
 	this->m_jobInfo = new QStringList();
+	//wir speichern eine kopie der AB_TRANSACTION als neue abt_transaction
+	this->m_trans = new abt_transaction(AB_Transaction_dup(t), true);
 
 	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
 	this->createJobInfoStringList(this->m_jobInfo);
@@ -102,7 +107,7 @@ abt_jobInfo::~abt_jobInfo()
 	delete this->m_jobInfo;
 }
 
-/** \brief setzt den privaten pointer \a this->t auf die Transaction des jobs */
+/** \brief setzt den privaten pointer \a this->trans auf die Transaction des jobs */
 void abt_jobInfo::setMyTransactionFromJob()
 {
 	const AB_TRANSACTION *AB_Trans = NULL;
@@ -165,9 +170,10 @@ void abt_jobInfo::setMyTransactionFromJob()
 		return;
 	}
 
-	//wir kopieren die transaction des jobs über den copy-constructor
-	//der abt_transaction Klasse. (AB_Trans darf nicht NULL sein!)
-	const abt_transaction *trans = new abt_transaction(AB_Trans);
+	//wir kopieren die transaction des jobs
+	AB_TRANSACTION *tcopy = AB_Transaction_dup(AB_Trans);
+	//und erstellen uns für diese Kopie eine abt_transaction
+	abt_transaction *trans = new abt_transaction(tcopy, true);
 	//diese Transaction merken wir uns und arbeiten dann später mit dieser
 	this->m_trans = trans;
 }
@@ -530,5 +536,4 @@ void abt_jobInfo::createJobInfoStringList_Unknown(QStringList *strList) const
 	strList->append(QObject::tr("Bitte Löschen Sie diesen Auftrag, da nicht sicher"));
 	strList->append(QObject::tr("ist welche Fehler eventuell auftreten könnten!"));
 }
-
 

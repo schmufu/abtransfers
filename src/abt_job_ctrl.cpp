@@ -62,11 +62,13 @@
 
 
 
-abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, QObject *parent) :
+abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
+			   QObject *parent) :
     QObject(parent)
 {
 	this->jobqueue = new QList<abt_jobInfo*>;
 	this->m_allAccounts = allAccounts;
+	this->m_history = history;
 
 	emit this->log("Job-Control created: " + QDate::currentDate().toString(Qt::SystemLocaleLongDate));
 }
@@ -397,10 +399,12 @@ QStringList abt_job_ctrl::getParsedJobLogs(const AB_JOB *j) const
 	GWEN_STRINGLIST *gwenStrList;
 
 	gwenStrList = AB_Job_GetLogs(j);
-	strList = abt_conv::GwenStringListToQStringList(gwenStrList);
-	GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
-				    //NEIN! QStringlistToGwenStringList löscht sich selbst!
-				    //GwenToQ macht dies nicht! (und das aus guten Grund!)
+	if (gwenStrList) { //nur wenn auch ein log existiert
+		strList = abt_conv::GwenStringListToQStringList(gwenStrList);
+		GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
+					    //NEIN! QStringlistToGwenStringList löscht sich selbst!
+					    //GwenToQ macht dies nicht! (und das aus guten Grund!)
+	}
 
 	//die logs von aqBanking ein wenig aufbereiten (UTF8 in ASCII)
 	// %22 durch " ersetzen
@@ -922,7 +926,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	jl = AB_Job_List2_new();
 
-	//Alle jobs in der reihenfolge wie der jobqueue einreihen
+	//Alle jobs in der reihenfolge wie in dem jobqueue einreihen
 	for (int i=0; i<this->jobqueue->size(); ++i) {
 		AB_Job_List2_PushBack(jl, this->jobqueue->at(i)->getJob());
 	}
@@ -953,6 +957,9 @@ void abt_job_ctrl::execQueuedTransactions()
 		AB_ImExporterContext_Clear(ctx);
 		AB_ImExporterContext_free(ctx);
 		return;
+
+		/** \todo Was machen wir mit den Jobs in dem jobqueue? */
+
 	}
 
 //	if (!this->checkJobStatus(jl)) {
@@ -965,26 +972,114 @@ void abt_job_ctrl::execQueuedTransactions()
 //		this->addlog("***********************************************");
 //	}
 
-	this->parseExecutedJobListAndContext(jl, ctx);
-	this->parseImExporterContext(ctx);
+
+
+	this->parseExecutedJobs(jl);
+
+//	this->parseExecutedJobListAndContext(jl, ctx);
+//	this->parseImExporterContext(ctx);
+
+	//Die zurückgelieferten Informationen auswerten und in den
+	//entsprechenden Accounts setzen
 	abt_parser::parse_ctx(ctx, this->m_allAccounts);
 
 	this->addlog("Alle Jobs übertragen und Antworten ausgewertet");
 
-	AB_Job_List2_ClearAll(jl);
+	//wir geben die JobList wieder frei, um das Freigeben der einzelnen
+	//jobs kümmern sich die Objekte denen dieser Job zugewiesen wurde.
+	AB_Job_List2_free(jl);
 	AB_ImExporterContext_Clear(ctx);
 	AB_ImExporterContext_free(ctx);
 
-	//Alle Objecte in der jobqueue liste löschen
-	while (!this->jobqueue->isEmpty()) {
-		abt_jobInfo *j = this->jobqueue->takeFirst();
-		//AB_Job_free(j->getJob());
-		delete j;
-	}
 	emit this->jobQueueListChanged();
 }
 
+/**
+  * überprüft den Status der ausgeführten Jobs und verschiebt diese, wenn
+  * erfolgreich, in die History-Liste.
+  * Wenn ein Fehler aufgetreten ist bleibt der fehlerhafte Job im Ausgang und
+  * kann geändert und erneut gesendet werden.
+  */
+//private
+void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
+{
+	AB_JOB *j;
+	AB_JOB_STATUS jobState;
+	AB_JOB_TYPE jobType;
+	QString strState;
+	QString strType;
+	QStringList strList;
+	int run=0;
+	bool res=true;
+	qDebug() << Q_FUNC_INFO << "started";
 
+	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
+	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
+	AB_JOB_LIST2_ITERATOR *jli;
+	jli = AB_Job_List2Iterator_new(jl);
+	jli = AB_Job_List2_First(jl);
+	j = AB_Job_List2Iterator_Data(jli);
+	while (j) {
+		jobType = AB_Job_GetType(j);
+		strType = AB_Job_Type2Char(jobType);
+		jobState = AB_Job_GetStatus(j);
+
+		//Die Logs des Backends parsen (werden später ausgegeben)
+		strList = this->getParsedJobLogs(j);
+
+		if (jobState == AB_Job_StatusFinished ||
+		    jobState == AB_Job_StatusPending) {
+			//Job wurde erfolgreich ausgeführt oder von der Bank
+			//zur Ausführung entgegen genommen
+
+			//! \todo Müssen wir hier eine Kopie des AB_JOB erstellen?
+
+
+			abt_jobInfo *jobInfo = new abt_jobInfo(j);
+			this->m_history->add(jobInfo);
+
+			this->addlog(QString("Ausführung von '%1' erfolgreich. "
+					     "Der Auftrag wurde zur Historie hinzugefügt").arg(
+							     strType));
+
+			//Hier sollte der Job dann auch aus dem jobqueue entfernt werden
+			for(int i=0; i<this->jobqueue->size(); ++i) {
+				if (this->jobqueue->at(i)->getJob() == j) {
+					//JobPos, gefunden, diesen löschen
+					this->deleteJob(i);
+					break; //kein weiterer Job möglich
+				}
+			}
+
+
+		} else {
+			this->addlog(QString("Ausführung von '%1' fehlerhaft. "
+					     "Der Auftrag bleibt im Ausgang erhalten").arg(
+							     strType));
+
+			//Es ist ein Fehler beim Ausführen des Jobs aufgetreten!
+			//er verbleibt in dem jobqueue
+		}
+
+		//Alle Strings der StringListe des jobLogs zu unserem Log hinzufügen
+		foreach(QString line, strList) { // (int i=0; i<strList.count(); ++i) {
+			this->addlog(QString("JobLog: ").append(line));
+		}
+
+
+		j = AB_Job_List2Iterator_Next(jli); //next Job in list
+	} /* while (j) */
+
+	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
+
+}
+
+
+
+
+/** \deprecated Alte Methode, sollte nicht mehr verwendet werden!
+  * stattdessen parseExecutedJobs() verwenden!
+  */
 bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx)
 {
 	AB_JOB *j;

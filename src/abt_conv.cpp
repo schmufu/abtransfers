@@ -226,6 +226,7 @@ GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 //static
 const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList)
 {
+	Q_ASSERT(gwenList);
 	QStringList ret;
 	ret.clear();
 	for (unsigned int i=0; i<GWEN_StringList_Count(gwenList); ++i) {
