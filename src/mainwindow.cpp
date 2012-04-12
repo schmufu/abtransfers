@@ -990,6 +990,7 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	//Konto anzeigen
 	BankAccountsWidget *BAW = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	aqb_AccountInfo *acc = BAW->getSelectedAccount();
+	if (!acc) return; //kein Account gewählt -> abbruch
 
 	QDialog *dialog = new QDialog(this);
 	dialog->setWindowTitle(tr("Unterstützte Aufträge"));

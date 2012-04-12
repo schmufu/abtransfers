@@ -129,8 +129,8 @@ protected: //from friend classes useable! (speziell: abt_parser)
 
 
 public slots:
-	void loadKnownStandingOrders();
-	void loadKnownDatedTransfers();
+//	void loadKnownStandingOrders();
+//	void loadKnownDatedTransfers();
 
 signals:
 	//! \brief wird gesendet wenn sich die StandingOrders geändert haben.

@@ -256,195 +256,6 @@ const QString *abt_settings::getDataDir() const
 
 
 
-
-
-
-QList<abt_standingOrderInfo*> *abt_settings::getStandingOrdersForAccount(const aqb_AccountInfo *a)
-{
-	return this->getStandingOrdersForAccount(a->Number(), a->BankCode());
-}
-
-QList<abt_standingOrderInfo*> *abt_settings::getStandingOrdersForAccount(const QString &KtoNr,
-								 const QString &BLZ)
-{
-	const QString SOMainKey = "StandingOrders/" + BLZ + "/" + KtoNr;
-	this->Settings->beginGroup(SOMainKey);
-
-	QStringList SO_IDs = this->Settings->childGroups();
-	this->Settings->endGroup();
-
-	//Jetzt stehen in SO_IDs alle IDs von StandingOrders die zu dem
-	//angegebenen paar von KtoNr und BLZ gehören.
-
-	qDebug() << "childGroups von " << KtoNr << " = " << SO_IDs;
-
-
-	abt_standingOrderInfo *StandingInfo;
-	QList<abt_standingOrderInfo*> *List = new QList<abt_standingOrderInfo*>;
-
-	foreach(const QString ID, SO_IDs) {
-		const QString SOKey = SOMainKey + "/" + ID;
-		this->Settings->beginGroup(SOKey);
-		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
-		StandingInfo = new abt_standingOrderInfo(trans);
-		List->append(StandingInfo);
-		this->Settings->endGroup();
-	}
-
-	return List;
-}
-
-void abt_settings::saveStandingOrder(const abt_transaction *t)
-{
-	const QString BLZ = t->getLocalBankCode();
-	const QString KtoNr = t->getLocalAccountNumber();
-	const QString ID = t->getFiId();
-	const QString SOGroup = "StandingOrders/" + BLZ + "/" + KtoNr + "/" + ID;
-
-	this->Settings->beginGroup(SOGroup);
-
-	abt_transaction::saveTransaction(t, this->Settings);
-
-	this->Settings->endGroup();
-}
-
-void abt_settings::saveStandingOrder(const AB_TRANSACTION *t)
-{
-	const abt_transaction *trans = new abt_transaction(t);
-	this->saveStandingOrder(trans);
-	delete trans;
-}
-
-void abt_settings::deleteStandingOrder(const abt_transaction *t)
-{
-	const QString BLZ = t->getLocalBankCode();
-	const QString KtoNr = t->getLocalAccountNumber();
-	const QString ID = t->getFiId();
-	const QString SOGroup = "StandingOrders/" + BLZ + "/" + KtoNr + "/" + ID;
-
-	this->Settings->beginGroup(SOGroup);
-	this->Settings->remove("");	//Aktuelle Gruppe löschen
-	this->Settings->endGroup();
-}
-
-void abt_settings::deleteStandingOrder(const AB_TRANSACTION *t)
-{
-	const abt_transaction *trans = new abt_transaction(t);
-	this->deleteStandingOrder(trans);
-	delete trans;
-}
-
-//static
-void abt_settings::freeStandingOrdersList(QList<abt_standingOrderInfo*> *list)
-{
-	if (list == NULL) return; //Liste ist schon leer
-
-	while (list->size() != 0) {
-		delete list->takeFirst();
-	}
-	delete list;
-	list = NULL;
-}
-
-
-
-
-
-
-
-
-QList<abt_datedTransferInfo*> *abt_settings::getDatedTransfersForAccount(const aqb_AccountInfo *a)
-{
-	return this->getDatedTransfersForAccount(a->Number(), a->BankCode());
-}
-
-QList<abt_datedTransferInfo*> *abt_settings::getDatedTransfersForAccount(const QString &KtoNr,
-									 const QString &BLZ)
-{
-	const QString DTMainKey = "DatedTransfers/" + BLZ + "/" + KtoNr;
-	this->Settings->beginGroup(DTMainKey);
-
-	QStringList DT_IDs = this->Settings->childGroups();
-	this->Settings->endGroup();
-
-	//Jetzt stehen in DTIDs alle IDs von DatedTransfers die zu dem
-	//angegebenen paar von KtoNr und BLZ gehören.
-
-	qDebug() << "childGroups von " << KtoNr << " = " << DT_IDs;
-
-
-	abt_datedTransferInfo *DatedInfo;
-	QList<abt_datedTransferInfo*> *List = new QList<abt_datedTransferInfo*>;
-
-	foreach(const QString ID, DT_IDs) {
-		const QString DTKey = DTMainKey + "/" + ID;
-		this->Settings->beginGroup(DTKey);
-		abt_transaction *trans = abt_transaction::loadTransaction(this->Settings);
-		DatedInfo = new abt_datedTransferInfo(trans);
-		List->append(DatedInfo);
-		this->Settings->endGroup();
-	}
-
-	return List;
-}
-
-void abt_settings::saveDatedTransfer(const abt_transaction *t)
-{
-	const QString BLZ = t->getLocalBankCode();
-	const QString KtoNr = t->getLocalAccountNumber();
-	const QString ID = t->getFiId();
-	const QString DTGroup = "DatedTransfers/" + BLZ + "/" + KtoNr + "/" + ID;
-
-	this->Settings->beginGroup(DTGroup);
-
-	abt_transaction::saveTransaction(t, this->Settings);
-
-	this->Settings->endGroup();
-}
-
-void abt_settings::saveDatedTransfer(const AB_TRANSACTION *t)
-{
-	const abt_transaction *trans = new abt_transaction(t);
-	this->saveDatedTransfer(trans);
-	delete trans;
-}
-
-void abt_settings::deleteDatedTransfer(const abt_transaction *t)
-{
-	const QString BLZ = t->getLocalBankCode();
-	const QString KtoNr = t->getLocalAccountNumber();
-	const QString ID = t->getFiId();
-	const QString DTGroup = "DatedTransfers/" + BLZ + "/" + KtoNr + "/" + ID;
-
-	this->Settings->beginGroup(DTGroup);
-	this->Settings->remove("");	//Aktuelle Gruppe löschen
-	this->Settings->endGroup();
-}
-
-void abt_settings::deleteDatedTransfer(const AB_TRANSACTION *t)
-{
-	const abt_transaction *trans = new abt_transaction(t);
-	this->deleteDatedTransfer(trans);
-	delete trans;
-}
-
-//static
-void abt_settings::freeDatedTransfersList(QList<abt_datedTransferInfo*> *list)
-{
-	if (list == NULL) return; //Liste ist schon leer
-
-	while (list->size() != 0) {
-		delete list->takeFirst();
-	}
-	delete list;
-	list = NULL;
-}
-
-
-
-
-
-
 void abt_settings::saveWindowStateGeometry(QByteArray state,
 					   QByteArray geometry)
 {
@@ -516,6 +327,8 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 {
 	switch (type) {
 	//supported and implemented types
+	case AB_Job_TypeGetBalance :
+
 	case AB_Job_TypeTransfer :
 	case AB_Job_TypeInternalTransfer :
 
@@ -542,7 +355,6 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 
 		//not supported (and not planed to be implemented)
 	case AB_Job_TypeGetTransactions :
-	case AB_Job_TypeGetBalance :
 	case AB_Job_TypeUnknown :
 		return 0;
 		break;

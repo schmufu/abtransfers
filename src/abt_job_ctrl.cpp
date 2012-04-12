@@ -1303,8 +1303,8 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
 			//löscht die Transaction in der settings.ini
-			settings->deleteDatedTransfer(t);
-			datedChanged = true;
+//			settings->deleteDatedTransfer(t);
+//			datedChanged = true;
 			break;
 		case AB_Transaction_StatusManuallyReconciled:
 		case AB_Transaction_StatusAutoReconciled:
@@ -1320,16 +1320,16 @@ int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUN
 			//-->die alte wird durch parseJobTypeModifyDatedTransfer() gelöscht
 			//settings->deleteDatedTransfer(t);
 			//neue Transaction speichern
-			settings->saveDatedTransfer(t);
-			datedChanged = true;
+//			settings->saveDatedTransfer(t);
+//			datedChanged = true;
 			break;
 		default:
 			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
 			this->addlog(QString(
 				"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
-			settings->saveDatedTransfer(t);
-			datedChanged = true;
+//			settings->saveDatedTransfer(t);
+//			datedChanged = true;
 			break;
 		}
 
@@ -1424,7 +1424,7 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 				"Lösche bei der Bank gelöschten Dauerauftrag (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
 			//löscht die Transaction in der settings.ini
-			settings->deleteStandingOrder(t);
+//			settings->deleteStandingOrder(t);
 			break;
 		case AB_Transaction_StatusManuallyReconciled:
 		case AB_Transaction_StatusAutoReconciled:
@@ -1440,14 +1440,14 @@ int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUN
 			//-->die alte wird durch parseJobTypeModifyStandingOrder() gelöscht
 			//settings->deleteDatedTransfer(t);
 			//neue Transaction speichern
-			settings->saveStandingOrder(t);
+//			settings->saveStandingOrder(t);
 			break;
 		default:
 			//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
 			this->addlog(QString(
 				"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
 				).arg(AB_Transaction_GetFiId(t)));
-			settings->saveStandingOrder(t);
+//			settings->saveStandingOrder(t);
 			break;
 		}
 
@@ -1800,7 +1800,7 @@ int abt_job_ctrl::parseJobTypeDeleteDatedTransfer(const AB_JOB *j) {
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
-		settings->deleteDatedTransfer(t);
+//		settings->deleteDatedTransfer(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
@@ -1864,7 +1864,7 @@ int abt_job_ctrl::parseJobTypeModifyDatedTransfer(const AB_JOB *j) {
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
 		//Wir löschen einfach den übertragenen Transfer, der neue steckt
 		//im ctx und wird später durch parseCtx gespeichert.
-		settings->deleteDatedTransfer(t);
+//		settings->deleteDatedTransfer(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
@@ -2042,7 +2042,7 @@ int abt_job_ctrl::parseJobTypeDeleteStandingOrder(const AB_JOB *j) {
 		//has been sucessfully executed. These jobs are stored in the
 		//"finished" directory.
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
-		settings->deleteStandingOrder(t);
+//		settings->deleteStandingOrder(t);
 		break;
 	case AB_Job_StatusError:
 		//There was an error in jobs' execution. These jobs are stored
@@ -2103,7 +2103,7 @@ int abt_job_ctrl::parseJobTypeModifyStandingOrder(const AB_JOB *j) {
 		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
 		//Wir löschen einfach den übertragenen Transfer, der neue steckt
 		//im ctx und wird später durch parseCtx gespeichert.
-		settings->deleteDatedTransfer(t);
+//		settings->deleteDatedTransfer(t);
 
 		break;
 	case AB_Job_StatusError:

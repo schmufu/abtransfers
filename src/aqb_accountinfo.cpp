@@ -106,10 +106,21 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	if (this->account_status)
 		AB_AccountStatus_free(this->account_status);
 
-	//existierende Daueraufträge für diesen Account speichern
-	//abt_settings::saveDAsForAccount(this->m_KnownDAs, this->m_Number, this->m_BankCode);
-	//und die Objecte wieder freigeben
-	abt_settings::freeStandingOrdersList(this->m_standingOrders);
+	//Alle gespeicherten StandingOrders wieder freigeben
+	if (this->m_standingOrders != NULL) { //Liste muss geleert werden
+		while (this->m_standingOrders->size() != 0) {
+			delete this->m_standingOrders->takeFirst();
+		}
+		delete this->m_standingOrders;
+	}
+
+	//Alle gespeicherten DatedTransfers wieder freigeben
+	if (this->m_datedTransfers != NULL) { //Liste muss geleert werden
+		while (this->m_datedTransfers->size() != 0) {
+			delete this->m_datedTransfers->takeFirst();
+		}
+		delete this->m_datedTransfers;
+	}
 
 	qDebug() << Q_FUNC_INFO << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
@@ -123,29 +134,6 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	qDebug() << Q_FUNC_INFO << this << "deleted";
 }
 
-//public slot
-/*! \brief lädt die Bekannten Daueraufträge für den übergebenen account */
-void aqb_AccountInfo::loadKnownStandingOrders()
-{
-	//Alle SOs löschen
-	abt_settings::freeStandingOrdersList(this->m_standingOrders);
-	//und neu laden
-	this->m_standingOrders = settings->getStandingOrdersForAccount(this->m_Number, this->m_BankCode);
-
-	emit knownStandingOrdersChanged(this);
-}
-
-//public slot
-/*! \brief lädt die Bekannten Terminüberweisungen für den übergebenen account */
-void aqb_AccountInfo::loadKnownDatedTransfers()
-{
-	//Alle DTs löschen
-	abt_settings::freeDatedTransfersList(this->m_datedTransfers);
-	//und neu laden
-	this->m_datedTransfers = settings->getDatedTransfersForAccount(this->m_Number, this->m_BankCode);
-
-	emit knownDatedTransfersChanged(this);
-}
 
 //public
 const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const

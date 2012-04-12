@@ -67,33 +67,6 @@ public:
 
 	const QHash<int, QString> *getTextKeyDescriptions() const;
 
-	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
-	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_standingOrderInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
-	//! \overload
-	QList<abt_standingOrderInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
-
-	void saveStandingOrder(const abt_transaction *t);
-	void saveStandingOrder(const AB_TRANSACTION *t);
-	void deleteStandingOrder(const abt_transaction *t);
-	void deleteStandingOrder(const AB_TRANSACTION *t);
-	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeStandingOrdersList(QList<abt_standingOrderInfo*> *list);
-
-
-
-	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
-	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_datedTransferInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
-	//! \overload
-	QList<abt_datedTransferInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
-
-	void saveDatedTransfer(const abt_transaction *t);
-	void saveDatedTransfer(const AB_TRANSACTION *t);
-	void deleteDatedTransfer(const abt_transaction *t);
-	void deleteDatedTransfer(const AB_TRANSACTION *t);
-	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeDatedTransfersList(QList<abt_datedTransferInfo*> *list);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
 
