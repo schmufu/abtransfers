@@ -71,6 +71,17 @@ AB_IMEXPORTER_CONTEXT *abt_parser::load_local_ctx(const QString &filename,
 					 NULL,
 					 filename.toUtf8());
 
+	//eventuelle "Lücken" versuchen zu füllen (z.B. Account ID)
+	int ret;
+	ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+						     ctx);
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
+			   << " -- something went wrong on filling the gaps";
+	}
+
+
+
 	return ctx;
 }
 
@@ -194,6 +205,8 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 	ai=AB_ImExporterContext_GetFirstAccountInfo(iec);
 	while(ai) {
+		logmsg = "PARSER - Acc-Info: ";
+
 		//Jetzt folgen Daten für verschiedene Accounts
 		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
 		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));

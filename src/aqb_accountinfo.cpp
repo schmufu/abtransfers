@@ -230,7 +230,7 @@ void aqb_AccountInfo::addDatedTransfer(abt_datedTransferInfo *dt)
 		this->m_datedTransfers = new QList<abt_datedTransferInfo*>();
 	}
 	this->m_datedTransfers->append(dt);
-	emit this->knownStandingOrdersChanged(this);
+	emit this->knownDatedTransfersChanged(this);
 }
 
 //public
