@@ -156,6 +156,10 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		qDebug() << logmsg << logmsg2;
 		logmsg2 = QString("Text:\t%1").arg(AB_Message_GetText(msg));
 		qDebug() << logmsg << logmsg2;
+		logmsg2 = QString("AccountID: %1  -  UserID: %2").arg(
+				  AB_Message_GetAccountId(msg),
+				  AB_Message_GetUserId(msg));
+		qDebug() << logmsg << logmsg2;
 
 		msg = AB_ImExporterContext_GetNextMessage(iec);
 		cnt++;
@@ -204,10 +208,20 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		//wenn kein lokaler account gefunden wurde können diesem auch
 		//keine Daten zugewiesen werden
 		if (!acc) {
+			qWarning() << logmsg << "Keinen Account gefunden! Import für: "
+					     << "KtoNr:" << KtoNr
+					     << "BLZ:" << BLZ
+					     << "Name:" << Name
+					     << "Besitzer:" << Owner;
 			//next account
 			ai=AB_ImExporterContext_GetNextAccountInfo(iec);
 			continue;
 		}
+
+		logmsg2 = QString("%1 (%3) [%2] Owner: %4 ID: %5").arg(
+				   KtoNr, BLZ, Name, Owner, ID);
+		qDebug() << logmsg << logmsg2;
+
 
 		/**********************************************************************/
 		//this->parseImExporterAccountInfo_Status(ai);
@@ -218,10 +232,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		as = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
 		while (as) {
-			logmsg2 = QString("%1 (%3) [%2] Owner: %4 ID: %5").arg(
-					   KtoNr, BLZ, Name, Owner, ID);
-			qDebug() << logmsg << logmsg2;
-
 			QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(as));
 			logmsg2 = QString("Time:\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
 

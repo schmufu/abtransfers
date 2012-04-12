@@ -101,6 +101,7 @@ abt_job_ctrl::~abt_job_ctrl()
 void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 					  QHash<AB_JOB_TYPE, bool> *hash)
 {
+	Q_ASSERT(hash != NULL);
 	AB_JOB *j = NULL;
 
 	j = AB_JobCreateDatedTransfer_new(a);
@@ -382,7 +383,7 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 void abt_job_ctrl::addlog(const QString &str)
 {
 	static QString time;
-	time = QTime::currentTime().toString(Qt::DefaultLocaleLongDate);
+	time = QTime::currentTime().toString("HH:mm:ss.zzz");
 	time.append(": ");
 	time.append(str);
 
@@ -717,8 +718,9 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool without
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
 	//mit dem parsen fertig sind (damit dies die DTs neu laden kann)
-	connect(this, SIGNAL(datedTransfersParsed()),
-		acc, SLOT(loadKnownDatedTransfers()));
+	//--> wird jetzt direkt beim parsen erledigt!
+//	connect(this, SIGNAL(datedTransfersParsed()),
+//		acc, SLOT(loadKnownDatedTransfers()));
 }
 
 
@@ -861,8 +863,9 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
 	//mit dem parsen fertig sind (damit dies die SOs neu laden kann)
-	connect(this, SIGNAL(standingOrdersParsed()),
-		acc, SLOT(loadKnownStandingOrders()));
+	//--> wird jetzt direkt beim parsen erledigt!
+//	connect(this, SIGNAL(standingOrdersParsed()),
+//		acc, SLOT(loadKnownStandingOrders()));
 
 }
 
@@ -937,22 +940,30 @@ void abt_job_ctrl::execQueuedTransactions()
 		qWarning() << this << "Error on execQueuedTransactions ("
 				<< rv << ")";
 		//cleanup
-		this->addlog(QString("** ERROR ** Fehler bei AB_Banking_ExecuteJobs(). return value = %1 ** ABBRUCH **").arg(rv));
+		this->addlog("***********************************************");
+		this->addlog("** E R R O R                                 **");
+		this->addlog("** Fehler bei AB_Banking_ExecuteJobs().      **");
+		this->addlog(QString(
+			     "** return value = %1                         **").arg(rv));
+		this->addlog("**                                           **");
+		this->addlog("** Es wird abgebrochen und keine weitere     **");
+		this->addlog("** Bearbeitung/Auswertung durchgeführt!      **");
+		this->addlog("***********************************************");
 		AB_Job_List2_ClearAll(jl);
 		AB_ImExporterContext_Clear(ctx);
 		AB_ImExporterContext_free(ctx);
 		return;
 	}
 
-	if (!this->checkJobStatus(jl)) {
-		this->addlog("***********************************************");
-		this->addlog("** A C H T U N G                             **");
-		this->addlog("** Fehler bei der Ausführung der Jobs!       **");
-		this->addlog("** Momentan werden noch nicht alle Fehler    **");
-		this->addlog("** erkannt und abgefangen, Überprüfung der   **");
-		this->addlog("** Aufträge von Hand erforderlich!           **");
-		this->addlog("***********************************************");
-	}
+//	if (!this->checkJobStatus(jl)) {
+//		this->addlog("***********************************************");
+//		this->addlog("** A C H T U N G                             **");
+//		this->addlog("** Fehler bei der Ausführung der Jobs!       **");
+//		this->addlog("** Momentan werden noch nicht alle Fehler    **");
+//		this->addlog("** erkannt und abgefangen, Überprüfung der   **");
+//		this->addlog("** Aufträge von Hand erforderlich!           **");
+//		this->addlog("***********************************************");
+//	}
 
 	this->parseExecutedJobListAndContext(jl, ctx);
 	this->parseImExporterContext(ctx);
