@@ -933,7 +933,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	this->addlog(QString::fromUtf8("%1 Aufträge in die Jobliste übernommen").arg(this->jobqueue->count()));
 
-	this->checkJobStatus(jl);
+//	this->checkJobStatus(jl);
 
 	ctx = AB_ImExporterContext_new();
 
@@ -1006,11 +1006,9 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 	AB_JOB *j;
 	AB_JOB_STATUS jobState;
 	AB_JOB_TYPE jobType;
-	QString strState;
+//	QString strState;
 	QString strType;
 	QStringList strList;
-	int run=0;
-	bool res=true;
 	qDebug() << Q_FUNC_INFO << "started";
 
 	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
@@ -1032,8 +1030,9 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			//Job wurde erfolgreich ausgeführt oder von der Bank
 			//zur Ausführung entgegen genommen
 
-			//! \todo Müssen wir hier eine Kopie des AB_JOB erstellen?
-
+			// \todo Müssen wir hier eine Kopie des AB_JOB erstellen?
+			// -->	nicht mehr, da abt_jobInfo den Job nurnoch
+			//	verwaltet und benötigte Daten des Jobs kopiert.
 
 			abt_jobInfo *jobInfo = new abt_jobInfo(j);
 			this->m_history->add(jobInfo);
@@ -1077,620 +1076,620 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 
 
-/** \deprecated Alte Methode, sollte nicht mehr verwendet werden!
-  * stattdessen parseExecutedJobs() verwenden!
-  */
-bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx)
-{
-	AB_JOB *j;
-	AB_JOB_STATUS jobState;
-	AB_JOB_TYPE jobType;
-	QString strState;
-	QString strType;
-	QStringList strList;
-	int run=0;
-	bool res=true;
-	qDebug() << Q_FUNC_INFO << "started";
-
-	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
-	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
-	AB_JOB_LIST2_ITERATOR *jli;
-	jli = AB_Job_List2Iterator_new(jobList);
-	jli = AB_Job_List2_First(jobList);
-	j = AB_Job_List2Iterator_Data(jli);
-	while (j) {
-		qDebug() << Q_FUNC_INFO << "- while - RUN: " << ++run;
-		jobType = AB_Job_GetType(j);
-		strType = AB_Job_Type2Char(jobType);
-		this->addlog(QString("JobType: ").append(strType));
-
-		jobState = AB_Job_GetStatus(j);
-		strState = AB_Job_Status2Char(jobState);
-		this->addlog(QString("JobState: ").append(strState));
-
-		//Die Logs des Backends parsen
-		strList = this->getParsedJobLogs(j);
-
-		//Alle Strings der StringListe zum Log hinzufügen
-		foreach(QString line, strList) { // (int i=0; i<strList.count(); ++i) {
-			this->addlog(QString("JobLog: ").append(line));
-		}
-
-
-		switch (jobType) {
-		case AB_Job_TypeCreateDatedTransfer:
-			//wenn Status Successfull Transaction des Jobs als Dated Speichern
-			this->parseJobTypeCreateDatedTransfer(j);
-			break;
-		case AB_Job_TypeDeleteDatedTransfer:
-			//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
-			this->parseJobTypeDeleteDatedTransfer(j);
-			break;
-		case AB_Job_TypeModifyDatedTransfer:
-			//wenn Successfull Transaction des Jobs löschen
-			//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
-			//die neue Transaction muss gespeichert werden
-			this->parseJobTypeModifyDatedTransfer(j);
-			break;
-		case AB_Job_TypeGetDatedTransfers:
-			//wenn Successfull Ctx parsen (dort sind die DTs drin)
-			this->parseJobTypeGetDatedTransfers(j);
-			break;
-
-		//für StandingOrders siehe Kommentare bei DatedTransfers
-		case AB_Job_TypeCreateStandingOrder:
-			this->parseJobTypeCreateStandingOrder(j);
-			break;
-		case AB_Job_TypeDeleteStandingOrder:
-			this->parseJobTypeDeleteStandingOrder(j);
-			break;
-		case AB_Job_TypeModifyStandingOrder:
-			this->parseJobTypeModifyStandingOrder(j);
-			break;
-		case AB_Job_TypeGetStandingOrders:
-			this->parseJobTypeGetStandingOrders(j);
-			break;
-
-		//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
-		//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
-		case AB_Job_TypeTransfer:
-			this->parseJobTypeTransfer(j);
-			break;
-		case AB_Job_TypeEuTransfer:
-			this->parseJobTypeEuTransfer(j);
-			break;
-		case AB_Job_TypeSepaTransfer:
-			this->parseJobTypeSepaTransfer(j);
-			break;
-		case AB_Job_TypeInternalTransfer:
-			this->parseJobTypeInternalTransfer(j);
-			break;
-		case AB_Job_TypeDebitNote:
-			this->parseJobTypeDebitNote(j);
-			break;
-		case AB_Job_TypeSepaDebitNote:
-			this->parseJobTypeSepaDebitNote(j);
-			break;
-		case AB_Job_TypeUnknown:
-			this->parseJobTypeUnknown(j);
-			break;
-
-		case AB_Job_TypeGetBalance:
-			this->parseJobTypeGetBalance(j);
-			break;
-		case AB_Job_TypeGetTransactions:
-			this->parseJobTypeGetTransactions(j);
-			break;
-
-		case AB_Job_TypeLoadCellPhone:
-			this->parseJobTypeLoadCellPhone(j);
-			break;
-
-		default:
-			break;
-		} /* switch (type) */
-
-
-		j = AB_Job_List2Iterator_Next(jli); //next Job in list
-	} /* while (j) */
-
-	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
-
-	qDebug() << Q_FUNC_INFO << "finished";
-
-	return res;
-}
-
-bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
-{
-	AB_IMEXPORTER_ACCOUNTINFO *ai;
-
-	QString log = AB_ImExporterContext_GetLog(ctx);
-	this->addlog(QString("CTX-LOG: ").append(log));
-
-	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), ctx, "ctxfile", "default", "/tmp/exporterTest_ctxfile.ctx");
-	qDebug() << Q_FUNC_INFO << "Context Export ret:" << ret;
-
-	this->parseImExporterContext_Messages(ctx);
-	this->parseImExporterContext_Securitys(ctx);
-
-	ai=AB_ImExporterContext_GetFirstAccountInfo(ctx);
-	while(ai) {
-		//Beim Anlegen einer Terminüberweisung wird hierher nicht verzweigt!
-		this->parseImExporterAccountInfo_Status(ai);
-		this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
-		this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
-		this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
-		this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
-		this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
-
-		ai=AB_ImExporterContext_GetNextAccountInfo(ctx);
-	} /* while ai */
-
-	return true;
-}
-
-
-int abt_job_ctrl::parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx)
-{
-	AB_MESSAGE *msg;
-	QString logmsg = "Recvd-Message: ";
-	QString logmsg2;
-	int msgcnt = 0;
-
-	msg = AB_ImExporterContext_GetFirstMessage(ctx);
-	while (msg) {
-		logmsg2 = QString("Empfangsdatum:\t");
-		logmsg2.append(abt_conv::GwenTimeToQDate(
-				AB_Message_GetDateReceived(msg)).toString(
-						Qt::DefaultLocaleLongDate));
-		this->addlog(logmsg + logmsg2);
-		logmsg2 = QString("Betreff:\t");
-		logmsg2.append(AB_Message_GetSubject(msg));
-		this->addlog(logmsg + logmsg2);
-		logmsg2 = QString("Text:\t");
-		logmsg2.append(AB_Message_GetText(msg));
-		this->addlog(logmsg + logmsg2);
-		msg = AB_ImExporterContext_GetNextMessage(ctx);
-		msgcnt++;
-	}
-
-	logmsg2 = QString("Count: %1").arg(msgcnt);
-	this->addlog(logmsg + logmsg2);
-
-	return msgcnt;
-}
-
-int abt_job_ctrl::parseImExporterContext_Securitys(AB_IMEXPORTER_CONTEXT *ctx)
-{
-	AB_SECURITY *s;
-	QString logmsg = "Recvd-Security: ";
-	QString logmsg2;
-	const AB_VALUE *v;
-	int seccnt = 0;
-
-	s = AB_ImExporterContext_GetFirstSecurity(ctx);
-	while (s) {
-		logmsg2 = QString("Name:\t");
-		logmsg2.append(AB_Security_GetName(s));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("UnitPriceValue:\t");
-		v = AB_Security_GetUnitPriceValue(s);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		s = AB_ImExporterContext_GetNextSecurity(ctx);
-		seccnt++;
-	}
-
-	logmsg2 = QString("Count: %1").arg(seccnt);
-	this->addlog(logmsg + logmsg2);
-
-	return seccnt;
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_ACCOUNT_STATUS *s;
-	QString logmsg = "Recvd-AccountStatus: ";
-	QString logmsg2;
-	const AB_VALUE *v;
-	const AB_BALANCE *b;
-	int cnt = 0;
-
-	s = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
-	while (s) {
-
-		logmsg2 = QString("Balance for: ");
-		logmsg2.append(AB_ImExporterAccountInfo_GetAccountNumber(ai));
-		logmsg2.append("(");
-		logmsg2.append(AB_ImExporterAccountInfo_GetAccountName(ai));
-		logmsg2.append(")");
-		this->addlog(logmsg + logmsg2);
-
-		v = AB_AccountStatus_GetBankLine(s);
-		if (v != NULL) {
-			logmsg2 = QString("BankLine:\t");
-			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
-			this->addlog(logmsg + logmsg2);
-		}
-
-		b = AB_AccountStatus_GetNotedBalance(s);
-		if (b != NULL) {
-			v = AB_Balance_GetValue(b);
-			if (v != NULL) {
-				logmsg2 = QString("NotedBalance:\t");
-				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
-				this->addlog(logmsg + logmsg2);
-			}
-		}
-
-		b = AB_AccountStatus_GetBookedBalance(s);
-		if (b != NULL) {
-			v = AB_Balance_GetValue(b);
-			if (v != NULL) {
-				logmsg2 = QString("BookedBalance:\t");
-				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
-				this->addlog(logmsg + logmsg2);
-			}
-		}
-
-		v = AB_AccountStatus_GetDisposable(s);
-		if (v != NULL) {
-			logmsg2 = QString("Disposable:\t");
-			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
-			this->addlog(logmsg + logmsg2);
-		}
-
-		v = AB_AccountStatus_GetDisposed(s);
-		if (v != NULL) {
-			logmsg2 = QString("Disposed:\t");
-			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
-			this->addlog(logmsg + logmsg2);
-		}
-
-		logmsg2 = QString("Time:\t");
-		logmsg2.append(abt_conv::GwenTimeToQDate(
-						AB_AccountStatus_GetTime(s)).toString(
-								Qt::DefaultLocaleLongDate));
-		this->addlog(logmsg + logmsg2);
-
-		s = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
-		cnt++;
-	}
-
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	return cnt;
-
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-DatedTransfers: ";
-	QString logmsg2;
-	QStringList strList, DTIDsNew, DTIDsModified, DTIDsDeleted;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-	bool datedChanged = false;
-
-	cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
-	while (t) {
-
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		switch (AB_Transaction_GetStatus(t)) {
-		case AB_Transaction_StatusRevoked:
-			//Bei der Bank hinterlegte Terminüberweisung wurde gelöscht
-			this->addlog(QString(
-				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-			//löscht die Transaction in der settings.ini
-//			settings->deleteDatedTransfer(t);
-//			datedChanged = true;
-			break;
-		case AB_Transaction_StatusManuallyReconciled:
-		case AB_Transaction_StatusAutoReconciled:
-			//Bei der Bank hinterlegte Terminüberweisung wurde geändert
-			this->addlog(QString(
-				"Speichere bei der Bank geänderte Terminüberweisung (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-			//einfach löschen und dann neu speichern
-			//die neue Transaction hat eine neue ID bekommen, wir
-			//müssen die alte löschen und dann die neue Speichern!
-
-			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
-			//-->die alte wird durch parseJobTypeModifyDatedTransfer() gelöscht
-			//settings->deleteDatedTransfer(t);
-			//neue Transaction speichern
-//			settings->saveDatedTransfer(t);
-//			datedChanged = true;
-			break;
-		default:
-			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
-			this->addlog(QString(
-				"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-//			settings->saveDatedTransfer(t);
-//			datedChanged = true;
-			break;
-		}
-
-		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
-	}
-
-	if (datedChanged) {
-		emit this->datedTransfersParsed();
-	}
-
-	return cnt;
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-NotedTransactions: ";
-	QString logmsg2;
-	QStringList strList;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-
-	cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
-	while (t) {
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
-	}
-	return cnt;
-
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-StandingOrders: ";
-	QString logmsg2;
-	QStringList strList, DAIDs;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-
-	cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-	DAIDs.clear();
-
-	t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
-	while (t) {
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-
-		switch (AB_Transaction_GetStatus(t)) {
-		case AB_Transaction_StatusRevoked:
-			//Bei der Bank hinterlegter Dauerauftrag wurde gelöscht
-			this->addlog(QString(
-				"Lösche bei der Bank gelöschten Dauerauftrag (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-			//löscht die Transaction in der settings.ini
-//			settings->deleteStandingOrder(t);
-			break;
-		case AB_Transaction_StatusManuallyReconciled:
-		case AB_Transaction_StatusAutoReconciled:
-			//Bei der Bank hinterlegter Dauerauftrag wurde geändert
-			this->addlog(QString(
-				"Speichere bei der Bank geänderten Dauerauftrag (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-			//einfach löschen und dann neu speichern
-			//die neue Transaction hat eine neue ID bekommen, wir
-			//müssen die alte löschen und dann die neue Speichern!
-
-			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
-			//-->die alte wird durch parseJobTypeModifyStandingOrder() gelöscht
-			//settings->deleteDatedTransfer(t);
-			//neue Transaction speichern
-//			settings->saveStandingOrder(t);
-			break;
-		default:
-			//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
-			this->addlog(QString(
-				"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
-				).arg(AB_Transaction_GetFiId(t)));
-//			settings->saveStandingOrder(t);
-			break;
-		}
-
-
-		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
-	}
-
-	emit this->standingOrdersParsed();
-	return cnt;
-
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-Transfers: ";
-	QString logmsg2;
-	QStringList strList;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-
-	cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
-	while (t) {
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
-	}
-	return cnt;
-
-}
-
-int abt_job_ctrl::parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
-{
-	AB_TRANSACTION *t;
-	QString logmsg = "Recvd-Transactions: ";
-	QString logmsg2;
-	QStringList strList;
-	const AB_VALUE *v;
-	const GWEN_STRINGLIST *l;
-	int cnt = 0;
-
-	cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
-	logmsg2 = QString("Count: %1").arg(cnt);
-	this->addlog(logmsg + logmsg2);
-
-	t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
-	while (t) {
-		logmsg2 = QString("Purpose:\t");
-		l = AB_Transaction_GetPurpose(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("Value:\t");
-		v = AB_Transaction_GetValue(t);
-		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
-		this->addlog(logmsg + logmsg2);
-
-		logmsg2 = QString("RemoteName:\t");
-		l = AB_Transaction_GetRemoteName(t);
-		strList = abt_conv::GwenStringListToQStringList(l);
-		logmsg2.append(strList.join(" - "));
-		this->addlog(logmsg + logmsg2);
-
-		t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
-	}
-	return cnt;
-
-}
-
-bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
-{
-	AB_JOB *j;
-	AB_JOB_STATUS state;
-	AB_JOB_TYPE type;
-
-	QString strState;
-	QString strType;
-	QStringList strList;
-	bool res=true;
-	static int run = 0;
-	run++;
-	qDebug() << Q_FUNC_INFO << " - RUN: " << run;
-
-	AB_JOB_LIST2_ITERATOR *jli;
-	jli = AB_Job_List2Iterator_new(jl);
-	jli = AB_Job_List2_First(jl);
-	j = AB_Job_List2Iterator_Data(jli);
-	while (j) {
-		qDebug() << Q_FUNC_INFO << " - while - RUN: " << run;
-		type = AB_Job_GetType(j);
-		strType = AB_Job_Type2Char(type);
-		this->addlog(QString("JobType: ").append(strType));
-		state = AB_Job_GetStatus(j);
-		if (state == AB_Job_StatusPending) {
-			res = false;
-		}
-		strState = AB_Job_Status2Char(state);
-		this->addlog(QString("JobState: ").append(strState));
-
-
-		strList = this->getParsedJobLogs(j);
-
-		//Alle Strings der StringListe zum Log hinzufügen
-		for (int i=0; i<strList.count(); ++i) {
-			this->addlog(QString("JobLog: ").append(strList.at(i)));
-		}
-
-		j = AB_Job_List2Iterator_Next(jli);
-	}
-
-	AB_Job_List2Iterator_free(jli);
-
-	qDebug() << Q_FUNC_INFO << " - end - RUN: " << run;
-
-	return res;
-}
+///** \deprecated Alte Methode, sollte nicht mehr verwendet werden!
+//  * stattdessen parseExecutedJobs() verwenden!
+//  */
+//bool abt_job_ctrl::parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx)
+//{
+//	AB_JOB *j;
+//	AB_JOB_STATUS jobState;
+//	AB_JOB_TYPE jobType;
+//	QString strState;
+//	QString strType;
+//	QStringList strList;
+//	int run=0;
+//	bool res=true;
+//	qDebug() << Q_FUNC_INFO << "started";
+//
+//	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
+//	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
+//	AB_JOB_LIST2_ITERATOR *jli;
+//	jli = AB_Job_List2Iterator_new(jobList);
+//	jli = AB_Job_List2_First(jobList);
+//	j = AB_Job_List2Iterator_Data(jli);
+//	while (j) {
+//		qDebug() << Q_FUNC_INFO << "- while - RUN: " << ++run;
+//		jobType = AB_Job_GetType(j);
+//		strType = AB_Job_Type2Char(jobType);
+//		this->addlog(QString("JobType: ").append(strType));
+//
+//		jobState = AB_Job_GetStatus(j);
+//		strState = AB_Job_Status2Char(jobState);
+//		this->addlog(QString("JobState: ").append(strState));
+//
+//		//Die Logs des Backends parsen
+//		strList = this->getParsedJobLogs(j);
+//
+//		//Alle Strings der StringListe zum Log hinzufügen
+//		foreach(QString line, strList) { // (int i=0; i<strList.count(); ++i) {
+//			this->addlog(QString("JobLog: ").append(line));
+//		}
+//
+//
+//		switch (jobType) {
+//		case AB_Job_TypeCreateDatedTransfer:
+//			//wenn Status Successfull Transaction des Jobs als Dated Speichern
+//			this->parseJobTypeCreateDatedTransfer(j);
+//			break;
+//		case AB_Job_TypeDeleteDatedTransfer:
+//			//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+//			this->parseJobTypeDeleteDatedTransfer(j);
+//			break;
+//		case AB_Job_TypeModifyDatedTransfer:
+//			//wenn Successfull Transaction des Jobs löschen
+//			//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
+//			//die neue Transaction muss gespeichert werden
+//			this->parseJobTypeModifyDatedTransfer(j);
+//			break;
+//		case AB_Job_TypeGetDatedTransfers:
+//			//wenn Successfull Ctx parsen (dort sind die DTs drin)
+//			this->parseJobTypeGetDatedTransfers(j);
+//			break;
+//
+//		//für StandingOrders siehe Kommentare bei DatedTransfers
+//		case AB_Job_TypeCreateStandingOrder:
+//			this->parseJobTypeCreateStandingOrder(j);
+//			break;
+//		case AB_Job_TypeDeleteStandingOrder:
+//			this->parseJobTypeDeleteStandingOrder(j);
+//			break;
+//		case AB_Job_TypeModifyStandingOrder:
+//			this->parseJobTypeModifyStandingOrder(j);
+//			break;
+//		case AB_Job_TypeGetStandingOrders:
+//			this->parseJobTypeGetStandingOrders(j);
+//			break;
+//
+//		//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
+//		//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
+//		case AB_Job_TypeTransfer:
+//			this->parseJobTypeTransfer(j);
+//			break;
+//		case AB_Job_TypeEuTransfer:
+//			this->parseJobTypeEuTransfer(j);
+//			break;
+//		case AB_Job_TypeSepaTransfer:
+//			this->parseJobTypeSepaTransfer(j);
+//			break;
+//		case AB_Job_TypeInternalTransfer:
+//			this->parseJobTypeInternalTransfer(j);
+//			break;
+//		case AB_Job_TypeDebitNote:
+//			this->parseJobTypeDebitNote(j);
+//			break;
+//		case AB_Job_TypeSepaDebitNote:
+//			this->parseJobTypeSepaDebitNote(j);
+//			break;
+//		case AB_Job_TypeUnknown:
+//			this->parseJobTypeUnknown(j);
+//			break;
+//
+//		case AB_Job_TypeGetBalance:
+//			this->parseJobTypeGetBalance(j);
+//			break;
+//		case AB_Job_TypeGetTransactions:
+//			this->parseJobTypeGetTransactions(j);
+//			break;
+//
+//		case AB_Job_TypeLoadCellPhone:
+//			this->parseJobTypeLoadCellPhone(j);
+//			break;
+//
+//		default:
+//			break;
+//		} /* switch (type) */
+//
+//
+//		j = AB_Job_List2Iterator_Next(jli); //next Job in list
+//	} /* while (j) */
+//
+//	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
+//
+//	qDebug() << Q_FUNC_INFO << "finished";
+//
+//	return res;
+//}
+//
+//bool abt_job_ctrl::parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx)
+//{
+//	AB_IMEXPORTER_ACCOUNTINFO *ai;
+//
+//	QString log = AB_ImExporterContext_GetLog(ctx);
+//	this->addlog(QString("CTX-LOG: ").append(log));
+//
+//	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), ctx, "ctxfile", "default", "/tmp/exporterTest_ctxfile.ctx");
+//	qDebug() << Q_FUNC_INFO << "Context Export ret:" << ret;
+//
+//	this->parseImExporterContext_Messages(ctx);
+//	this->parseImExporterContext_Securitys(ctx);
+//
+//	ai=AB_ImExporterContext_GetFirstAccountInfo(ctx);
+//	while(ai) {
+//		//Beim Anlegen einer Terminüberweisung wird hierher nicht verzweigt!
+//		this->parseImExporterAccountInfo_Status(ai);
+//		this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
+//		this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
+//		this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
+//		this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
+//		this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
+//
+//		ai=AB_ImExporterContext_GetNextAccountInfo(ctx);
+//	} /* while ai */
+//
+//	return true;
+//}
+//
+//
+//int abt_job_ctrl::parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx)
+//{
+//	AB_MESSAGE *msg;
+//	QString logmsg = "Recvd-Message: ";
+//	QString logmsg2;
+//	int msgcnt = 0;
+//
+//	msg = AB_ImExporterContext_GetFirstMessage(ctx);
+//	while (msg) {
+//		logmsg2 = QString("Empfangsdatum:\t");
+//		logmsg2.append(abt_conv::GwenTimeToQDate(
+//				AB_Message_GetDateReceived(msg)).toString(
+//						Qt::DefaultLocaleLongDate));
+//		this->addlog(logmsg + logmsg2);
+//		logmsg2 = QString("Betreff:\t");
+//		logmsg2.append(AB_Message_GetSubject(msg));
+//		this->addlog(logmsg + logmsg2);
+//		logmsg2 = QString("Text:\t");
+//		logmsg2.append(AB_Message_GetText(msg));
+//		this->addlog(logmsg + logmsg2);
+//		msg = AB_ImExporterContext_GetNextMessage(ctx);
+//		msgcnt++;
+//	}
+//
+//	logmsg2 = QString("Count: %1").arg(msgcnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	return msgcnt;
+//}
+//
+//int abt_job_ctrl::parseImExporterContext_Securitys(AB_IMEXPORTER_CONTEXT *ctx)
+//{
+//	AB_SECURITY *s;
+//	QString logmsg = "Recvd-Security: ";
+//	QString logmsg2;
+//	const AB_VALUE *v;
+//	int seccnt = 0;
+//
+//	s = AB_ImExporterContext_GetFirstSecurity(ctx);
+//	while (s) {
+//		logmsg2 = QString("Name:\t");
+//		logmsg2.append(AB_Security_GetName(s));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("UnitPriceValue:\t");
+//		v = AB_Security_GetUnitPriceValue(s);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		s = AB_ImExporterContext_GetNextSecurity(ctx);
+//		seccnt++;
+//	}
+//
+//	logmsg2 = QString("Count: %1").arg(seccnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	return seccnt;
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_ACCOUNT_STATUS *s;
+//	QString logmsg = "Recvd-AccountStatus: ";
+//	QString logmsg2;
+//	const AB_VALUE *v;
+//	const AB_BALANCE *b;
+//	int cnt = 0;
+//
+//	s = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
+//	while (s) {
+//
+//		logmsg2 = QString("Balance for: ");
+//		logmsg2.append(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+//		logmsg2.append("(");
+//		logmsg2.append(AB_ImExporterAccountInfo_GetAccountName(ai));
+//		logmsg2.append(")");
+//		this->addlog(logmsg + logmsg2);
+//
+//		v = AB_AccountStatus_GetBankLine(s);
+//		if (v != NULL) {
+//			logmsg2 = QString("BankLine:\t");
+//			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+//			this->addlog(logmsg + logmsg2);
+//		}
+//
+//		b = AB_AccountStatus_GetNotedBalance(s);
+//		if (b != NULL) {
+//			v = AB_Balance_GetValue(b);
+//			if (v != NULL) {
+//				logmsg2 = QString("NotedBalance:\t");
+//				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+//				this->addlog(logmsg + logmsg2);
+//			}
+//		}
+//
+//		b = AB_AccountStatus_GetBookedBalance(s);
+//		if (b != NULL) {
+//			v = AB_Balance_GetValue(b);
+//			if (v != NULL) {
+//				logmsg2 = QString("BookedBalance:\t");
+//				logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+//				this->addlog(logmsg + logmsg2);
+//			}
+//		}
+//
+//		v = AB_AccountStatus_GetDisposable(s);
+//		if (v != NULL) {
+//			logmsg2 = QString("Disposable:\t");
+//			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+//			this->addlog(logmsg + logmsg2);
+//		}
+//
+//		v = AB_AccountStatus_GetDisposed(s);
+//		if (v != NULL) {
+//			logmsg2 = QString("Disposed:\t");
+//			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2));
+//			this->addlog(logmsg + logmsg2);
+//		}
+//
+//		logmsg2 = QString("Time:\t");
+//		logmsg2.append(abt_conv::GwenTimeToQDate(
+//						AB_AccountStatus_GetTime(s)).toString(
+//								Qt::DefaultLocaleLongDate));
+//		this->addlog(logmsg + logmsg2);
+//
+//		s = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
+//		cnt++;
+//	}
+//
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	return cnt;
+//
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_TRANSACTION *t;
+//	QString logmsg = "Recvd-DatedTransfers: ";
+//	QString logmsg2;
+//	QStringList strList, DTIDsNew, DTIDsModified, DTIDsDeleted;
+//	const AB_VALUE *v;
+//	const GWEN_STRINGLIST *l;
+//	int cnt = 0;
+//	bool datedChanged = false;
+//
+//	cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
+//	while (t) {
+//
+//		logmsg2 = QString("Purpose:\t");
+//		l = AB_Transaction_GetPurpose(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("Value:\t");
+//		v = AB_Transaction_GetValue(t);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("RemoteName:\t");
+//		l = AB_Transaction_GetRemoteName(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		switch (AB_Transaction_GetStatus(t)) {
+//		case AB_Transaction_StatusRevoked:
+//			//Bei der Bank hinterlegte Terminüberweisung wurde gelöscht
+//			this->addlog(QString(
+//				"Lösche bei der Bank gelöschte Terminüberweisung (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+//			//löscht die Transaction in der settings.ini
+////			settings->deleteDatedTransfer(t);
+////			datedChanged = true;
+//			break;
+//		case AB_Transaction_StatusManuallyReconciled:
+//		case AB_Transaction_StatusAutoReconciled:
+//			//Bei der Bank hinterlegte Terminüberweisung wurde geändert
+//			this->addlog(QString(
+//				"Speichere bei der Bank geänderte Terminüberweisung (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+//			//einfach löschen und dann neu speichern
+//			//die neue Transaction hat eine neue ID bekommen, wir
+//			//müssen die alte löschen und dann die neue Speichern!
+//
+//			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
+//			//-->die alte wird durch parseJobTypeModifyDatedTransfer() gelöscht
+//			//settings->deleteDatedTransfer(t);
+//			//neue Transaction speichern
+////			settings->saveDatedTransfer(t);
+////			datedChanged = true;
+//			break;
+//		default:
+//			//Bei der Bank hinterlegte Terminüberweisung auch lokal speichern
+//			this->addlog(QString(
+//				"Speichere bei der Bank hinterlegte Terminüberweisung (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+////			settings->saveDatedTransfer(t);
+////			datedChanged = true;
+//			break;
+//		}
+//
+//		t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
+//	}
+//
+////	if (datedChanged) {
+////		emit this->datedTransfersParsed();
+////	}
+//
+//	return cnt;
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_TRANSACTION *t;
+//	QString logmsg = "Recvd-NotedTransactions: ";
+//	QString logmsg2;
+//	QStringList strList;
+//	const AB_VALUE *v;
+//	const GWEN_STRINGLIST *l;
+//	int cnt = 0;
+//
+//	cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
+//	while (t) {
+//		logmsg2 = QString("Purpose:\t");
+//		l = AB_Transaction_GetPurpose(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("Value:\t");
+//		v = AB_Transaction_GetValue(t);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("RemoteName:\t");
+//		l = AB_Transaction_GetRemoteName(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
+//	}
+//	return cnt;
+//
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_TRANSACTION *t;
+//	QString logmsg = "Recvd-StandingOrders: ";
+//	QString logmsg2;
+//	QStringList strList, DAIDs;
+//	const AB_VALUE *v;
+//	const GWEN_STRINGLIST *l;
+//	int cnt = 0;
+//
+//	cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//	DAIDs.clear();
+//
+//	t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
+//	while (t) {
+//		logmsg2 = QString("Purpose:\t");
+//		l = AB_Transaction_GetPurpose(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("Value:\t");
+//		v = AB_Transaction_GetValue(t);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("RemoteName:\t");
+//		l = AB_Transaction_GetRemoteName(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//
+//		switch (AB_Transaction_GetStatus(t)) {
+//		case AB_Transaction_StatusRevoked:
+//			//Bei der Bank hinterlegter Dauerauftrag wurde gelöscht
+//			this->addlog(QString(
+//				"Lösche bei der Bank gelöschten Dauerauftrag (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+//			//löscht die Transaction in der settings.ini
+////			settings->deleteStandingOrder(t);
+//			break;
+//		case AB_Transaction_StatusManuallyReconciled:
+//		case AB_Transaction_StatusAutoReconciled:
+//			//Bei der Bank hinterlegter Dauerauftrag wurde geändert
+//			this->addlog(QString(
+//				"Speichere bei der Bank geänderten Dauerauftrag (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+//			//einfach löschen und dann neu speichern
+//			//die neue Transaction hat eine neue ID bekommen, wir
+//			//müssen die alte löschen und dann die neue Speichern!
+//
+//			//Hier muss die alte gelöscht werden! wo bekommen wir die her?
+//			//-->die alte wird durch parseJobTypeModifyStandingOrder() gelöscht
+//			//settings->deleteDatedTransfer(t);
+//			//neue Transaction speichern
+////			settings->saveStandingOrder(t);
+//			break;
+//		default:
+//			//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
+//			this->addlog(QString(
+//				"Speichere bei der Bank hinterlegten Dauerauftrag (ID: %1)"
+//				).arg(AB_Transaction_GetFiId(t)));
+////			settings->saveStandingOrder(t);
+//			break;
+//		}
+//
+//
+//		t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
+//	}
+//
+////	emit this->standingOrdersParsed();
+//	return cnt;
+//
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_TRANSACTION *t;
+//	QString logmsg = "Recvd-Transfers: ";
+//	QString logmsg2;
+//	QStringList strList;
+//	const AB_VALUE *v;
+//	const GWEN_STRINGLIST *l;
+//	int cnt = 0;
+//
+//	cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
+//	while (t) {
+//		logmsg2 = QString("Purpose:\t");
+//		l = AB_Transaction_GetPurpose(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("Value:\t");
+//		v = AB_Transaction_GetValue(t);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("RemoteName:\t");
+//		l = AB_Transaction_GetRemoteName(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
+//	}
+//	return cnt;
+//
+//}
+//
+//int abt_job_ctrl::parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai)
+//{
+//	AB_TRANSACTION *t;
+//	QString logmsg = "Recvd-Transactions: ";
+//	QString logmsg2;
+//	QStringList strList;
+//	const AB_VALUE *v;
+//	const GWEN_STRINGLIST *l;
+//	int cnt = 0;
+//
+//	cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
+//	logmsg2 = QString("Count: %1").arg(cnt);
+//	this->addlog(logmsg + logmsg2);
+//
+//	t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
+//	while (t) {
+//		logmsg2 = QString("Purpose:\t");
+//		l = AB_Transaction_GetPurpose(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("Value:\t");
+//		v = AB_Transaction_GetValue(t);
+//		logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
+//		this->addlog(logmsg + logmsg2);
+//
+//		logmsg2 = QString("RemoteName:\t");
+//		l = AB_Transaction_GetRemoteName(t);
+//		strList = abt_conv::GwenStringListToQStringList(l);
+//		logmsg2.append(strList.join(" - "));
+//		this->addlog(logmsg + logmsg2);
+//
+//		t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
+//	}
+//	return cnt;
+//
+//}
+
+//bool abt_job_ctrl::checkJobStatus(AB_JOB_LIST2 *jl)
+//{
+//	AB_JOB *j;
+//	AB_JOB_STATUS state;
+//	AB_JOB_TYPE type;
+//
+//	QString strState;
+//	QString strType;
+//	QStringList strList;
+//	bool res=true;
+//	static int run = 0;
+//	run++;
+//	qDebug() << Q_FUNC_INFO << " - RUN: " << run;
+//
+//	AB_JOB_LIST2_ITERATOR *jli;
+//	jli = AB_Job_List2Iterator_new(jl);
+//	jli = AB_Job_List2_First(jl);
+//	j = AB_Job_List2Iterator_Data(jli);
+//	while (j) {
+//		qDebug() << Q_FUNC_INFO << " - while - RUN: " << run;
+//		type = AB_Job_GetType(j);
+//		strType = AB_Job_Type2Char(type);
+//		this->addlog(QString("JobType: ").append(strType));
+//		state = AB_Job_GetStatus(j);
+//		if (state == AB_Job_StatusPending) {
+//			res = false;
+//		}
+//		strState = AB_Job_Status2Char(state);
+//		this->addlog(QString("JobState: ").append(strState));
+//
+//
+//		strList = this->getParsedJobLogs(j);
+//
+//		//Alle Strings der StringListe zum Log hinzufügen
+//		for (int i=0; i<strList.count(); ++i) {
+//			this->addlog(QString("JobLog: ").append(strList.at(i)));
+//		}
+//
+//		j = AB_Job_List2Iterator_Next(jli);
+//	}
+//
+//	AB_Job_List2Iterator_free(jli);
+//
+//	qDebug() << Q_FUNC_INFO << " - end - RUN: " << run;
+//
+//	return res;
+//}
 
 /** prüft ob ein job vom typ \a type in der queuelist vorhanden ist und ob
   dieser Job auch für dasselbe Konto wie der Job \a ji ist.
@@ -1801,1076 +1800,1076 @@ void abt_job_ctrl::deleteJob(int JobListPos)
  * Parsen der einzelnen Jobs nach Ausführung
  ******************************************************************************/
 
-//wenn Status Successfull Transaction des Jobs als Dated Speichern
-int abt_job_ctrl::parseJobTypeCreateDatedTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobCreateDatedTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-
-		//Die hier vorhandene Transaktion hat keine FiId!!!!!!
-		//settings->saveDatedTransfer(t);
-
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-
-}
-
-//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
-int abt_job_ctrl::parseJobTypeDeleteDatedTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobDeleteDatedTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
-//		settings->deleteDatedTransfer(t);
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-//wenn Successfull Transaction des Jobs löschen
-//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
-//die neue Transaction muss gespeichert werden
-int abt_job_ctrl::parseJobTypeModifyDatedTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobModifyDatedTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
-		//Wir löschen einfach den übertragenen Transfer, der neue steckt
-		//im ctx und wird später durch parseCtx gespeichert.
-//		settings->deleteDatedTransfer(t);
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-//wenn Successfull Ctx parsen (dort sind die DTs drin)
-int abt_job_ctrl::parseJobTypeGetDatedTransfers(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_JobGetDatedTransfers_GetDatedTransfers(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-
-//für StandingOrders siehe Kommentare bei DatedTransfers
-int abt_job_ctrl::parseJobTypeCreateStandingOrder(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobCreateStandingOrder_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeDeleteStandingOrder(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobDeleteStandingOrder_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
-//		settings->deleteStandingOrder(t);
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeModifyStandingOrder(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobModifyStandingOrder_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
-		//Wir löschen einfach den übertragenen Transfer, der neue steckt
-		//im ctx und wird später durch parseCtx gespeichert.
-//		settings->deleteDatedTransfer(t);
-
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeGetStandingOrders(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_JobGetStandingOrders_GetStandingOrders(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-
-//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
-//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
-int abt_job_ctrl::parseJobTypeTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobSingleTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeEuTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobEuTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeSepaTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobSepaTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeInternalTransfer(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobInternalTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeDebitNote(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	t = AB_JobSingleDebitNote_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeSepaDebitNote(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_Job(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeUnknown(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_JobCreateDatedTransfer_GetTransaction(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-
-int abt_job_ctrl::parseJobTypeGetBalance(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_Job(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-int abt_job_ctrl::parseJobTypeGetTransactions(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_Job(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
-
-
-int abt_job_ctrl::parseJobTypeLoadCellPhone(const AB_JOB *j) {
-	AB_JOB_STATUS jobStatus;
-	const AB_TRANSACTION *t;
-
-	jobStatus = AB_Job_GetStatus(j);
-	//t = AB_Job(j);
-
-	switch(jobStatus) {
-	case AB_Job_StatusNew:
-		//Job is new and not yet enqueued.
-		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUpdated:
-		//Job has been updated by the backend and is still not yet enqueued
-		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusEnqueued:
-		//Job has been enqueued, i.e. it has not yet been sent, but will
-		//be sent at the next AB_BANKING_ExecuteQueue().
-		//These jobs are stored in the "todo" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusSent:
-		//Job has been sent, but there is not yet any response.
-		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusPending:
-		//Job has been sent, and an answer has been received, so the Job
-		//has been successfully sent to the bank. However, the answer to
-		//this job said that the job is still pending at the bank server.
-		//This status is most likely used with transfer orders which are
-		//accepted by the bank server but checked (and possibly rejected)
-		//later. These jobs are stored in the "pending" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusFinished:
-		//Job has been sent, a response has been received, and everything
-		//has been sucessfully executed. These jobs are stored in the
-		//"finished" directory.
-		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusError:
-		//There was an error in jobs' execution. These jobs are stored
-		//in the "finished" directory. Jobs are never enqueued twice for
-		//execution, so if it has this status it will never be sent again.
-		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
-		break;
-	case AB_Job_StatusUnknown:	//default ausführen
-		//Unknown status
-		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
-	default:
-		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
-		break;
-	} /* switch(jobStatus) */
-
-	return 1;
-}
+////wenn Status Successfull Transaction des Jobs als Dated Speichern
+//int abt_job_ctrl::parseJobTypeCreateDatedTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobCreateDatedTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//
+//		//Die hier vorhandene Transaktion hat keine FiId!!!!!!
+//		//settings->saveDatedTransfer(t);
+//
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//
+//}
+//
+////wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+//int abt_job_ctrl::parseJobTypeDeleteDatedTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobDeleteDatedTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
+////		settings->deleteDatedTransfer(t);
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+////wenn Successfull Transaction des Jobs löschen
+////wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
+////die neue Transaction muss gespeichert werden
+//int abt_job_ctrl::parseJobTypeModifyDatedTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobModifyDatedTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting DatedTransfer" << AB_Transaction_GetFiId(t);
+//		//Wir löschen einfach den übertragenen Transfer, der neue steckt
+//		//im ctx und wird später durch parseCtx gespeichert.
+////		settings->deleteDatedTransfer(t);
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+////wenn Successfull Ctx parsen (dort sind die DTs drin)
+//int abt_job_ctrl::parseJobTypeGetDatedTransfers(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_JobGetDatedTransfers_GetDatedTransfers(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//
+////für StandingOrders siehe Kommentare bei DatedTransfers
+//int abt_job_ctrl::parseJobTypeCreateStandingOrder(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobCreateStandingOrder_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeDeleteStandingOrder(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobDeleteStandingOrder_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
+////		settings->deleteStandingOrder(t);
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeModifyStandingOrder(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobModifyStandingOrder_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - deleting StandingOrder" << AB_Transaction_GetFiId(t);
+//		//Wir löschen einfach den übertragenen Transfer, der neue steckt
+//		//im ctx und wird später durch parseCtx gespeichert.
+////		settings->deleteDatedTransfer(t);
+//
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeGetStandingOrders(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_JobGetStandingOrders_GetStandingOrders(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//
+////hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
+////was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
+//int abt_job_ctrl::parseJobTypeTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobSingleTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeEuTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobEuTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeSepaTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobSepaTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeInternalTransfer(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobInternalTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeDebitNote(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	t = AB_JobSingleDebitNote_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeSepaDebitNote(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_Job(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeUnknown(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_JobCreateDatedTransfer_GetTransaction(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//
+//int abt_job_ctrl::parseJobTypeGetBalance(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_Job(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//int abt_job_ctrl::parseJobTypeGetTransactions(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_Job(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
+//
+//
+//int abt_job_ctrl::parseJobTypeLoadCellPhone(const AB_JOB *j) {
+//	AB_JOB_STATUS jobStatus;
+//	const AB_TRANSACTION *t;
+//
+//	jobStatus = AB_Job_GetStatus(j);
+//	//t = AB_Job(j);
+//
+//	switch(jobStatus) {
+//	case AB_Job_StatusNew:
+//		//Job is new and not yet enqueued.
+//		qDebug() << Q_FUNC_INFO << " - Status: New" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUpdated:
+//		//Job has been updated by the backend and is still not yet enqueued
+//		qDebug() << Q_FUNC_INFO << " - Status: Updated" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusEnqueued:
+//		//Job has been enqueued, i.e. it has not yet been sent, but will
+//		//be sent at the next AB_BANKING_ExecuteQueue().
+//		//These jobs are stored in the "todo" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Enqueued" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusSent:
+//		//Job has been sent, but there is not yet any response.
+//		qDebug() << Q_FUNC_INFO << " - Status: Sent" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusPending:
+//		//Job has been sent, and an answer has been received, so the Job
+//		//has been successfully sent to the bank. However, the answer to
+//		//this job said that the job is still pending at the bank server.
+//		//This status is most likely used with transfer orders which are
+//		//accepted by the bank server but checked (and possibly rejected)
+//		//later. These jobs are stored in the "pending" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Pending" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusFinished:
+//		//Job has been sent, a response has been received, and everything
+//		//has been sucessfully executed. These jobs are stored in the
+//		//"finished" directory.
+//		qDebug() << Q_FUNC_INFO << " - Status: Finished" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusError:
+//		//There was an error in jobs' execution. These jobs are stored
+//		//in the "finished" directory. Jobs are never enqueued twice for
+//		//execution, so if it has this status it will never be sent again.
+//		qDebug() << Q_FUNC_INFO << " - Status: Error" << " - Nothing done yet";
+//		break;
+//	case AB_Job_StatusUnknown:	//default ausführen
+//		//Unknown status
+//		qDebug() << Q_FUNC_INFO << " - Status: Unknown" << " - Nothing done yet";
+//	default:
+//		qWarning() << "WARNING: parseJobTypeCreateDatedTransfer() - Unknown Job State!";
+//		break;
+//	} /* switch(jobStatus) */
+//
+//	return 1;
+//}
 
 
 

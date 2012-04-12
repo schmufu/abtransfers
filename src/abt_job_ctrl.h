@@ -58,51 +58,51 @@ private:
 
 	bool parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx);
 
-	int parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx);
-	int parseImExporterContext_Securitys(AB_IMEXPORTER_CONTEXT *ctx);
-	int parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *ai);
-	int parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai);
-	int parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
-	int parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai);
-	int parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO *ai);
-	int parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterContext_Messages(AB_IMEXPORTER_CONTEXT *ctx);
+//	int parseImExporterContext_Securitys(AB_IMEXPORTER_CONTEXT *ctx);
+//	int parseImExporterAccountInfo_Status(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterAccountInfo_DatedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterAccountInfo_NotedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterAccountInfo_StandingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterAccountInfo_Transfers(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//	int parseImExporterAccountInfo_Transactions(AB_IMEXPORTER_ACCOUNTINFO *ai);
+//
+//
+//	//wenn Status Successfull Transaction des Jobs als Dated Speichern
+//	int parseJobTypeCreateDatedTransfer(const AB_JOB *j);
+//	//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
+//	int parseJobTypeDeleteDatedTransfer(const AB_JOB *j);
+//	//wenn Successfull Transaction des Jobs löschen
+//	//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
+//	//die neue Transaction muss gespeichert werden
+//	int parseJobTypeModifyDatedTransfer(const AB_JOB *j);
+//	//wenn Successfull Ctx parsen (dort sind die DTs drin)
+//	int parseJobTypeGetDatedTransfers(const AB_JOB *j);
+//
+//	//für StandingOrders siehe Kommentare bei DatedTransfers
+//	int parseJobTypeCreateStandingOrder(const AB_JOB *j);
+//	int parseJobTypeDeleteStandingOrder(const AB_JOB *j);
+//	int parseJobTypeModifyStandingOrder(const AB_JOB *j);
+//	int parseJobTypeGetStandingOrders(const AB_JOB *j);
+//
+//	//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
+//	//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
+//	int parseJobTypeTransfer(const AB_JOB *j);
+//	int parseJobTypeEuTransfer(const AB_JOB *j);
+//	int parseJobTypeSepaTransfer(const AB_JOB *j);
+//	int parseJobTypeInternalTransfer(const AB_JOB *j);
+//	int parseJobTypeDebitNote(const AB_JOB *j);
+//	int parseJobTypeSepaDebitNote(const AB_JOB *j);
+//	int parseJobTypeUnknown(const AB_JOB *j);
+//
+//	int parseJobTypeGetBalance(const AB_JOB *j);
+//	int parseJobTypeGetTransactions(const AB_JOB *j);
+//
+//	int parseJobTypeLoadCellPhone(const AB_JOB *j);
 
 
-	//wenn Status Successfull Transaction des Jobs als Dated Speichern
-	int parseJobTypeCreateDatedTransfer(const AB_JOB *j);
-	//wenn Successfull Ctx parsen (dort ist der gelöschte DT drin)
-	int parseJobTypeDeleteDatedTransfer(const AB_JOB *j);
-	//wenn Successfull Transaction des Jobs löschen
-	//wurde die FiId der Transaction im Job geändert? wenn ja, wie kommen wir an die alte?
-	//die neue Transaction muss gespeichert werden
-	int parseJobTypeModifyDatedTransfer(const AB_JOB *j);
-	//wenn Successfull Ctx parsen (dort sind die DTs drin)
-	int parseJobTypeGetDatedTransfers(const AB_JOB *j);
 
-	//für StandingOrders siehe Kommentare bei DatedTransfers
-	int parseJobTypeCreateStandingOrder(const AB_JOB *j);
-	int parseJobTypeDeleteStandingOrder(const AB_JOB *j);
-	int parseJobTypeModifyStandingOrder(const AB_JOB *j);
-	int parseJobTypeGetStandingOrders(const AB_JOB *j);
-
-	//hier einfach den Ctx parsen? Prüfung auf Erfolg sollte auch gemacht werden!
-	//was machen wir bei Fehler? Job sollte in der jobQueue bleiben!
-	int parseJobTypeTransfer(const AB_JOB *j);
-	int parseJobTypeEuTransfer(const AB_JOB *j);
-	int parseJobTypeSepaTransfer(const AB_JOB *j);
-	int parseJobTypeInternalTransfer(const AB_JOB *j);
-	int parseJobTypeDebitNote(const AB_JOB *j);
-	int parseJobTypeSepaDebitNote(const AB_JOB *j);
-	int parseJobTypeUnknown(const AB_JOB *j);
-
-	int parseJobTypeGetBalance(const AB_JOB *j);
-	int parseJobTypeGetTransactions(const AB_JOB *j);
-
-	int parseJobTypeLoadCellPhone(const AB_JOB *j);
-
-
-
-	bool checkJobStatus(AB_JOB_LIST2 *jl);
+//	bool checkJobStatus(AB_JOB_LIST2 *jl);
 
 	bool isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *ji) const;
 
@@ -131,10 +131,10 @@ signals:
 	void jobQueueListChanged();
 	void jobAdded(const abt_jobInfo *jobInfo);
 	void log(const QString &str);
-	//! wird gesendet wenn das parsen der Daueraufträge abgeschlossen ist
-	void standingOrdersParsed();
-	//! wird gesendet wenn das parsen der Terminüberweisungen abgeschlossen ist
-	void datedTransfersParsed();
+//	//! wird gesendet wenn das parsen der Daueraufträge abgeschlossen ist
+//	void standingOrdersParsed();
+//	//! wird gesendet wenn das parsen der Terminüberweisungen abgeschlossen ist
+//	void datedTransfersParsed();
 
 public slots:
 	void addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
