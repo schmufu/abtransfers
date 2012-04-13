@@ -63,6 +63,9 @@ public:
 				    const QString &blz = "",
 				    const QString &owner = "",
 				    const QString &name = "") const;
+	/** \overload */
+	aqb_AccountInfo* getAccount(const AB_ACCOUNT *a) const;
+
 //	const AB_BANKING *getBanking() const
 //		{ return this->m_ab; }
 };

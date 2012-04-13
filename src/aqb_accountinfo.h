@@ -116,6 +116,12 @@ public:
 	QString getDisposed() const;
 	QDate getDate() const;
 
+	void clearStandingOrders();
+	void clearDatedTransfers();
+	bool removeStandingOrder(abt_standingOrderInfo *so);
+	bool removeDatedTransfer(abt_datedTransferInfo *dt);
+
+
 protected: //from friend classes useable! (speziell: abt_parser)
 	void setAccountStatus(AB_ACCOUNT_STATUS *as);
 

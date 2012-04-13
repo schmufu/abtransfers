@@ -125,17 +125,35 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
 	it.toFront();
 	while (it.hasNext()) {
-	     it.next();
-	     acc = it.value();
-	     //Angegebene Werte überprüfen.
-	     //Wenn ein Wert nicht angegeben wurde wird dieser auch nicht geprüft.
-	     if (acc->Number() == kontonummer &&
-		 (blz.isEmpty() || acc->BankCode() == blz) &&
-		 (owner.isEmpty() || acc->OwnerName() == owner) &&
-		 (name.isEmpty() || acc->Name() == name)) {
-		     //Account gefunden
-		     return acc;
-	     }
+		it.next();
+		acc = it.value();
+		//Angegebene Werte überprüfen.
+		//Wenn ein Wert nicht angegeben wurde wird dieser auch nicht geprüft.
+		if (acc->Number() == kontonummer &&
+		    (blz.isEmpty() || acc->BankCode() == blz) &&
+		    (owner.isEmpty() || acc->OwnerName() == owner) &&
+		    (name.isEmpty() || acc->Name() == name)) {
+			//Account gefunden
+			return acc;
+		}
+	}
+
+	//wenn wir hierher kommen wurde kein Account gefunden!
+	qWarning() << Q_FUNC_INFO << "no account matched! returning NULL!";
+	return NULL;
+}
+
+aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const
+{
+	aqb_AccountInfo *acc = NULL;
+
+	//Alle Accounts durchgehen
+	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
+	it.toFront();
+	while (it.hasNext()) {
+		it.next();
+		acc = it.value();
+		if (acc->get_AB_ACCOUNT() == a) return acc; //Account gefunden
 	}
 
 	//wenn wir hierher kommen wurde kein Account gefunden!

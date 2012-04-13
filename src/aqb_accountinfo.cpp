@@ -106,21 +106,14 @@ aqb_AccountInfo::~aqb_AccountInfo()
 	if (this->account_status)
 		AB_AccountStatus_free(this->account_status);
 
-	//Alle gespeicherten StandingOrders wieder freigeben
-	if (this->m_standingOrders != NULL) { //Liste muss geleert werden
-		while (this->m_standingOrders->size() != 0) {
-			delete this->m_standingOrders->takeFirst();
-		}
-		delete this->m_standingOrders;
-	}
 
-	//Alle gespeicherten DatedTransfers wieder freigeben
-	if (this->m_datedTransfers != NULL) { //Liste muss geleert werden
-		while (this->m_datedTransfers->size() != 0) {
-			delete this->m_datedTransfers->takeFirst();
-		}
-		delete this->m_datedTransfers;
-	}
+	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
+	delete this->m_standingOrders; //und liste löschen
+
+
+	this->clearDatedTransfers(); //Alle DatedTransfers wieder freigeben
+	delete this->m_datedTransfers; //und liste löschen
+
 
 	qDebug() << Q_FUNC_INFO << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
@@ -232,6 +225,68 @@ void aqb_AccountInfo::addDatedTransfer(abt_datedTransferInfo *dt)
 	this->m_datedTransfers->append(dt);
 	emit this->knownDatedTransfersChanged(this);
 }
+
+
+void aqb_AccountInfo::clearStandingOrders()
+{
+	if (!this->m_standingOrders) return; //abbruch, Liste existiert nicht
+
+	//Die Liste der Daueraufträge leeren
+	while (this->m_standingOrders->size() != 0) {
+		delete this->m_standingOrders->takeFirst();
+	}
+	emit this->knownStandingOrdersChanged(this);
+}
+
+void aqb_AccountInfo::clearDatedTransfers()
+{
+	if (!this->m_datedTransfers) return; //abbruch, Liste existiert nicht
+
+	//Die Liste der Daueraufträge leeren
+	while (this->m_datedTransfers->size() != 0) {
+		delete this->m_datedTransfers->takeFirst();
+	}
+	emit this->knownDatedTransfersChanged(this);
+}
+
+bool aqb_AccountInfo::removeStandingOrder(abt_standingOrderInfo *so)
+{
+	if (!this->m_standingOrders) return false; //abbruch, Liste existiert nicht
+
+	QString FiId = so->getTransaction()->getFiId();
+
+	for(int i=0; i<this->m_standingOrders->size(); ++i) {
+		if (this->m_standingOrders->at(i)->getTransaction()->getFiId() == FiId) {
+			//zu löschenden Auftrag gefunden
+			delete this->m_standingOrders->takeAt(i);
+			emit this->knownStandingOrdersChanged(this);
+			return true;
+		}
+	}
+
+	//wenn wir hierher kommen wurde der so nicht gefunden
+	return false;
+}
+
+bool aqb_AccountInfo::removeDatedTransfer(abt_datedTransferInfo *dt)
+{
+	if (!this->m_datedTransfers) return false; //abbruch, Liste existiert nicht
+
+	QString FiId = dt->getTransaction()->getFiId();
+
+	for(int i=0; i<this->m_datedTransfers->size(); ++i) {
+		if (this->m_datedTransfers->at(i)->getTransaction()->getFiId() == FiId) {
+			//zu löschenden Auftrag gefunden
+			delete this->m_datedTransfers->takeAt(i);
+			emit this->knownDatedTransfersChanged(this);
+			return true;
+		}
+	}
+
+	//wenn wir hierher kommen wurde der so nicht gefunden
+	return false;
+}
+
 
 //public
 QString aqb_AccountInfo::getBankLine() const

@@ -1037,11 +1037,11 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			abt_jobInfo *jobInfo = new abt_jobInfo(j);
 			this->m_history->add(jobInfo);
 
-			this->addlog(QString("Ausführung von '%1' erfolgreich. "
-					     "Der Auftrag wurde zur Historie hinzugefügt").arg(
-							     strType));
+			this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
+					"Der Auftrag wurde zur Historie hinzugefügt").arg(
+							strType));
 
-			//Hier sollte der Job dann auch aus dem jobqueue entfernt werden
+			//Job auch aus dem jobqueue entfernen
 			for(int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
 					//JobPos, gefunden, diesen löschen
@@ -1051,10 +1051,75 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			}
 
 
+			//Je nachdem was gemacht wurde müssen evt. noch die
+			//account-Objecte aktualisiert werden.
+			AB_ACCOUNT *a = AB_Job_GetAccount(j);
+			aqb_AccountInfo *acc = this->m_allAccounts->getAccount(a);
+			AB_TRANSACTION *t;
+			abt_datedTransferInfo *dt;
+			abt_standingOrderInfo *so;
+
+			switch(jobType) {
+			case AB_Job_TypeCreateDatedTransfer:
+				t = AB_Transaction_dup(AB_JobCreateDatedTransfer_GetTransaction(j));
+				dt = new abt_datedTransferInfo(t);
+				acc->removeDatedTransfer(dt);
+				delete dt;
+				break;
+
+			case AB_Job_TypeDeleteDatedTransfer:
+				t = AB_Transaction_dup(AB_JobDeleteDatedTransfer_GetTransaction(j));
+				dt = new abt_datedTransferInfo(t);
+				acc->removeDatedTransfer(dt);
+				delete dt;
+				break;
+
+			case AB_Job_TypeModifyDatedTransfer:
+				t = AB_Transaction_dup(AB_JobModifyDatedTransfer_GetTransaction(j));
+				dt = new abt_datedTransferInfo(t);
+				acc->removeDatedTransfer(dt);
+				delete dt;
+				break;
+
+			case AB_Job_TypeCreateStandingOrder:
+				t = AB_Transaction_dup(AB_JobCreateStandingOrder_GetTransaction(j));
+				so = new abt_standingOrderInfo(t);
+				acc->removeStandingOrder(so);
+				delete so;
+				break;
+
+			case AB_Job_TypeDeleteStandingOrder:
+				t = AB_Transaction_dup(AB_JobDeleteStandingOrder_GetTransaction(j));
+				so = new abt_standingOrderInfo(t);
+				acc->removeStandingOrder(so);
+				delete so;
+				break;
+
+			case AB_Job_TypeModifyStandingOrder:
+				t = AB_Transaction_dup(AB_JobModifyStandingOrder_GetTransaction(j));
+				so = new abt_standingOrderInfo(t);
+				acc->removeStandingOrder(so);
+				delete so;
+				break;
+
+			case AB_Job_TypeGetDatedTransfers:
+				//Alle DatedTransfers wurden aktualisiert
+				acc->clearDatedTransfers();
+				break;
+			case AB_Job_TypeGetStandingOrders:
+				//Alle StandingOrders wurden aktualisiert
+				acc->clearStandingOrders();
+				break;
+
+			default:
+				break; //nichts zu tun
+			}
+
+
 		} else {
-			this->addlog(QString("Ausführung von '%1' fehlerhaft. "
-					     "Der Auftrag bleibt im Ausgang erhalten").arg(
-							     strType));
+			this->addlog(tr("<b><font color=red>Ausführung von '%1' fehlerhaft.</font></b> "
+					"Der Auftrag bleibt im Ausgang erhalten").arg(
+							strType));
 
 			//Es ist ein Fehler beim Ausführen des Jobs aufgetreten!
 			//er verbleibt in dem jobqueue
