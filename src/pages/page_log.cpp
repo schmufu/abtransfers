@@ -57,10 +57,10 @@ void page_log::changeEvent(QEvent *e)
 
 void page_log::setLogText(const QStringList *strList)
 {
-	ui->plainTextEdit->setPlainText(strList->join("\n"));
+	this->ui->textEdit->setHtml(strList->join("<br />"));
 }
 
 void page_log::appendLogText(const QString &str)
 {
-	ui->plainTextEdit->appendPlainText(str);
+	this->ui->textEdit->append(str);
 }
