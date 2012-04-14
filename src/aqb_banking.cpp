@@ -53,8 +53,8 @@ aqb_banking::aqb_banking()
 	 */
 	rv = AB_Banking_Init(this->ab);
 	if (rv) {
-	  fprintf(stderr, "Error on init (%d)\n", rv);
-	  return;
+		fprintf(stderr, "Error on init (%d)\n", rv);
+		return;
 	}
 	qDebug() << "AqBanking successfully initialized.";
 
@@ -63,8 +63,8 @@ aqb_banking::aqb_banking()
 	 */
 	rv = AB_Banking_OnlineInit(ab);
 	if (rv) {
-	  fprintf(stderr, "Error on init of online modules (%d)\n", rv);
-	  return;
+		fprintf(stderr, "Error on init of online modules (%d)\n", rv);
+		return;
 	}
 
 }
@@ -78,8 +78,8 @@ aqb_banking::~aqb_banking()
 	 */
 	rv = AB_Banking_OnlineFini(this->ab);
 	if (rv) {
-	  fprintf(stderr, "ERROR: Error on deinit online modules (%d)\n", rv);
-	  return;
+		fprintf(stderr, "ERROR: Error on deinit online modules (%d)\n", rv);
+		return;
 	}
 
 	/* This function deinitializes AqBanking. It undoes the effects of
@@ -88,8 +88,8 @@ aqb_banking::~aqb_banking()
 	 */
 	rv = AB_Banking_Fini(ab);
 	if (rv) {
-	  fprintf(stderr, "ERROR: Error on deinit (%d)\n", rv);
-	  return;
+		fprintf(stderr, "ERROR: Error on deinit (%d)\n", rv);
+		return;
 	}
 	AB_Banking_free(ab);
 

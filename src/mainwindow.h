@@ -38,14 +38,18 @@
 
 #include "aqb_accounts.h"
 #include "abt_job_ctrl.h"
+#include "abt_history.h"
 
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
 
+//uncomment the following if access to pagewidgettests.cpp is wanted
+//#define TESTWIDGETACCESS
+
 class widgetTransfer;
 
 namespace Ui {
-    class MainWindow;
+	class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
@@ -54,15 +58,15 @@ public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-
-
 protected:
 	void changeEvent(QEvent *e);
+	void closeEvent(QCloseEvent *e);
 
 private:
 	Ui::MainWindow *ui;
 	aqb_Accounts *accounts;
 	abt_job_ctrl *jobctrl;
+	abt_history *history;
 	page_log *logw;
 	Page_Ausgang *outw;
 
@@ -85,6 +89,10 @@ private:
 //	QAction *act;
 //	QAction *act;
 //	QAction *act;
+
+#ifdef TESTWIDGETACCESS
+	QAction *actTestWidgetAccess;
+#endif
 
 	QMenu *accountContextMenu;
 	QToolBar *dockToolbar;
@@ -118,18 +126,18 @@ private:
 	void createAndSendInternalTransfer(const widgetTransfer *sender);
 	void createAndSendSepaDebitNote(const widgetTransfer *sender);
 
-
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
+	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionAbout_abTransfers_triggered();
 	void on_actionAbout_Qt_triggered();
-	void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_actionDebug_Info_triggered();
 	void on_actionHelp_triggered();
+	void on_actionEinstellungen_triggered();
 
-	void onJobAddedToJobCtrlList(const abt_job_info* ji) const;
+	void onJobAddedToJobCtrlList(const abt_jobInfo* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
 
 	//! wird aufgerufen wenn sich der Account im dockWidget von Daueraufträge ändert
@@ -155,17 +163,20 @@ private slots:
 	void onActionUpdateBalanceTriggered();
 	void onActionShowAvailableJobsTriggered();
 
+#ifdef TESTWIDGETACCESS
+	void onActionTestWidgetAccessTriggered();
+#endif
+
 	void onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer* sender);
 	void onWidgetTransferCancelClicked(widgetTransfer* sender);
 
-	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_StandingInfo* da);
-	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_StandingInfo* da);
+	void onStandingOrderEditRequest(const aqb_AccountInfo* acc, const abt_standingOrderInfo* da);
+	void onStandingOrderDeleteRequest(const aqb_AccountInfo* acc, const abt_standingOrderInfo* da);
 
-	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
-	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di);
+	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
+	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 
-
-	void onEditJobFromOutbox(const abt_job_info* job);
+	void onEditJobFromOutbox(const abt_jobInfo* job);
 
 };
 

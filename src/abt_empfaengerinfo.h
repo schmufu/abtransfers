@@ -36,7 +36,7 @@
 #include <QMetaType>
 
 
-/*! \brief Klasse zur beschreibung eines bekannten Empfängers
+/*! \brief Klasse zur Beschreibung eines bekannten Empfängers
 
   */
 class abt_EmpfaengerInfo

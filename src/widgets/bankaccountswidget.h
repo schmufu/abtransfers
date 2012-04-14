@@ -63,14 +63,17 @@ protected:
 private:
 	Ui::BankAccountsWidget *ui;
 
+	void setValuesForItem(QTreeWidgetItem *item, const aqb_AccountInfo *acc) const;
+
 signals:
 	void Account_Changed(const aqb_AccountInfo *new_account);
 
 public slots:
-	void setSelectedAccount(const aqb_AccountInfo* account);
+	void setSelectedAccount(const aqb_AccountInfo *account);
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();
+	void onAccountStatusChange(const aqb_AccountInfo *account);
 };
 
 #endif // BANKACCOUNTSWIDGET_H

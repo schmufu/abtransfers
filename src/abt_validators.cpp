@@ -55,9 +55,6 @@ void BetragValidator::fixup(QString &input) const
 			input.append("00");
 			return;
 		}
-		qDebug() << "commapos =" << commapos;
-		qDebug() << "length =" << input.length();
-		qDebug() << "size =" << input.size();
 	}
 }
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,40 +22,36 @@
  * $Rev$
  *
  * description:
- *
+ *	Speichert Informationen zu einem bekannten Dauerauftrag
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#ifndef AQB_BANKING_H
-#define AQB_BANKING_H
 
-#include <aqbanking/banking.h>
+#ifndef ABT_STANDINGORDERINFO_H
+#define ABT_STANDINGORDERINFO_H
 
-#include <QString>
+#include "abt_transaction_base.h"
 
-/*! \brief Main-Interface zu AqBanking
-  *
-  * enthält eine Instanz von AB_BANKING und gewährt den entsprechenden
-  * Klassen und Funktionen zugriff auf das AB_BANKING Objekt.
-  */
-class aqb_banking
+
+/*! \brief Daten von gespeicherten Daueraufträgen
+ *
+ * Diese Klasse kapselt die Daten eines Dauerauftrages.
+ * Diese werden in einer Liste zu jedem Account geladen und stehen somit über
+ * den jeweiligen account zur Verfügung.
+ */
+
+class abt_standingOrderInfo
 {
-private:
-	AB_BANKING *ab;
-
 public:
-	aqb_banking();
-	~aqb_banking();
-
-	AB_BANKING* getAqBanking() const { return this->ab; }
-
-	QString getInstituteFromBLZ(const QString &BLZ) const;
-	/*! This function checks whether the given combination represents a valid account. */
-	bool checkAccount(const QString &country, const QString &branchId,
-			  const QString &bankId, const QString &accountId,
-			  QString &result) const;
+	abt_standingOrderInfo(abt_transaction *transaction);
+	abt_standingOrderInfo(const AB_TRANSACTION *transaction);
+	~abt_standingOrderInfo();
+private:
+	abt_transaction *t;
+public:
+	abt_transaction* getTransaction() const { return this->t; }
 };
 
-#endif // AQB_BANKING_H
+#endif // ABT_STANDINGORDERINFO_H

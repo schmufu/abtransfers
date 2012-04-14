@@ -39,51 +39,29 @@
 #include <aqbanking/account.h>
 #include "abt_transaction_base.h"
 
+#include "abt_standingorderinfo.h"
+#include "abt_datedtransferinfo.h"
+
 class abt_transactionLimits;
-
-/*! \brief Daten von gespeicherten Daueraufträgen
- *
- * Diese Klasse kapselt die Daten der lokal gespeicherten Daueraufträge.
- * Diese werden dann in der "bekannte DA"-Groupbox angezeigt.
- * Neue, geänderte und gelöschte DAs müssen in der Datei aktualisiert werden!
- */
-class abt_StandingInfo {
-private:
-	abt_transaction *t;
-public:
-	abt_StandingInfo(abt_transaction *transaction);
-	~abt_StandingInfo();
-
-	abt_transaction* getTransaction() const { return this->t; }
-};
-
-
-/*! \brief Daten von gespeicherten Terminierten Überweisungen
- *
- * Diese Klasse kapselt die Daten der lokal gespeicherten Terminüberweisungen.
- * Diese werden dann in der "bekannte Dated"-Groupbox angezeigt.
- * Neue, geänderte und gelöschte Terminüberweisungen müssen in der Datei
- * aktualisiert werden!
- */
-class abt_DatedInfo {
-private:
-	abt_transaction *t;
-public:
-	abt_DatedInfo(abt_transaction *transaction);
-	~abt_DatedInfo();
-
-	abt_transaction* getTransaction() const { return this->t; }
-};
 
 /*! \brief Informationen über eine Account
  *
  * Alle relevanten Informationen für einen Account werden über diese Klasse
  * zur Verfügung gestellt. Es wird intern einfach ein Umsetzung auf
  * AB_AccountGet* durchgeführt.
+ *
  * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
+ *
+ * Welche Daueraufträge und terminierten Überweisungen für diesen Account
+ * existieren wird auch in dieser Klasse verwaltet.
  */
 class aqb_AccountInfo : public QObject {
 	Q_OBJECT
+
+	//der parser darf unsere protected funktionen nutzen um z.B. den
+	//account_status zu setzen. Ansonsten darf niemand diese Werte ändern.
+	friend class abt_parser;
+
 private:
 	int m_ID;
 	AB_ACCOUNT *m_account;
@@ -100,10 +78,13 @@ private:
 	QString m_Country;
 	QString m_AccountType;
 
-	QList<abt_StandingInfo*> *m_KnownStandingOrders;
-	QList<abt_DatedInfo*> *m_KnownDatedTransfers;
+	//! \brief Kontostand des Accounts
+	AB_ACCOUNT_STATUS *account_status;
+
+	QList<abt_standingOrderInfo*> *m_standingOrders;
+	QList<abt_datedTransferInfo*> *m_datedTransfers;
 	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
-	QHash<AB_JOB_TYPE, bool> *m_AvailableJobs;
+	QHash<AB_JOB_TYPE, bool> *m_availableJobs;
 
 public:
 	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
@@ -121,25 +102,48 @@ public:
 	const QString& Currency() const { return this->m_Currency; }
 	const QString& Country() const { return this->m_Country; }
 	const QString& AccountType() const { return this->m_AccountType; }
-	const QList<abt_StandingInfo*> *getKnownStandingOrders() const { return this->m_KnownStandingOrders; }
-	const QList<abt_DatedInfo*> *getKnownDatedTransfers() const { return this->m_KnownDatedTransfers; }
+	const QList<abt_standingOrderInfo*> *getKnownStandingOrders() const { return this->m_standingOrders; }
+	const QList<abt_datedTransferInfo*> *getKnownDatedTransfers() const { return this->m_datedTransfers; }
 
 	AB_ACCOUNT* get_AB_ACCOUNT() const { return this->m_account; }
 	int get_ID() const { return this->m_ID; }
 
 	const abt_transactionLimits* limits(AB_JOB_TYPE type) const;
-	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_AvailableJobs; };
-	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_AvailableJobs->value(type, false); };
 
-public slots:
-	void loadKnownStandingOrders();
-	void loadKnownDatedTransfers();
+	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_availableJobs; };
+	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_availableJobs->value(type, false); };
+
+	QString getBankLine() const;
+	QString getNotedBalance() const;
+	QString getBookedBalance() const;
+	QString getDisposable() const;
+	QString getDisposed() const;
+	QDate getDate() const;
+
+	void clearStandingOrders();
+	void clearDatedTransfers();
+	bool removeStandingOrder(abt_standingOrderInfo *so);
+	bool removeDatedTransfer(abt_datedTransferInfo *dt);
+
+
+protected: //from friend classes useable! (speziell: abt_parser)
+	void setAccountStatus(AB_ACCOUNT_STATUS *as);
+
+	//! \brief gibt einen AB_IMEXPORTER_CONTEXT mit den Daten des Accounts zurück
+	AB_IMEXPORTER_CONTEXT *getContext() const;
+
+	//! \brief fügt den Dauerauftrag \a so der Liste hinzu
+	void addStandingOrder(abt_standingOrderInfo *so);
+	//! \brief fügt die terminierte Überweisung \a dt der Liste hinzu
+	void addDatedTransfer(abt_datedTransferInfo *dt);
 
 signals:
-	//! \brief wird gesendet wenn die StandingOrders neu geladen wurden.
+	//! \brief wird gesendet wenn sich die StandingOrders geändert haben.
 	void knownStandingOrdersChanged(const aqb_AccountInfo *account);
-	//! \brief wird gesendet wenn die DatedTransfers neu geladen wurden.
+	//! \brief wird gesendet wenn sich die DatedTransfers geändert haben.
 	void knownDatedTransfersChanged(const aqb_AccountInfo *account);
+	//! \brief wird gesendet wenn sich der Status (Saldo) des Accounts geändert hat.
+	void accountStatusChanged(const aqb_AccountInfo *account);
 };
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);

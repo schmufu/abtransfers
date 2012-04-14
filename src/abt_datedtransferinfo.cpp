@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,40 +22,39 @@
  * $Rev$
  *
  * description:
- *
+ *	Speichert Informationen zu einer bekannten terminierten Überweisung
  *
  * changes not documented here, see svn
  *
  ******************************************************************************/
 
-#ifndef AQB_BANKING_H
-#define AQB_BANKING_H
 
-#include <aqbanking/banking.h>
+#include "abt_datedtransferinfo.h"
 
-#include <QString>
-
-/*! \brief Main-Interface zu AqBanking
-  *
-  * enthält eine Instanz von AB_BANKING und gewährt den entsprechenden
-  * Klassen und Funktionen zugriff auf das AB_BANKING Objekt.
+/**
+  * Die übergebene abt_transaction \a transaction wird beim löschen dieses
+  * Objectes auch wieder gelöscht.
   */
-class aqb_banking
+abt_datedTransferInfo::abt_datedTransferInfo(abt_transaction *transaction)
+	: t(transaction)
 {
-private:
-	AB_BANKING *ab;
 
-public:
-	aqb_banking();
-	~aqb_banking();
+}
 
-	AB_BANKING* getAqBanking() const { return this->ab; }
+/** \overload
+  * Es wird eine Kopie der übergebenen AB_TRANSACTION \a transaction erstellt
+  * und diese Kopie verwendet.
+  */
+abt_datedTransferInfo::abt_datedTransferInfo(const AB_TRANSACTION *transaction)
+{
+	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
+	//Kopie und von dieser eine abt_transaction die im destructor wieder
+	//gelöscht wird.
+	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
+	this->t = new abt_transaction(t, true);
+}
 
-	QString getInstituteFromBLZ(const QString &BLZ) const;
-	/*! This function checks whether the given combination represents a valid account. */
-	bool checkAccount(const QString &country, const QString &branchId,
-			  const QString &bankId, const QString &accountId,
-			  QString &result) const;
-};
-
-#endif // AQB_BANKING_H
+abt_datedTransferInfo::~abt_datedTransferInfo()
+{
+	delete this->t;	//abt_Transaction Object löschen
+}

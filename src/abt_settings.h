@@ -39,61 +39,45 @@
 
 #include "abt_empfaengerinfo.h"
 #include "aqb_accountinfo.h"
+#include "abt_standingorderinfo.h"
+#include "abt_datedtransferinfo.h"
+
+/** \brief Speichert und liefert Einstellungen für das gesamte Programm */
 
 class abt_settings : public QObject
 {
 Q_OBJECT
 private:
-	QString knownEmpfaengerFilename;
 	QString m_dataDir;
-	//QString SettingsFilename;
-	QSettings *Settings;
-	QList<abt_EmpfaengerInfo*>* EmpfaengerList;
+	QString m_recipientsFilename;
+	QString m_accountdataFilename;
+	QString m_historyFilename;
+	QSettings *settings;
+	QList<abt_EmpfaengerInfo*>* m_recipientsList;
 	QHash<int, QString> *m_textKeyDescr;
 
 	void loadTextKeyDescriptions();
+	void setFilePermissions();
 
 public:
 	explicit abt_settings(QObject *parent = 0);
 	~abt_settings();
 
+	//get und setter für die Dateinamen
+	const QString getRecipientsFilename() const { return this->m_recipientsFilename; }
+	const QString getAccountDataFilename() const { return this->m_accountdataFilename; }
+	const QString getHistoryFilename() const { return this->m_historyFilename; }
+	const QString getDataDir() const { return this->m_dataDir; }
+
+	void setRecipientsFilename(const QString &filename);
+	void setAccountDataFilename(const QString &filename);
+	void setHistoryFilename(const QString &filename);
+	void setDataDir(const QString &dirname);
+
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
 
-
-	const QString *getDataDir() const;
-
 	const QHash<int, QString> *getTextKeyDescriptions() const;
-
-	//! Erstellt eine Liste alle bekannten Daueraufträge und gibt einen Pointer hierauf zurück
-	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const QString &KtoNr, const QString &BLZ);
-	//! \overload
-	QList<abt_StandingInfo*> *getStandingOrdersForAccount(const aqb_AccountInfo *a);
-
-	void saveStandingOrder(const abt_transaction *t);
-	void saveStandingOrder(const AB_TRANSACTION *t);
-	void deleteStandingOrder(const abt_transaction *t);
-	void deleteStandingOrder(const AB_TRANSACTION *t);
-	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeStandingOrdersList(QList<abt_StandingInfo*> *list);
-
-
-
-	//! Erstellt eine Liste alle bekannten Terminüberweisungen und gibt einen Pointer hierauf zurück
-	//! the caller is responsible for freeing the Objects and the list!
-	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const QString &KtoNr, const QString &BLZ);
-	//! \overload
-	QList<abt_DatedInfo*> *getDatedTransfersForAccount(const aqb_AccountInfo *a);
-
-	void saveDatedTransfer(const abt_transaction *t);
-	void saveDatedTransfer(const AB_TRANSACTION *t);
-	void deleteDatedTransfer(const abt_transaction *t);
-	void deleteDatedTransfer(const AB_TRANSACTION *t);
-	//! Löscht alle Objekte der Liste sowie die liste selbst
-	static void freeDatedTransfersList(QList<abt_DatedInfo*> *list);
-
-	static void resizeColToContentsFor(QTreeWidget *w);
 
 	void saveWindowStateGeometry(const QByteArray state, const QByteArray geometry);
 	QByteArray loadWindowState() const;
@@ -108,13 +92,15 @@ public:
 	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
+	static void resizeColToContentsFor(QTreeWidget *w);
+
 signals:
-	void EmpfaengerListChanged();
+	void recipientsListChanged();
 
 public slots:
-	void onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE);
-	void addKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
-	void deleteKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo);
+	void onReplaceKnownRecipient(int position, abt_EmpfaengerInfo *newRecipient);
+	void addKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
+	void deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
 };
 
 #endif // TRANS_SETTINGS_H

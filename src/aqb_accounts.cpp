@@ -86,7 +86,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 			/* the iterator must be freed after using it */
 			AB_Account_List2Iterator_free(it);
 		} else {
-			qWarning() << this << "aqb_accounts::constructor : No iterator created!";
+			qWarning() << Q_FUNC_INFO << "no iterator created!";
 		}
 
 		/* as discussed the list itself is only a container which has to be freed
@@ -95,7 +95,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 		 * accounts */
 		AB_Account_List2_free(accs);
 	} else {
-		qWarning() << this << "aqb_accounts::constructor : No Accounts from aqBanking found!";
+		qWarning() << Q_FUNC_INFO << "no Accounts from aqBanking found!";
 
 	}
 
@@ -107,4 +107,44 @@ aqb_Accounts::~aqb_Accounts()
 	foreach (int key, this->m_accounts.keys()) {
 		delete this->m_accounts.take(key);
 	}
+}
+
+aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
+					  const QString &blz,
+					  const QString &owner,
+					  const QString &name) const
+{
+	aqb_AccountInfo *acc = NULL;
+
+	//Alle Accounts durchgehen
+	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
+	it.toFront();
+	while (it.hasNext()) {
+		it.next();
+		acc = it.value();
+		//Angegebene Werte überprüfen.
+		//Wenn ein Wert nicht angegeben wurde wird dieser auch nicht geprüft.
+		if (acc->Number() == kontonummer &&
+		    (blz.isEmpty() || acc->BankCode() == blz) &&
+		    (owner.isEmpty() || acc->OwnerName() == owner) &&
+		    (name.isEmpty() || acc->Name() == name)) {
+			//Account gefunden
+			return acc;
+		}
+	}
+
+	//wenn wir hierher kommen wurde kein Account gefunden!
+	qWarning() << Q_FUNC_INFO << "no account matched! returning NULL!";
+	return NULL;
+}
+
+aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const
+{
+	Q_ASSERT(a);
+	QString kto = AB_Account_GetAccountNumber(a);
+	QString blz = AB_Account_GetBankCode(a);
+	QString name = AB_Account_GetAccountName(a);
+	QString owner = AB_Account_GetOwnerName(a);
+
+	return this->getAccount(kto, blz, owner, name);
 }

@@ -70,31 +70,37 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 	//TextKeys werden anscheinend von der Sparkasse Bremen nicht unterstützt
 	//oder das HBCI Backend setzt diese nicht, deswegen konnte der folgende
 	//Code nicht getestet werden!
-	AB_TEXTKEY_DESCR_LIST *dl = AB_TransactionLimits_GetTextKeys(el);
-	int lc = AB_TextKeyDescr_List_GetCount(dl); //ListCount
-	qDebug() << this << "GetCount = " << lc;
-	if (lc > 0) {
-		QString text;
-		AB_TEXTKEY_DESCR *descr = AB_TextKeyDescr_List_First(dl);
-		for (int i=0; i<lc; ++i) {
-			text.append("Value: ");
-			text.append(AB_TextKeyDescr_GetValue(descr));
-			text.append(" Name: ");
-			text.append(AB_TextKeyDescr_GetName(descr));
-			text.append(" Descr: ");
-			text.append(AB_TextKeyDescr_GetDescr(descr));
-			text.append("\n");
-			descr = AB_TextKeyDescr_List_Next(descr);
-			if (descr == NULL) {
-				qDebug() << "AB_TEXTKEY_DESCR_LIST ZÄHLER ZU WEIT!"
-						<< " -- lc="<<lc << " -- i="<<i;
-				break;
-			}
-		}
-		this->TextKeys = text;
-	} else {
-		this->TextKeys = "Not available";
-	}
+	/** \todo Wenn die TextKeys von der Bank gesendet werden sollten diese
+		  im settings-Objekt gesetzt werden und nicht aus der ini-Datei
+		  gelesen werden!
+	*/
+	//Erstmal auskommentiert, da momentan nicht genutzt!
+//	AB_TEXTKEY_DESCR_LIST *dl = AB_TransactionLimits_GetTextKeys(el);
+//	int lc = AB_TextKeyDescr_List_GetCount(dl); //ListCount
+//	qDebug() << Q_FUNC_INFO << "GetCount = " << lc;
+//	if (lc > 0) {
+//		QString text;
+//		AB_TEXTKEY_DESCR *descr = AB_TextKeyDescr_List_First(dl);
+//		for (int i=0; i<lc; ++i) {
+//			text.append("Value: ");
+//			text.append(AB_TextKeyDescr_GetValue(descr));
+//			text.append(" Name: ");
+//			text.append(AB_TextKeyDescr_GetName(descr));
+//			text.append(" Descr: ");
+//			text.append(AB_TextKeyDescr_GetDescr(descr));
+//			text.append("\n");
+//			descr = AB_TextKeyDescr_List_Next(descr);
+//			if (descr == NULL) {
+//				qDebug() << "AB_TEXTKEY_DESCR_LIST ZÄHLER ZU WEIT!"
+//						<< " -- lc="<<lc << " -- i="<<i;
+//				break;
+//			}
+//		}
+//		this->TextKeys = text;
+//	} else {
+//		this->TextKeys = "Not available";
+//	}
+	this->TextKeys = "not used by AB-Transfers, yet.";
 
 	this->MaxLenCustomerReference = AB_TransactionLimits_GetMaxLenCustomerReference(el);
 	this->MinLenCustomerReference = AB_TransactionLimits_GetMinLenCustomerReference(el);
@@ -130,12 +136,12 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 	this->AllowChangePeriod = AB_TransactionLimits_GetAllowChangePeriod(el);
 	this->AllowChangeExecutionDay = AB_TransactionLimits_GetAllowChangeExecutionDay(el);
 
-	qDebug() << this << "created";
+	qDebug() << Q_FUNC_INFO << "created";
 }
 
 abt_transactionLimits::~abt_transactionLimits()
 {
-	qDebug() << this << "deleted";
+	qDebug() << Q_FUNC_INFO << "deleted";
 }
 
 //public

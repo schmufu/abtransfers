@@ -31,9 +31,35 @@
 #ifndef PAGEWIDGETTESTS_H
 #define PAGEWIDGETTESTS_H
 
-#include <QWidget>
-#include "../widgets/widgetlineeditwithlabel.h"
-#include "../widgets/widgetpurpose.h"
+#include <QtGui>
+#include <QtCore>
+
+#include <aqbanking/job.h>
+#include <aqbanking/transaction.h>
+
+#include <aqbanking/jobsingletransfer.h>
+#include <aqbanking/jobsingledebitnote.h>
+#include <aqbanking/jobinternaltransfer.h>
+#include <aqbanking/jobeutransfer.h>
+#include <aqbanking/jobsepatransfer.h>
+#include <aqbanking/jobsepadebitnote.h>
+#include <aqbanking/jobgetbalance.h>
+#include <aqbanking/jobgettransactions.h>
+#include <aqbanking/jobloadcellphone.h>
+
+#include <aqbanking/jobcreatedatedtransfer.h>
+#include <aqbanking/jobmodifydatedtransfer.h>
+#include <aqbanking/jobdeletedatedtransfer.h>
+#include <aqbanking/jobgetdatedtransfers.h>
+
+#include <aqbanking/jobcreatesto.h>
+#include <aqbanking/jobmodifysto.h>
+#include <aqbanking/jobdeletesto.h>
+#include <aqbanking/jobgetstandingorders.h>
+
+#include "../globalvars.h"
+#include "../abt_conv.h"
+#include "../aqb_accounts.h"
 
 /*! \brief NUR FÜR TESTZECKE!
  *
@@ -44,20 +70,52 @@ class pageWidgetTests : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit pageWidgetTests(QWidget *parent = 0);
+	explicit pageWidgetTests(aqb_Accounts *accs, QWidget *parent = 0);
 	~pageWidgetTests();
 
-	widgetLineEditWithLabel *lineEdit1;
-	widgetLineEditWithLabel *lineEdit2;
-	widgetLineEditWithLabel *lineEdit3;
-	widgetLineEditWithLabel *lineEdit4;
-
-	QStringList getPurpose();
-
 private:
-	widgetPurpose *purpose;
+	QPushButton *button1;
+	QPushButton *button2;
+	QPushButton *button3;
+	QPushButton *button4;
+	QPushButton *button5;
+	QPushButton *button6;
+	QPushButton *button7;
+	QPushButton *button8;
+	QPlainTextEdit *textEdit;
+
+	aqb_Accounts *accounts;
+
+
+	AB_IMEXPORTER_CONTEXT *iec1;
+	AB_IMEXPORTER_CONTEXT *iec2;
+	AB_IMEXPORTER_CONTEXT *iec3;
+
+	AB_IMEXPORTER *ie1;
+	AB_IMEXPORTER *ie2;
+	AB_IMEXPORTER *ie3;
+
+	AB_IMEXPORTER_ACCOUNTINFO *iea1;
+	AB_IMEXPORTER_ACCOUNTINFO *iea2;
+	AB_IMEXPORTER_ACCOUNTINFO *iea3;
+
+
+
+
+	void addlog(const QString &logMsg);
+	void parseContext(AB_IMEXPORTER_CONTEXT *ctx);
 
 signals:
+
+private slots:
+	void onButton1Clicked();
+	void onButton2Clicked();
+	void onButton3Clicked();
+	void onButton4Clicked();
+	void onButton5Clicked();
+	void onButton6Clicked();
+	void onButton7Clicked();
+	void onButton8Clicked();
 
 public slots:
 

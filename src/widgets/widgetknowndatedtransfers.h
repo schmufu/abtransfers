@@ -36,7 +36,7 @@
 #include <QtGui/QAction>
 
 class aqb_AccountInfo;
-class abt_DatedInfo;
+class abt_datedTransferInfo;
 
 class widgetKnownDatedTransfers : public QWidget
 {
@@ -51,15 +51,15 @@ private:
 	QAction *actRefresh;
 
 	const aqb_AccountInfo *m_account;
-	const QList<abt_DatedInfo*> *m_DatedTransfers;
+	const QList<abt_datedTransferInfo*> *m_DatedTransfers;
 
 	void createAllActions();
 
 signals:
 	void deleteDatedTransfer(const aqb_AccountInfo *account,
-				 const abt_DatedInfo *datedTransfer);
+				 const abt_datedTransferInfo *datedTransfer);
 	void editDatedTransfer(const aqb_AccountInfo *account,
-			       const abt_DatedInfo *datedTransfer);
+			       const abt_datedTransferInfo *datedTransfer);
 	void updateDatedTransfers(const aqb_AccountInfo *account);
 
 

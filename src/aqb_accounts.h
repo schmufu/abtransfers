@@ -57,8 +57,15 @@ public:
 		{ return this->m_accounts; }
 	aqb_AccountInfo* getAccount(int ID) const
 		{ return this->m_accounts.value(ID, NULL); }
-//	const AB_BANKING *getBanking() const
-//		{ return this->m_ab; }
+
+	/** \brief returns the account that matches or NULL */
+	aqb_AccountInfo* getAccount(const QString &kontonummer,
+				    const QString &blz = "",
+				    const QString &owner = "",
+				    const QString &name = "") const;
+	/** \overload */
+	aqb_AccountInfo* getAccount(const AB_ACCOUNT *a) const;
+
 };
 
 #endif // AQB_ACCOUNTS_H

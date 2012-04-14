@@ -61,6 +61,13 @@
 #include "widgets/widgetknowndatedtransfers.h"
 #include "widgets/widgetaccountcombobox.h"
 
+#include "abt_parser.h"
+
+#ifdef TESTWIDGETACCESS
+	 //nur zum Testen!
+#include "pages/pagewidgettests.h"
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -68,12 +75,30 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->jobctrl = new abt_job_ctrl(this);
+	this->history = new abt_history(this->accounts, this);
+	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
+
+	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
+	//können die Daten mit dem parser geladen werden
+	AB_IMEXPORTER_CONTEXT *ctx = abt_parser::load_local_ctx(
+						settings->getAccountDataFilename(),
+						"ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts);
+	//alle Daten geladen ctx wieder löschen.
+	AB_ImExporterContext_free(ctx);
+
+	//Auch die History-Daten müssen geladen werden
+	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts, this->history);
+	//alle Daten geladen ctx wieder löschen.
+	AB_ImExporterContext_free(ctx);
+
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -93,16 +118,16 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
 	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
-	connect(this->jobctrl, SIGNAL(jobAdded(const abt_job_info*)),
-		this, SLOT(onJobAddedToJobCtrlList(const abt_job_info*)));
+	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
+		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
 
 	//Logs von abt_job_ctrl in der Log-Seite anzeigen
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
 	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
-	connect(this->outw, SIGNAL(edit_Job(const abt_job_info*)),
-		this, SLOT(onEditJobFromOutbox(const abt_job_info*)));
+	connect(this->outw, SIGNAL(edit_Job(const abt_jobInfo*)),
+		this, SLOT(onEditJobFromOutbox(const abt_jobInfo*)));
 
 	//Default-Entry Überweisung auswählen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
@@ -122,14 +147,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
 	//Änderungen der EmpfängerListe dem Widget bekanntgeben
-	connect(settings, SIGNAL(EmpfaengerListChanged()),
+	connect(settings, SIGNAL(recipientsListChanged()),
 		kew, SLOT(onEmpfaengerListChanged()));
 	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
-		settings, SLOT(onReplaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)));
+		settings, SLOT(onReplaceKnownRecipient(int,abt_EmpfaengerInfo*)));
 	connect(kew, SIGNAL(addNewKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(addKnownEmpfaenger(abt_EmpfaengerInfo*)));
+		settings, SLOT(addKnownRecipient(abt_EmpfaengerInfo*)));
 	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)));
+		settings, SLOT(deleteKnownRecipient(abt_EmpfaengerInfo*)));
 	this->dock_KnownRecipient->setWidget(kew);
 	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -199,6 +224,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
 	this->timer->start(10);
 
+#ifdef TESTWIDGETACCESS
+	this->ui->menuBar->addAction(this->actTestWidgetAccess);
+#endif
+
 }
 
 MainWindow::~MainWindow()
@@ -206,13 +235,10 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-//	delete this->page_transfer_new;	//SingleTransfer löschen
-//	delete this->da_edit_del;	//DauerAufträge ändern löschen
-//	delete this->da_new;		//DauerAufträge neu erstellen löschen
-//	delete this->docks_KnownStandingOrders;
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
+	delete this->history;
 	delete this->accounts;	//account-Object löschen
 	delete ui;
 
@@ -221,7 +247,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeEvent(QEvent *e)
 {
-	qDebug() << "changeEvent called with: " << e;
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -230,6 +255,36 @@ void MainWindow::changeEvent(QEvent *e)
 	default:
 		break;
 	}
+}
+
+//protected
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+	/** \todo Überprüfung ob Speicherung notwendig
+	  *
+	  * Das speichern sollte in eine separate Funktion und in den
+	  * Einstellungen auch angebar sein dass z.B. nach einem erfolgreichen
+	  * Aktualisiseren automatisch gespeichert wird.
+	  */
+
+	//Bevor wir geschlossen werden noch alle Daten sichern!
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
+	ctx = abt_parser::create_ctx_from(this->accounts);
+	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+
+	//Die History in einer Separaten Datei speichern
+	ctx = this->history->getContext();
+	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+
+	//jetzt können wir geschlossen werden
+	e->accept();
 }
 
 //private Slot
@@ -384,6 +439,12 @@ void MainWindow::createActions()
 	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
 
+#ifdef TESTWIDGETACCESS
+	actTestWidgetAccess = new QAction(tr("TestWidget"), this);
+	connect(actTestWidgetAccess, SIGNAL(triggered()), this, SLOT(onActionTestWidgetAccessTriggered()));
+#endif
+
+
 }
 
 
@@ -412,17 +473,12 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
 	this->accountContextMenu->addAction(this->actShowAvailableJobs);
-//	this->accountContextMenu->addSeparator();
-//	this->accountContextMenu->addAction("Text1");
-//	this->accountContextMenu->addAction("Text2");
-//	this->accountContextMenu->addSeparator();
-//	this->accountContextMenu->addAction("Text3");
 }
 
 //private
 void MainWindow::createDockToolbar()
 {
-	this->dockToolbar = new QToolBar(tr("Hilfsfenster"),this);
+	this->dockToolbar = new QToolBar(tr("Dock Toolbar"),this);
 	this->dockToolbar->setObjectName("dockToolbar");
 	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
@@ -448,10 +504,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
-		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
+		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
 		lSO->addWidget(StandingOrders);
 		layoutScrollArea->addWidget(grpSO);
@@ -465,10 +521,10 @@ void MainWindow::createWidgetsInScrollArea()
 		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
-		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
+		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
 
 		lDT->addWidget(DatedTransfers);
 		layoutScrollArea->addWidget(grpDT);
@@ -506,10 +562,10 @@ void MainWindow::createDockStandingOrders()
 	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
-	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_StandingInfo*)),
-		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_StandingInfo*)));
+	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
+	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
@@ -553,17 +609,18 @@ void MainWindow::createDockDatedTransfers()
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
-	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
+
+	//Änderungen der Account-Wahl in der settings.ini speichern
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
 
 	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
-	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_DatedInfo*)),
-		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_DatedInfo*)));
+	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
+		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
+	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
+		this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
 
 	layoutAcc->addWidget(accText,1, Qt::AlignRight);
 	layoutAcc->addWidget(accComboBox, 5, Qt::AlignLeft);
@@ -595,8 +652,11 @@ void MainWindow::on_actionDebug_Info_triggered()
 /*!
  * Slot is called when a job is added to the jobctrl
  */
-void MainWindow::onJobAddedToJobCtrlList(const abt_job_info* ji) const
+void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 {
+	/** \todo Dieser Dialog sollte als "nicht wieder anzeigen" realisert
+		  werden
+	*/
 	QMessageBox *msg = new QMessageBox();
 	msg->setIcon(QMessageBox::Information);
 	msg->setWindowTitle("Job zum Ausgang hinzugefügt");
@@ -621,10 +681,10 @@ void MainWindow::onJobAddedToJobCtrlList(const abt_job_info* ji) const
  */
 void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {
-	if (!current)
+	if (!current) {
 		current = previous;
+	}
 
-	qDebug() << Q_FUNC_INFO << "current changed to:" << current;
 	this->ui->stackedWidget->setCurrentIndex(this->ui->listWidget->row(current));
 }
 
@@ -790,6 +850,11 @@ void MainWindow::on_actionHelp_triggered()
 	delete helpDialog;
 }
 
+//private SLOT
+void MainWindow::on_actionEinstellungen_triggered()
+{
+
+}
 
 //private SLOT
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
@@ -825,13 +890,7 @@ void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc
 //private slot
 void MainWindow::onActionTransferNationalTriggered()
 {
-//	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-//	widgetTransfer *trans = new widgetTransfer(AB_Job_TypeTransfer,
-//						   acc->getSelectedAccount(),
-//						   this);
-//	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
 	this->createTransferWidgetAndAddTab(AB_Job_TypeTransfer);
-	qDebug() << "stackedWidget.height =" << this->ui->stackedWidget->height();
 }
 
 //private slot
@@ -876,6 +935,7 @@ void MainWindow::onActionDatedDelTriggered()
 void MainWindow::onActionDatedUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
 }
 
@@ -903,6 +963,7 @@ void MainWindow::onActionStandingDelTriggered()
 void MainWindow::onActionStandingUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
 }
 
@@ -922,6 +983,7 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 void MainWindow::onActionUpdateBalanceTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetBalance(acc->getSelectedAccount());
 }
 
@@ -932,6 +994,7 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	//Konto anzeigen
 	BankAccountsWidget *BAW = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	aqb_AccountInfo *acc = BAW->getSelectedAccount();
+	if (!acc) return; //kein Account gewählt -> abbruch
 
 	QDialog *dialog = new QDialog(this);
 	dialog->setWindowTitle(tr("Unterstützte Aufträge"));
@@ -1037,6 +1100,22 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	delete dialog;
 }
 
+#ifdef TESTWIDGETACCESS
+//private slot (ONLY FOR TESTING!)
+void MainWindow::onActionTestWidgetAccessTriggered()
+{
+	//Nur zum Testen verwendet!
+	QDialog *dialog = new QDialog(this);
+	QVBoxLayout *vb = new QVBoxLayout(dialog);
+	pageWidgetTests *page = new pageWidgetTests(this->accounts);
+	vb->addWidget(page);
+
+	dialog->exec();
+
+	delete dialog;
+}
+#endif
+
 //private slot
 /** Tab soll gelöscht werden
  *
@@ -1108,7 +1187,7 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 	}
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
-	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
@@ -1184,8 +1263,8 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 	case AB_Job_TypeLoadCellPhone :
 	case AB_Job_TypeUnknown :
 	default:
-		qWarning() << "onWidgetTransferCreateTransfer(): type '" <<
-				type << "' not supported! No Job added! ABBRUCH!";
+		qWarning() << Q_FUNC_INFO << "type: " << type
+			   << " - not supported! No Job added! ABBRUCH!";
 		return;
 		break;
 	}
@@ -1200,7 +1279,7 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 
 
 //private Slot
-void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
+void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
 	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1222,7 +1301,7 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 }
 
 //private Slot
-void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_StandingInfo *da)
+void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
 	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1240,7 +1319,7 @@ void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const 
 
 
 //private Slot
-void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
 	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1262,7 +1341,7 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 }
 
 //private Slot
-void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_DatedInfo *di)
+void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
 	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
@@ -1279,7 +1358,7 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 }
 
 //private Slot
-void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
+void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 {
 	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
 		  dies sollte in diesem auch gesetzt werden, damit bei Klick
@@ -1315,7 +1394,7 @@ void MainWindow::onEditJobFromOutbox(const abt_job_info *job)
 
 	transW = this->createTransferWidgetAndAddTab(job->getAbJobType(), acc);
 
-	transW->setValuesFromTransaction(job->getAbtTransaction());
+	transW->setValuesFromTransaction(job->getTransaction());
 
 	//den neuen tab gleich darstellen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
@@ -1504,7 +1583,6 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
-	//abt_transaction::saveTransaction(origT, "Modifytext__orig.ini");
 
 	//kopie der original Transaction erstellen
 	abt_transaction *newT = new abt_transaction(*origT);
@@ -1531,8 +1609,6 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
 
 	this->jobctrl->addModifyStandingOrder(acc, newT);
-
-	//abt_transaction::saveTransaction(newT, "Modifytext__new.ini");
 
 	delete newT;
 }
@@ -1621,4 +1697,5 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //
 //	delete t;
 }
+
 

@@ -33,44 +33,49 @@
 
 #include "abt_transaction_base.h"
 
+//! \deprecated never used an not planed to get used
 class trans_StandingOrder : public abt_transaction
 {
 public:
 	trans_StandingOrder();
 };
 
-
+//! \deprecated never used an not planed to get used
 class trans_DatedTransfer : public abt_transaction
 {
 public:
 	trans_DatedTransfer();
 };
 
-
+//! \deprecated never used an not planed to get used
 class trans_SingleTransfer : public abt_transaction
 {
 public:
 	trans_SingleTransfer();
 };
 
+//! \deprecated never used an not planed to get used
 class trans_SingleDebitNote : public abt_transaction
 {
 public:
 	trans_SingleDebitNote();
 };
 
+//! \deprecated never used an not planed to get used
 class trans_EuTransfer : public abt_transaction
 {
 public:
 	trans_EuTransfer();
 };
 
+//! \deprecated never used an not planed to get used
 class trans_InternalTransfer : public abt_transaction
 {
 public:
 	trans_InternalTransfer();
 };
 
+//! \deprecated never used an not planed to get used
 class trans_SepaTransfer : public abt_transaction
 {
 public:

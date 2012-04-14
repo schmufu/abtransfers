@@ -33,6 +33,13 @@
 
 #include <QRegExpValidator>
 
+/** \brief Validator der auf die richtige Eingabe eines Betrages prüft
+ *
+ * Wenn nur Beträge eingegeben werden sollen kann dieser Validator dazu genutzt
+ * werden um die Eingabe zu Prüfung bzw. automatisch zu Vervollständigen.
+ *
+ */
+
 class BetragValidator : public QRegExpValidator
 {
 	Q_OBJECT
@@ -43,13 +50,14 @@ public:
 };
 
 
-/*! abgeleiteter QRegExpValidator der vorher in Grossbuchstaben wandelt
+/** \brief Abgeleiteter QRegExpValidator der vorher in Grossbuchstaben wandelt
  *
  * Wenn ein String mit diesem Validator überprüft wird, wird der zu Prüfende
  * String zuerst in UpperCase gewandelt und danach geprüft!
  *
  * auch fixup() wurde implementiert (wandelt den String in UpperCase)
  */
+
 class UppercaseValidator : public QRegExpValidator
 {
 	Q_OBJECT

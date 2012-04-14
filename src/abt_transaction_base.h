@@ -43,10 +43,10 @@
 
 class QSettings;
 
-/*! simple wrapper to AB_Transaction_Set* -Get* functions
+/** \brief simple wrapper to AB_Transaction_Set* -Get* functions
   *
-  * Diese Klasse stellt alle Funktionen von aqBanking die Transactionen
-  * betreffen zur Verfügung
+  * Diese Klasse stellt alle Funktionen von AqBanking die AB_TRANSACTION
+  * betreffen zur Verfügung.
   */
 
 class abt_transaction
@@ -287,19 +287,13 @@ public:
 	void setUnitIdNameSpace(const QString &UnitIdNameSpace);
 
 	const AB_VALUE* getUnits() const;
-	//const AB::Value* getUnits() const;
 	void setUnits(const AB_VALUE *Units);
-	//void setUnits(const AB::Value *Units);
 
 	const AB_VALUE* getUnitPrice() const;
-	//const AB::Value* getUnitPrice() const;
 	void setUnitPrice(const AB_VALUE *UnitPrice);
-	//void setUnitPrice(const AB::Value *UnitPrice);
 
 	const AB_VALUE* getCommission() const;
-	//const AB::Value* getCommission() const;
 	void setCommission(const AB_VALUE *Commission);
-	//void setCommission(const AB::Value *Commission);
 
 
 	/***************************************
@@ -326,17 +320,6 @@ public:
 	void fillLocalFromAccount(const AB_ACCOUNT *a);
 
 	const AB_TRANSACTION* getAB_Transaction() const;
-
-
-	/**********************************************************************
-	 * Static Helper functions                                            *
-	 **********************************************************************/
-	//! speichert die Transaction in dem übergebenen QSettings \a s Objekt
-	static void saveTransaction(const abt_transaction *t, QSettings *s);
-	//! \overload
-	static void saveTransaction(AB_TRANSACTION *t, QSettings *s);
-
-	static abt_transaction* loadTransaction(const QSettings *s);
 
 };
 
