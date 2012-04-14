@@ -143,20 +143,14 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 	return NULL;
 }
 
+/** \overload */
 aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const
 {
-	aqb_AccountInfo *acc = NULL;
+	Q_ASSERT(a);
+	QString kto = AB_Account_GetAccountNumber(a);
+	QString blz = AB_Account_GetBankCode(a);
+	QString name = AB_Account_GetAccountName(a);
+	QString owner = AB_Account_GetOwnerName(a);
 
-	//Alle Accounts durchgehen
-	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
-	it.toFront();
-	while (it.hasNext()) {
-		it.next();
-		acc = it.value();
-		if (acc->get_AB_ACCOUNT() == a) return acc; //Account gefunden
-	}
-
-	//wenn wir hierher kommen wurde kein Account gefunden!
-	qWarning() << Q_FUNC_INFO << "no account matched! returning NULL!";
-	return NULL;
+	return this->getAccount(kto, blz, owner, name);
 }

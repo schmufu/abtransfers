@@ -79,17 +79,18 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 }
 
 abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
-			 const AB_TRANSACTION *t, const AB_ACCOUNT *acc,
-			 QDateTime date)
+			 const AB_TRANSACTION *t, const AB_ACCOUNT *acc)
 	: m_job(NULL),
 	  m_ABAccount(acc),
 	  m_jobType(type),
-	  m_jobStatus(status),
-	  m_date(date)
+	  m_jobStatus(status)
 {
 	this->m_jobInfo = new QStringList();
 	//wir speichern eine kopie der AB_TRANSACTION als neue abt_transaction
 	this->m_trans = new abt_transaction(AB_Transaction_dup(t), true);
+
+	this->m_date = QDateTime(abt_conv::GwenTimeToQDate(AB_Transaction_GetDate(t)));
+
 
 	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
 	this->createJobInfoStringList(this->m_jobInfo);

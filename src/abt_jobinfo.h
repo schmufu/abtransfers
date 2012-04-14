@@ -67,8 +67,7 @@ public:
 	abt_jobInfo(AB_JOB *j);
 	/** \brief Constructor zur Verwendung als Historie Object */
 	abt_jobInfo(const AB_JOB_TYPE type, const AB_JOB_STATUS status,
-		    const AB_TRANSACTION *t, const AB_ACCOUNT *acc,
-		    const QDateTime date);
+		    const AB_TRANSACTION *t, const AB_ACCOUNT *acc);
 	~abt_jobInfo();
 
 private:

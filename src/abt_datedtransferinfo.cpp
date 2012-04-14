@@ -31,13 +31,21 @@
 
 #include "abt_datedtransferinfo.h"
 
+/**
+  * Die übergebene abt_transaction \a transaction wird beim löschen dieses
+  * Objectes auch wieder gelöscht.
+  */
 abt_datedTransferInfo::abt_datedTransferInfo(abt_transaction *transaction)
 	: t(transaction)
 {
 
 }
 
-abt_datedTransferInfo::abt_datedTransferInfo(AB_TRANSACTION *transaction)
+/** \overload
+  * Es wird eine Kopie der übergebenen AB_TRANSACTION \a transaction erstellt
+  * und diese Kopie verwendet.
+  */
+abt_datedTransferInfo::abt_datedTransferInfo(const AB_TRANSACTION *transaction)
 {
 	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
 	//Kopie und von dieser eine abt_transaction die im destructor wieder

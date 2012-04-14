@@ -43,7 +43,8 @@
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
 
-#define TESTWIDGETACCESS
+//uncomment this if access to pagewidgettests.cpp is wanted
+//#define TESTWIDGETACCESS
 
 class widgetTransfer;
 

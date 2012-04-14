@@ -109,7 +109,7 @@ private:
 	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
 	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
 	//! Prüft die übergebene ausgeführte JobListe \a jl auf Fehler
-	void parseExecutedJobs(AB_JOB_LIST2 *jl);
+	bool parseExecutedJobs(AB_JOB_LIST2 *jl);
 
 public:
 	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
@@ -158,7 +158,8 @@ public slots:
 	void execQueuedTransactions();
 
 	void moveJob(int JobListPos, int updown);
-	void deleteJob(int JobListPos);
+	/** \brief löscht den AB_JOB an der Listenposition \a JobListPos */
+	void deleteJob(int JobListPos, bool free=true);
 
 };
 

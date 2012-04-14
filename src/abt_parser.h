@@ -58,6 +58,7 @@
 #include <aqbanking/jobgetstandingorders.h>
 
 #include "aqb_accounts.h"
+#include "abt_history.h"
 
 
 /** \brief parser zum laden der local gespeicherten Daten sowie zum Auswerten
@@ -109,6 +110,13 @@ public:
 	  * des entsprechenden Accounts
 	  */
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts);
+
+	/** \overload zur Verwendung wenn die History geladen werden soll
+	  */
+	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
+			      const aqb_Accounts *allAccounts,
+			      abt_history *history);
+
 
 	static void export_history() { };
 

@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->history = new abt_history(this->accounts, this);
-	this->jobctrl = new abt_job_ctrl(this->accounts,this->history, this);
+	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;
@@ -86,12 +86,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
 	//können die Daten mit dem parser geladen werden
 	AB_IMEXPORTER_CONTEXT *ctx = abt_parser::load_local_ctx(
-						"AllAccountData_TEST.ctx",
+						settings->getAccountDataFilename(),
 						"ctxfile", "default");
 	abt_parser::parse_ctx(ctx, this->accounts);
 	//alle Daten geladen ctx wieder löschen.
 	AB_ImExporterContext_free(ctx);
 
+	//Auch die History-Daten müssen geladen werden
+	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts, this->history);
+	//alle Daten geladen ctx wieder löschen.
+	AB_ImExporterContext_free(ctx);
 
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
@@ -141,14 +147,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
 	//Änderungen der EmpfängerListe dem Widget bekanntgeben
-	connect(settings, SIGNAL(EmpfaengerListChanged()),
+	connect(settings, SIGNAL(recipientsListChanged()),
 		kew, SLOT(onEmpfaengerListChanged()));
 	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
-		settings, SLOT(onReplaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)));
+		settings, SLOT(onReplaceKnownRecipient(int,abt_EmpfaengerInfo*)));
 	connect(kew, SIGNAL(addNewKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(addKnownEmpfaenger(abt_EmpfaengerInfo*)));
+		settings, SLOT(addKnownRecipient(abt_EmpfaengerInfo*)));
 	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)));
+		settings, SLOT(deleteKnownRecipient(abt_EmpfaengerInfo*)));
 	this->dock_KnownRecipient->setWidget(kew);
 	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -270,14 +276,14 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
 	ctx = abt_parser::create_ctx_from(this->accounts);
-	abt_parser::save_local_ctx(ctx, "AllAccountData_TEST_saved.ctx",
+	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
 				   "ctxfile", "default");
 	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);
 
 	//Die History in einer Separaten Datei speichern
 	ctx = this->history->getContext();
-	abt_parser::save_local_ctx(ctx, "AB-Transfers_History.ctx",
+	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
 				   "ctxfile", "default");
 	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);

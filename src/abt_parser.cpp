@@ -41,6 +41,7 @@
 #include "aqb_accountinfo.h"
 #include "abt_datedtransferinfo.h"
 #include "abt_standingorderinfo.h"
+#include "abt_jobinfo.h"
 
 #include <aqbanking/accstatus.h>
 
@@ -329,8 +330,17 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
 		while (t) {
 			//die terminierte Überweisung dem Account zufügen
+			//oder evt. auch löschen. Abhängig vom Status.
 			abt_datedTransferInfo *dt = new abt_datedTransferInfo(t);
-			acc->addDatedTransfer(dt);
+			if (dt->getTransaction()->getStatus() == AB_Transaction_StatusRevoked) {
+				//Dem account werden nur gültige Terminüberweisungen
+				//zugeordnet, gelöschte erscheinen nur in der History
+				acc->removeDatedTransfer(dt);
+				delete dt; //dt wird nicht länger benötigt
+			} else {
+				acc->addDatedTransfer(dt);
+				//dt wird durch den Account wieder gelöscht
+			}
 
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
@@ -409,8 +419,17 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
 		while (t) {
 			//den Dauerauftrag dem Account zufügen
+			//oder evt. auch löschen. Abhängig vom Status.
 			abt_standingOrderInfo *so = new abt_standingOrderInfo(t);
-			acc->addStandingOrder(so);
+			if (so->getTransaction()->getStatus() == AB_Transaction_StatusRevoked) {
+				//Dem account werden nur gültige Daueraufträge
+				//zugeordnet, gelöschte erscheinen nur in der History
+				acc->removeStandingOrder(so);
+				delete so; //so wird nicht länger benötigt
+			} else {
+				acc->addStandingOrder(so);
+				//so wird durch den Account wieder gelöscht
+			}
 
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
@@ -526,6 +545,255 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 					AB_Transaction_Status_toString(state));
 			qDebug() << logmsg << logmsg2;
 
+
+			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
+		}
+
+		//next account
+		ai=AB_ImExporterContext_GetNextAccountInfo(iec);
+	} /* while ai */
+
+}
+
+
+// Zum import der History
+//static
+void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
+			   const aqb_Accounts *allAccounts,
+			   abt_history *history)
+{
+	AB_IMEXPORTER_ACCOUNTINFO *ai;
+	const AB_SECURITY *security;
+	const AB_MESSAGE *msg;
+	QString logmsg;
+	QString logmsg2;
+	int cnt = 0;
+
+	//wenn kein gültiger context vorhanden ist brauchen wir auch nichts machen
+	if (!iec) return;
+
+	//die history sollte natürlich auch existieren
+	if (!history) return;
+	if (!allAccounts) return;
+
+	/**********************************************************************/
+	//this->parseImExporterContext_Messages(iec);
+	/**********************************************************************/
+	cnt = 0;
+	logmsg = "PARSER HISTORY - Messages: ";
+
+	msg = AB_ImExporterContext_GetFirstMessage(iec);
+	while (msg) {
+		//Must be implemented
+		msg = AB_ImExporterContext_GetNextMessage(iec);
+		cnt++;
+	}
+
+	logmsg2 = QString("Count: %1").arg(cnt);
+	qDebug() << logmsg << logmsg2;
+
+
+	/**********************************************************************/
+	//this->parseImExporterContext_Securitys(iec);
+	/**********************************************************************/
+	logmsg = "PARSER HISTORY - Security: ";
+	cnt = 0;
+
+	security = AB_ImExporterContext_GetFirstSecurity(iec);
+	while (security) {
+		//Must be implemented
+		security = AB_ImExporterContext_GetNextSecurity(iec);
+		cnt++;
+	}
+
+	logmsg2 = QString("Count: %1").arg(cnt);
+	qDebug() << logmsg << logmsg2;
+
+
+	ai=AB_ImExporterContext_GetFirstAccountInfo(iec);
+	while(ai) {
+		logmsg = "PARSER HISTORY - Acc-Info: ";
+
+		//Jetzt folgen Daten für verschiedene Accounts
+		QString KtoNr = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountNumber(ai));
+		QString BLZ = QString::fromUtf8(AB_ImExporterAccountInfo_GetBankCode(ai));
+		QString Owner = QString::fromUtf8(AB_ImExporterAccountInfo_GetOwner(ai));
+		//der AccountName wird nicht importiert! Und über fillGaps kann
+		//er auch nicht nachträglich gesetzt werden, da der Account nur
+		//"virtuell" existiert.
+
+		//beim History account sollte nur einer mit vorgegebenen Daten
+		//existieren!
+		if (KtoNr != "0000000000" || BLZ != "00000000" ||
+		    Owner != "AB-Transfers" ) {
+			//Account ist fehlerhaft!
+			qWarning() << logmsg << "History Account not correct! "
+					     << "KtoNr:" << KtoNr
+					     << "BLZ:" << BLZ
+					     << "Owner:" << Owner;
+			qWarning() << logmsg << "ABORTING HISTORY IMPORT";
+			//perhaps the next account is correct, try it
+			ai=AB_ImExporterContext_GetNextAccountInfo(iec);
+			continue;
+		}
+
+		logmsg2 = QString("%1 [%2] Owner: %4").arg(KtoNr, BLZ, Owner);
+		qDebug() << logmsg << logmsg2;
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_Status(ai);
+		/**********************************************************************/
+		AB_ACCOUNT_STATUS *as;
+		logmsg = "PARSER HISTORY - AccStats: ";
+		cnt = 0;
+
+		as = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
+		while (as) {
+			//Must be implemented? The account states are not stored!
+			as = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
+			cnt++;
+		}
+
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
+		/**********************************************************************/
+		AB_TRANSACTION *t;
+		logmsg = "PARSER HISTORY - DatedTra: ";
+		QStringList strList;
+
+		cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
+		while (t) {
+			QString t_kto = AB_Transaction_GetLocalAccountNumber(t);
+			QString t_blz = AB_Transaction_GetLocalBankCode(t);
+			aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
+			if (!acc) {
+				// keinen passenden Account gefunden, Nächste
+				qWarning() << logmsg << "No matching account found!"
+						     << "( KTO:" << t_kto
+						     << " - BLZ:" << t_blz << ")";
+				t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
+				continue;
+			}
+			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
+
+			abt_jobInfo *ji = new abt_jobInfo(
+					AB_Job_TypeCreateDatedTransfer,
+					AB_Job_StatusFinished, t, a);
+
+			history->add(ji);
+
+			t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
+		}
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
+		/**********************************************************************/
+		logmsg = "PARSER HISTORY - NotedTra: ";
+		strList.clear();
+
+		cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+		t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
+		while (t) {
+			//Must be implemented?
+			t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
+		}
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
+		/**********************************************************************/
+		logmsg = "PARSER HISTORY - Standing: ";
+		strList.clear();
+
+		cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
+		while (t) {
+			QString t_kto = AB_Transaction_GetLocalAccountNumber(t);
+			QString t_blz = AB_Transaction_GetLocalBankCode(t);
+			aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
+			if (!acc) {
+				// keinen passenden Account gefunden, Nächste
+				qWarning() << logmsg << "No matching account found!"
+						     << "( KTO:" << t_kto
+						     << " - BLZ:" << t_blz << ")";
+				t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
+				continue;
+			}
+			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
+
+			abt_jobInfo *ji = new abt_jobInfo(
+					AB_Job_TypeCreateStandingOrder,
+					AB_Job_StatusFinished, t, a);
+
+			history->add(ji);
+
+			t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
+		}
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
+		/**********************************************************************/
+		logmsg = "PARSER HISTORY - Transact: ";
+		strList.clear();;
+
+		cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+		t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
+		while (t) {
+			//Must be implemented?
+			t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
+		}
+
+
+		/**********************************************************************/
+		//this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
+		/**********************************************************************/
+		logmsg = "PARSER HISTORY - Transfer: ";
+		strList.clear();
+
+		cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
+		logmsg2 = QString("Count: %1").arg(cnt);
+		qDebug() << logmsg << logmsg2;
+
+		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
+		while (t) {
+			QString t_kto = AB_Transaction_GetLocalAccountNumber(t);
+			QString t_blz = AB_Transaction_GetLocalBankCode(t);
+			aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
+			if (!acc) {
+				// keinen passenden Account gefunden, Nächste
+				qWarning() << logmsg << "No matching account found!"
+						     << "( KTO:" << t_kto
+						     << " - BLZ:" << t_blz << ")";
+				t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
+				continue;
+			}
+			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
+
+			abt_jobInfo *ji = new abt_jobInfo(
+					AB_Job_TypeTransfer,
+					AB_Job_StatusFinished, t, a);
+
+			history->add(ji);
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
 		}

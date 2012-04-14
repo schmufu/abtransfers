@@ -31,6 +31,7 @@
 #include "abt_job_ctrl.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 #include <aqbanking/job.h>
 #include <aqbanking/transaction.h>
@@ -612,10 +613,18 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji)) {
-		//nach dem erstellen muss eine Aktualisierung stattfinden.
-		this->addGetDatedTransfers(acc, true);
-	}
+	/** \todo Muss dies stattfinden? Siehe auch ToDo-Eintrag bei
+		  Daueraufträgen.
+		  Wobei die transaction aus der aktualisierung unter umständen
+		  Andere Daten enthält als die transaction aus dem job!
+		  Es wurd ein Dauerauftrag mit Letztmalig zur Bank geschickt,
+		  bei der Aktualisierung wurde dieser allerdings ohne Enddatum
+		  zurück gemeldet!
+	*/
+//	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji)) {
+//		//nach dem erstellen muss eine Aktualisierung stattfinden.
+//		this->addGetDatedTransfers(acc, true);
+//	}
 
 
 }
@@ -759,10 +768,18 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
-		//nach dem erstellen muss eine Aktualisierung stattfinden.
-		this->addGetStandingOrders(acc, true);
-	}
+	/** \todo Muss dies stattfinden? Wenn es durchgeführt wird erscheint
+		  der Dauerauftrag doppelt!
+		  Wobei die transaction aus der aktualisierung unter umständen
+		  Andere Daten enthält als die transaction aus dem job!
+		  Es wurd ein DA mit Letztmalig zur Bank geschickt, bei der
+		  Aktualisierung wurde dieser allerdings ohne Enddatum zurück
+		  gemeldet!
+	*/
+//	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
+//		//nach dem erstellen muss eine Aktualisierung stattfinden.
+//		this->addGetStandingOrders(acc, true);
+//	}
 
 }
 
@@ -953,7 +970,10 @@ void abt_job_ctrl::execQueuedTransactions()
 		this->addlog("** Es wird abgebrochen und keine weitere     **");
 		this->addlog("** Bearbeitung/Auswertung durchgeführt!      **");
 		this->addlog("***********************************************");
-		AB_Job_List2_ClearAll(jl);
+		/** \todo Hier müssen alle jobs des jobqueue gelöscht und neu
+		  *       erstellt wieder hinzugefügt werden!
+		  */
+		AB_Job_List2_FreeAll(jl); // <-- dies löscht auch ALLE Jobs!
 		AB_ImExporterContext_Clear(ctx);
 		AB_ImExporterContext_free(ctx);
 		return;
@@ -974,7 +994,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 
 
-	this->parseExecutedJobs(jl);
+	bool successfull = this->parseExecutedJobs(jl);
 
 //	this->parseExecutedJobListAndContext(jl, ctx);
 //	this->parseImExporterContext(ctx);
@@ -985,31 +1005,55 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	this->addlog("Alle Jobs übertragen und Antworten ausgewertet");
 
-	//wir geben die JobList wieder frei, um das Freigeben der einzelnen
-	//jobs kümmern sich die Objekte denen dieser Job zugewiesen wurde.
-	AB_Job_List2_free(jl);
+	//wir geben die JobList wieder frei. Dies löscht auch ALLE AB_JOBs die
+	//darin noch enthalten sind!
+	//Die Objekte an denen ein AB_JOB übergeben wurde dürfen mit diesem
+	//nicht mehr arbeiten, sondern nur mit Kopien der Daten!
+	AB_Job_List2_FreeAll(jl); //löscht alle Jobs und die Liste
 	AB_ImExporterContext_Clear(ctx);
 	AB_ImExporterContext_free(ctx);
 
+	//JobListe hat sich definitiv geändert
 	emit this->jobQueueListChanged();
+
+	if (!successfull) {
+		QMessageBox::critical(qobject_cast<QWidget*>(this->parent()),
+				      tr("Fehlerhafte Ausführung"),
+				      tr("<b>Die Aufträge wurden nicht erfolgreich "
+					 "ausgeführt!</b><br /><br />"
+					 "Alle Aufträge die nicht erfolgreich "
+					 "ausgeführt werden konnten befinden sich "
+					 "weiterhin im Ausgang. Dort können diese "
+					 "Aufträge über das Kontext-Menü (rechte "
+					 "Maustaste) bearbeitet und korrigiert "
+					 "oder gelöscht werden.<br />"
+					 "Bitte beachten Sie auch die Ausgaben "
+					 "im \"Log\"-Fenster um Hinweise für die "
+					 "fehlerhafte Ausführung zu erhalten."),
+				      QMessageBox::Ok, QMessageBox::Ok);
+	}
+
 }
 
 /**
   * überprüft den Status der ausgeführten Jobs und verschiebt diese, wenn
   * erfolgreich, in die History-Liste.
-  * Wenn ein Fehler aufgetreten ist bleibt der fehlerhafte Job im Ausgang und
-  * kann geändert und erneut gesendet werden.
+  * Wenn ein Fehler aufgetreten wird der fehlerhafte Job aus der übergebenen
+  * AB_JOB_LIST2 \a jl entfernt und ist somit weiterhin verwendbar.
+  *
+  * Wenn alle jobs erfolgreich ausgeführt wurden wird true zurück gegeben,
+  * ansonten false.
   */
 //private
-void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
+bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 {
 	AB_JOB *j;
 	AB_JOB_STATUS jobState;
 	AB_JOB_TYPE jobType;
-//	QString strState;
 	QString strType;
 	QStringList strList;
 	qDebug() << Q_FUNC_INFO << "started";
+	bool ret = true;
 
 	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
 	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
@@ -1022,9 +1066,6 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 		strType = AB_Job_Type2Char(jobType);
 		jobState = AB_Job_GetStatus(j);
 
-		//Die Logs des Backends parsen (werden später ausgegeben)
-		strList = this->getParsedJobLogs(j);
-
 		if (jobState == AB_Job_StatusFinished ||
 		    jobState == AB_Job_StatusPending) {
 			//Job wurde erfolgreich ausgeführt oder von der Bank
@@ -1034,6 +1075,17 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			// -->	nicht mehr, da abt_jobInfo den Job nurnoch
 			//	verwaltet und benötigte Daten des Jobs kopiert.
 
+
+			/** \todo Status in der ausgeführten Transaction setzen.
+			  * Der Status sollte innherhalb der Transaction gespeichert
+			  * werden. Damit die History auch anzeigt wie der Status
+			  * des Auftrages war.
+			  */
+			//AB_Transaction_SetType(t, AB_Transaction_TypeTransaction);
+			//AB_Transaction_SetSubType(t, AB_Transaction_SubTypeStandard);
+			//AB_Transaction_SetStatus(t, AB_Transaction_StatusRevoked);
+
+
 			abt_jobInfo *jobInfo = new abt_jobInfo(j);
 			this->m_history->add(jobInfo);
 
@@ -1041,62 +1093,49 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 					"Der Auftrag wurde zur Historie hinzugefügt").arg(
 							strType));
 
-			//Job auch aus dem jobqueue entfernen
-			for(int i=0; i<this->jobqueue->size(); ++i) {
-				if (this->jobqueue->at(i)->getJob() == j) {
-					//JobPos, gefunden, diesen löschen
-					this->deleteJob(i);
-					break; //kein weiterer Job möglich
-				}
-			}
-
 
 			//Je nachdem was gemacht wurde müssen evt. noch die
-			//account-Objecte aktualisiert werden.
+			//account-Objekte aktualisiert werden.
 			AB_ACCOUNT *a = AB_Job_GetAccount(j);
 			aqb_AccountInfo *acc = this->m_allAccounts->getAccount(a);
-			AB_TRANSACTION *t;
+			const AB_TRANSACTION *t;
 			abt_datedTransferInfo *dt;
 			abt_standingOrderInfo *so;
 
 			switch(jobType) {
 			case AB_Job_TypeCreateDatedTransfer:
-				t = AB_Transaction_dup(AB_JobCreateDatedTransfer_GetTransaction(j));
-				dt = new abt_datedTransferInfo(t);
-				acc->removeDatedTransfer(dt);
-				delete dt;
+				//eine neue terminierte Überweisung wurde
+				//erstellt im ctx befinden sich die Daten
 				break;
 
 			case AB_Job_TypeDeleteDatedTransfer:
-				t = AB_Transaction_dup(AB_JobDeleteDatedTransfer_GetTransaction(j));
+				t = AB_JobDeleteDatedTransfer_GetTransaction(j);
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
 				break;
 
 			case AB_Job_TypeModifyDatedTransfer:
-				t = AB_Transaction_dup(AB_JobModifyDatedTransfer_GetTransaction(j));
+				t = AB_JobModifyDatedTransfer_GetTransaction(j);
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
 				break;
 
 			case AB_Job_TypeCreateStandingOrder:
-				t = AB_Transaction_dup(AB_JobCreateStandingOrder_GetTransaction(j));
-				so = new abt_standingOrderInfo(t);
-				acc->removeStandingOrder(so);
-				delete so;
+				//ein neuer Dauerauftrag wurde erstellt im
+				//ctx befinden sich die Daten
 				break;
 
 			case AB_Job_TypeDeleteStandingOrder:
-				t = AB_Transaction_dup(AB_JobDeleteStandingOrder_GetTransaction(j));
+				t = AB_JobDeleteStandingOrder_GetTransaction(j);
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;
 				break;
 
 			case AB_Job_TypeModifyStandingOrder:
-				t = AB_Transaction_dup(AB_JobModifyStandingOrder_GetTransaction(j));
+				t = AB_JobModifyStandingOrder_GetTransaction(j);
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;
@@ -1106,6 +1145,7 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				//Alle DatedTransfers wurden aktualisiert
 				acc->clearDatedTransfers();
 				break;
+
 			case AB_Job_TypeGetStandingOrders:
 				//Alle StandingOrders wurden aktualisiert
 				acc->clearStandingOrders();
@@ -1115,27 +1155,60 @@ void abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break; //nichts zu tun
 			}
 
+			//Job auch aus dem jobqueue entfernen
 
+			//ACHTUNG!
+			//Wenn bei deleteJob(job, free) free mit true [default]
+			//übergeben wird, löscht dies den AB_JOB! Hiernach könnte
+			//dann auf den AB_JOB [j] nicht mehr zugegriffen werden!
+
+			for(int i=0; i<this->jobqueue->size(); ++i) {
+				if (this->jobqueue->at(i)->getJob() == j) {
+					//JobPos, gefunden, diesen löschen
+					this->deleteJob(i, false);
+					break; //kein weiterer Job möglich
+				}
+			}
 		} else {
+			//Es ist ein Fehler beim Ausführen des Jobs aufgetreten!
+			ret = false; //wir geben false zurück
+
 			this->addlog(tr("<b><font color=red>Ausführung von '%1' fehlerhaft.</font></b> "
 					"Der Auftrag bleibt im Ausgang erhalten").arg(
 							strType));
 
-			//Es ist ein Fehler beim Ausführen des Jobs aufgetreten!
-			//er verbleibt in dem jobqueue
+			//Job aus der AB_JOB_LIST2 entfernen, damit er nicht
+			//durch das löschen der AB_JOB_LIST2 auch gelöscht wird.
+			AB_Job_List2_Remove(jl, j);
+
+			//den Job erstmal aus dem jobqueue entfernen
+			for(int i=0; i<this->jobqueue->size(); ++i) {
+				if (this->jobqueue->at(i)->getJob() == j) {
+					//JobPos, gefunden, diesen löschen
+					this->deleteJob(i, false);
+					break; //kein weiterer Job möglich
+				}
+			}
+
+			//dann für den Job ein neues abt_jobInfo erstellen
+			//und dies dem jobqueue wieder hinzufügen
+			this->jobqueue->append(new abt_jobInfo(j));
 		}
 
+
+		//Die Logs des Backends parsen
+		strList = this->getParsedJobLogs(j);
 		//Alle Strings der StringListe des jobLogs zu unserem Log hinzufügen
 		foreach(QString line, strList) { // (int i=0; i<strList.count(); ++i) {
 			this->addlog(QString("JobLog: ").append(line));
 		}
-
 
 		j = AB_Job_List2Iterator_Next(jli); //next Job in list
 	} /* while (j) */
 
 	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
 
+	return ret;
 }
 
 
@@ -1831,9 +1904,13 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
 	emit this->jobQueueListChanged();
 }
 
-/** löscht den Job von \a jobListPos */
+/**
+  * Wenn dieser Job bereits in der JobList von AqBanking (AB_JOB_LIST2)
+  * enthalten ist darf er NICHT freigegeben werden. Somit muss in diesem fall
+  * \a free = false übergeben werden
+  */
 //public slot
-void abt_job_ctrl::deleteJob(int JobListPos)
+void abt_job_ctrl::deleteJob(int JobListPos, bool free /*=true*/)
 {
 	if ((JobListPos >= this->jobqueue->size()) ||
 	    (JobListPos < 0)) {
@@ -1845,7 +1922,9 @@ void abt_job_ctrl::deleteJob(int JobListPos)
 
 	abt_jobInfo *jobinfo;
 	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
-	AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
+	if (free) {
+		AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
+	}
 	delete jobinfo; // und jobinfo löschen
 
 	//Alle die es wollen darüber Informieren das sich die Liste geändert hat

@@ -86,10 +86,11 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 	//wir erstellen unseren eigenen Account für die History
 	AB_IMEXPORTER_ACCOUNTINFO *iea = AB_ImExporterAccountInfo_new();
 
-	AB_ImExporterAccountInfo_SetAccountName(iea, "AB-Transfers HistoryAccount");
 	AB_ImExporterAccountInfo_SetAccountNumber(iea, "0000000000");
+	AB_ImExporterAccountInfo_SetAccountName(iea, "AB-Transfers HistoryAccount");
 	AB_ImExporterAccountInfo_SetBankCode(iea, "00000000");
 	AB_ImExporterAccountInfo_SetBankName(iea, "AB-Transfers History");
+	AB_ImExporterAccountInfo_SetOwner(iea, "AB-Transfers");
 	AB_ImExporterAccountInfo_SetDescription(iea, "History Objects from AB-Transfers");
 	AB_ImExporterAccountInfo_SetCurrency(iea, "EUR");
 

@@ -39,36 +39,65 @@
 abt_settings::abt_settings(QObject *parent) :
 	QObject(parent)
 {
+	//Der Standart-Speicherordner ist .abtransfers im /home/USER Verzeichniss
+	//dort liegt auch IMMER die settings.ini
+
+	QString homePath = QDir::homePath();
+	QString iniFilename = homePath + "/.abtransfers/settings.ini";
+	//damit der Pfad auf allen Systemen genutzt werden kann.
+	iniFilename = QDir::toNativeSeparators(iniFilename);
+	//wenn der Ordner noch nicht existiert erstellen wir ihn
+	QDir dataStorage(QDir::toNativeSeparators(homePath + "/.abtransfers"));
+	if (!dataStorage.exists()) {
+		bool ret = dataStorage.mkpath(dataStorage.absolutePath());
+		if (!ret) {
+			qWarning() << Q_FUNC_INFO << "could not create default"
+				   << "folder:" << dataStorage.absolutePath();
+			//wir machen trotzdem weiter, die Default-Werte sind
+			//trotzdem nutzbar.
+		}
+	}
+
+
+	this->settings = new QSettings(iniFilename, QSettings::IniFormat, this);
+	this->settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
+
+	this->m_recipientsList = new QList<abt_EmpfaengerInfo*>;
+
+	//Die anderen Daten können je nach Einstellung durch den Benutzer
+	//auch woanders gespeichert sein. Wir laden diese Daten, bzw. default
+	//Werte wenn sie nicht existieren.
 	QString defValue;
 
-	this->Settings = new QSettings(QDir::homePath() + "/.ab_transfers/settings.ini",
-				       QSettings::IniFormat, this);
-	this->Settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
-
-	this->EmpfaengerList = new QList<abt_EmpfaengerInfo*>;
-
-
-	defValue = QDir::homePath() + "/.ab_transfers/knownEmpfaenger.txt";
+	//Standart-Speicherordner
+	defValue = homePath + "/.abtransfers/";
 	defValue = QDir::toNativeSeparators(defValue);
-	this->knownEmpfaengerFilename =
-		this->Settings->value("Main/EmpfaengerFileName", defValue).toString();
+	this->m_dataDir = this->settings->value("Main/DataDir", defValue).toString();
 
-	defValue = QDir::homePath() + "/.ab_transfers/";
+	//Datei für Bekannte Empfänger
+	defValue = homePath + "/.abtransfers/recipients.txt";
 	defValue = QDir::toNativeSeparators(defValue);
-	this->m_dataDir = this->Settings->value("Main/DataDir", defValue).toString();
+	this->m_recipientsFilename =
+		this->settings->value("Main/RecipientsFilename", defValue).toString();
+
+	//Datei für die Account-Daten (Balance, Daueraufträge, Terminüberweisungen)
+	defValue = homePath + "/.abtransfers/accountdata.ctx";
+	defValue = QDir::toNativeSeparators(defValue);
+	this->m_accountdataFilename =
+		this->settings->value("Main/AccountDataFilename", defValue).toString();
+
+	//Datei für die History
+	defValue = homePath + "/.abtransfers/history.ctx";
+	defValue = QDir::toNativeSeparators(defValue);
+	this->m_historyFilename =
+		this->settings->value("Main/HistoryFilename", defValue).toString();
+
 
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
 
-	//Sicherstellen das die Dateiberechtigungen stimmen
-	bool ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers/settings.ini",
-					 QFile::ReadOwner | QFile::ReadUser |
-					 QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
-	ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers",
-				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
-				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+	//Sicherstellen das alle Dateiberechtigungen stimmen
+	this->setFilePermissions();
 }
 
 abt_settings::~abt_settings()
@@ -76,35 +105,24 @@ abt_settings::~abt_settings()
 	//Alle Empfaenger aus der EmpängerListe speichern
 	this->saveKnownEmpfaenger();
 	//und dann die Objekte löschen
-	while (this->EmpfaengerList->size()) {
-		delete this->EmpfaengerList->takeFirst();
+	while (this->m_recipientsList->size()) {
+		delete this->m_recipientsList->takeFirst();
 	}
 	//sowie die Liste an sich
-	delete this->EmpfaengerList;
+	delete this->m_recipientsList;
 
 	delete this->m_textKeyDescr;
 
-	//Einstellungen in der ini-Datei speichern
-	this->Settings->setValue("Main/EmpfaengerFileName",
-				 this->knownEmpfaengerFilename);
-	this->Settings->setValue("Main/DataDir", this->m_dataDir);
+	//das Settings Object wieder löschen
+	delete this->settings;
 
-	//und danach das Object wieder löschen
-	delete this->Settings;
-
-	//Sicherstellen das die Dateiberechtigungen stimmen
-	bool ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers/settings.ini",
-					 QFile::ReadOwner | QFile::ReadUser |
-					 QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
-	ret = QFile::setPermissions(QDir::homePath() + "/.ab_transfers",
-				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
-				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+	//Sicherstellen das alle Dateiberechtigungen stimmen
+	this->setFilePermissions();
 
 	qDebug() << Q_FUNC_INFO << "deleted";
 }
 
+//private
 void abt_settings::loadTextKeyDescriptions()
 {
 	if (this->m_textKeyDescr == NULL) {
@@ -113,29 +131,71 @@ void abt_settings::loadTextKeyDescriptions()
 
 	this->m_textKeyDescr->clear();
 
-	if (!this->Settings->childGroups().contains("TextKeyDescriptions")) {
+	if (!this->settings->childGroups().contains("TextKeyDescriptions")) {
 		//TextKexDescriptions noch unbekannt, default werte setzen
-		this->Settings->beginGroup("TextKeyDescriptions");
-		this->Settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
-		this->Settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
-		this->Settings->setValue("51", "Überweisung");
-		this->Settings->setValue("52", "Dauerauftrags-Überweisung");
-		this->Settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
-		this->Settings->setValue("54", "Vermögenswirksame Leistung (VL)");
-		this->Settings->setValue("56", "Überweisung öffentlicher Kassen");
-		this->Settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
-		this->Settings->setValue("69", "Spendenüberweisung");
-		this->Settings->endGroup();
+		this->settings->beginGroup("TextKeyDescriptions");
+		this->settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
+		this->settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
+		this->settings->setValue("51", "Überweisung");
+		this->settings->setValue("52", "Dauerauftrags-Überweisung");
+		this->settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
+		this->settings->setValue("54", "Vermögenswirksame Leistung (VL)");
+		this->settings->setValue("56", "Überweisung öffentlicher Kassen");
+		this->settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
+		this->settings->setValue("69", "Spendenüberweisung");
+		this->settings->endGroup();
 	}
 	
-	this->Settings->beginGroup("TextKeyDescriptions");
+	this->settings->beginGroup("TextKeyDescriptions");
 	//Alle Schlüssel durchgehen und deren Werte in einem QHash Speichern
-	foreach (QString key, this->Settings->allKeys()) {
-		QString text = this->Settings->value(key, tr("Unbekannt")).toString();
+	foreach (QString key, this->settings->allKeys()) {
+		QString text = this->settings->value(key, tr("Unbekannt")).toString();
 		this->m_textKeyDescr->insert(key.toInt(), text);
 	}
 
-	this->Settings->endGroup();
+	this->settings->endGroup();
+}
+
+//private
+void abt_settings::setFilePermissions()
+{
+	QString homePath = QDir::homePath();
+	QString iniFilename = homePath + "/.abtransfers/settings.ini";
+	//damit der Pfad auf allen Systemen genutzt werden kann.
+	iniFilename = QDir::toNativeSeparators(iniFilename);
+
+	//Sicherstellen das die Dateiberechtigungen stimmen
+	bool ret = QFile::setPermissions(iniFilename,
+					 QFile::ReadOwner | QFile::ReadUser |
+					 QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+
+	ret = QFile::setPermissions(this->getAccountDataFilename(),
+				    QFile::ReadOwner | QFile::ReadUser |
+				    QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+
+	ret = QFile::setPermissions(this->getHistoryFilename(),
+				    QFile::ReadOwner | QFile::ReadUser |
+				    QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+
+	ret = QFile::setPermissions(this->getRecipientsFilename(),
+				    QFile::ReadOwner | QFile::ReadUser |
+				    QFile::WriteOwner | QFile::WriteUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+
+	//Auch die Berechtigungen für die Ornder sollten stimmen
+	ret = QFile::setPermissions(QDir::toNativeSeparators(homePath + "/.abtransfers"),
+				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+
+	ret = QFile::setPermissions(this->getDataDir(),
+				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+
 }
 
 const QHash<int, QString> *abt_settings::getTextKeyDescriptions() const
@@ -145,54 +205,54 @@ const QHash<int, QString> *abt_settings::getTextKeyDescriptions() const
 
 const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 {
-	this->EmpfaengerList->clear();
+	this->m_recipientsList->clear();
 
-	QFile file(this->knownEmpfaengerFilename);
+	QFile file(this->m_recipientsFilename);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 		return NULL;
 
 	QTextStream in(&file);
 	QStringList InfoStringList;
-	abt_EmpfaengerInfo *EmpfaengerInfo;
+	abt_EmpfaengerInfo *recipientInfo;
 	while (!in.atEnd()) {
 		QString line = in.readLine();
 		InfoStringList = line.split("\t", QString::KeepEmptyParts);
 
-		EmpfaengerInfo = new abt_EmpfaengerInfo();
-		EmpfaengerInfo->setName(InfoStringList.at(0));
-		EmpfaengerInfo->setKontonummer(InfoStringList.at(1));
-		EmpfaengerInfo->setBLZ(InfoStringList.at(2));
-		EmpfaengerInfo->setVerw1(InfoStringList.at(3));
-		EmpfaengerInfo->setVerw2(InfoStringList.at(4));
-		EmpfaengerInfo->setVerw3(InfoStringList.at(5));
-		EmpfaengerInfo->setVerw4(InfoStringList.at(6));
+		recipientInfo = new abt_EmpfaengerInfo();
+		recipientInfo->setName(InfoStringList.at(0));
+		recipientInfo->setKontonummer(InfoStringList.at(1));
+		recipientInfo->setBLZ(InfoStringList.at(2));
+		recipientInfo->setVerw1(InfoStringList.at(3));
+		recipientInfo->setVerw2(InfoStringList.at(4));
+		recipientInfo->setVerw3(InfoStringList.at(5));
+		recipientInfo->setVerw4(InfoStringList.at(6));
 
-		this->EmpfaengerList->append(EmpfaengerInfo);
+		this->m_recipientsList->append(recipientInfo);
 	}
 
 	file.close();
-	return this->EmpfaengerList;
+	return this->m_recipientsList;
 }
 
 void abt_settings::saveKnownEmpfaenger()
 {
-	abt_EmpfaengerInfo *EmpfaengerInfo;
+	abt_EmpfaengerInfo *recipientInfo;
 
-	QFile file(this->knownEmpfaengerFilename);
+	QFile file(this->m_recipientsFilename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		return;
 
 	QTextStream out(&file);
 
-	for (int i=0; i<this->EmpfaengerList->size(); ++i) {
-		EmpfaengerInfo = this->EmpfaengerList->at(i);
-		out << EmpfaengerInfo->getName() << "\t";
-		out << EmpfaengerInfo->getKontonummer() << "\t";
-		out << EmpfaengerInfo->getBLZ() << "\t";
-		out << EmpfaengerInfo->getVerw1() << "\t";
-		out << EmpfaengerInfo->getVerw2() << "\t";
-		out << EmpfaengerInfo->getVerw3() << "\t";
-		out << EmpfaengerInfo->getVerw4() << "\n";
+	for (int i=0; i<this->m_recipientsList->size(); ++i) {
+		recipientInfo = this->m_recipientsList->at(i);
+		out << recipientInfo->getName() << "\t";
+		out << recipientInfo->getKontonummer() << "\t";
+		out << recipientInfo->getBLZ() << "\t";
+		out << recipientInfo->getVerw1() << "\t";
+		out << recipientInfo->getVerw2() << "\t";
+		out << recipientInfo->getVerw3() << "\t";
+		out << recipientInfo->getVerw4() << "\n";
 	}
 
 	file.close();
@@ -207,50 +267,38 @@ void abt_settings::saveKnownEmpfaenger()
   Object gelöscht.
 */
 //public slot
-void abt_settings::addKnownEmpfaenger(abt_EmpfaengerInfo *EInfo)
+void abt_settings::addKnownRecipient(abt_EmpfaengerInfo *recipientInfo)
 {
-	int pos = this->EmpfaengerList->indexOf(EInfo);
+	int pos = this->m_recipientsList->indexOf(recipientInfo);
 	if (pos == -1) { //we must add the unknown receiver to our list
-		this->EmpfaengerList->append(EInfo);
-		emit this->EmpfaengerListChanged();
+		this->m_recipientsList->append(recipientInfo);
+		emit this->recipientsListChanged();
 	} else { // the "unknown" receiver already, exists
-		delete EInfo; //delete the current object
+		delete recipientInfo; //delete the current object
 		//and let point it to the already known object
-		EInfo = this->EmpfaengerList->at(pos);
+		recipientInfo = this->m_recipientsList->at(pos);
 	}
 }
 
 //public slot
-void abt_settings::onReplaceKnownEmpfaenger(int position, abt_EmpfaengerInfo *newE)
+void abt_settings::onReplaceKnownRecipient(int position, abt_EmpfaengerInfo *newRecipient)
 {
 	abt_EmpfaengerInfo *oldListEntry;
-	oldListEntry = this->EmpfaengerList->at(position);
-	this->EmpfaengerList->replace(position, newE);
+	oldListEntry = this->m_recipientsList->at(position);
+	this->m_recipientsList->replace(position, newRecipient);
 	delete oldListEntry;
-	emit this->EmpfaengerListChanged();
+	emit this->recipientsListChanged();
 }
 
 //public slot
-void abt_settings::deleteKnownEmpfaenger(abt_EmpfaengerInfo* EmpfaengerInfo)
+void abt_settings::deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo)
 {
 	abt_EmpfaengerInfo *oldEntry;
-	int pos = this->EmpfaengerList->indexOf(EmpfaengerInfo);
-	oldEntry = this->EmpfaengerList->takeAt(pos);
+	int pos = this->m_recipientsList->indexOf(recipientInfo);
+	oldEntry = this->m_recipientsList->takeAt(pos);
 	delete oldEntry;
-	emit this->EmpfaengerListChanged();
+	emit this->recipientsListChanged();
 }
-
-
-
-
-const QString *abt_settings::getDataDir() const
-{
-	return &this->m_dataDir;
-}
-
-
-
-
 
 
 
@@ -259,18 +307,18 @@ const QString *abt_settings::getDataDir() const
 void abt_settings::saveWindowStateGeometry(QByteArray state,
 					   QByteArray geometry)
 {
-	this->Settings->setValue("Main/WindowState", state);
-	this->Settings->setValue("Main/WindowGeometry", geometry);
+	this->settings->setValue("Main/WindowState", state);
+	this->settings->setValue("Main/WindowGeometry", geometry);
 }
 
 QByteArray abt_settings::loadWindowState() const
 {
-	return this->Settings->value("Main/WindowState", QVariant()).toByteArray();
+	return this->settings->value("Main/WindowState", QVariant()).toByteArray();
 }
 
 QByteArray abt_settings::loadWindowGeometry() const
 {
-	return this->Settings->value("Main/WindowGeometry", QVariant()).toByteArray();
+	return this->settings->value("Main/WindowGeometry", QVariant()).toByteArray();
 }
 
 
@@ -280,27 +328,27 @@ void abt_settings::saveSelAccountInWidget(const QString &widgetName, const aqb_A
 {
 	QString groupname("Main/Widget");
 	groupname.append(widgetName);
-	this->Settings->setValue(groupname, acc->get_ID());
+	this->settings->setValue(groupname, acc->get_ID());
 }
 
 int abt_settings::loadSelAccountInWidget(const QString &widgetName) const
 {
 	QString groupname("Main/Widget");
 	groupname.append(widgetName);
-	return this->Settings->value(groupname, -1).toInt();
+	return this->settings->value(groupname, -1).toInt();
 }
 
 
 
 bool abt_settings::showDialog(const QString &dialogType) const
 {
-	return this->Settings->value(QString("Dialogs/Show").append(dialogType),
+	return this->settings->value(QString("Dialogs/Show").append(dialogType),
 				     true).toBool();
 }
 
 void abt_settings::setShowDialog(const QString &dialogType, bool show)
 {
-	this->Settings->setValue(QString("Dialogs/Show").append(dialogType), show);
+	this->settings->setValue(QString("Dialogs/Show").append(dialogType), show);
 }
 
 
@@ -362,3 +410,56 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 
 	return -1; //error
 }
+
+//public
+void abt_settings::setRecipientsFilename(const QString &filename)
+{
+	if (filename.isEmpty()) {
+		qWarning() << Q_FUNC_INFO << "filename is empty, nothing to store";
+		return; //Abbruch
+	}
+
+	this->settings->setValue("Main/RecipientsFilename", filename);
+
+	this->m_recipientsFilename = filename;
+}
+
+//public
+void abt_settings::setAccountDataFilename(const QString &filename)
+{
+	if (filename.isEmpty()) {
+		qWarning() << Q_FUNC_INFO << "filename is empty, nothing to store";
+		return; //Abbruch
+	}
+
+	this->settings->setValue("Main/AccountDataFilename", filename);
+
+	this->m_accountdataFilename = filename;
+}
+
+//public
+void abt_settings::setHistoryFilename(const QString &filename)
+{
+	if (filename.isEmpty()) {
+		qWarning() << Q_FUNC_INFO << "filename is empty, nothing to store";
+		return; //Abbruch
+	}
+
+	this->settings->setValue("Main/HistoryFilename", filename);
+
+	this->m_historyFilename = filename;
+}
+
+//public
+void abt_settings::setDataDir(const QString &dirname)
+{
+	if (dirname.isEmpty()) {
+		qWarning() << Q_FUNC_INFO << "dirname is empty, nothing to store";
+		return; //Abbruch
+	}
+
+	this->settings->setValue("Main/DataDir", dirname);
+
+	this->m_dataDir = dirname;
+}
+

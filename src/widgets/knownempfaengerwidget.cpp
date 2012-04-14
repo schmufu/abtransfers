@@ -160,22 +160,21 @@ void KnownEmpfaengerWidget::CreateAllActions()
 {
 	this->actNew = new QAction(this);
 	this->actNew->setText(tr("Neu"));
-	this->actNew->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
+	this->actNew->setToolTip(tr("Einen neuen Empfänger anlegen"));
 	this->actNew->setIcon(QIcon::fromTheme("document-new"));
 	connect(this->actNew, SIGNAL(triggered()), this, SLOT(onActionNewTriggered()));
 
 	this->actDelete = new QAction(this);
 	this->actDelete->setText(tr("Löschen"));
-	this->actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
+	this->actDelete->setToolTip(tr("Ausgewählten Empfänger löschen"));
 	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
 	connect(this->actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
 	this->actEdit = new QAction(this);
 	this->actEdit->setText(tr("Ändern"));
-	this->actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
+	this->actEdit->setToolTip(tr("Ausgewählten Empfänger bearbeiten"));
 	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
 	connect(this->actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
-
 }
 
 void KnownEmpfaengerWidget::DisplayEmpfaenger()
