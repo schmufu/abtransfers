@@ -61,7 +61,7 @@
 #include "abt_history.h"
 
 
-/** \brief parser zum laden der local gespeicherten Daten sowie zum Auswerten
+/** \brief parser zum laden der lokal gespeicherten Daten sowie zum Auswerten
   *        der vom Institut gelieferten Daten.
   *
   * Über \ref load_local_ctx() können die Daten einer lokal gespeicherten Datei
@@ -116,9 +116,6 @@ public:
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			      const aqb_Accounts *allAccounts,
 			      abt_history *history);
-
-
-	static void export_history() { };
 
 };
 

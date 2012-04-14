@@ -170,19 +170,9 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 		GWEN_Time_toUtcString(gwentime, "YYYYMMDD", gbuf);
 		std::string stdDatetime(GWEN_Buffer_GetStart(gbuf));
 		QString strDate = QString::fromStdString(stdDatetime);
-		qDebug() << "StringFromGwenTime: " << strDate;
 		date = QDate::fromString(strDate, "yyyyMMdd");
 		GWEN_Buffer_free(gbuf);
 
-//		struct tm tmtime;
-//		tmtime = GWEN_Time_toTm(gwentime);
-//		date.setDate(tmtime.tm_year+1900, tmtime.tm_mon+1, tmtime.tm_mday);
-//		qDebug() << "Year:" << tmtime.tm_year+1900
-//			 << "Month:" << tmtime.tm_mon+1
-//			 << "Day:" << tmtime.tm_mday
-//			 << "Hour:" << tmtime.tm_hour
-//			 << "Minute:" << tmtime.tm_min
-//			 << "Sec:" << tmtime.tm_sec;
 	} else {
 		date.setDate(2011,2,30); //invalid Date wenn gwentime==NULL
 	}
@@ -211,14 +201,12 @@ GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 		  .arg(date.day(), 2, 10, QLatin1Char('0'));
 
 	datestr.append("-12:00");
-	qDebug() << "QString Date: " << datestr;
 
 	gwt = GWEN_Time_fromUtcString(datestr.toStdString().c_str(), "YYYYMMDD-hh:mm");
 	//gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 1);
 
+	Q_ASSERT(abt_conv::gwen_timelist);
 	abt_conv::gwen_timelist->append(gwt);
-	qDebug() << "GWEN_TIME created! Address:" << gwt;
-	qDebug() << "GWEN_TIME debug - Date=" << abt_conv::GwenTimeToQDate(gwt);
 
 	return gwt;
 }
@@ -228,10 +216,11 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
 {
 	Q_ASSERT(gwenList);
 	QStringList ret;
-	ret.clear();
+
 	for (unsigned int i=0; i<GWEN_StringList_Count(gwenList); ++i) {
 		ret.append(QString::fromUtf8(GWEN_StringList_StringAt(gwenList, i)));
 	}
+
 	return ret;
 }
 
@@ -255,7 +244,7 @@ const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
 	}
 	//Die erstellte GWEN_Stringlist in unserer globalen Liste aufbewahren
-	Q_ASSERT(abt_conv::gwen_lists != NULL);
+	Q_ASSERT(abt_conv::gwen_lists);
 	abt_conv::gwen_lists->append(gwl);
 	return gwl;
 }
@@ -304,6 +293,7 @@ AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	AB_Value_SetCurrency(val, c.c_str());
 	//Das erstellte AB_VALUE object in unserer internen Liste aufbewahren
 	//damit es bei Programm-Ende wieder gelöscht werden kann
+	Q_ASSERT(abt_conv::gwen_abvlist);
 	abt_conv::gwen_abvlist->append(val);
 	return val;
 }
@@ -316,23 +306,24 @@ AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currenc
 //static
 void abt_conv::freeAllGwenLists()
 {
+	qDebug() << Q_FUNC_INFO << "freeing GWEN_STRINGLIST list";
 	GWEN_STRINGLIST *list;
 	while (!abt_conv::gwen_lists->isEmpty()) {
 		list = abt_conv::gwen_lists->takeFirst();
-		qDebug() << "freeing GWEN_StringList: " << list;
 		GWEN_StringList_free(list);
 	}
 
+	qDebug() << Q_FUNC_INFO << "freeing GWEN_TIME list";
 	GWEN_TIME *gwt;
 	while (!abt_conv::gwen_timelist->isEmpty()) {
 		gwt = abt_conv::gwen_timelist->takeFirst();
 		GWEN_Time_free(gwt);
 	}
 
+	qDebug() << Q_FUNC_INFO << "freeing AB_VALUE list";
 	AB_VALUE *v;
 	while (!abt_conv::gwen_abvlist->isEmpty()) {
 		v = abt_conv::gwen_abvlist->takeFirst();
-		qDebug() << "freeing AB_VALUE: " << v;
 		AB_Value_free(v);
 	}
 

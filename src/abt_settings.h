@@ -42,6 +42,8 @@
 #include "abt_standingorderinfo.h"
 #include "abt_datedtransferinfo.h"
 
+/** \brief Speichert und liefert Einstellungen für das gesamte Programm */
+
 class abt_settings : public QObject
 {
 Q_OBJECT
@@ -72,13 +74,10 @@ public:
 	void setHistoryFilename(const QString &filename);
 	void setDataDir(const QString &dirname);
 
-
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
 
-
 	const QHash<int, QString> *getTextKeyDescriptions() const;
-
 
 	void saveWindowStateGeometry(const QByteArray state, const QByteArray geometry);
 	QByteArray loadWindowState() const;
@@ -94,6 +93,7 @@ public:
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
+
 signals:
 	void recipientsListChanged();
 

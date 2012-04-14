@@ -134,10 +134,7 @@ public:
 	int getAccountID() const;
 };
 
-
 Q_DECLARE_METATYPE(abt_jobInfo*);
 Q_DECLARE_METATYPE(const abt_jobInfo*);
-//qRegisterMetaType<const abt_job_info*>("const abt_job_info*");
-
 
 #endif // ABT_JOBINFO_H

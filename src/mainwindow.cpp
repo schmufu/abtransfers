@@ -235,10 +235,6 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-//	delete this->page_transfer_new;	//SingleTransfer löschen
-//	delete this->da_edit_del;	//DauerAufträge ändern löschen
-//	delete this->da_new;		//DauerAufträge neu erstellen löschen
-//	delete this->docks_KnownStandingOrders;
 	delete this->outw;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
@@ -251,7 +247,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeEvent(QEvent *e)
 {
-	qDebug() << "changeEvent called with: " << e;
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -478,17 +473,12 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
 	this->accountContextMenu->addAction(this->actShowAvailableJobs);
-//	this->accountContextMenu->addSeparator();
-//	this->accountContextMenu->addAction("Text1");
-//	this->accountContextMenu->addAction("Text2");
-//	this->accountContextMenu->addSeparator();
-//	this->accountContextMenu->addAction("Text3");
 }
 
 //private
 void MainWindow::createDockToolbar()
 {
-	this->dockToolbar = new QToolBar(tr("Hilfsfenster"),this);
+	this->dockToolbar = new QToolBar(tr("Dock Toolbar"),this);
 	this->dockToolbar->setObjectName("dockToolbar");
 	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
@@ -619,7 +609,8 @@ void MainWindow::createDockDatedTransfers()
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
-	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
+
+	//Änderungen der Account-Wahl in der settings.ini speichern
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
 
@@ -663,6 +654,9 @@ void MainWindow::on_actionDebug_Info_triggered()
  */
 void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 {
+	/** \todo Dieser Dialog sollte als "nicht wieder anzeigen" realisert
+		  werden
+	*/
 	QMessageBox *msg = new QMessageBox();
 	msg->setIcon(QMessageBox::Information);
 	msg->setWindowTitle("Job zum Ausgang hinzugefügt");
@@ -687,10 +681,10 @@ void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
  */
 void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {
-	if (!current)
+	if (!current) {
 		current = previous;
+	}
 
-	qDebug() << Q_FUNC_INFO << "current changed to:" << current;
 	this->ui->stackedWidget->setCurrentIndex(this->ui->listWidget->row(current));
 }
 
@@ -896,13 +890,7 @@ void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc
 //private slot
 void MainWindow::onActionTransferNationalTriggered()
 {
-//	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-//	widgetTransfer *trans = new widgetTransfer(AB_Job_TypeTransfer,
-//						   acc->getSelectedAccount(),
-//						   this);
-//	this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
 	this->createTransferWidgetAndAddTab(AB_Job_TypeTransfer);
-	qDebug() << "stackedWidget.height =" << this->ui->stackedWidget->height();
 }
 
 //private slot
@@ -947,6 +935,7 @@ void MainWindow::onActionDatedDelTriggered()
 void MainWindow::onActionDatedUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
 }
 
@@ -974,6 +963,7 @@ void MainWindow::onActionStandingDelTriggered()
 void MainWindow::onActionStandingUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
 }
 
@@ -993,6 +983,7 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 void MainWindow::onActionUpdateBalanceTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
 	this->jobctrl->addGetBalance(acc->getSelectedAccount());
 }
 
@@ -1196,7 +1187,7 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 	}
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
-	//this->ui->tabWidget_UW->addTab(trans, dynamic_cast<QAction*>(QObject::sender())->text() );
+
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
@@ -1272,8 +1263,8 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 	case AB_Job_TypeLoadCellPhone :
 	case AB_Job_TypeUnknown :
 	default:
-		qWarning() << "onWidgetTransferCreateTransfer(): type '" <<
-				type << "' not supported! No Job added! ABBRUCH!";
+		qWarning() << Q_FUNC_INFO << "type: " << type
+			   << " - not supported! No Job added! ABBRUCH!";
 		return;
 		break;
 	}
@@ -1592,7 +1583,6 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
-	//abt_transaction::saveTransaction(origT, "Modifytext__orig.ini");
 
 	//kopie der original Transaction erstellen
 	abt_transaction *newT = new abt_transaction(*origT);
@@ -1619,8 +1609,6 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
 
 	this->jobctrl->addModifyStandingOrder(acc, newT);
-
-	//abt_transaction::saveTransaction(newT, "Modifytext__new.ini");
 
 	delete newT;
 }
@@ -1709,8 +1697,5 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //
 //	delete t;
 }
-
-
-
 
 

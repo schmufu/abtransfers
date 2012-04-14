@@ -39,6 +39,8 @@
 abt_settings::abt_settings(QObject *parent) :
 	QObject(parent)
 {
+	qDebug() << Q_FUNC_INFO << "created";
+
 	//Der Standart-Speicherordner ist .abtransfers im /home/USER Verzeichniss
 	//dort liegt auch IMMER die settings.ini
 
@@ -168,33 +170,39 @@ void abt_settings::setFilePermissions()
 	bool ret = QFile::setPermissions(iniFilename,
 					 QFile::ReadOwner | QFile::ReadUser |
 					 QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << "setting permissions on"
+			     << iniFilename << "failed";
 
 	ret = QFile::setPermissions(this->getAccountDataFilename(),
 				    QFile::ReadOwner | QFile::ReadUser |
 				    QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on"
+			     << this->getAccountDataFilename() << "failed";
 
 	ret = QFile::setPermissions(this->getHistoryFilename(),
 				    QFile::ReadOwner | QFile::ReadUser |
 				    QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on"
+			     << this->getHistoryFilename() << "failed";
 
 	ret = QFile::setPermissions(this->getRecipientsFilename(),
 				    QFile::ReadOwner | QFile::ReadUser |
 				    QFile::WriteOwner | QFile::WriteUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions  on"
+			     << this->getRecipientsFilename() << "failed";
 
 	//Auch die Berechtigungen für die Ornder sollten stimmen
 	ret = QFile::setPermissions(QDir::toNativeSeparators(homePath + "/.abtransfers"),
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
 				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder"
+			     << QDir::toNativeSeparators(homePath + "/.abtransfers") << "failed";
 
 	ret = QFile::setPermissions(this->getDataDir(),
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
 				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
-	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder failed";
+	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder"
+			     << this->getDataDir() << "failed";
 
 }
 

@@ -43,13 +43,13 @@
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
 
-//uncomment this if access to pagewidgettests.cpp is wanted
+//uncomment the following if access to pagewidgettests.cpp is wanted
 //#define TESTWIDGETACCESS
 
 class widgetTransfer;
 
 namespace Ui {
-    class MainWindow;
+	class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
@@ -57,8 +57,6 @@ class MainWindow : public QMainWindow {
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
-
-
 
 protected:
 	void changeEvent(QEvent *e);
@@ -128,7 +126,6 @@ private:
 	void createAndSendInternalTransfer(const widgetTransfer *sender);
 	void createAndSendSepaDebitNote(const widgetTransfer *sender);
 
-
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
@@ -178,7 +175,6 @@ private slots:
 
 	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
-
 
 	void onEditJobFromOutbox(const abt_jobInfo* job);
 

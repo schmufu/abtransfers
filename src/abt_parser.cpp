@@ -47,11 +47,9 @@
 
 
 
-
 abt_parser::abt_parser()
 {
 }
-
 
 
 /**
@@ -78,7 +76,8 @@ AB_IMEXPORTER_CONTEXT *abt_parser::load_local_ctx(const QString &filename,
 						     ctx);
 	if (ret) {
 		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
-			   << " -- something went wrong on filling the gaps";
+			   << " -- something went wrong on filling the gaps"
+			   << "(this is not an serious error)";
 	}
 
 
@@ -100,7 +99,8 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 
 	if (ret) {
 		qWarning() << Q_FUNC_INFO << "ERROR:" << ret
-			   << " -- something went wrong on filling the gaps";
+			   << " -- something went wrong on filling the gaps"
+			   << "(this is not an serious error)";
 	}
 
 	ret = AB_Banking_ExportToFile(banking->getAqBanking(),
@@ -159,60 +159,73 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 							 iec);
 	if (ret) {
 		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
-			   << " -- something went wrong on filling the gaps";
+			   << " -- something went wrong on filling the gaps"
+			   << "(this is not an serious error)";
 	}
 
 
 	/**********************************************************************/
-	//this->parseImExporterContext_Messages(iec);
+	// Nachrichten
 	/**********************************************************************/
 	cnt = 0;
 	logmsg = "PARSER - Messages: ";
 
 	msg = AB_ImExporterContext_GetFirstMessage(iec);
 	while (msg) {
+
+		/** \todo Messages sollten noch gespeichert und angezeigt werden.
+			  Momentan werden die Daten nur als Debug-Meldung
+			  ausgegeben.
+		*/
+
 		logmsg2 = QString("Empfangsdatum:\t%1").arg(
 				abt_conv::GwenTimeToQDate(AB_Message_GetDateReceived(msg))
 				.toString(Qt::DefaultLocaleLongDate));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 		logmsg2 = QString("Betreff:\t%1").arg(AB_Message_GetSubject(msg));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 		logmsg2 = QString("Text:\t%1").arg(AB_Message_GetText(msg));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 		logmsg2 = QString("AccountID: %1  -  UserID: %2").arg(
 				  AB_Message_GetAccountId(msg),
 				  AB_Message_GetUserId(msg));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		msg = AB_ImExporterContext_GetNextMessage(iec);
 		cnt++;
 	}
 
 	logmsg2 = QString("Count: %1").arg(cnt);
-	qDebug() << logmsg << logmsg2;
+	qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 	/**********************************************************************/
-	//this->parseImExporterContext_Securitys(iec);
+	// Securitys
 	/**********************************************************************/
 	logmsg = "PARSER - Security: ";
 	cnt = 0;
 
 	security = AB_ImExporterContext_GetFirstSecurity(iec);
 	while (security) {
+
+		/** \todo Securitys sollten noch gespeichert und angezeigt werden.
+			  Momentan werden die Daten nur als Debug-Meldung
+			  ausgegeben.
+		*/
+
 		logmsg2 = QString("Name:\t%1").arg(AB_Security_GetName(security));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		v = AB_Security_GetUnitPriceValue(security);
 		logmsg2 = QString("UnitPriceValue:\t%1").arg(AB_Value_GetValueAsDouble(v));
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		security = AB_ImExporterContext_GetNextSecurity(iec);
 		cnt++;
 	}
 
 	logmsg2 = QString("Count: %1").arg(cnt);
-	qDebug() << logmsg << logmsg2;
+	qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 	ai=AB_ImExporterContext_GetFirstAccountInfo(iec);
@@ -245,11 +258,11 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		logmsg2 = QString("%1 (%3) [%2] Owner: %4 ID: %5").arg(
 				   KtoNr, BLZ, Name, Owner, ID);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Status(ai);
+		// Kontostände
 		/**********************************************************************/
 		AB_ACCOUNT_STATUS *as;
 		logmsg = "PARSER - AccStats: ";
@@ -258,18 +271,18 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		as = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
 		while (as) {
 			QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(as));
-			logmsg2 = QString("Time:\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
+			logmsg2 = QString("Time:\t\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
 
 			//Den neuen Account_Status im entsprechenden Object setzen
 			acc->setAccountStatus(as);
 
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_AccountStatus_GetBankLine(as);
 			if (v) {
-				logmsg2 = QString("BankLine:\t%1").arg(
+				logmsg2 = QString("BankLine:\t\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
-				qDebug() << logmsg + logmsg2;
+				qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 			}
 
 			b = AB_AccountStatus_GetNotedBalance(as);
@@ -278,7 +291,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				if (v) {
 					logmsg2 = QString("NotedBalance:\t%1").arg(
 							AB_Value_GetValueAsDouble(v), 0, 'f', 2);
-					qDebug() << logmsg << logmsg2;
+					qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 				}
 			}
 
@@ -288,7 +301,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				if (v) {
 					logmsg2 = QString("BookedBalance:\t%1").arg(
 							AB_Value_GetValueAsDouble(v), 0, 'f', 2);
-					qDebug() << logmsg << logmsg2;
+					qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 				}
 			}
 
@@ -296,14 +309,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 			if (v) {
 				logmsg2 = QString("Disposable:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
-				qDebug() << logmsg << logmsg2;
+				qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 			}
 
 			v = AB_AccountStatus_GetDisposed(as);
 			if (v) {
-				logmsg2 = QString("Disposed:\t%1").arg(
+				logmsg2 = QString("Disposed:\t\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
-				qDebug() << logmsg << logmsg2;
+				qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 			}
 
 			as = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
@@ -311,12 +324,12 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		}
 
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
+		// Terminüberweisungen
 		/**********************************************************************/
 		AB_TRANSACTION *t;
 		logmsg = "PARSER - DatedTra: ";
@@ -325,7 +338,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
 		while (t) {
@@ -344,22 +357,22 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
-			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Purpose:\t\t%1").arg(strList.join(" - "));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t%1").arg(AB_Value_GetValueAsDouble(v));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("RemoteName:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			AB_TRANSACTION_STATUS state = AB_Transaction_GetStatus(t);
-			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
+			logmsg2 = QString("Status:\t\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
 		}
@@ -367,54 +380,55 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
+		// geplante Buchungen
 		/**********************************************************************/
 		logmsg = "PARSER - NotedTra: ";
 		strList.clear();
 		const AB_VALUE *v;
-		//const GWEN_STRINGLIST *l;
 
 		cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
 		while (t) {
+
+			/** \todo Wenn auch Transactionen angezeigt werden sollen
+				  muss dies noch implementiert werden.
+			*/
+
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
-			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Purpose:\t\t%1").arg(strList.join(" - "));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t%1").arg(AB_Value_GetValueAsDouble(v));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("RemoteName:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			AB_TRANSACTION_STATUS state = AB_Transaction_GetStatus(t);
-			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
+			logmsg2 = QString("Status:\t\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
 		}
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
+		// Daueraufträge
 		/**********************************************************************/
-//		AB_TRANSACTION *t;
 		logmsg = "PARSER - Standing: ";
 		strList.clear();
-//		const AB_VALUE *v;
-//		const GWEN_STRINGLIST *l;
 
 		cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
 		while (t) {
@@ -433,117 +447,102 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
-			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Purpose:\t\t%1").arg(strList.join(" - "));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t%1").arg(AB_Value_GetValueAsDouble(v));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("RemoteName:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			AB_TRANSACTION_STATUS state = AB_Transaction_GetStatus(t);
-			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
+			logmsg2 = QString("Status:\t\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
-			qDebug() << logmsg << logmsg2;
-
-//			switch (AB_Transaction_GetStatus(t)) {
-//			case AB_Transaction_StatusRevoked:
-//				//Bei der Bank hinterlegter Dauerauftrag wurde gelöscht
-//				qDebug() << "Lösche bei der Bank gelöschten Dauerauftrag (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			case AB_Transaction_StatusManuallyReconciled:
-//			case AB_Transaction_StatusAutoReconciled:
-//				//Bei der Bank hinterlegter Dauerauftrag wurde geändert
-//				qDebug() << "Speichere bei der Bank geänderten Dauerauftrag (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			default:
-//				//Bei der Bank hinterlegten Dauerauftrag auch lokal speichern
-//				qDebug() << "Speichere bei der Bank hinterlegten Dauerauftrag (ID:"
-//					 << AB_Transaction_GetFiId(t) << ")";
-//				break;
-//			}
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
 		}
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
+		// Buchungen
 		/**********************************************************************/
-//		AB_TRANSACTION *t;
 		logmsg = "PARSER - Transact: ";
 		strList.clear();;
-//		const AB_VALUE *v;
-//		const GWEN_STRINGLIST *l;
 
 		cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
 		while (t) {
+
+			/** \todo Wenn auch Transactionen angezeigt werden sollen
+				  muss dies noch implementiert werden.
+			*/
+
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
-			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Purpose:\t\t%1").arg(strList.join(" - "));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t%1").arg(AB_Value_GetValueAsDouble(v));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("RemoteName:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			AB_TRANSACTION_STATUS state = AB_Transaction_GetStatus(t);
-			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
+			logmsg2 = QString("Status:\t\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
 		}
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
+		// Überweisungen
 		/**********************************************************************/
-//		AB_TRANSACTION *t;
 		logmsg = "PARSER - Transfer: ";
 		strList.clear();
-//		const AB_VALUE *v;
-//		const GWEN_STRINGLIST *l;
 
 		cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
 		while (t) {
+
+			/** \todo Wenn auch Transactionen angezeigt werden sollen
+				  muss dies noch implementiert werden.
+			*/
+
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
-			logmsg2 = QString("Purpose:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Purpose:\t\t%1").arg(strList.join(" - "));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t%1").arg(AB_Value_GetValueAsDouble(v));
-			qDebug() << logmsg << logmsg2;
+			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2 = QString("RemoteName:\t%1").arg(strList.join(" - "));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			AB_TRANSACTION_STATUS state = AB_Transaction_GetStatus(t);
-			logmsg2 = QString("Status:\t%1 (%2)").arg(state).arg(
+			logmsg2 = QString("Status:\t\t%1 (%2)").arg(state).arg(
 					AB_Transaction_Status_toString(state));
-			qDebug() << logmsg << logmsg2;
+			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
@@ -577,37 +576,42 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 	if (!allAccounts) return;
 
 	/**********************************************************************/
-	//this->parseImExporterContext_Messages(iec);
+	// Nachrichten
 	/**********************************************************************/
 	cnt = 0;
 	logmsg = "PARSER HISTORY - Messages: ";
 
 	msg = AB_ImExporterContext_GetFirstMessage(iec);
 	while (msg) {
-		//Must be implemented
+		/** \todo Sollte implementiert werden wenn Nachrichten in der
+			  History gepeichert werden oder angezeigt werden sollen
+		*/
 		msg = AB_ImExporterContext_GetNextMessage(iec);
 		cnt++;
 	}
 
 	logmsg2 = QString("Count: %1").arg(cnt);
-	qDebug() << logmsg << logmsg2;
+	qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 	/**********************************************************************/
-	//this->parseImExporterContext_Securitys(iec);
+	// Securitys
 	/**********************************************************************/
 	logmsg = "PARSER HISTORY - Security: ";
 	cnt = 0;
 
 	security = AB_ImExporterContext_GetFirstSecurity(iec);
 	while (security) {
+		/** \todo Sollte implementiert werden wenn Securitys in der
+			  History gepeichert werden oder angezeigt werden sollen
+		*/
 		//Must be implemented
 		security = AB_ImExporterContext_GetNextSecurity(iec);
 		cnt++;
 	}
 
 	logmsg2 = QString("Count: %1").arg(cnt);
-	qDebug() << logmsg << logmsg2;
+	qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 	ai=AB_ImExporterContext_GetFirstAccountInfo(iec);
@@ -638,11 +642,11 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 		}
 
 		logmsg2 = QString("%1 [%2] Owner: %4").arg(KtoNr, BLZ, Owner);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Status(ai);
+		// Salden
 		/**********************************************************************/
 		AB_ACCOUNT_STATUS *as;
 		logmsg = "PARSER HISTORY - AccStats: ";
@@ -650,17 +654,17 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 		as = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
 		while (as) {
-			//Must be implemented? The account states are not stored!
+			// The account states are not stored in the history!
 			as = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
 			cnt++;
 		}
 
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_DatedTransfers(ai);	//Terminüberweisungen
+		// Terminüberweisungen
 		/**********************************************************************/
 		AB_TRANSACTION *t;
 		logmsg = "PARSER HISTORY - DatedTra: ";
@@ -668,7 +672,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 		cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
 		while (t) {
@@ -676,7 +680,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			QString t_blz = AB_Transaction_GetLocalBankCode(t);
 			aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
 			if (!acc) {
-				// keinen passenden Account gefunden, Nächste
+				//keinen passenden Account gefunden, nächster
 				qWarning() << logmsg << "No matching account found!"
 						     << "( KTO:" << t_kto
 						     << " - BLZ:" << t_blz << ")";
@@ -696,31 +700,33 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_NotedTransactions(ai);	//geplante Buchungen
+		// geplante Buchungen
 		/**********************************************************************/
 		logmsg = "PARSER HISTORY - NotedTra: ";
 		strList.clear();
 
 		cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
 		while (t) {
-			//Must be implemented?
+			/** \todo Sollte implementiert werden wenn geplante Buchungen in der
+				  History gepeichert werden oder angezeigt werden sollen
+			*/
 			t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
 		}
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_StandingOrders(ai);	//Daueraufträge
+		// Daueraufträge
 		/**********************************************************************/
 		logmsg = "PARSER HISTORY - Standing: ";
 		strList.clear();
 
 		cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
 		while (t) {
@@ -748,31 +754,33 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Transactions(ai);	//Buchungen
+		// Buchungen
 		/**********************************************************************/
 		logmsg = "PARSER HISTORY - Transact: ";
 		strList.clear();;
 
 		cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
 		while (t) {
-			//Must be implemented?
+			/** \todo Sollte implementiert werden wenn Buchungen in der
+				  History gepeichert werden oder angezeigt werden sollen
+			*/
 			t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
 		}
 
 
 		/**********************************************************************/
-		//this->parseImExporterAccountInfo_Transfers(ai);		//Überweisungen
+		// Überweisungen
 		/**********************************************************************/
 		logmsg = "PARSER HISTORY - Transfer: ";
 		strList.clear();
 
 		cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
 		logmsg2 = QString("Count: %1").arg(cnt);
-		qDebug() << logmsg << logmsg2;
+		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
 		while (t) {

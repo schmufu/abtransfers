@@ -97,208 +97,10 @@ abt_transaction::~abt_transaction()
 }
 
 
-/**
- * Die Werte der Transaction \a t werden in dem QSettings Objekt gespeichert.
- * Die eingestellte Group von \a s wird nicht verändert!
- */
-//static
-void abt_transaction::saveTransaction(AB_TRANSACTION *t, QSettings *s)
-{
-	//erst ein Object mit der übergebenen AB_TRANSACTION erstellen
-	const abt_transaction *trans = new abt_transaction(t, false);
-	//und dieses dann speichern
-	abt_transaction::saveTransaction(trans, s);
-	//und wieder freigeben (AB_TRANSACTION bleibt erhalten, create mit "false")
-	delete trans;
-}
-
-
-/**
- * Die Werte der Transaction \a t werden in dem QSettings Objekt gespeichert.
- * Die eingestellte Group von \a s wird nicht verändert!
- */
-//static
-void abt_transaction::saveTransaction(const abt_transaction *t, QSettings *s)
-{
-	const AB_VALUE *v;
-
-	s->setValue("LocalCountry", t->getLocalCountry());
-	s->setValue("LocalBankCode", t->getLocalBankCode() );
-	s->setValue("LocalBranchId", t->getLocalBranchId() );
-	s->setValue("LocalAccountNumber", t->getLocalAccountNumber() );
-	s->setValue("LocalSuffix", t->getLocalSuffix() );
-	s->setValue("LocalIban", t->getLocalIban() );
-	s->setValue("LocalName", t->getLocalName() );
-	s->setValue("LocalBic", t->getLocalBic() );
-	s->setValue("RemoteCountry", t->getRemoteCountry() );
-	s->setValue("RemoteBankName", t->getRemoteBankName() );
-	s->setValue("RemoteBankLocation", t->getRemoteBankLocation() );
-	s->setValue("RemoteBankCode", t->getRemoteBankCode() );
-	s->setValue("RemoteBranchId", t->getRemoteBranchId() );
-	s->setValue("RemoteAccountNumber", t->getRemoteAccountNumber() );
-	s->setValue("RemoteSuffix", t->getRemoteSuffix() );
-	s->setValue("RemoteIban", t->getRemoteIban() );
-	s->setValue("RemoteName", t->getRemoteName() );
-	s->setValue("RemoteBic", t->getRemoteBic() );
-	s->setValue("ValutaDate", t->getValutaDate() );
-	s->setValue("Date", t->getDate() );
-
-	v = t->getValue();
-	s->setValue("Value", abt_conv::ABValueToString(v));
-	if (v) s->setValue("ValueCurrency", AB_Value_GetCurrency(v));
-
-	s->setValue("TextKey", t->getTextKey() );
-	s->setValue("TextKeyExt", t->getTextKeyExt() );
-	s->setValue("TransactionKey", t->getTransactionKey() );
-	s->setValue("CustomerReference", t->getCustomerReference() );
-	s->setValue("BankReference", t->getBankReference() );
-	s->setValue("EndToEndReference", t->getEndToEndReference() );
-	s->setValue("MandateReference", t->getMandateReference() );
-	s->setValue("CretitorIdentifier", t->getCreditorIdentifier() );
-	s->setValue("OriginatorIdentifier", t->getOriginatorIdentifier() );
-	s->setValue("TransactionCode", t->getTransactionCode() );
-	s->setValue("TransactionText", t->getTransactionText() );
-	s->setValue("Primanota", t->getPrimanota() );
-	s->setValue("FiId", t->getFiId() );
-	s->setValue("Purpose", t->getPurpose() );
-	s->setValue("Category", t->getCategory() );
-	s->setValue("Period", t->getPeriod() );
-	s->setValue("Cycle", t->getCycle() );
-	s->setValue("ExecutionDay", t->getExecutionDay() );
-	s->setValue("FirstExecutionDate", t->getFirstExecutionDate() );
-	s->setValue("LastExecutionDate", t->getLastExecutionDate() );
-	s->setValue("NextExecutionDate", t->getNextExecutionDate() );
-	s->setValue("Type", t->getType() );
-	s->setValue("SubType", t->getSubType() );
-	s->setValue("Status", t->getStatus() );
-	s->setValue("Charge", t->getCharge() );
-	s->setValue("RemoteAddrStreet", t->getRemoteAddrStreet() );
-	s->setValue("RemoteAddrZipcode", t->getRemoteAddrZipcode() );
-	s->setValue("RemoteAddrCity", t->getRemoteAddrCity() );
-	s->setValue("RemotePhone", t->getRemotePhone() );
-	s->setValue("UnitId", t->getUnitId() );
-	s->setValue("UnitIdNameSpace", t->getUnitIdNameSpace() );
-
-	v = t->getUnits();
-	s->setValue("Units", abt_conv::ABValueToString(v));
-	if (v) s->setValue("UnitsCurrency", AB_Value_GetCurrency(v));
-
-	v = t->getUnitPrice();
-	s->setValue("UnitPrice", abt_conv::ABValueToString(v));
-	if (v) s->setValue("UnitPriceCurrency", AB_Value_GetCurrency(v));
-
-	v = t->getCommission();
-	s->setValue("Commission", abt_conv::ABValueToString(v));
-	if (v) s->setValue("CommissionCurrency", AB_Value_GetCurrency(v));
-
-	s->setValue("UniqueId", t->getUniqueId() );
-	s->setValue("IdForApplication", t->getIdForApplication() );
-	s->setValue("GroupId", t->getGroupId() );
-
-	v = t->getFees();
-	s->setValue("Fees", abt_conv::ABValueToString(v));
-	if (v) s->setValue("FeesCurrency", AB_Value_GetCurrency(v));
-
-}
-
-
-/** Das übergebene Settings-Object muss schon auf die entsprechende Transaction
- *  eingestellt sein!
- *
- * Es werden alle Values des Settings-Objekts der zurückgegebenen Transaction
- * zugewiesen.
- */
-//static
-abt_transaction* abt_transaction::loadTransaction(const QSettings *s)
-{
-	Q_ASSERT(s);
-
-	abt_transaction *t = new abt_transaction();
-	AB_VALUE *v;
-
-	t->setLocalCountry(s->value("LocalCountry").toString());
-	t->setLocalBankCode(s->value("LocalBankCode").toString());
-	t->setLocalBranchId(s->value("LocalBranchId").toString());
-	t->setLocalAccountNumber(s->value("LocalAccountNumber").toString() );
-	t->setLocalSuffix(s->value("LocalSuffix").toString() );
-	t->setLocalIban(s->value("LocalIban").toString() );
-	t->setLocalName(s->value("LocalName").toString() );
-	t->setLocalBic(s->value("LocalBic").toString() );
-	t->setRemoteCountry(s->value("RemoteCountry").toString() );
-	t->setRemoteBankName(s->value("RemoteBankName").toString() );
-	t->setRemoteBankLocation(s->value("RemoteBankLocation").toString() );
-	t->setRemoteBankCode(s->value("RemoteBankCode").toString() );
-	t->setRemoteBranchId(s->value("RemoteBranchId").toString() );
-	t->setRemoteAccountNumber(s->value("RemoteAccountNumber").toString() );
-	t->setRemoteSuffix(s->value("RemoteSuffix").toString() );
-	t->setRemoteIban(s->value("RemoteIban").toString() );
-	t->setRemoteName(s->value("RemoteName").toStringList() );
-	t->setRemoteBic(s->value("RemoteBic").toString() );
-	t->setValutaDate(s->value("ValutaDate").toDate() );
-	t->setDate(s->value("Date").toDate() );
-
-	v = abt_conv::ABValueFromString(s->value("Value").toString());
-	if (v) AB_Value_SetCurrency(v,s->value("ValueCurrency").toString().toStdString().c_str());
-	t->setValue(v);
-
-	t->setTextKey(s->value("TextKey").toInt() );
-	t->setTextKeyExt(s->value("TextKeyExt").toInt() );
-	t->setTransactionKey(s->value("TransactionKey").toString() );
-	t->setCustomerReference(s->value("CustomerReference").toString() );
-	t->setBankReference(s->value("BankReference").toString() );
-	t->setEndToEndReference(s->value("EndToEndReference").toString() );
-	t->setMandateReference(s->value("MandateReference").toString() );
-	t->setCreditorIdentifier(s->value("CretitorIdentifier").toString() );
-	t->setOriginatorIdentifier(s->value("OriginatorIdentifier").toString() );
-	t->setTransactionCode(s->value("TransactionCode").toInt() );
-	t->setTransactionText(s->value("TransactionText").toString() );
-	t->setPrimanota(s->value("Primanota").toString() );
-	t->setFiId(s->value("FiId").toString() );
-	t->setPurpose(s->value("Purpose").toStringList() );
-	t->setCategory(s->value("Category").toStringList() );
-	t->setPeriod((AB_TRANSACTION_PERIOD)s->value("Period").toInt() );
-	t->setCycle(s->value("Cycle").toInt() );
-	t->setExecutionDay(s->value("ExecutionDay").toInt() );
-	t->setFirstExecutionDate(s->value("FirstExecutionDate").toDate() );
-	t->setLastExecutionDate(s->value("LastExecutionDate").toDate() );
-	t->setNextExecutionDate(s->value("NextExecutionDate").toDate() );
-	t->setType((AB_TRANSACTION_TYPE)s->value("Type").toInt() );
-	t->setSubType((AB_TRANSACTION_SUBTYPE)s->value("SubType").toInt() );
-	t->setStatus((AB_TRANSACTION_STATUS)s->value("Status").toInt() );
-	t->setCharge((AB_TRANSACTION_CHARGE)s->value("Charge").toInt() );
-	t->setRemoteAddrStreet(s->value("RemoteAddrStreet").toString() );
-	t->setRemoteAddrZipcode(s->value("RemoteAddrZipcode").toString() );
-	t->setRemoteAddrCity(s->value("RemoteAddrCity").toString() );
-	t->setRemotePhone(s->value("RemotePhone").toString() );
-	t->setUnitId(s->value("UnitId").toString() );
-	t->setUnitIdNameSpace(s->value("UnitIdNameSpace").toString() );
-
-	v = abt_conv::ABValueFromString(s->value("Units").toString());
-	if (v) AB_Value_SetCurrency(v,s->value("UnitsCurrency").toString().toStdString().c_str());
-	t->setUnits(v);
-
-	v = abt_conv::ABValueFromString(s->value("UnitPrice").toString());
-	if (v) AB_Value_SetCurrency(v,s->value("UnitPriceCurrency").toString().toStdString().c_str());
-	t->setUnitPrice(v);
-
-	v = abt_conv::ABValueFromString(s->value("Commission").toString());
-	if (v) AB_Value_SetCurrency(v,s->value("CommissionCurrency").toString().toStdString().c_str());
-	t->setCommission(v);
-
-	t->setUniqueId(s->value("UniqueId").toUInt() );
-	t->setIdForApplication(s->value("IdForApplication").toUInt() );
-	t->setGroupId(s->value("GroupId").toUInt() );
-
-	v = abt_conv::ABValueFromString(s->value("Fees").toString());
-	if (v) AB_Value_SetCurrency(v,s->value("FeesCurrency").toString().toStdString().c_str());
-	t->setFees(abt_conv::ABValueFromString(s->value("Fees").toString()) );
-
-	return t;
-}
-
 /*****************************************************************************
  * helper functions                                                          *
  *****************************************************************************/
+
 bool abt_transaction::isModified() const
 {
 	return (AB_Transaction_IsModified(this->aqb_transaction) == 0);
@@ -323,6 +125,7 @@ const AB_TRANSACTION* abt_transaction::getAB_Transaction() const
 {
 	return this->aqb_transaction;
 }
+
 
 /**************************
  * Local Account Info     *
@@ -584,8 +387,6 @@ void abt_transaction::setRemoteName(const QStringList &Name)
 	AB_Transaction_SetRemoteName(this->aqb_transaction, gwl);
 }
 
-
-
 const QString abt_transaction::getRemoteBic() const
 {
 	QString ret;
@@ -660,6 +461,7 @@ void abt_transaction::setValue(const AB_VALUE *Value)
 /* This group contains information which differ between backends.
  * Some of this information might not even be supported by every backends.
  */
+
 int abt_transaction::getTextKey() const
 {
 	return AB_Transaction_GetTextKey(this->aqb_transaction_C);
@@ -868,12 +670,14 @@ void abt_transaction::setCategory(const QStringList &Category)
 	AB_Transaction_SetCategory(this->aqb_transaction, gwl);
 }
 
+
 /**********************************
  * Additional for Standing Orders *
  **********************************/
 /* This group contains information which is used with standing orders.
  * It is not needed for other usage of this type.
  */
+
 AB_TRANSACTION_PERIOD abt_transaction::getPeriod() const
 {
 	return AB_Transaction_GetPeriod(this->aqb_transaction_C);
@@ -958,6 +762,7 @@ void abt_transaction::setNextExecutionDate(const QDate &Date)
  * transfers. It is setup by the function AB_Banking_GatherResponses
  * for transfers but not used by AqBanking otherwise.
  */
+
 AB_TRANSACTION_TYPE abt_transaction::getType() const
 {
 	return AB_Transaction_GetType(this->aqb_transaction_C);
@@ -1138,9 +943,10 @@ void abt_transaction::setCommission(const AB_VALUE *Commission)
 	AB_Transaction_SetCommission(this->aqb_transaction, Commission);
 }
 
-/***************************************
- * ID functions *
- ***************************************/
+/************************
+ * ID functions		*
+ ************************/
+
 quint32 abt_transaction::getUniqueId() const
 {
 	return AB_Transaction_GetUniqueId(this->aqb_transaction_C);

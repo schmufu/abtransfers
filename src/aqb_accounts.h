@@ -66,8 +66,6 @@ public:
 	/** \overload */
 	aqb_AccountInfo* getAccount(const AB_ACCOUNT *a) const;
 
-//	const AB_BANKING *getBanking() const
-//		{ return this->m_ab; }
 };
 
 #endif // AQB_ACCOUNTS_H

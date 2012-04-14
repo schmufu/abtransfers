@@ -82,11 +82,6 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 			this->m_AccountType = QObject::tr("type unknown"); break;
 	}
 
-//	//alle bekannten Daueraufträge für diesen Account holen
-//	this->loadKnownStandingOrders();
-//	//alle bekannten Terminüberweisungen für diesen Account holen
-//	this->loadKnownDatedTransfers();
-
 	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken
 	this->m_limits = new QHash<AB_JOB_TYPE, abt_transactionLimits*>;
 	abt_job_ctrl::createTransactionLimitsFor(this->m_account, this->m_limits);
@@ -95,35 +90,31 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_availableJobs = new QHash<AB_JOB_TYPE, bool>;
 	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_availableJobs);
 
-	qDebug().nospace() << "AccountInfo for Account " << this->Number() << " created. (ID:" << this->get_ID() << ")";
+	qDebug().nospace() << Q_FUNC_INFO << " " << this
+			   << " AccountInfo for Account " << this->Number()
+			   << " created. (ID:" << this->get_ID() << ")";
 }
 
 aqb_AccountInfo::~aqb_AccountInfo()
 {
-	qDebug() << Q_FUNC_INFO << this << "destructor: started";
 	//der account_status ist eine von uns angelegte Kopie, diese wieder
 	//freigeben
-	if (this->account_status)
+	if (this->account_status) {
 		AB_AccountStatus_free(this->account_status);
-
+	}
 
 	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
 	delete this->m_standingOrders; //und liste löschen
 
-
 	this->clearDatedTransfers(); //Alle DatedTransfers wieder freigeben
 	delete this->m_datedTransfers; //und liste löschen
 
-
-	qDebug() << Q_FUNC_INFO << this << "destructor: " << "before foreach";
 	//Alle abt_transactionLimits und den QHash wieder löschen
-	int i=0;
 	foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
-		qDebug() << Q_FUNC_INFO << this << "destructor: " << "in foreach -- i="<<i++;
 		delete this->m_limits->take(type);
 	}
-	qDebug() << Q_FUNC_INFO << this << "destructor: " << "after foreach";
 	delete this->m_limits;
+
 	qDebug() << Q_FUNC_INFO << this << "deleted";
 }
 
@@ -133,8 +124,6 @@ const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 {
 	return this->m_limits->value(type,NULL);
 }
-
-
 
 //protected
 void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
@@ -155,6 +144,11 @@ void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
 //protected
 AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 {
+	//Dadurch das die aufrugende Funktion über AB_ImExporterContext_free()
+	//den Context wieder freigibt dürfen wir nur kopien unserer Daten in den
+	//Context einfügen, ansonsten würden die Daten in unserem Objekt
+	//gelöscht werden.
+
 	AB_IMEXPORTER_ACCOUNTINFO *iea = AB_ImExporterAccountInfo_new();
 	AB_ImExporterAccountInfo_FillFromAccount(iea, this->m_account);
 
@@ -165,13 +159,8 @@ AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 		AB_ImExporterAccountInfo_AddAccountStatus(iea, status);
 	}
 
-
-	/** \todo Hier dann auch noch die SOs und DTs hinzufügen
-
-	  */
-
+	//alle vorhandenen Daueraufträge dem Context hinzufügen
 	if (this->m_standingOrders) {
-		//alle vorhandenen Daueraufträge dem Context hinzufügen
 		for(int i=0; i<this->m_standingOrders->size(); ++i) {
 			abt_standingOrderInfo *so = this->m_standingOrders->at(i);
 			AB_TRANSACTION *t = AB_Transaction_dup(so->getTransaction()->getAB_Transaction());
@@ -179,8 +168,8 @@ AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 		}
 	}
 
+	//alle vorhandenen terminierten Überweisungen dem Context hinzufügen
 	if (this->m_datedTransfers) {
-		//alle vorhandenen terminierten Überweisungen dem Context hinzufügen
 		for(int i=0; i<this->m_datedTransfers->size(); ++i) {
 			abt_datedTransferInfo *dt = this->m_datedTransfers->at(i);
 			AB_TRANSACTION *t = AB_Transaction_dup(dt->getTransaction()->getAB_Transaction());
@@ -287,7 +276,6 @@ bool aqb_AccountInfo::removeDatedTransfer(abt_datedTransferInfo *dt)
 	return false;
 }
 
-
 //public
 QString aqb_AccountInfo::getBankLine() const
 {
@@ -383,17 +371,6 @@ QDate aqb_AccountInfo::getDate() const
 
 	QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(this->account_status));
 
-	//logmsg2 = QString("Time:\t%1").arg(date.toString(Qt::DefaultLocaleLongDate));
-
 	return date;
 }
-
-
-
-
-
-
-
-
-
 

@@ -39,36 +39,42 @@
 #include "aqb_accounts.h"
 #include "abt_jobinfo.h"
 
+
+/** \brief Verwaltung von durchgeführten Aufträgen
+  *
+  * Beim Starten wird durch das MainWindow ein History-Objekt erzeugt und
+  * die Daten der history-Datei durch den entsprechenden parser ausgewertet.
+  * Die passenden Daten die der parser findet werden dann diesem Objekt
+  * übergeben.
+  */
+
 class abt_history: public QObject {
 	Q_OBJECT
-
-//	//der parser darf unsere protected funktionen nutzen um der Liste
-//	//neue Objecte hinzu zu fügen. Ansonsten darf niemand diese Werte ändern.
-//	friend class abt_parser;
 
 public:
 	abt_history(const aqb_Accounts *allAccounts, QObject *parent = 0);
 	~abt_history();
 
 private:
+	//! \brief Liste aller Accounts
 	const aqb_Accounts *m_allAccounts;
+	//! \brief In dieser Liste werden die durchgeführten Aufträge verwaltet
 	QList<abt_jobInfo*> *m_historyList;
 
 public:
+	//! \brief Fügt den \a job der history-Liste hinzu
 	void add(abt_jobInfo *job);
+	//! \brief Löscht den \a job in der history-Liste
 	bool remove(abt_jobInfo *job);
+	//! \overload
 	bool remove(int pos);
 
+	//! \brief erstellt einen AB_IMEXPORTER_CONTEXT der dann gespeichert werden kann
 	AB_IMEXPORTER_CONTEXT *getContext() const;
-
-
 
 private slots:
 
-
 public slots:
-
-
 
 signals:
 	void historyListChanged(const abt_history *sender);

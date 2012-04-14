@@ -49,12 +49,16 @@ class abt_transactionLimits;
  * Alle relevanten Informationen für einen Account werden über diese Klasse
  * zur Verfügung gestellt. Es wird intern einfach ein Umsetzung auf
  * AB_AccountGet* durchgeführt.
+ *
  * Für jeden vorhandenen Account existiert später eine Instanz dieser Klasse.
+ *
+ * Welche Daueraufträge und terminierten Überweisungen für diesen Account
+ * existieren wird auch in dieser Klasse verwaltet.
  */
 class aqb_AccountInfo : public QObject {
 	Q_OBJECT
 
-	//der parser darf unsere protected funktionen nutzen um den
+	//der parser darf unsere protected funktionen nutzen um z.B. den
 	//account_status zu setzen. Ansonsten darf niemand diese Werte ändern.
 	friend class abt_parser;
 
@@ -74,7 +78,7 @@ private:
 	QString m_Country;
 	QString m_AccountType;
 
-	//! Kontostand des Accounts
+	//! \brief Kontostand des Accounts
 	AB_ACCOUNT_STATUS *account_status;
 
 	QList<abt_standingOrderInfo*> *m_standingOrders;
@@ -133,17 +137,12 @@ protected: //from friend classes useable! (speziell: abt_parser)
 	//! \brief fügt die terminierte Überweisung \a dt der Liste hinzu
 	void addDatedTransfer(abt_datedTransferInfo *dt);
 
-
-public slots:
-//	void loadKnownStandingOrders();
-//	void loadKnownDatedTransfers();
-
 signals:
 	//! \brief wird gesendet wenn sich die StandingOrders geändert haben.
 	void knownStandingOrdersChanged(const aqb_AccountInfo *account);
-	//! \brief wird gesendet wenn sich die DatedTransfers neu geändert haben.
+	//! \brief wird gesendet wenn sich die DatedTransfers geändert haben.
 	void knownDatedTransfersChanged(const aqb_AccountInfo *account);
-	//! \brief wird gesendet wenn sich Daten des Accounts geändert haben.
+	//! \brief wird gesendet wenn sich der Status (Saldo) des Accounts geändert hat.
 	void accountStatusChanged(const aqb_AccountInfo *account);
 };
 

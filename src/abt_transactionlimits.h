@@ -36,7 +36,14 @@
 
 #include <aqbanking/transactionlimits.h>
 
-/** \brief This page describes the properties of AB_TRANSACTION_LIMITS This type describes the limits for fields of an AB_TRANSACTION.
+/** \brief wrapper zu den AB_TRANSACTION_LIMITS von AqBanking
+ *
+ * Diese Hilfe wurde aus der doxygen Dokumentation von AqBanking übernommen.
+ *
+ *
+ * This page describes the properties of AB_TRANSACTION_LIMITS
+ *
+ * This type describes the limits for fields of an AB_TRANSACTION.
  *
  *  The limits have the following meanings:
  *    - maxLenSOMETHING: if 0 then this limit is unknown, if -1 then the described element is not allowed to be set in the transaction. All other values represent the maximum length of the described field.
@@ -48,6 +55,7 @@
  *
  * So if you want to check whether an given field is at all allowed you must check whether "maxLenSOMETHING" has a value of "-1".
  */
+
 class abt_transactionLimits
 {
 public:
@@ -65,8 +73,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenLocalName, get it with AB_TransactionLimits_GetMinLenLocalName
 	int MinLenLocalName;
 
-
 	/// @}
+
+
 	/** \name Payee Name
 	    Limits for the payee name. */
 	/// @{
@@ -83,8 +92,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLinesRemoteName, get it with AB_TransactionLimits_GetMinLinesRemoteName
 	int MinLinesRemoteName;
 
-
 	/// @}
+
+
 	/** \name Local Bank Code
 	    Limits for local bank code. */
 	/// @{
@@ -95,8 +105,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenLocalBankCode, get it with AB_TransactionLimits_GetMinLenLocalBankCode
 	int MinLenLocalBankCode;
 
-
 	/// @}
+
+
 	/** \name Local Account Id
 	    Limits for local account id. */
 	/// @{
@@ -107,8 +118,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenLocalAccountNumber, get it with AB_TransactionLimits_GetMinLenLocalAccountNumber
 	int MinLenLocalAccountNumber;
 
-
 	/// @}
+
+
 	/** \name Local Account Number
 	    Limits for local account id suffix. */
 	/// @{
@@ -119,8 +131,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenLocalSuffix, get it with AB_TransactionLimits_GetMinLenLocalSuffix
 	int MinLenLocalSuffix;
 
-
 	/// @}
+
+
 	/** \name Remote Bank Code
 	    Limits for remote bank code. */
 	/// @{
@@ -131,8 +144,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenRemoteBankCode, get it with AB_TransactionLimits_GetMinLenRemoteBankCode
 	int MinLenRemoteBankCode;
 
-
 	/// @}
+
+
 	/** \name Remote Account Number
 	    Limits for remote account number. */
 	/// @{
@@ -143,8 +157,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenRemoteAccountNumber, get it with AB_TransactionLimits_GetMinLenRemoteAccountNumber
 	int MinLenRemoteAccountNumber;
 
-
 	/// @}
+
+
 	/** \name Remote Account Number Suffix
 	    Limits for remote account id suffix. */
 	/// @{
@@ -155,8 +170,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenRemoteSuffix, get it with AB_TransactionLimits_GetMinLenRemoteSuffix
 	int MinLenRemoteSuffix;
 
-
 	/// @}
+
+
 	/** \name Remote IBAN
 	    Limits for remote IAN. */
 	/// @{
@@ -167,8 +183,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenRemoteIban, get it with AB_TransactionLimits_GetMinLenRemoteIban
 	int MinLenRemoteIban;
 
-
 	/// @}
+
+
 	/** \name Text Key
 	    Limits for textKey.*/
 	/// @{
@@ -187,8 +204,9 @@ public:
 	/** This list of text key descriptions may contain an entry for every supported text key. However, not all backends fill this list and this list does not have to be complete. If you want to know which textkeys are supported please use valuesTextKey instead. */
 	QString TextKeys;
 
-
 	/// @}
+
+
 	/** \name Customer Reference
 	    Limits for customer reference. */
 	/// @{
@@ -199,8 +217,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenCustomerReference, get it with AB_TransactionLimits_GetMinLenCustomerReference
 	int MinLenCustomerReference;
 
-
 	/// @}
+
+
 	/** \name Bank Reference
 	    Limits for bank reference. */
 	/// @{
@@ -211,8 +230,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLenBankReference, get it with AB_TransactionLimits_GetMinLenBankReference
 	int MinLenBankReference;
 
-
 	/// @}
+
+
 	/** \name Purpose
 	    Limits for purpose (called memo in some apps). */
 	/// @{
@@ -229,8 +249,9 @@ public:
 	//! Set this property with AB_TransactionLimits_SetMinLinesPurpose, get it with AB_TransactionLimits_GetMinLinesPurpose
 	int MinLinesPurpose;
 
-
 	/// @}
+
+
 	/** \name Standing Orders And Dated Transfer
 	    These limits apply to standing orders and dated transfers only.*/
 	/// @{
@@ -297,7 +318,7 @@ public:
 
 	/// @}
 
-
+	//! \deprecated Only use this for Debugging!
 	void printAllAsDebug() const;
 };
 

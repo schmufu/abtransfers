@@ -86,7 +86,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 			/* the iterator must be freed after using it */
 			AB_Account_List2Iterator_free(it);
 		} else {
-			qWarning() << this << "aqb_accounts::constructor : No iterator created!";
+			qWarning() << Q_FUNC_INFO << "no iterator created!";
 		}
 
 		/* as discussed the list itself is only a container which has to be freed
@@ -95,7 +95,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 		 * accounts */
 		AB_Account_List2_free(accs);
 	} else {
-		qWarning() << this << "aqb_accounts::constructor : No Accounts from aqBanking found!";
+		qWarning() << Q_FUNC_INFO << "no Accounts from aqBanking found!";
 
 	}
 
@@ -109,11 +109,6 @@ aqb_Accounts::~aqb_Accounts()
 	}
 }
 
-
-
-/**
-  *
-  */
 aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 					  const QString &blz,
 					  const QString &owner,
@@ -143,7 +138,6 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 	return NULL;
 }
 
-/** \overload */
 aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const
 {
 	Q_ASSERT(a);
