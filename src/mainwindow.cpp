@@ -61,6 +61,8 @@
 #include "widgets/widgetknowndatedtransfers.h"
 #include "widgets/widgetaccountcombobox.h"
 
+#include "dialogs/dialogsettings.h"
+
 #include "abt_parser.h"
 
 #ifdef TESTWIDGETACCESS
@@ -853,7 +855,9 @@ void MainWindow::on_actionHelp_triggered()
 //private SLOT
 void MainWindow::on_actionEinstellungen_triggered()
 {
+	DialogSettings DiaSettings(settings, this);
 
+	DiaSettings.exec();
 }
 
 //private SLOT
