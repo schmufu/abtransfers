@@ -1015,6 +1015,11 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
 	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
+
+	/** \todo Die Verwendung der AB_JOB_LIST2_ITERATOR und deren Funktionen
+		  muss nochmal kontrolliert und nachgelesen werden!
+	*/
+
 	AB_JOB_LIST2_ITERATOR *jli;
 	//jli = AB_Job_List2Iterator_new(jl); //Wird das benötigt???
 	jli = AB_Job_List2_First(jl);
