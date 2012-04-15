@@ -62,6 +62,7 @@
 #include "widgets/widgetaccountcombobox.h"
 
 #include "dialogs/dialogsettings.h"
+#include "dialogs/abt_dialog.h"
 
 #include "abt_parser.h"
 
@@ -296,66 +297,26 @@ void MainWindow::TimerTimeOut()
 	//dieser Code erst ausgeführt wenn das MainWindow angezeigt und die
 	//EventLoop der Anwendung läuft.
 
-	/** \todo Nachfolgendes sollte später zur einfachen wiederverwendung
-		  in eine eigene Klasse.
-	*/
-
-	bool showDialog = settings->showDialog("WarnCosts");
-	//wenn der Dialog nicht angezeigt werden soll können wir auch gleich wieder
-	//hier raus.	
-	if (!showDialog) {
-		//Der Timer wird nicht länger benötigt
-		delete this->timer;
-		return; //Abbruch
-	}
-
-	QDialog *dialog = new QDialog(this);
-	dialog->setWindowTitle(tr("eventuelle Kosten!"));
-	dialog->setModal(true);
-	dialog->setMinimumWidth(400);
-	dialog->setMaximumWidth(800);
-
-	QVBoxLayout *vbox = new QVBoxLayout(dialog);
-
-	QPushButton *okBtn = new QPushButton(QIcon::fromTheme("dialog-ok-apply"),					     
-					     tr("OK"));
-	okBtn->setMaximumWidth(80);
-	connect(okBtn, SIGNAL(clicked()), dialog, SLOT(accept()));
-
-	QCheckBox *checkBox = new QCheckBox(tr("Diese Meldung nicht wieder anzeigen"));
-	checkBox->setChecked(!showDialog);
-	QLabel *label = new QLabel(tr(
-			"<h4>Aufträge können gebührenpflichtig sein</h4>"
-			""
-			"Bei einigen Kreditinstituten/Banken können Gebühren für "
-			"bestimmte Aufträge (Einrichtung von Daueraufträgen, "
-			"Sammelüberweisungen, etc.) anfallen.<br />"
-			"Bitte informieren Sie sich vorab bei Ihrem Institut / "
-			"Ihrer Bank welche Kosten für welche Aufträge anfallen!<br />"
-			"<br />"
-			"<b>Ich übernehme keine Haftung für eventuell "
-			"entstehende Kosten!</b>"));
-	label->setWordWrap(true);
-
-
-	vbox->addWidget(label);
-	vbox->addSpacing(6);
-	vbox->addWidget(checkBox, 0, Qt::AlignHCenter);
-	vbox->addSpacing(6);
-	vbox->addWidget(okBtn, 0, Qt::AlignHCenter);
-
-
-	int ret = dialog->exec();
-
-	if (ret == QDialog::Accepted) {
-		settings->setShowDialog("WarnCosts", checkBox->checkState() == Qt::Unchecked);
-	}
-
-	delete dialog;
+	abt_dialog dia(this,
+		       tr("eventuelle Kosten"),
+		       tr("<h4>Aufträge können gebührenpflichtig sein</h4>"
+			  ""
+			  "Bei einigen Kreditinstituten/Banken können Gebühren für "
+			  "bestimmte Aufträge (Einrichtung von Daueraufträgen, "
+			  "Sammelüberweisungen, etc.) anfallen.<br />"
+			  "Bitte informieren Sie sich vorab bei Ihrem Institut / "
+			  "Ihrer Bank welche Kosten für welche Aufträge anfallen!<br />"
+			  "<br />"
+			  "<b>Ich übernehme keine Haftung für eventuell entstehende "
+			  "Kosten!</b>"),
+		       QDialogButtonBox::Ok,
+		       QDialogButtonBox::Ok,
+		       QMessageBox::Information,
+		       "WarnCosts");
+	dia.exec();
 
 	//Der Timer wird nicht länger benötigt
 	delete this->timer;
-
 }
 
 //private

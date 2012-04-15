@@ -40,7 +40,8 @@ SOURCES += src/main.cpp \
     src/abt_standingorderinfo.cpp \
     src/abt_datedtransferinfo.cpp \
     src/abt_history.cpp \
-    src/dialogs/dialogsettings.cpp
+    src/dialogs/dialogsettings.cpp \
+    src/dialogs/abt_dialog.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -76,14 +77,16 @@ HEADERS += src/mainwindow.h \
     src/abt_standingorderinfo.h \
     src/abt_datedtransferinfo.h \
     src/abt_history.h \
-    src/dialogs/dialogsettings.h
+    src/dialogs/dialogsettings.h \
+    src/dialogs/abt_dialog.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
     src/widgets/knownempfaengerwidget.ui \
     src/pages/page_log.ui \
     src/pages/page_ausgang.ui \
-    src/dialogs/dialogsettings.ui
+    src/dialogs/dialogsettings.ui \
+    src/dialogs/abt_dialog.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
     documentation/Doxyfile \
     src/helpText.html
