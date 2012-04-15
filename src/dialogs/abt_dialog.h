@@ -16,10 +16,10 @@
  ******************************************************************************
  * Dont forget: svn propset svn:keywords "Date Author Rev HeadURL" filename
  ******************************************************************************
- * $HeadURL: $
- * $Author: $
- * $Date: $
- * $Rev: $
+ * $HeadURL$
+ * $Author$
+ * $Date$
+ * $Rev$
  *
  * description:
  *
