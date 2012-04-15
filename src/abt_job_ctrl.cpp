@@ -1005,7 +1005,7 @@ void abt_job_ctrl::execQueuedTransactions()
 //private
 bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 {
-	AB_JOB *j;
+	AB_JOB *j = NULL;
 	AB_JOB_STATUS jobState;
 	AB_JOB_TYPE jobType;
 	QString strType;
@@ -1016,9 +1016,11 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
 	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
 	AB_JOB_LIST2_ITERATOR *jli;
-	jli = AB_Job_List2Iterator_new(jl);
+	//jli = AB_Job_List2Iterator_new(jl); //Wird das benötigt???
 	jli = AB_Job_List2_First(jl);
-	j = AB_Job_List2Iterator_Data(jli);
+	if (jli) {
+		j = AB_Job_List2Iterator_Data(jli);
+	}
 	while (j) {
 		jobType = AB_Job_GetType(j);
 		strType = AB_Job_Type2Char(jobType);
