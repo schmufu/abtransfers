@@ -263,6 +263,26 @@ void MainWindow::changeEvent(QEvent *e)
 //protected
 void MainWindow::closeEvent(QCloseEvent *e)
 {
+	//Überprüfen ob noch Aufträge im Ausgang sind, wenn ja den Benutzer
+	//fragen ob wirklich beendet werden soll.
+	if (this->jobctrl->jobqueueList()->size() != 0) {
+		int ret;
+		ret = QMessageBox::warning(this,
+					   tr("Aufträge im Ausgang"),
+					   tr("Es befinden sich noch Aufträge im Ausgang "
+					      "die noch nicht gesendet wurden!<br />"
+					      "Beim Beenden des Programms werden die "
+					      "Aufträge im Ausgang gelöscht!<br /><br />"
+					      "Soll das Programm wirklich beendet werden?"),
+					   QMessageBox::Yes | QMessageBox::No,
+					   QMessageBox::No);
+		if (ret == QMessageBox::No) {
+			//Es soll noch nicht beendet werden!
+			e->ignore();
+			return;
+		}
+	}
+
 	/** \todo Überprüfung ob Speicherung notwendig
 	  *
 	  * Das speichern sollte in eine separate Funktion und in den
