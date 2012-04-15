@@ -617,25 +617,17 @@ void MainWindow::on_actionDebug_Info_triggered()
  */
 void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 {
-	/** \todo Dieser Dialog sollte als "nicht wieder anzeigen" realisert
-		  werden
-	*/
-	QMessageBox *msg = new QMessageBox();
-	msg->setIcon(QMessageBox::Information);
-	msg->setWindowTitle("Job zum Ausgang hinzugefügt");
-	QString text = "\"" + ji->getType() + "\" wurde erfolgreich\n";
-	text.append("zum Ausgangskorb hinzugefügt.");
-	msg->setText(text);
-	msg->setStandardButtons(QMessageBox::Ok);
-	msg->setDefaultButton(QMessageBox::Ok);
+	this->ui->statusBar->showMessage(tr("Auftrag \"%1\" zum Ausgang "
+					    "hinzugefügt").arg(ji->getType()),
+					 6000);
 
-	int ret = msg->exec();
-
-	if (ret != QMessageBox::Ok) {
-		qWarning() << "onJobAddedToJobCtrlList(): not handling return != OK, yet";
-	}
-
-	delete msg;
+	abt_dialog dia(NULL,
+		       tr("Auftrag zum Ausgang hinzugefügt"),
+		       tr("Der Auftrag \"%1\" wurde erfolgreich zum "
+			  "Ausgangskorb hinzugefügt").arg(ji->getType()),
+		       QDialogButtonBox::Ok, QDialogButtonBox::Ok,
+		       QMessageBox::Information, "JobAddOutput");
+	dia.exec();
 }
 
 /*!

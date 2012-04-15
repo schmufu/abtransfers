@@ -120,7 +120,7 @@ p, li { white-space: pre-wrap; }
       <property name="toolTip">
        <string>Legt das Standart Verzeichnis zum Speichern von Daten fest.
 
-In diesem Verzeichnis werdan dann z.B. exportierte Daten
+In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</string>
       </property>
      </widget>
@@ -331,10 +331,7 @@ beim starten des Programms angezeigt.</string>
      <string>eventuelle Kosten</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_JobAddedToOutput">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QCheckBox" name="checkBox_jobAddedToOutput">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -350,9 +347,6 @@ Hinweis angezeigt.</string>
     </property>
     <property name="text">
      <string>Auftrag zum Ausgang hinzugefügt</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -514,7 +508,7 @@ nach dem starten zum Insititut übertragen.</string>
   <tabstop>checkBox_debugInfoDialog</tabstop>
   <tabstop>checkBox</tabstop>
   <tabstop>checkBox_warnCosts</tabstop>
-  <tabstop>checkBox_JobAddedToOutput</tabstop>
+  <tabstop>checkBox_jobAddedToOutput</tabstop>
   <tabstop>checkBox_2</tabstop>
   <tabstop>checkBox_3</tabstop>
   <tabstop>checkBox_4</tabstop>

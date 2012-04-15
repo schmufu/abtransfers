@@ -75,6 +75,7 @@ void DialogSettings::loadFromSettings()
 	this->ui->lineEdit_recipients->setText(this->settings->getRecipientsFilename());
 
 	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
+	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
 }
 
 //private
@@ -86,6 +87,7 @@ void DialogSettings::saveToSettings()
 	this->settings->setRecipientsFilename(this->ui->lineEdit_recipients->text());
 
 	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
+	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
 }
 
 //private slot
