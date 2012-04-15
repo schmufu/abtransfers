@@ -378,7 +378,7 @@ hinzugefügt.</string>
      <x>450</x>
      <y>210</y>
      <width>251</width>
-     <height>141</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="whatsThis">
@@ -397,103 +397,87 @@ p, li { white-space: pre-wrap; }
    <property name="title">
     <string>Aktualisierung beim Starten</string>
    </property>
-   <widget class="QCheckBox" name="checkBox_2">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>231</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Wenn aktiviert wird automatisch beim starten des
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QCheckBox" name="checkBox_getBalance">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>17</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</string>
-    </property>
-    <property name="text">
-     <string>Kontostände</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_3">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>231</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Wenn aktiviert wird automatisch beim starten des
+      </property>
+      <property name="text">
+       <string>Kontostände</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="checkBox_getStandingOrders">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>17</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</string>
-    </property>
-    <property name="text">
-     <string>Daueraufträge</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_4">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>231</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Wenn aktiviert wird automatisch beim starten des
+      </property>
+      <property name="text">
+       <string>Daueraufträge</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="checkBox_getDatedTransfers">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>17</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</string>
-    </property>
-    <property name="text">
-     <string>terminierte Überweisungen</string>
-    </property>
-   </widget>
-   <widget class="Line" name="line">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>221</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_5">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>231</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Wenn aktiviert werden die gewählten Aufträge nicht nur
+      </property>
+      <property name="text">
+       <string>terminierte Überweisungen</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="checkBox_executeAtStart">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>17</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
 nach dem starten zum Insititut übertragen.</string>
-    </property>
-    <property name="text">
-     <string>automatisch ausführen</string>
-    </property>
-   </widget>
+      </property>
+      <property name="text">
+       <string>automatisch ausführen</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>
@@ -509,9 +493,10 @@ nach dem starten zum Insititut übertragen.</string>
   <tabstop>checkBox</tabstop>
   <tabstop>checkBox_warnCosts</tabstop>
   <tabstop>checkBox_jobAddedToOutput</tabstop>
-  <tabstop>checkBox_2</tabstop>
-  <tabstop>checkBox_3</tabstop>
-  <tabstop>checkBox_4</tabstop>
+  <tabstop>checkBox_getBalance</tabstop>
+  <tabstop>checkBox_getStandingOrders</tabstop>
+  <tabstop>checkBox_getDatedTransfers</tabstop>
+  <tabstop>checkBox_executeAtStart</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

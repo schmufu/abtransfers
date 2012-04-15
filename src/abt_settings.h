@@ -89,10 +89,14 @@ public:
 	bool showDialog(const QString &dialogType) const;
 	void setShowDialog(const QString &dialogType, bool show);
 
+	bool appendJobToOutbox(const QString &jobname) const;
+	void setAppendJobToOutbox(const QString &jobname, bool get);
+
 	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
+
 
 signals:
 	void recipientsListChanged();

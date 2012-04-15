@@ -337,6 +337,26 @@ void MainWindow::TimerTimeOut()
 
 	//Der Timer wird nicht länger benötigt
 	delete this->timer;
+
+
+	//überprüfen ob Aufträge nach dem Start in den Ausgang gestellt werden
+	//sollen und ob diese auch gleich ausgeführt werden sollen.
+	if (settings->appendJobToOutbox("getBalance")) {
+		this->appendGetBalanceToOutbox();
+	}
+
+	if (settings->appendJobToOutbox("getDatedTransfers")) {
+		this->appendGetDatedTransfersToOutbox();
+	}
+
+	if (settings->appendJobToOutbox("getStandingOrders")) {
+		this->appendGetStandingOrdersToOutbox();
+	}
+
+	if (settings->appendJobToOutbox("executeAtStart")) {
+		this->jobctrl->execQueuedTransactions();
+	}
+
 }
 
 //private
@@ -1676,3 +1696,25 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 }
 
 
+//private
+void MainWindow::appendGetBalanceToOutbox() const
+{
+	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+		this->jobctrl->addGetBalance(acc, true);
+	}
+}
+
+//private
+void MainWindow::appendGetDatedTransfersToOutbox() const
+{
+	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+		this->jobctrl->addGetDatedTransfers(acc, true);
+	}
+}
+//private
+void MainWindow::appendGetStandingOrdersToOutbox() const
+{
+	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+		this->jobctrl->addGetStandingOrders(acc, true);
+	}
+}

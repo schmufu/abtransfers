@@ -126,6 +126,13 @@ private:
 	void createAndSendInternalTransfer(const widgetTransfer *sender);
 	void createAndSendSepaDebitNote(const widgetTransfer *sender);
 
+	/** \brief fügt für alle Konten ein getBalance in den Ausgang ein */
+	void appendGetBalanceToOutbox() const;
+	/** \brief fügt für alle Konten ein getDatedTransders in den Ausgang ein */
+	void appendGetDatedTransfersToOutbox() const;
+	/** \brief fügt für alle Konten ein getStandingOrders in den Ausgang ein */
+	void appendGetStandingOrdersToOutbox() const;
+
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();

@@ -47,6 +47,17 @@ DialogSettings::DialogSettings(abt_settings *settings, QWidget *parent) :
 
 	this->loadFromSettings();
 
+	//sicherstellen das der Status der CheckBoxen "Aktualisieren beim Start"
+	//konsistent zueinander ist.
+	this->onCheckBoxRefereshAtStartClicked();
+
+	connect(this->ui->checkBox_getBalance, SIGNAL(clicked()),
+		this, SLOT(onCheckBoxRefereshAtStartClicked()));
+	connect(this->ui->checkBox_getDatedTransfers, SIGNAL(clicked()),
+		this, SLOT(onCheckBoxRefereshAtStartClicked()));
+	connect(this->ui->checkBox_getStandingOrders, SIGNAL(clicked()),
+		this, SLOT(onCheckBoxRefereshAtStartClicked()));
+
 }
 
 DialogSettings::~DialogSettings()
@@ -76,6 +87,11 @@ void DialogSettings::loadFromSettings()
 
 	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
 	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
+
+	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
+	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
+	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
+	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
 }
 
 //private
@@ -88,6 +104,12 @@ void DialogSettings::saveToSettings()
 
 	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
 	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
+
+	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
+	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
+	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
+	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
+
 }
 
 //private slot
@@ -175,3 +197,21 @@ void DialogSettings::on_toolButton_selectRecipients_clicked()
 	}
 }
 
+//private slot
+void DialogSettings::onCheckBoxRefereshAtStartClicked()
+{
+	//Die checkbox executeAtStart darf nur auswählbar sein wenn auch
+	//mindestens eine andere ausgewählt ist
+
+	//wenn eine der drei Checkboxen ausgewählt ist
+	if (this->ui->checkBox_getBalance->isChecked() ||
+	    this->ui->checkBox_getDatedTransfers->isChecked() ||
+	    this->ui->checkBox_getStandingOrders->isChecked()) {
+		//executeAtStart aktivieren
+		this->ui->checkBox_executeAtStart->setEnabled(true);
+	} else {
+		//ansonsten deaktivieren und ausschalten
+		this->ui->checkBox_executeAtStart->setEnabled(false);
+		this->ui->checkBox_executeAtStart->setChecked(false);
+	}
+}

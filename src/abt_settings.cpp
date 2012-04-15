@@ -362,6 +362,19 @@ void abt_settings::setShowDialog(const QString &dialogType, bool show)
 
 
 
+bool abt_settings::appendJobToOutbox(const QString &jobname) const
+{
+	return this->settings->value(QString("LoadAtStart/").append(jobname),
+				     false).toBool();
+}
+
+void abt_settings::setAppendJobToOutbox(const QString &jobname, bool get)
+{
+	this->settings->setValue(QString("LoadAtStart/").append(jobname), get);
+}
+
+
+
 //static
 void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 {

@@ -60,6 +60,8 @@ private:
 
 
 private slots:
+	void onCheckBoxRefereshAtStartClicked();
+
 	void on_buttonBox_clicked(QAbstractButton* button);
 
 	void on_toolButton_selectRecipients_clicked();
