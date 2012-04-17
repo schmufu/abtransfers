@@ -31,6 +31,8 @@
 
 #include "abt_datedtransferinfo.h"
 
+#include <QDebug>
+
 /**
   * Die übergebene abt_transaction \a transaction wird beim löschen dieses
   * Objectes auch wieder gelöscht.
@@ -50,8 +52,11 @@ abt_datedTransferInfo::abt_datedTransferInfo(const AB_TRANSACTION *transaction)
 	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
 	//Kopie und von dieser eine abt_transaction die im destructor wieder
 	//gelöscht wird.
+	qDebug() << Q_FUNC_INFO << "creating object from const AB_TRANSACTION*";
 	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
+	qDebug() << Q_FUNC_INFO << "const AB_TRANSACTION* copied, creating a new abt_transaction";
 	this->t = new abt_transaction(t, true);
+	qDebug() << Q_FUNC_INFO << "created a new abt_transaction - done";
 }
 
 abt_datedTransferInfo::~abt_datedTransferInfo()

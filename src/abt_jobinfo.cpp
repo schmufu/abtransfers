@@ -334,8 +334,13 @@ void abt_jobInfo::createJobInfoStringList_Append_Value(QStringList *strList) con
 	QString info;
 	const AB_VALUE *v = this->m_trans->getValue();
 
-	info = QObject::tr("Betrag: %1 %2").arg(abt_conv::ABValueToString(v, true),
+	if (v) { //Betrag und Währung enthalten
+		info = QObject::tr("Betrag: %1 %2").arg(abt_conv::ABValueToString(v, true),
 						AB_Value_GetCurrency(v));
+	} else { //Kein AB_VALUE vorhanden
+		info = QObject::tr("Betrag: NICHT VORHANDEN (sollte nicht vorkommen");
+	}
+
 	strList->append(info);
 }
 

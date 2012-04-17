@@ -344,14 +344,20 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		while (t) {
 			//die terminierte Überweisung dem Account zufügen
 			//oder evt. auch löschen. Abhängig vom Status.
+			qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - creating abt_datedTransferInfo";
 			abt_datedTransferInfo *dt = new abt_datedTransferInfo(t);
+			qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - created abt_datedTransferInfo";
 			if (dt->getTransaction()->getStatus() == AB_Transaction_StatusRevoked) {
 				//Dem account werden nur gültige Terminüberweisungen
 				//zugeordnet, gelöschte erscheinen nur in der History
+				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - removing DatedTransfer from accountInfo";
 				acc->removeDatedTransfer(dt);
+				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - removed DatedTransfer from accountInfo";
 				delete dt; //dt wird nicht länger benötigt
 			} else {
+				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - adding DatedTransfer to accountInfo";
 				acc->addDatedTransfer(dt);
+				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - added DatedTransfer to accountInfo";
 				//dt wird durch den Account wieder gelöscht
 			}
 
