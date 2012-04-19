@@ -630,6 +630,19 @@ void widgetTransfer::onRevertButtonPressed()
 bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 {
 	errorMsg.clear();
+
+	if (!this->m_limits) {
+		//es existieren keine Limits, somit ist dieser Auftrag für
+		//den gewählten Absender nicht verfügbar.
+		errorMsg.append(tr("<b><br />"
+				   "Der Auftrag '%1'' ist bei dem in Absender "
+				   "gewählten Konto nicht verfügbar.<br />"
+				   "Bitte wählen Sie einen Absender bei dem der "
+				   "Auftrag auch ausgeführt werden kann.</b>"
+				   "<br />").arg(abt_conv::JobTypeToQString(this->m_type)));
+		return false;
+	}
+
 	if (this->localAccount != NULL) {
 		if (this->localAccount->getAccount() == NULL) {
 			errorMsg.append(tr(" - Absender Konto unbekannt\n"));
