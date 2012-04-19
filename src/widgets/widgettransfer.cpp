@@ -640,6 +640,8 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 				   "Bitte wählen Sie einen Absender bei dem der "
 				   "Auftrag auch ausgeführt werden kann.</b>"
 				   "<br />").arg(abt_conv::JobTypeToQString(this->m_type)));
+		//wir dürfen nicht weiter testen, da die weiteren Überprüfungen
+		//teilweise auf das vorhandensein der Limits angewiesen sind!
 		return false;
 	}
 
