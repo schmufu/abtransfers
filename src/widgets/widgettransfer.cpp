@@ -667,6 +667,14 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	if (this->value != NULL) {
 		if (this->value->getValue().isEmpty()) {
 			errorMsg.append(tr(" - Überweisungsbetrag fehlt<br />"));
+		} else {
+			bool convOk;
+			double value = this->value->getValue().toDouble(&convOk);
+			if (!convOk) {
+				qWarning() << Q_FUNC_INFO << "could not convert value to double!";
+			} else if(value == 0.0) {
+				errorMsg.append(tr(" - Ein Betrag von 0,00 kann nicht überwiesen werden<br />"));
+			}
 		}
 		if (this->value->getCurrency().isEmpty()) {
 			errorMsg.append(tr(" - Überweisungs-Währung fehlt<br />"));
