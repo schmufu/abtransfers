@@ -72,6 +72,7 @@ private:
 	QLabel *localAccountNumber;
 	QLabel *localBankCode;
 	QLabel *localBankName;
+	//! if comboBoxAccounts == NULL then we are a local account widget
 	widgetAccountComboBox *comboBoxAccounts;
 
 	bool allowDropAccount;

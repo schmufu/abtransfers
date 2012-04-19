@@ -190,6 +190,10 @@ widgetTransfer::~widgetTransfer()
 //	delete this->groupBoxLocal;
 //	delete this->groupBoxRemote;
 //	delete this->groubBoxRecurrence;
+
+	//perhaps we stored a copy of the transaction and must delete it
+	delete this->m_origTransaction; //it is save to delete a NULL Pointer
+
 	qDebug() << this << "deleted";
 }
 
@@ -920,7 +924,9 @@ bool widgetTransfer::hasChanges() const
  */
 void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 {
-	this->m_origTransaction = t;
+	//we store a copy of the original transaction, so when the original
+	//transaction is deleted, we have the values.
+	this->m_origTransaction = new abt_transaction(*t);
 
 	if (this->localAccount != NULL) {
 		//den local account suchen der dem Absender in der
@@ -947,11 +953,38 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 	}
 
 	if (this->remoteAccount != NULL) {
-		this->remoteAccount->setName(t->getRemoteName().at(0));
-		this->remoteAccount->setAccountNumber(t->getRemoteAccountNumber());
-		this->remoteAccount->setBankCode(t->getRemoteBankCode());
-		this->remoteAccount->setBankName(t->getRemoteBankName());
+		if (this->m_type == AB_Job_TypeInternalTransfer) {
+			//the remoteAccountWidget must be a Widget for a
+			//known local Account!
+
+			//den local/remote account suchen der dem Empfänger in
+			//der abt_transaction entspricht
+			aqb_AccountInfo* acc = NULL;
+
+			//wenn keine Accounts bekannt, abbrechen
+			if (this->m_allAccounts == NULL) return;
+
+			QHashIterator<int, aqb_AccountInfo*> it(this->m_allAccounts->getAccountHash());
+			it.toFront();
+			while (it.hasNext()) {
+				it.next();
+				if (t->getRemoteAccountNumber() == it.value()->Number() &&
+				    t->getRemoteBankCode() == it.value()->BankCode()) {
+					acc = it.value();
+					break; //account gefunden, abbruch.
+				}
+			}
+
+			this->remoteAccount->setAccount(acc);
+		} else {
+			//the remoteAccountWidget must be for a remote account
+			this->remoteAccount->setName(t->getRemoteName().at(0));
+			this->remoteAccount->setAccountNumber(t->getRemoteAccountNumber());
+			this->remoteAccount->setBankCode(t->getRemoteBankCode());
+			this->remoteAccount->setBankName(t->getRemoteBankName());
+		}
 	}
+
 
 	if (this->value != NULL) {
 		this->value->setValue(t->getValue());
