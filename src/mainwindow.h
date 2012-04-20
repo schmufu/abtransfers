@@ -47,6 +47,7 @@
 //#define TESTWIDGETACCESS
 
 class widgetTransfer;
+class widgetRecurrence;
 
 namespace Ui {
 	class MainWindow;
@@ -132,6 +133,9 @@ private:
 	void appendGetDatedTransfersToOutbox() const;
 	/** \brief fügt für alle Konten ein getStandingOrders in den Ausgang ein */
 	void appendGetStandingOrdersToOutbox() const;
+
+	/** \brief korrigiert automatisch die Datumseingaben beim Dauerauftrag */
+	bool correctRecurrenceDates(widgetRecurrence *recurrence) const;
 
 private slots:
 	void on_tabWidget_UW_tabCloseRequested(int index);

@@ -761,90 +761,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	//datedDate kann nur gültige Werte annehmen!
 
 	//Prüfung der Daten von recurrence
-	if (this->recurrence) {
-		const int cycle = this->recurrence->getCycle();
-		const int day = this->recurrence->getExecutionDay();
-		const QDate FirstDate = this->recurrence->getFirstExecutionDate();
-		const QDate LastDate = this->recurrence->getLastExecutionDate();
-		const QDate NextDate = this->recurrence->getNextExecutionDate();
-
-		Qt::DayOfWeek weekday;
-
-		QDate testDate;
-		bool DateTestOK;
-
-		switch (this->recurrence->getPeriod()) {
-		case AB_Transaction_PeriodNone:
-		case AB_Transaction_PeriodUnknown:
-			errorMsg.append(tr(" - <b>Programmierfehler:</b> Value from recurrence->getPeriod not supported<br />"));
-			break;
-		case AB_Transaction_PeriodMonthly:
-			if (FirstDate.day() != day) {
-				errorMsg.append(tr(" - Tag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			if (LastDate.isValid() && LastDate.day() != day) {
-				errorMsg.append(tr(" - Tag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			if (NextDate.day() != day) {
-				errorMsg.append(tr(" - Tag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
-			testDate = FirstDate;
-			DateTestOK = false;
-			if (LastDate.isValid()) {
-				while (testDate.year() <= LastDate.year()) {
-					testDate = testDate.addMonths(cycle);
-					if (testDate == LastDate) {
-						DateTestOK = true;
-						break; //while abbrechen, Datum OK
-					}
-				}
-				if (!DateTestOK) {
-					errorMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
-							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
-				}
-			}
-			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
-
-			break;
-		case AB_Transaction_PeriodWeekly:
-			weekday = (Qt::DayOfWeek)day;
-			if (FirstDate.dayOfWeek() != weekday) {
-				errorMsg.append(tr(" - Wochentag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			if (LastDate.isValid() && LastDate.dayOfWeek() != weekday) {
-				errorMsg.append(tr(" - Wochentag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			if (NextDate.dayOfWeek() != weekday) {
-				errorMsg.append(tr(" - Wochentag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
-			}
-
-			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
-			testDate = FirstDate;
-			DateTestOK = false;
-			if (LastDate.isValid()) {
-				while (testDate.year() <= LastDate.year()) {
-					testDate = testDate.addDays(7*cycle);
-					if (testDate == LastDate) {
-						DateTestOK = true;
-						break; //while abbrechen, Datum OK
-					}
-				}
-				if (!DateTestOK) {
-					errorMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
-							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
-				}
-			}
-			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
-
-			break;
-		}
-	} // if (this->recurrence)
+	this->isRecurrenceInputOk(errorMsg);
 
 	if (this->m_type == AB_Job_TypeInternalTransfer) {
 		if (this->remoteAccount->getAccount() != NULL) {
@@ -889,6 +806,112 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 
 	return false;
 }
+
+//public
+/** Prüft alle Datumseingaben eines Dauerauftrages und gibt zurück ob diese i.O. sind
+ *
+ * Wenn Eingaben fehlen oder fehlerhaft sind wird false zurückgegeben und
+ * in \a errorMsg ein Menschenlesbarer Text der fehlerhaften Eingaben
+ * gespeichert.
+ */
+bool widgetTransfer::isRecurrenceInputOk(QString &errorMsg) const
+{
+	QString recurrenceMsg;
+
+	if (this->recurrence) {
+		const int cycle = this->recurrence->getCycle();
+		const int day = this->recurrence->getExecutionDay();
+		const QDate FirstDate = this->recurrence->getFirstExecutionDate();
+		const QDate LastDate = this->recurrence->getLastExecutionDate();
+		const QDate NextDate = this->recurrence->getNextExecutionDate();
+
+		Qt::DayOfWeek weekday;
+
+		QDate testDate;
+		bool DateTestOK;
+
+		switch (this->recurrence->getPeriod()) {
+		case AB_Transaction_PeriodNone:
+		case AB_Transaction_PeriodUnknown:
+			recurrenceMsg.append(tr(" - <b>Programmierfehler:</b> Value from recurrence->getPeriod not supported<br />"));
+			break;
+		case AB_Transaction_PeriodMonthly:
+			if (FirstDate.day() != day) {
+				recurrenceMsg.append(tr(" - Tag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (LastDate.isValid() && LastDate.day() != day) {
+				recurrenceMsg.append(tr(" - Tag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (NextDate.day() != day) {
+				recurrenceMsg.append(tr(" - Tag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
+			testDate = FirstDate;
+			DateTestOK = false;
+			if (LastDate.isValid()) {
+				while (testDate.year() <= LastDate.year()) {
+					testDate = testDate.addMonths(cycle);
+					if (testDate == LastDate) {
+						DateTestOK = true;
+						break; //while abbrechen, Datum OK
+					}
+				}
+				if (!DateTestOK) {
+					recurrenceMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
+							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
+				}
+			}
+			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
+
+			break;
+		case AB_Transaction_PeriodWeekly:
+			weekday = (Qt::DayOfWeek)day;
+			if (FirstDate.dayOfWeek() != weekday) {
+				recurrenceMsg.append(tr(" - Wochentag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (LastDate.isValid() && LastDate.dayOfWeek() != weekday) {
+				recurrenceMsg.append(tr(" - Wochentag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			if (NextDate.dayOfWeek() != weekday) {
+				recurrenceMsg.append(tr(" - Wochentag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
+			}
+
+			//LastDate muss, im Kontext mit Cycle und FirstDate stehen.
+			testDate = FirstDate;
+			DateTestOK = false;
+			if (LastDate.isValid()) {
+				while (testDate.year() <= LastDate.year()) {
+					testDate = testDate.addDays(7*cycle);
+					if (testDate == LastDate) {
+						DateTestOK = true;
+						break; //while abbrechen, Datum OK
+					}
+				}
+				if (!DateTestOK) {
+					recurrenceMsg.append(tr(" - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus überein<br />"
+							   "&nbsp;&nbsp;Letztmalig muss ein vielfaches des Zyklus von<br />&nbsp;&nbsp;Erstmalig entfernt sein<br />"));
+				}
+			}
+			//wenn LastDate inValid ist ist der Dauerauftrag bis auf wiederruf gültig!
+
+			break;
+		}
+	} // if (this->recurrence)
+
+	if (recurrenceMsg.isEmpty()) {
+		return true;
+	}
+
+	errorMsg.append(recurrenceMsg);
+	return false;
+}
+
+
 
 //public
 /** gibt zurück ob Daten gegenüber der Erstellung geändert wurden */

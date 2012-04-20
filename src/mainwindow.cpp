@@ -1206,6 +1206,23 @@ void MainWindow::onWidgetTransferCancelClicked(widgetTransfer *sender)
 //private slot
 void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer *sender)
 {
+	if (type == AB_Job_TypeCreateStandingOrder ||
+	    type == AB_Job_TypeModifyStandingOrder) {
+		//Testen ob die Eingaben von recurrence i.O. sind
+		QString errMsg;
+		bool inputOK = sender->isRecurrenceInputOk(errMsg);
+		if (!inputOK) {
+			bool accepted = this->correctRecurrenceDates(sender->recurrence);
+			if (!accepted) {
+				//User möchte die automatische Korrektur nicht
+				return;
+			}
+
+		}
+
+	}
+
+
 	//erstmal prüfen ob die Eingaben in dem Widget so OK sind.
 	QString errMsg;
 	if (! sender->isGeneralInputOk(errMsg)) {
@@ -1271,7 +1288,125 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 	this->deleteTabWidgetAndTab(sender);
 }
 
+/**
+  * Wenn die Eingaben im widgetRecurrence Fehlerhaft sind kann diese funktion
+  * aufgerufen werden um die Daten automtisch zu korrigieren.
+  *
+  * Vor einer Korrektur wird der Benutzer gefragt ob dies so gemacht werden soll
+  * wenn er dem zustimmt wird true zurückgegeben und die Daten im
+  * widgetRecurrence geändert. Ansonsten false und die Daten so belassen wie
+  * sie sind.
+  */
+//private
+bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
+{
+	QDate correctFirstDate, correctLastDate, correctNextDate;
 
+	const QDate firstDate = recurrence->getFirstExecutionDate();
+	const QDate lastDate = recurrence->getLastExecutionDate();
+	const QDate nextDate = recurrence->getNextExecutionDate();
+
+	AB_TRANSACTION_PERIOD period = recurrence->getPeriod();
+	int cycle = recurrence->getCycle();
+	//depends on cylce (Weekday Mo,Di,Mi or Day 1,2,3)
+	int executionDay = recurrence->getExecutionDay();
+
+	//Wir gehen davon aus das der executionDay, die period und der cycle
+	//richtig gewählt wurden und stellen dementsprechend das first-, last-
+	//und nextDate ein.
+
+	correctFirstDate = firstDate;
+	correctLastDate = lastDate;
+	correctNextDate = nextDate;
+
+	switch(period) {
+	case AB_Transaction_PeriodWeekly: {
+		//zu jedem Datum werden solange Tage addiert bis der gewählte
+		//Wochentag dem Datum entspricht
+		while (correctFirstDate.dayOfWeek() != executionDay)
+			correctFirstDate = correctFirstDate.addDays(1);
+		while (correctNextDate.dayOfWeek() != executionDay)
+			correctNextDate = correctNextDate.addDays(1);
+
+		//Wenn das Datum ungültig ist soll der DA ohne Enddatum laufen
+		if (!lastDate.isValid()) break;
+		while (correctLastDate.dayOfWeek() != executionDay)
+			correctLastDate = correctLastDate.addDays(1);
+		//jetzt stimmt schonmal der Wochentag des letzten Datums,
+		//der Zyklus muss aber auch stimmen (Erstmalig und Letztmalig
+		//dürfen nicht gleich sein)
+		QDate testDate = correctFirstDate;
+		while (testDate <= correctLastDate)
+			testDate = testDate.addDays(7*cycle); //Wöchentliche Ausführung!
+		}
+		break;
+	case AB_Transaction_PeriodMonthly: {
+		//Wir setzen den erstmöglichen Tag der nach dem eingestellten Datum liegt
+		if (firstDate.day() > executionDay) {
+			correctFirstDate = firstDate.addMonths(1);
+		}
+		correctFirstDate.setDate(correctFirstDate.year(),
+					 correctFirstDate.month(),
+					 executionDay);
+
+		if (nextDate.day() > executionDay) {
+			correctNextDate = nextDate.addMonths(1);
+		}
+		correctNextDate.setDate(correctNextDate.year(),
+					correctNextDate.month(),
+					executionDay);
+
+		//Wenn das Datum ungültig ist soll der DA ohne Enddatum laufen
+		if (!lastDate.isValid()) break;
+		if (lastDate.day() > executionDay) {
+			correctLastDate = lastDate.addMonths(1);
+		}
+		correctLastDate.setDate(correctLastDate.year(),
+					correctLastDate.month(),
+					executionDay);
+		//jetzt stimmt schonmal der Tag des letzten Datums, der Zyklus
+		//muss aber auch stimmen (Erstmalig und Letztmalig dürfen
+		//nicht gleich sein)
+		QDate testDate = correctFirstDate;
+		while (testDate <= correctLastDate)
+			testDate = testDate.addMonths(cycle); //Monatliche Ausführung!
+		correctLastDate = testDate;
+		}
+		break;
+	default:
+		break;
+	}
+
+	QString strFirstDate = correctFirstDate.toString("ddd dd.MM.yyyy");
+	QString strLastDate = correctLastDate.isValid() ? correctLastDate.toString("ddd dd.MM.yyyy") : tr("Bis auf weiteres");
+	QString strNextDate = correctNextDate.toString("ddd dd.MM.yyyy");
+
+	int ret = QMessageBox::question(
+			NULL,
+			tr("Daten geändert"),
+			tr("Die Daten für den Dauerauftrag sind in sich "
+			   "nicht konsistent und würden auf die folgenden "
+			   "Werte geändert werden:<br />"
+			   "<table>"
+			   "<tr><td>Erstmalig:</td><td>%1</td></tr>"
+			   "<tr><td>Letztmalig:</td><td>%2</td></tr>"
+			   "<tr><td>Nächste Ausf.:</td><td>%3</td></tr>"
+			   "</table>"
+			   "<br /><br />"
+			   "Sollen die Daten auf diese Werte geändert "
+			   "werden?").arg(strFirstDate, strLastDate, strNextDate),
+			      QMessageBox::Yes | QMessageBox::No,
+			      QMessageBox::Yes);
+
+	if (ret == QMessageBox::Yes) {
+		recurrence->setFirstExecutionDay(correctFirstDate);
+		recurrence->setLastExecutionDay(correctLastDate);
+		recurrence->setNextExecutionDay(correctNextDate);
+		return true;
+	}
+
+	return false;
+}
 
 
 

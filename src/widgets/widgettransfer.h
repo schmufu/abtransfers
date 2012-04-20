@@ -128,6 +128,7 @@ public slots:
 
 public:
 	bool isGeneralInputOk(QString &errorMsg) const;
+	bool isRecurrenceInputOk(QString &errorMsg) const;
 	bool hasChanges() const;
 	/*! Wenn über setValuesFromTransaction() eine Transaction gesetzt wurde
 	 *  kann diese hierrüber wieder gelesen werden. */
