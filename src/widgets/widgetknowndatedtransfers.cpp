@@ -153,8 +153,9 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 		Item->setData(1, Qt::DisplayRole, trans->getRemoteBankCode());
 		Item->setData(2, Qt::DisplayRole, trans->getRemoteName().at(0));
 		v = trans->getValue();
+		//abt_conv::ABValueToString() gibt "" zurück wenn v == NULL!
 		QString Betrag = abt_conv::ABValueToString(v, true);
-		Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+		if (v) Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 		Item->setData(3, Qt::DisplayRole, Betrag);
 		Item->setData(4, Qt::DisplayRole, trans->getDate().toString("dd.MM.yyyy"));
 		this->treeWidget->addTopLevelItem(Item);

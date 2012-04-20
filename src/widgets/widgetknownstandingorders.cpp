@@ -153,8 +153,9 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 		Item->setData(1, Qt::DisplayRole, DAtrans->getRemoteBankCode());
 		Item->setData(2, Qt::DisplayRole, DAtrans->getRemoteName().at(0));
 		v = DAtrans->getValue();
+		//abt_conv::ABValueToString() gibt "" zurück wenn v == NULL!
 		QString Betrag = abt_conv::ABValueToString(v, true);
-		Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+		if (v) Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 		Item->setData(3, Qt::DisplayRole, Betrag);
 		this->treeWidget->addTopLevelItem(Item);
 	}

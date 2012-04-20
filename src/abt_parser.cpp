@@ -367,7 +367,12 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			v = AB_Transaction_GetValue(t);
-			logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
+			if (v) {
+				logmsg2 = QString("Value:\t\t%1 %2").arg(AB_Value_GetValueAsDouble(v));
+
+			} else {
+				logmsg2 = QString("Value:\t\tNOT SET!");
+			}
 			qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 			l = AB_Transaction_GetRemoteName(t);
