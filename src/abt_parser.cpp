@@ -155,13 +155,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 	if (!iec) return;
 
 	//eventuelle Lücken im Context füllen (ID, Bankname etc)
-	int ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
-							 iec);
-	if (ret) {
-		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
-			   << " -- something went wrong on filling the gaps"
-			   << "(this is not an serious error)";
-	}
+	/** \todo erstmal auskommentiert, zum Testen */
+//	int ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+//							 iec);
+//	if (ret) {
+//		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
+//			   << " -- something went wrong on filling the gaps"
+//			   << "(this is not an serious error)";
+//	}
 
 
 	/**********************************************************************/
@@ -241,7 +242,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		//das interne accountInfo-Object besorgen (gibt NULL zurück wenn
 		//keins gefunden wurde)
-		acc = allAccounts->getAccount(KtoNr, BLZ, Owner, Name);
+		acc = allAccounts->getAccount(KtoNr, BLZ);
 
 		//wenn kein lokaler account gefunden wurde können diesem auch
 		//keine Daten zugewiesen werden
@@ -368,7 +369,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 			v = AB_Transaction_GetValue(t);
 			if (v) {
-				logmsg2 = QString("Value:\t\t%1 %2").arg(AB_Value_GetValueAsDouble(v));
+				logmsg2 = QString("Value:\t\t%1").arg(AB_Value_GetValueAsDouble(v));
 
 			} else {
 				logmsg2 = QString("Value:\t\tNOT SET!");
