@@ -155,14 +155,13 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 	if (!iec) return;
 
 	//eventuelle Lücken im Context füllen (ID, Bankname etc)
-	/** \todo erstmal auskommentiert, zum Testen */
-//	int ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
-//							 iec);
-//	if (ret) {
-//		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
-//			   << " -- something went wrong on filling the gaps"
-//			   << "(this is not an serious error)";
-//	}
+	int ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+							 iec);
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
+			   << " -- something went wrong on filling the gaps"
+			   << "(this is not an serious error)";
+	}
 
 
 	/**********************************************************************/
@@ -242,7 +241,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 		//das interne accountInfo-Object besorgen (gibt NULL zurück wenn
 		//keins gefunden wurde)
-		acc = allAccounts->getAccount(KtoNr, BLZ);
+		acc = allAccounts->getAccount(KtoNr, BLZ, Owner, Name);
 
 		//wenn kein lokaler account gefunden wurde können diesem auch
 		//keine Daten zugewiesen werden
