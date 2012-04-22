@@ -47,9 +47,10 @@
 
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
-#include <gwenhywfar4/gwen-gui-qt4/qt4_gui.hpp>
 #include <aqbanking/jobgettransactions.h>
 #include <aqbanking/value.h>
+#include <aqbanking/dlg_setup.h>
+#include <aqbanking/dlg_importer.h>
 
 #include "globalvars.h"
 #include "abt_conv.h"
@@ -1852,4 +1853,30 @@ void MainWindow::appendGetStandingOrdersToOutbox() const
 	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		this->jobctrl->addGetStandingOrders(acc, true);
 	}
+}
+
+void MainWindow::on_actionAqBankingSetup_triggered()
+{
+	GWEN_DIALOG *dlg;
+	int rv;
+
+	dlg = AB_SetupDialog_new(banking->getAqBanking());
+	if (!dlg) {
+		qWarning() << Q_FUNC_INFO << "could not create AqBanking setup dialog";
+		return;
+	}
+
+	rv = GWEN_Gui_ExecDialog(dlg, 0);
+	if (rv == 0) {
+		qDebug() << Q_FUNC_INFO << "AqBanking setup dialog aborted by user";
+	}
+
+	/** \todo Sind Änderungen sofort verfügbar oder müssen unsere Objecte
+		  neu erstellt werden damit die Änderungen dort auch angezeigt
+		  werden?
+		  Auf jeden fall sollte ein "Update" der Anzeigen erfolgen, da
+		  sich evt. die Daten geändert haben!
+	*/
+
+	GWEN_Dialog_free(dlg);
 }

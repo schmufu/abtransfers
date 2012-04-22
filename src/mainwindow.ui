@@ -20,7 +20,7 @@
    <string notr="true">AB-Transfers</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="resources.qrc">
     <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
   </property>
   <property name="locale">
@@ -94,7 +94,7 @@
           <string>Übersicht</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="resources.qrc">
            <normaloff>:/icons/ueberweisung</normaloff>:/icons/ueberweisung</iconset>
          </property>
         </item>
@@ -103,7 +103,7 @@
           <string>Ausgang</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="resources.qrc">
            <normaloff>:/icons/bank-icon</normaloff>:/icons/bank-icon</iconset>
          </property>
         </item>
@@ -112,7 +112,7 @@
           <string>Log</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="resources.qrc">
            <normaloff>:/icons/Log-Icon</normaloff>:/icons/Log-Icon</iconset>
          </property>
         </item>
@@ -337,7 +337,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>711</width>
-                   <height>319</height>
+                   <height>325</height>
                   </rect>
                  </property>
                 </widget>
@@ -363,7 +363,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
@@ -385,7 +385,15 @@
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
+   <widget class="QMenu" name="menuEinstellungen">
+    <property name="title">
+     <string>Einstellungen</string>
+    </property>
+    <addaction name="actionEinstellungen"/>
+    <addaction name="actionAqBankingSetup"/>
+   </widget>
    <addaction name="menuDatei"/>
+   <addaction name="menuEinstellungen"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -434,9 +442,16 @@
     <string>Hilfe / FAQ</string>
    </property>
   </action>
+  <action name="actionAqBankingSetup">
+   <property name="text">
+    <string>AqBanking einrichten ...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionBeenden</sender>

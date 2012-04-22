@@ -32,6 +32,7 @@
 #define AQB_BANKING_H
 
 #include <aqbanking/banking.h>
+#include <gwen-gui-qt4/qt4_gui.hpp>
 
 #include <QString>
 
@@ -44,12 +45,15 @@ class aqb_banking
 {
 private:
 	AB_BANKING *ab;
+	QT4_Gui *gui;
 
 public:
 	aqb_banking();
 	~aqb_banking();
 
 	AB_BANKING* getAqBanking() const { return this->ab; }
+
+	GWEN_GUI* getCInterface() const { return this->gui->getCInterface(); }
 
 	QString getInstituteFromBLZ(const QString &BLZ) const;
 	/*! This function checks whether the given combination represents a valid account. */

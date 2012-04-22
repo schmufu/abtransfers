@@ -32,18 +32,15 @@
 
 #include <QDebug>
 
-#include <gwen-gui-qt4/qt4_gui.hpp>
 #include <aqbanking/bankinfo.h>
+#include <aqbanking/abgui.h>
 
 aqb_banking::aqb_banking()
 {
 	int rv;
-	QT4_Gui *gui;
 
-	gui = new QT4_Gui();
-	GWEN_Gui_SetGui(gui->getCInterface());
 
-	this->ab = AB_Banking_new("ab_transfer", NULL, 0);
+	this->ab = AB_Banking_new("abtransfers", NULL, 0);
 
 	/* This is the basic init function. It only initializes the minimum (like
 	 * setting up plugin and data paths). After this function successfully
@@ -61,11 +58,18 @@ aqb_banking::aqb_banking()
 	/* This function loads the settings file of AqBanking so the users and
 	 * accounts become available after this function successfully returns.
 	 */
-	rv = AB_Banking_OnlineInit(ab);
+	rv = AB_Banking_OnlineInit(this->ab);
 	if (rv) {
 		fprintf(stderr, "Error on init of online modules (%d)\n", rv);
+		AB_Banking_Fini(this->ab);
 		return;
 	}
+
+	this->gui = new QT4_Gui();
+	GWEN_Gui_SetGui(this->gui->getCInterface());
+
+	//damit die gemachten Einstellungen des GWEN-Dialogs erhalten bleiben
+	AB_Gui_Extend(this->gui->getCInterface(), this->ab);
 
 }
 
@@ -94,6 +98,8 @@ aqb_banking::~aqb_banking()
 	AB_Banking_free(ab);
 
 	qDebug() << "AqBanking successfully deinitialized";
+
+	delete this->gui; //das erstellte GWEN_Qt4_GUI wieder löschen
 
 }
 

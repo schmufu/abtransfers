@@ -138,6 +138,7 @@ private:
 	bool correctRecurrenceDates(widgetRecurrence *recurrence) const;
 
 private slots:
+	void on_actionAqBankingSetup_triggered();
 	void on_tabWidget_UW_tabCloseRequested(int index);
 	void TimerTimeOut();
 	void DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type);
