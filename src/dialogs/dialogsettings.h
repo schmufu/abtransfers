@@ -60,7 +60,7 @@ private:
 
 
 private slots:
-	void onCheckBoxRefereshAtStartClicked();
+	void onCheckBoxRefereshAtStartStateChanged(int state);
 
 	void on_buttonBox_clicked(QAbstractButton* button);
 

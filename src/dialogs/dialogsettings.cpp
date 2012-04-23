@@ -49,14 +49,14 @@ DialogSettings::DialogSettings(abt_settings *settings, QWidget *parent) :
 
 	//sicherstellen das der Status der CheckBoxen "Aktualisieren beim Start"
 	//konsistent zueinander ist.
-	this->onCheckBoxRefereshAtStartClicked();
+	this->onCheckBoxRefereshAtStartStateChanged(0);
 
-	connect(this->ui->checkBox_getBalance, SIGNAL(clicked()),
-		this, SLOT(onCheckBoxRefereshAtStartClicked()));
-	connect(this->ui->checkBox_getDatedTransfers, SIGNAL(clicked()),
-		this, SLOT(onCheckBoxRefereshAtStartClicked()));
-	connect(this->ui->checkBox_getStandingOrders, SIGNAL(clicked()),
-		this, SLOT(onCheckBoxRefereshAtStartClicked()));
+	connect(this->ui->checkBox_getBalance, SIGNAL(stateChanged(int)),
+		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));
+	connect(this->ui->checkBox_getDatedTransfers, SIGNAL(stateChanged(int)),
+		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));
+	connect(this->ui->checkBox_getStandingOrders, SIGNAL(stateChanged(int)),
+		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));
 
 }
 
@@ -198,7 +198,7 @@ void DialogSettings::on_toolButton_selectRecipients_clicked()
 }
 
 //private slot
-void DialogSettings::onCheckBoxRefereshAtStartClicked()
+void DialogSettings::onCheckBoxRefereshAtStartStateChanged(int /* state */)
 {
 	//Die checkbox executeAtStart darf nur auswählbar sein wenn auch
 	//mindestens eine andere ausgewählt ist
