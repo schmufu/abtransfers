@@ -135,6 +135,12 @@ private:
 	/** \brief korrigiert automatisch die Datumseingaben beim Dauerauftrag */
 	bool correctRecurrenceDates(widgetRecurrence *recurrence) const;
 
+	bool isStandingOrderInOutbox(const abt_standingOrderInfo *soi);
+	bool isStandingOrderOutdated(const aqb_AccountInfo *acc, const abt_standingOrderInfo *soi);
+
+	bool isDatedTransferInOutbox(const abt_datedTransferInfo *dti);
+	bool isDatedTransferOutdated(const aqb_AccountInfo *acc, const abt_datedTransferInfo *dti);
+
 private slots:
 	void on_actionAqBankingSetup_triggered();
 	void on_tabWidget_UW_tabCloseRequested(int index);

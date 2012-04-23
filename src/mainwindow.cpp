@@ -1383,20 +1383,93 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 }
 
 
-
-//private Slot
-void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
+/** \brief Prüft und gibt eine Warnung aus wenn der Dauerauftrag bereits im
+  *        Ausgang ist.
+  *
+  * \returns true wenn der Dauerauftrag bereits im Ausgang ist
+  * \returns false wenn der Dauerauftrag nicht im Ausgang ist
+  */
+//private
+bool MainWindow::isStandingOrderInOutbox(const abt_standingOrderInfo *soi)
 {
-	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
+	if (this->jobctrl->isTransactionInQueue(soi->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
 			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br /><br />"
 			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
 			   "Solange sich zu diesem Dauerauftrag bereits eine Änderung "
 			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
-			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
+			   "Bitte löschen oder Bearbeiten Sie den entsprechenden "
+			   "Auftrag im Ausgang."),
 			QMessageBox::Ok, QMessageBox::Ok);
-		return; //Abbruch
+		return true;
 	}
+	return false;
+}
+
+/** \brief Prüft ob die gespeicherten Daten veraltet sind und fragt wie fortgefahren
+  *        werden soll.
+  *
+  * Es wird geprüft ob das Datum der ersten Ausführung in der Zukunft liegt.
+  * Wenn dies nicht der Fall ist wird davon ausgegangen das die Daten veraltet
+  * sind und der Benutzer gefragt ob eine Aktualisierung stattfinden soll.
+  *
+  * Es existiert auch die Möglichkeit das der Benutzer diese Warnung ignorieren
+  * kann, in diesem Fall gibt diese Funktion denselben Rückgabewert zurück als
+  * wäre das Datum i.O.
+  *
+  * Wenn eine Aktualisierung durchgeführt werden soll wird automatisch der
+  * entsprechende Auftrag in den Ausgang gestellt und in den Ausgang gewechselt.
+  *
+  * \returns false
+  *	Wenn der Dauerauftrag bearbeitet werden kann (Daten nicht verhaltet) oder
+  *	bearbeitet werden soll (Benutzer will keine Aktualisierung)
+  *
+  * \returns true
+  *	wenn der Dauerauftrag nicht bearbeitet werden soll.
+  *
+  */
+//private
+bool MainWindow::isStandingOrderOutdated(const aqb_AccountInfo *acc,
+					 const abt_standingOrderInfo *soi)
+{
+	if (QDate::currentDate() >= soi->getTransaction()->getFirstExecutionDate()) {
+		//Der gespeicherte Dauerauftrag, ist veraltet!
+		int rv =
+		QMessageBox::warning(this, tr("Daten veraltet"),
+			tr("<b>Der gespeicherte Dauerauftrag ist veraltet!</b><br /><br />"
+			   "Um sicher zu stellen das eine gültige Version des "
+			   "Dauerauftrages gelöscht oder geändert wird, sollten "
+			   "die Daueraufträge von diesem Konto aktualisiert "
+			   "werden.<br /><br />"
+			   "Soll eine Aktualisierung durchgeführt werden?"),
+			QMessageBox::Yes | QMessageBox::Abort | QMessageBox::Ignore,
+			QMessageBox::Yes);
+
+		switch(rv) {
+		case QMessageBox::Ignore: break; //User will trotzdem editieren
+		case QMessageBox::Yes:
+			//Auftrag in den Ausgang einstellen
+			this->jobctrl->addGetStandingOrders(acc);
+			//Den Ausgang aktivieren
+			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
+			return true; //Edit soll abgebrochen werden
+			break;
+		default: //wie Abort behandeln
+			return true; //Abbrechen
+			break;
+		}
+	}
+	return false;
+}
+
+//private Slot
+void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
+{
+	//Abbrechen wenn bereits im Ausgang
+	if (this->isStandingOrderInOutbox(da)) return;
+
+	//Abbrechen wenn Daten veraltet
+	if (this->isStandingOrderOutdated(acc, da)) return;
 
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
@@ -1409,34 +1482,106 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
-	if (this->jobctrl->isTransactionInQueue(da->getTransaction())) {
-		QMessageBox::critical(this, tr("Bereits im Ausgang"),
-			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br /><br />"
-			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
-			   "Solange sich zu diesem Dauerauftrag bereits eine Änderung "
-			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
-			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
-			QMessageBox::Ok, QMessageBox::Ok);
-		return; //Abbruch
-	}
+	//Abbruch wenn bereits im Ausgang
+	if (this->isStandingOrderInOutbox(da)) return;
+
+	//Abbrechen wenn Daten veraltet
+	if (this->isStandingOrderOutdated(acc, da)) return;
 
 	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }
 
 
+/** \brief Prüft und gibt eine Warnung aus wenn die terminierte Überweisung
+  *	   bereits im Ausgang ist.
+  *
+  * \returns true wenn die terminierte Überweisung bereits im Ausgang ist
+  * \returns false wenn die terminierte Überweisung nicht im Ausgang ist
+  */
+//private
+bool MainWindow::isDatedTransferInOutbox(const abt_datedTransferInfo *dti)
+{
+	if (this->jobctrl->isTransactionInQueue(dti->getTransaction())) {
+	      QMessageBox::critical(this, tr("Bereits im Ausgang"),
+		      tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
+			 "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
+			 "Solange sich zu dieser terminierten Überweisung bereits eine Änderung "
+			 "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
+			 "Bitte löschen oder bearbeiten Sie den entsprechenden "
+			 "Auftrag im Ausgang."),
+		      QMessageBox::Ok, QMessageBox::Ok);
+		return true;
+	}
+	return false;
+}
+
+/** \brief Prüft ob die gespeicherten Daten veraltet sind und fragt wie fortgefahren
+  *        werden soll.
+  *
+  * Es wird geprüft ob das Datum der terminierten Überweisung in der Zukunft liegt.
+  * Wenn dies nicht der Fall ist wird davon ausgegangen das die Daten veraltet
+  * sind und der Benutzer gefragt ob eine Aktualisierung stattfinden soll.
+  *
+  * Es existiert auch die Möglichkeit das der Benutzer diese Warnung ignorieren
+  * kann, in diesem Fall gibt diese Funktion denselben Rückgabewert zurück als
+  * wäre das Datum i.O.
+  *
+  * Wenn eine Aktualisierung durchgeführt werden soll wird automatisch der
+  * entsprechende Auftrag in den Ausgang gestellt und in den Ausgang gewechselt.
+  *
+  * \returns false
+  *	Wenn der Dauerauftrag bearbeitet werden kann (Daten nicht verhaltet) oder
+  *	bearbeitet werden soll (Benutzer will keine Aktualisierung)
+  *
+  * \returns true
+  *	wenn der Dauerauftrag nicht bearbeitet werden soll.
+  *
+  */
+//private
+bool MainWindow::isDatedTransferOutdated(const aqb_AccountInfo *acc,
+					 const abt_datedTransferInfo *dti)
+{
+	if (QDate::currentDate() >= dti->getTransaction()->getDate()) {
+		//Die gespeicherte Terminüberweisung ist veraltet!
+		int rv =
+		QMessageBox::warning(this, tr("Daten veraltet"),
+			tr("<b>Die gespeicherte terminierte Überweisung ist veraltet!</b><br /><br />"
+			   "Das Auführungsdatum der terminierten Überweisung ist "
+			   "bereits erreicht oder überschritten. Um sicher zu "
+			   "stellen das die terminierte Überweisung noch nicht "
+			   "ausgeführt wurde sollten diese aktualisiert "
+			   "werden.<br />"
+			   "<i>(Ein löschen oder bearbeiten könnte Fehler verursachen)</i>"
+			   "<br /><br />"
+			   "Soll eine Aktualisierung durchgeführt werden?"),
+			QMessageBox::Yes | QMessageBox::Abort | QMessageBox::Ignore,
+			QMessageBox::Yes);
+
+		switch(rv) {
+		case QMessageBox::Ignore: break; //User will trotzdem editieren
+		case QMessageBox::Yes:
+			//Auftrag in den Ausgang einstellen
+			this->jobctrl->addGetDatedTransfers(acc);
+			//Den Ausgang aktivieren
+			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
+			return true; //Edit soll abgebrochen werden
+			break;
+		default: //wie Abort behandeln
+			return true; //Abbrechen
+			break;
+		}
+	}
+	return false;
+}
+
 //private Slot
 void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
-	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
-		QMessageBox::critical(this, tr("Bereits im Ausgang"),
-			tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
-			   "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
-			   "Solange sich zu dieser terminierten Überweisung bereits eine Änderung "
-			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
-			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
-			QMessageBox::Ok, QMessageBox::Ok);
-		return; //Abbruch
-	}
+	//Abbrechen wenn bereits im Ausgang
+	if (this->isDatedTransferInOutbox(di)) return;
+
+	//Abbrechen wenn Daten veraltet
+	if (this->isDatedTransferOutdated(acc, di)) return;
 
 	widgetTransfer *transW;
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer,
@@ -1449,16 +1594,11 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
-	if (this->jobctrl->isTransactionInQueue(di->getTransaction())) {
-		QMessageBox::critical(this, tr("Bereits im Ausgang"),
-			tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
-			   "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
-			   "Solange sich zu dieser terminierten Überweisung bereits eine Änderung "
-			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
-			   "Bitte löschen Sie zuerst den entsprechenden Auftrag im Ausgang."),
-			QMessageBox::Ok, QMessageBox::Ok);
-		return; //Abbruch
-	}
+	//Abbrechen wenn bereits im Ausgang
+	if (this->isDatedTransferInOutbox(di)) return;
+
+	//Abbrechen wenn Daten veraltet
+	if (this->isDatedTransferOutdated(acc, di)) return;
 
 	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
 }
