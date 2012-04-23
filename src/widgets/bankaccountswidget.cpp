@@ -50,22 +50,25 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	this->dragObj = NULL;
 
 
-	QStringList headerlist;
-	headerlist.clear();
-	headerlist.append(tr("BLZ/Kto-Nr"));
-	headerlist.append(tr("Name"));
-	headerlist.append(tr("Typ"));
-	headerlist.append(tr("Währ."));
-	headerlist.append(tr("Land"));
-	headerlist.append(tr("Besitzer"));
-	headerlist.append(tr("Backend"));
-	headerlist.append(tr("BankLine"));
-	headerlist.append(tr("BookedBalance"));
-	headerlist.append(tr("Date"));
+	QTreeWidgetItem *headerItem = new QTreeWidgetItem;
+
+	headerItem->setData(0, Qt::DisplayRole, tr("BLZ/Kto-Nr"));
+	headerItem->setData(1, Qt::DisplayRole, tr("Name"));
+	headerItem->setData(2, Qt::DisplayRole, tr("Saldo"));
+	headerItem->setData(2, Qt::TextAlignmentRole, Qt::AlignHCenter); //Saldo mittig
+	headerItem->setData(3, Qt::DisplayRole, tr("Währ."));
+	headerItem->setData(4, Qt::DisplayRole, tr("Dispo"));
+	headerItem->setData(4, Qt::TextAlignmentRole, Qt::AlignHCenter); //Dispo mittig
+	headerItem->setData(5, Qt::DisplayRole, tr("Daten vom"));
+	headerItem->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum mittig
+	headerItem->setData(6, Qt::DisplayRole, tr("Typ"));
+	headerItem->setData(7, Qt::DisplayRole, tr("Land"));
+	headerItem->setData(8, Qt::DisplayRole, tr("Besitzer"));
+	headerItem->setData(9, Qt::DisplayRole, tr("Backend"));
+
 
 	ui->treeWidget->setColumnCount(10);
-	ui->treeWidget->setHeaderLabels(headerlist);
-
+	ui->treeWidget->setHeaderItem(headerItem);
 	ui->treeWidget->setUniformRowHeights(true);
 
 	//wir wollen hier eine zusammenfassung der Banken, damit unter einer
@@ -148,7 +151,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	while (it.hasNext()) {
 	     it.next();
 	     connect(it.value(), SIGNAL(accountStatusChanged(const aqb_AccountInfo*)),
-		     this, SLOT(onAccountStatusChange(const aqb_AccountInfo*)));
+		     this, SLOT(accountChangedUpdateDisplay(const aqb_AccountInfo*)));
 	}
 
 
@@ -256,17 +259,18 @@ void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
 	item->setData(0, Qt::UserRole, acc->get_ID());
 	//pointer zum aqb_AccountInfo Object
 	item->setData(0, Qt::UserRole+1, QVariant::fromValue(acc));
-	//wird anscheinen nirgends verwendet!
-	//item->setData(0, Qt::UserRole+1, (quint64)i.value()->get_AB_ACCOUNT());
 	item->setData(1, Qt::DisplayRole, acc->Name());
-	item->setData(2, Qt::DisplayRole, acc->AccountType());
+	item->setData(2, Qt::DisplayRole, acc->getBookedBalance());
+	item->setData(2, Qt::TextAlignmentRole, Qt::AlignRight); //Saldo rechtsbündig
 	item->setData(3, Qt::DisplayRole, acc->Currency());
-	item->setData(4, Qt::DisplayRole, acc->Country());
-	item->setData(5, Qt::DisplayRole, acc->OwnerName());
-	item->setData(6, Qt::DisplayRole, acc->BackendName());
-	item->setData(7, Qt::DisplayRole, acc->getBankLine());
-	item->setData(8, Qt::DisplayRole, acc->getBookedBalance());
-	item->setData(9, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString(Qt::DefaultLocaleLongDate)));
+	item->setData(4, Qt::DisplayRole, acc->getBankLine());
+	item->setData(4, Qt::TextAlignmentRole, Qt::AlignRight); //Dispo rechtsbündig
+	item->setData(5, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString(Qt::DefaultLocaleLongDate)));
+	item->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum mittig
+	item->setData(6, Qt::DisplayRole, acc->AccountType());
+	item->setData(7, Qt::DisplayRole, acc->Country());
+	item->setData(8, Qt::DisplayRole, acc->OwnerName());
+	item->setData(9, Qt::DisplayRole, acc->BackendName());
 }
 
 aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
@@ -317,8 +321,8 @@ void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 	}
 }
 
-//private slot
-void BankAccountsWidget::onAccountStatusChange(const aqb_AccountInfo *account)
+//public slot
+void BankAccountsWidget::accountChangedUpdateDisplay(const aqb_AccountInfo *account)
 {
 	//Beim übergebenen account hat sich etwas geändert
 	//Wir suchen das QTreeWidgetItem welches die Werte anzeigt und erstellen

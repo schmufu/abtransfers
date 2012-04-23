@@ -70,10 +70,10 @@ signals:
 
 public slots:
 	void setSelectedAccount(const aqb_AccountInfo *account);
+	void accountChangedUpdateDisplay(const aqb_AccountInfo *account);
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();
-	void onAccountStatusChange(const aqb_AccountInfo *account);
 };
 
 #endif // BANKACCOUNTSWIDGET_H
