@@ -211,7 +211,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->ui->pushButton_dated_update, SIGNAL(clicked()),
 		this->actDatedUpdate, SLOT(trigger()));
 
-	
+	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
+	//ist
+	this->ui->stackedWidget->setCurrentIndex(0);
 
 	//QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
 	//widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
@@ -388,16 +390,6 @@ void MainWindow::createActions()
 	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
 
-	actDatedEdit = new QAction(this);
-	actDatedEdit->setText(tr("Bearbeiten"));
-	actDatedEdit->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedEdit, SIGNAL(triggered()), this, SLOT(onActionDatedEditTriggered()));
-
-	actDatedDel = new QAction(this);
-	actDatedDel->setText(tr("Löschen"));
-	actDatedDel->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedDel, SIGNAL(triggered()), this, SLOT(onActionDatedDelTriggered()));
-
 	actDatedUpdate = new QAction(this);
 	actDatedUpdate->setText(tr("Aktualisieren"));
 	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
@@ -407,16 +399,6 @@ void MainWindow::createActions()
 	actStandingNew->setText(tr("Anlegen"));
 	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
-
-	actStandingEdit = new QAction(this);
-	actStandingEdit->setText(tr("Bearbeiten"));
-	actStandingEdit->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingEdit, SIGNAL(triggered()), this, SLOT(onActionStandingEditTriggered()));
-
-	actStandingDel = new QAction(this);
-	actStandingDel->setText(tr("Löschen"));
-	actStandingDel->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingDel, SIGNAL(triggered()), this, SLOT(onActionStandingDelTriggered()));
 
 	actStandingUpdate = new QAction(this);
 	actStandingUpdate->setText(tr("Aktualisieren"));
@@ -456,18 +438,16 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
 	this->accountContextMenu = new QMenu(this);
-	QMenu *MenuTransfer = new QMenu("Überweisung", this);
+	QMenu *MenuTransfer = new QMenu(tr("Überweisung"), this);
 	MenuTransfer->addAction(this->actTransferNational);
 	MenuTransfer->addAction(this->actTransferInternational);
 	MenuTransfer->addAction(this->actTransferInternal);
 	MenuTransfer->addAction(this->actTransferSepa);
-	QMenu *MenuStanding = new QMenu("Daueraufträge", this);
+	QMenu *MenuStanding = new QMenu(tr("Daueraufträge"), this);
 	MenuStanding->addAction(this->actStandingNew);
-	//MenuStanding->addAction(this->actStandingEdit);
 	MenuStanding->addAction(this->actStandingUpdate);
-	QMenu *MenuDated = new QMenu("Terminüberweisungen", this);
+	QMenu *MenuDated = new QMenu(tr("Terminüberweisungen"), this);
 	MenuDated->addAction(this->actDatedNew);
-	//MenuDated->addAction(this->actDatedEdit);
 	MenuDated->addAction(this->actDatedUpdate);
 	this->accountContextMenu->addMenu(MenuTransfer);
 	this->accountContextMenu->addMenu(MenuStanding);
@@ -916,20 +896,6 @@ void MainWindow::onActionDatedNewTriggered()
 }
 
 //private slot
-void MainWindow::onActionDatedEditTriggered()
-{
-	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer);
-	//Sicherstellen das "Übersicht" im listWidget ausgewählt ist.
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
-}
-
-//private slot
-void MainWindow::onActionDatedDelTriggered()
-{
-	this->createTransferWidgetAndAddTab(AB_Job_TypeDeleteDatedTransfer);
-}
-
-//private slot
 void MainWindow::onActionDatedUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
@@ -941,20 +907,6 @@ void MainWindow::onActionDatedUpdateTriggered()
 void MainWindow::onActionStandingNewTriggered()
 {
 	this->createTransferWidgetAndAddTab(AB_Job_TypeCreateStandingOrder);
-}
-
-//private slot
-void MainWindow::onActionStandingEditTriggered()
-{
-	this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder);
-	//Sicherstellen das "Übersicht" im listWidget ausgewählt ist.
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
-}
-
-//private slot
-void MainWindow::onActionStandingDelTriggered()
-{
-	this->createTransferWidgetAndAddTab(AB_Job_TypeDeleteStandingOrder);
 }
 
 //private slot

@@ -76,12 +76,8 @@ private:
 	QAction *actTransferSepa;
 	QAction *actTransferInternal;
 	QAction *actDatedNew;
-	QAction *actDatedEdit;
-	QAction *actDatedDel;
 	QAction *actDatedUpdate;
 	QAction *actStandingNew;
-	QAction *actStandingEdit;
-	QAction *actStandingDel;
 	QAction *actStandingUpdate;
 	QAction *actDebitNote;
 	QAction *actDebitNoteSepa;
@@ -163,12 +159,8 @@ private slots:
 	void onActionTransferSepaTriggered();
 	void onActionTransferInternalTriggered();
 	void onActionDatedNewTriggered();
-	void onActionDatedEditTriggered();
-	void onActionDatedDelTriggered();
 	void onActionDatedUpdateTriggered();
 	void onActionStandingNewTriggered();
-	void onActionStandingEditTriggered();
-	void onActionStandingDelTriggered();
 	void onActionStandingUpdateTriggered();
 	void onActionDebitNoteTriggered();
 	void onActionDebitNoteSepaTriggered();
