@@ -105,6 +105,8 @@ private:
 	void createMenus();
 	void createDockToolbar();
 	void createWidgetsInScrollArea();
+	void createDockBankAccountWidget();
+	void createDockKnownRecipients();
 	void createDockStandingOrders();
 	void createDockDatedTransfers();
 

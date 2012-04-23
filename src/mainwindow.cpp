@@ -89,19 +89,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
 	//können die Daten mit dem parser geladen werden
-	AB_IMEXPORTER_CONTEXT *ctx = abt_parser::load_local_ctx(
-						settings->getAccountDataFilename(),
-						"ctxfile", "default");
+	AB_IMEXPORTER_CONTEXT *ctx;
+	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
+					 "ctxfile", "default");
 	abt_parser::parse_ctx(ctx, this->accounts);
-	//alle Daten geladen ctx wieder löschen.
-	AB_ImExporterContext_free(ctx);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
 
 	//Auch die History-Daten müssen geladen werden
 	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
 					 "ctxfile", "default");
 	abt_parser::parse_ctx(ctx, this->accounts, this->history);
-	//alle Daten geladen ctx wieder löschen.
-	AB_ImExporterContext_free(ctx);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
 
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
@@ -133,9 +131,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->outw, SIGNAL(edit_Job(const abt_jobInfo*)),
 		this, SLOT(onEditJobFromOutbox(const abt_jobInfo*)));
 
-	//Default-Entry Überweisung auswählen
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
-
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
 			     QMainWindow::AllowTabbedDocks);// |
@@ -145,43 +140,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
 	this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-	//DockWidget für KnownRecipients erstellen
-	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
-	this->dock_KnownRecipient->setObjectName("KnownRecipients");
-	qDebug() << "creating knownEmpfaengerWidget";
-	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
-	//Änderungen der EmpfängerListe dem Widget bekanntgeben
-	connect(settings, SIGNAL(recipientsListChanged()),
-		kew, SLOT(onEmpfaengerListChanged()));
-	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
-		settings, SLOT(onReplaceKnownRecipient(int,abt_EmpfaengerInfo*)));
-	connect(kew, SIGNAL(addNewKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(addKnownRecipient(abt_EmpfaengerInfo*)));
-	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
-		settings, SLOT(deleteKnownRecipient(abt_EmpfaengerInfo*)));
-	this->dock_KnownRecipient->setWidget(kew);
-	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient->setFloating(false);
-	this->dock_KnownRecipient->hide();
-	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
-
-	//DockWidget für Accounts erstellen
-	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
-	this->dock_Accounts->setObjectName("OnlineAccounts");
-	qDebug() << "creating bankAccountsWidget";
-	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
-	this->dock_Accounts->setWidget(baw);
-	//this->dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-	this->dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_Accounts->setFloating(false);
-	this->dock_Accounts->hide();
-	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
-	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
-	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
-		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
-
+	//Alle DockWidgets erstellen
+	this->createDockKnownRecipients();
+	this->createDockBankAccountWidget();
 	this->createDockStandingOrders();
 	this->createDockDatedTransfers();
 
@@ -191,32 +152,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->createWidgetsInScrollArea();
 
-	//this->ui->tabWidget_UW->setTabText(0, tr("Überischt"));
-	connect(this->ui->pushButton, SIGNAL(clicked()),
+	//Den PushButtons im Übersichts-Widget die entsprechenden Actions
+	//zuordnen
+	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
 		this->actTransferNational, SLOT(trigger()));
-	connect(this->ui->pushButton_2, SIGNAL(clicked()),
+	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
 		this->actTransferInternational, SLOT(trigger()));
-	connect(this->ui->pushButton_3, SIGNAL(clicked()),
-		this->actTransferSepa, SLOT(trigger()));
-	connect(this->ui->pushButton_4, SIGNAL(clicked()),
+	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
 		this->actTransferInternal, SLOT(trigger()));
-
-	connect(this->ui->pushButton_so_new, SIGNAL(clicked()),
+	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
+		this->actTransferSepa, SLOT(trigger()));
+	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
 		this->actStandingNew, SLOT(trigger()));
-	connect(this->ui->pushButton_so_update, SIGNAL(clicked()),
+	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
 		this->actStandingUpdate, SLOT(trigger()));
-
-	connect(this->ui->pushButton_dated_new, SIGNAL(clicked()),
+	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
 		this->actDatedNew, SLOT(trigger()));
-	connect(this->ui->pushButton_dated_update, SIGNAL(clicked()),
+	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
 		this->actDatedUpdate, SLOT(trigger()));
 
 	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
-	//ist
+	//ist und den default-Entry im ListWidget auf Überweisung setzen
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 	this->ui->stackedWidget->setCurrentIndex(0);
-
-	//QGroupBox *grpKSO = new QGroupBox(this->ui->MainTab);
-	//widgetKnownStandingOrders *kso = new widgetKnownStandingOrders(this->accounts->getAccountHash().value(5, NULL), grpKSO);
 
 
 	//Wir starten hier einen Timer, dieser arbeitet zwar schon, der Slot
@@ -318,7 +276,11 @@ void MainWindow::TimerTimeOut()
 {
 	//Der Timer läuft erst ab wenn die execLoop gestartet ist. Somit wird
 	//dieser Code erst ausgeführt wenn das MainWindow angezeigt und die
-	//EventLoop der Anwendung läuft.
+	//EventLoop der Anwendung läuft. Danach dann nie wieder!
+
+	disconnect(this, SLOT(TimerTimeOut())); //connection entfernen
+	delete this->timer; //Der Timer wird nicht länger benötigt
+
 
 	abt_dialog dia(this,
 		       tr("eventuelle Kosten"),
@@ -337,10 +299,6 @@ void MainWindow::TimerTimeOut()
 		       QMessageBox::Information,
 		       "WarnCosts");
 	dia.exec();
-
-	//Der Timer wird nicht länger benötigt
-	delete this->timer;
-
 
 	//überprüfen ob Aufträge nach dem Start in den Ausgang gestellt werden
 	//sollen und ob diese auch gleich ausgeführt werden sollen.
@@ -513,6 +471,69 @@ void MainWindow::createWidgetsInScrollArea()
 		lDT->addWidget(DatedTransfers);
 		layoutScrollArea->addWidget(grpDT);
 	}
+}
+
+/** \brief Erstellt das "Online Konten" QDockWidget
+  *
+  * Es wird ein neues QDockWidget (Online Konten) erstellt.
+  * Diesem wird dann ein neues BankAccountsWidget zugewiesen.
+  * Und das neue DockWidget wird dann dem MainWindow zugeteilt.
+  *
+  * Außerdem wird das entsprechende Signal mit dem Slot zur Anzeige eines
+  * CustomContextMenu's verbunden.
+  */
+//private
+void MainWindow::createDockBankAccountWidget()
+{
+	//DockWidget für Accounts erstellen
+	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
+	this->dock_Accounts->setObjectName("OnlineAccounts");
+	qDebug() << "creating bankAccountsWidget";
+	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
+	this->dock_Accounts->setWidget(baw);
+	//this->dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+	this->dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_Accounts->setFloating(false);
+	this->dock_Accounts->hide();
+	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
+	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
+	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
+		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
+}
+
+/** \brief Erstellt das "Bekannte Empfänger" QDockWidget
+  *
+  * Es wird ein neues QDockWidget (Bekannte Empfänger) erstellt.
+  * Diesem wird dann ein neues KnwonEmfpaengerWidget zugewiesen.
+  * Und das neue DockWidget wird dann dem MainWindow zugeteilt.
+  *
+  * Außerdem werden die Signale des KnownEmfpängerWidget mit den entprechenden
+  * Slots des MainWindow verbunden.
+  */
+//private
+void MainWindow::createDockKnownRecipients()
+{
+	//DockWidget für KnownRecipients erstellen
+	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
+	this->dock_KnownRecipient->setObjectName("KnownRecipients");
+	qDebug() << "creating knownEmpfaengerWidget";
+	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
+	//Änderungen der EmpfängerListe dem Widget bekanntgeben
+	connect(settings, SIGNAL(recipientsListChanged()),
+		kew, SLOT(onEmpfaengerListChanged()));
+	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
+		settings, SLOT(onReplaceKnownRecipient(int,abt_EmpfaengerInfo*)));
+	connect(kew, SIGNAL(addNewKnownEmpfaenger(abt_EmpfaengerInfo*)),
+		settings, SLOT(addKnownRecipient(abt_EmpfaengerInfo*)));
+	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
+		settings, SLOT(deleteKnownRecipient(abt_EmpfaengerInfo*)));
+	this->dock_KnownRecipient->setWidget(kew);
+	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
+	this->dock_KnownRecipient->setFloating(false);
+	this->dock_KnownRecipient->hide();
+	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
 }
 
 //private

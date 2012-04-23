@@ -133,7 +133,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="Uebersicht">
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -168,28 +168,28 @@
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout">
                    <item>
-                    <widget class="QPushButton" name="pushButton">
+                    <widget class="QPushButton" name="pushButton_transferNational">
                      <property name="text">
                       <string>National</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_2">
+                    <widget class="QPushButton" name="pushButton_transferInternational">
                      <property name="text">
                       <string>International</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_3">
+                    <widget class="QPushButton" name="pushButton_transferSepa">
                      <property name="text">
                       <string>SEPA</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_4">
+                    <widget class="QPushButton" name="pushButton_transferInternal">
                      <property name="text">
                       <string>Umbuchung</string>
                      </property>
@@ -224,14 +224,14 @@
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_6">
                    <item>
-                    <widget class="QPushButton" name="pushButton_so_new">
+                    <widget class="QPushButton" name="pushButton_standingNew">
                      <property name="text">
                       <string>Anlegen</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_so_update">
+                    <widget class="QPushButton" name="pushButton_standingUpdate">
                      <property name="text">
                       <string>Aktualisieren</string>
                      </property>
@@ -266,14 +266,14 @@
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_7">
                    <item>
-                    <widget class="QPushButton" name="pushButton_dated_new">
+                    <widget class="QPushButton" name="pushButton_datedNew">
                      <property name="text">
                       <string>Anlegen</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_dated_update">
+                    <widget class="QPushButton" name="pushButton_datedUpdate">
                      <property name="text">
                       <string>Aktualisieren</string>
                      </property>
