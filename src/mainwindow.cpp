@@ -1263,11 +1263,11 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 }
 
 /**
-  * Wenn die Eingaben im widgetRecurrence Fehlerhaft sind kann diese funktion
-  * aufgerufen werden um die Daten automtisch zu korrigieren.
+  * Wenn die Eingaben im widgetRecurrence fehlerhaft sind kann diese Funktion
+  * aufgerufen werden um die Daten automatisch zu korrigieren.
   *
-  * Vor einer Korrektur wird der Benutzer gefragt ob dies so gemacht werden soll
-  * wenn er dem zustimmt wird true zurückgegeben und die Daten im
+  * Vor einer Korrektur wird der Benutzer gefragt ob dies so gemacht werden soll.
+  * Wenn er dem zustimmt wird true zurückgegeben und die Daten im
   * widgetRecurrence geändert. Ansonsten false und die Daten so belassen wie
   * sie sind.
   */
@@ -1280,15 +1280,19 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 	const QDate lastDate = recurrence->getLastExecutionDate();
 	const QDate nextDate = recurrence->getNextExecutionDate();
 
+	//weekly or monthly
 	AB_TRANSACTION_PERIOD period = recurrence->getPeriod();
+	//execute every 'cycle' weeks/months
 	int cycle = recurrence->getCycle();
-	//depends on cylce (Weekday Mo,Di,Mi or Day 1,2,3)
+	//depends on cylce (Weekday Mo(1),Di(2),Mi(2) or Day 1,2...31,[97],[98],[99])
+	//99 (Ultimo) / 98 (Ultimo-1) / 97 (Ultimo-2)
 	int executionDay = recurrence->getExecutionDay();
 
 	//Wir gehen davon aus das der executionDay, die period und der cycle
 	//richtig gewählt wurden und stellen dementsprechend das first-, last-
 	//und nextDate ein.
 
+	//Erstmal die gewählten Werte übernehmen (da const)
 	correctFirstDate = firstDate;
 	correctLastDate = lastDate;
 	correctNextDate = nextDate;
@@ -1299,11 +1303,14 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//Wochentag dem Datum entspricht
 		while (correctFirstDate.dayOfWeek() != executionDay)
 			correctFirstDate = correctFirstDate.addDays(1);
-		while (correctNextDate.dayOfWeek() != executionDay)
-			correctNextDate = correctNextDate.addDays(1);
+
+		//nextDate must be the same as firstDate
+		correctNextDate = correctFirstDate;
 
 		//Wenn das Datum ungültig ist soll der DA ohne Enddatum laufen
 		if (!lastDate.isValid()) break;
+
+		//Ansonsten stellen wir das Enddatum auf den richtigen Wochentag
 		while (correctLastDate.dayOfWeek() != executionDay)
 			correctLastDate = correctLastDate.addDays(1);
 		//jetzt stimmt schonmal der Wochentag des letzten Datums,
@@ -1312,6 +1319,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		QDate testDate = correctFirstDate;
 		while (testDate <= correctLastDate)
 			testDate = testDate.addDays(7*cycle); //Wöchentliche Ausführung!
+
 		}
 		break;
 	case AB_Transaction_PeriodMonthly: {
