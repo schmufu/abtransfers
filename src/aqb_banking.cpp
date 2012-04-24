@@ -42,6 +42,12 @@ aqb_banking::aqb_banking()
 
 	this->ab = AB_Banking_new("abtransfers", NULL, 0);
 
+	//Das GUI muss bereits hier erstellt werden, da es anonsten zu
+	//einen Fehler kommen kann. (1x geschehen beim ersetzen der AqBanking
+	//Daten von einem anderen Rechner)
+	this->gui = new QT4_Gui();
+	GWEN_Gui_SetGui(this->gui->getCInterface());
+
 	/* This is the basic init function. It only initializes the minimum (like
 	 * setting up plugin and data paths). After this function successfully
 	 * returns you may freely use any non-online function. To use online
@@ -64,9 +70,6 @@ aqb_banking::aqb_banking()
 		AB_Banking_Fini(this->ab);
 		return;
 	}
-
-	this->gui = new QT4_Gui();
-	GWEN_Gui_SetGui(this->gui->getCInterface());
 
 	//damit die gemachten Einstellungen des GWEN-Dialogs erhalten bleiben
 	AB_Gui_Extend(this->gui->getCInterface(), this->ab);
