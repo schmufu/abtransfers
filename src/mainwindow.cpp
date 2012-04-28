@@ -1313,6 +1313,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//Ansonsten stellen wir das Enddatum auf den richtigen Wochentag
 		while (correctLastDate.dayOfWeek() != executionDay)
 			correctLastDate = correctLastDate.addDays(1);
+
 		//jetzt stimmt schonmal der Wochentag des letzten Datums,
 		//der Zyklus muss aber auch stimmen (Erstmalig und Letztmalig
 		//dürfen nicht gleich sein)
@@ -1320,40 +1321,158 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		while (testDate <= correctLastDate)
 			testDate = testDate.addDays(7*cycle); //Wöchentliche Ausführung!
 
+		correctLastDate = testDate;
+
 		}
 		break;
 	case AB_Transaction_PeriodMonthly: {
-		//Wir setzen den erstmöglichen Tag der nach dem eingestellten Datum liegt
-		if (firstDate.day() > executionDay) {
-			correctFirstDate = firstDate.addMonths(1);
-		}
-		correctFirstDate.setDate(correctFirstDate.year(),
-					 correctFirstDate.month(),
-					 executionDay);
+		//Für 'Erstmalig' setzen wir den erstmöglichen Tag der nach dem
+		//eingestellten Datum liegt unter Berücksichtigung des
+		//eingestellten Ausführungstags
+		switch(executionDay) {
+		case 99: //"Ultimo" - der Tag muss der letzte Tag des Monats sein
+			if (firstDate.day() != firstDate.daysInMonth() )
+				correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - correctFirstDate.day());
+			break;
+		case 98: //"Ultimo-1" - der Tag muss der vorletzte Tag des Monats sein
+			if ( firstDate.day() != (firstDate.daysInMonth() - 1) ) {
+				if ( firstDate.day() > ( firstDate.daysInMonth() - 1) ) {
+					correctFirstDate = firstDate.addMonths(1);
+					correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - 1 - correctFirstDate.day());
+				} else if ( firstDate.day() < ( firstDate.daysInMonth() - 1 ) )
+					correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - 1 - correctFirstDate.day());
+			}
+			break;
+		case 97: //"Ultimo-2" - der Tag muss der letzte Tag des Monats Minus 2 sein
+			if ( firstDate.day() != (firstDate.daysInMonth() - 2) ) {
+				if ( firstDate.day() > ( firstDate.daysInMonth() - 2) ) {
+					correctFirstDate = firstDate.addMonths(1);
+					correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - 2 - correctFirstDate.day());
+				} else if ( firstDate.day() < ( firstDate.daysInMonth() - 2 ) )
+					correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - 2 - correctFirstDate.day());
+			}
+			break;
+		default:
+			if ( firstDate.daysInMonth() < executionDay ) {
+				// In desem Fall wird der letzte Tag ausgewält.
+				if ( firstDate.day() != firstDate.daysInMonth() )
+					correctFirstDate.addDays(firstDate.daysInMonth() - firstDate.day() );
+			} else {
+				if ( firstDate.day() > executionDay )
+					correctFirstDate = firstDate.addMonths(1);
+				correctFirstDate = correctFirstDate.addDays( executionDay - correctFirstDate.day() );
+			}
+		break;
+		} //switch(executionDay)
 
-		if (nextDate.day() > executionDay) {
-			correctNextDate = nextDate.addMonths(1);
-		}
-		correctNextDate.setDate(correctNextDate.year(),
-					correctNextDate.month(),
-					executionDay);
+		// Für der letztmals Ausführungstag setzen wir den letztmöglichen Tag der vor oder gleich dem eingestellten Datum
+		// liegt berücksichtigen den Ausführungstag und Turnus
+		int monthDiff = ( ( lastDate.year() - firstDate.year() ) * 12 +  ( lastDate.month() - firstDate.month() ) ) % cycle;
+
+		if ( monthDiff > 0 ) {
+			correctLastDate = correctLastDate.addMonths( -monthDiff );
+
+			switch(executionDay) {
+			case 99: // Der Tag muss den letzten Tag des Monats sein
+				if ( correctLastDate.day() != correctLastDate.daysInMonth() )
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth());
+				break;
+			case 98: // Der Tag muss den letzten Tag minus eins des Monats sein
+				if ( lastDate.day() != (lastDate.daysInMonth() - 1) )
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 1);
+				break;
+			case 97: // Der Tag muss den letzten Tag minus zwei des Monats sein
+				if ( lastDate.day() != (lastDate.daysInMonth() - 2) )
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 2);
+				break;
+			default:
+				if ( lastDate.daysInMonth() < executionDay ) {
+					// In desem Fall wird der letzte Tag ausgewält.
+					// ich weiß nich ob das eine richtige Lösung ist!
+					if ( lastDate.day() != lastDate.daysInMonth() )
+						correctLastDate.setDate(correctLastDate.year(),
+									correctLastDate.month(),
+									correctLastDate.daysInMonth());
+				} else {
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								executionDay);
+				}
+				break;
+			} //switch(executionDay)
+		} else if (monthDiff == 0 ) {
+			switch(executionDay) {
+			case 99: // Der Tag muss den letzten Tag des Monats sein
+				if ( correctLastDate.day() != correctLastDate.daysInMonth() )
+					correctLastDate = correctLastDate.addMonths(-cycle);
+
+				correctLastDate.setDate(correctLastDate.year(),
+							correctLastDate.month(),
+							correctLastDate.daysInMonth());
+				break;
+			case 98: // Der Tag muss den letzten Tag minus eins des Monats sein
+				if ( lastDate.day() < (lastDate.daysInMonth() - 1) ) {
+					correctLastDate = correctLastDate.addMonths(-cycle);
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 1);
+				} else if ( lastDate.day() > (lastDate.daysInMonth() - 1) ) {
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 1);
+				}
+				break;
+			case 97: // Der Tag muss den letzten Tag minus zwei des Monats sein
+				if ( lastDate.day() < (lastDate.daysInMonth() - 2) ) {
+					correctLastDate = correctLastDate.addMonths(-cycle);
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 1);
+				} else if ( lastDate.day() > (lastDate.daysInMonth() - 2) ) {
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								correctLastDate.daysInMonth() - 2);
+				}
+				break;
+			default:
+				if ( lastDate.daysInMonth() < executionDay ) {
+					// In desem Fall wird der letzte Tag ausgewält.
+					// ich weiß nich ob das eine richtige Lösung ist!
+					if ( lastDate.day() < lastDate.daysInMonth() ) {
+						correctLastDate = correctLastDate.addMonths(-cycle);
+						correctLastDate.setDate(correctLastDate.year(),
+									correctLastDate.month(),
+									correctLastDate.daysInMonth());
+					}
+				} else if ( lastDate.day() < executionDay ) {
+					correctLastDate = correctLastDate.addMonths(-cycle);
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								executionDay);
+				} else if (lastDate.day() > executionDay )
+					correctLastDate.setDate(correctLastDate.year(),
+								correctLastDate.month(),
+								executionDay);
+				break;
+			} //switch(executionDay
+		} //else if (monthDiff == 0 )
+
+		if ( correctFirstDate != nextDate )
+			correctNextDate = correctFirstDate;
+
 
 		//Wenn das Datum ungültig ist soll der DA ohne Enddatum laufen
-		if (!lastDate.isValid()) break;
-		if (lastDate.day() > executionDay) {
-			correctLastDate = lastDate.addMonths(1);
-		}
-		correctLastDate.setDate(correctLastDate.year(),
-					correctLastDate.month(),
-					executionDay);
-		//jetzt stimmt schonmal der Tag des letzten Datums, der Zyklus
-		//muss aber auch stimmen (Erstmalig und Letztmalig dürfen
-		//nicht gleich sein)
-		QDate testDate = correctFirstDate;
-		while (testDate <= correctLastDate)
-			testDate = testDate.addMonths(cycle); //Monatliche Ausführung!
-		correctLastDate = testDate;
-		}
+		if ( !correctLastDate.isValid() || !correctFirstDate.isValid() )
+			break;
+
+
+		} //case AB_Transaction_PeriodMonthly:
 		break;
 	default:
 		break;
@@ -1363,7 +1482,27 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 	QString strLastDate = correctLastDate.isValid() ? correctLastDate.toString("ddd dd.MM.yyyy") : tr("Bis auf weiteres");
 	QString strNextDate = correctNextDate.toString("ddd dd.MM.yyyy");
 
-	int ret = QMessageBox::question(
+	int ret;
+	if ( correctFirstDate > correctLastDate ) {
+		ret = QMessageBox::warning(
+			NULL,
+			tr("Daten geändert"),
+			tr("Die Daten für den Dauerauftrag sind in sich "
+			   "nicht konsistent und würden auf die folgenden "
+			   "Werte geändert werden:<br />"
+			   "<table>"
+			   "<tr><td>Erstmalig:</td><td>%1</td></tr>"
+			   "<tr><td>Letztmalig:</td><td>%2</td></tr>"
+			   "<tr><td>Nächste Ausf.:</td><td>%3</td></tr>"
+			   "</table>"
+			   "<br /><br />"
+			   "Wo erstmalig Termin kommt nach der letztmalig Termin<br />"
+			   "Sollen die Daten auf diese Werte geändert "
+			   "werden?").arg(strFirstDate, strLastDate, strNextDate),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::Yes);
+	} else {
+		ret = QMessageBox::question(
 			NULL,
 			tr("Daten geändert"),
 			tr("Die Daten für den Dauerauftrag sind in sich "
@@ -1377,8 +1516,9 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 			   "<br /><br />"
 			   "Sollen die Daten auf diese Werte geändert "
 			   "werden?").arg(strFirstDate, strLastDate, strNextDate),
-			      QMessageBox::Yes | QMessageBox::No,
-			      QMessageBox::Yes);
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::Yes);
+	}
 
 	if (ret == QMessageBox::Yes) {
 		recurrence->setFirstExecutionDay(correctFirstDate);
