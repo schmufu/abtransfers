@@ -40,12 +40,13 @@
 
 #include "../abt_settings.h"
 
-BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) :
+BankAccountsWidget::BankAccountsWidget(const aqb_Accounts *accounts,
+				       QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::BankAccountsWidget)
 {
 	ui->setupUi(this);
-	this->m_accounts = accounts;
+	this->m_accounts = accounts; //could be NULL!
 	this->dragStartPos = QPoint(0,0);
 	this->dragObj = NULL;
 
@@ -71,90 +72,7 @@ BankAccountsWidget::BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent) 
 	ui->treeWidget->setHeaderItem(headerItem);
 	ui->treeWidget->setUniformRowHeights(true);
 
-	//wir wollen hier eine zusammenfassung der Banken, damit unter einer
-	//Bank nur die Konten bei dieser Bank angezeigt werden.
-
-	//erstmal fügen wir alle BLZs einer Liste hinzu und löschen alle
-	//duplikate, danach gehen wir die erstellte Liste durch und ausserdem
-	//alle Konten. Wenn ein Konto zu eine Bank gehört fügen wir es unterhalb
-	//der Bank hinzu.
-	QStringList BLZs;
-	QHashIterator<int, aqb_AccountInfo*> i(this->m_accounts->getAccountHash());
-	i.toFront();
-	while (i.hasNext()) {
-	     i.next();
-	     BLZs.append(i.value()->BankCode());
-	}
-
-	BLZs.removeDuplicates(); //duplicate löschen
-	bool doTop = true;
-	int ItemCount = 0;
-	QTreeWidgetItem *topItem = NULL;
-	QTreeWidgetItem *Item = NULL;
-	QTreeWidgetItem *FirstItem = NULL;
-	//Alle BLZs durchgehen
-	for (int s=0; s<BLZs.size(); ++s) {
-		doTop = true;
-		QHashIterator<int, aqb_AccountInfo*> i(this->m_accounts->getAccountHash());
-		i.toFront();
-		//Alle Konten durchgehen
-		while (i.hasNext()) {
-			i.next();
-			//gehört dieses Konto zur BLZ?
-			if (BLZs.at(s) == i.value()->BankCode()) {
-				if (doTop) {
-					topItem = new QTreeWidgetItem;
-					ItemCount++;
-					topItem->setData(0, Qt::DisplayRole, i.value()->BankCode());
-					topItem->setData(1, Qt::DisplayRole, i.value()->BankName());
-					topItem->setFlags(Qt::ItemIsEnabled);
-					this->ui->treeWidget->addTopLevelItem(topItem);
-					doTop = false;
-				}
-				Q_ASSERT(topItem != NULL);
-				Item = new QTreeWidgetItem;
-				ItemCount++;
-				//Alle Werte für das neu erstellte Item setzen.
-				this->setValuesForItem(Item, i.value());
-
-				if (!FirstItem)
-					FirstItem = Item;
-
-				topItem->addChild(Item);
-			}
-		}
-	}
-
-	this->ui->treeWidget->expandAll(); //Alles aufklappen
-	//Alle Spalten auf "perfekte" Breite anpassen
-	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
-
-	//Erstes Wählbares Item auswählen, wenn vorhanden
-	if (FirstItem) {
-		ui->treeWidget->setItemSelected(FirstItem, true);
-	}
-
-	//int ItemHeight = FirstItem->sizeHint(0).height();
-	int ItemHeight = this->ui->treeWidget->fontMetrics().height()+4;
-	//qDebug() << "ItemHeight: " << ItemHeight;
-
-	//ItemCount+2 = 1xHeader und 1x damit alle angezeigt werden auch wenn
-	//eine horizontale Scrollbar vorhanden ist.
-	this->setMinimumHeight(ItemHeight*(ItemCount+2) + 8);
-
-	this->ui->treeWidget->viewport()->installEventFilter(this);
-
-	//Alle accounts mit unserem Slot verbinden, damit bei einer Änderung
-	//die angezeigten Werte aktualisert werden können
-	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts->getAccountHash());
-	it.toFront();
-	while (it.hasNext()) {
-	     it.next();
-	     connect(it.value(), SIGNAL(accountStatusChanged(const aqb_AccountInfo*)),
-		     this, SLOT(accountChangedUpdateDisplay(const aqb_AccountInfo*)));
-	}
-
-
+	this->setAccounts(accounts);
 }
 
 BankAccountsWidget::~BankAccountsWidget()
@@ -249,6 +167,98 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	//Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 
 	//qDebug() << this << "dropAction" << dropAction;
+}
+
+//public slot
+void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
+{
+	this->m_accounts = accounts; //could be NULL!
+
+	this->ui->treeWidget->clear();//alle vorhandenen Einträge löschen
+	//kein Drag&Drop mehr verwalten (keine Objecte im treeWidget!)
+	this->ui->treeWidget->viewport()->removeEventFilter(this);
+
+	if (this->m_accounts == NULL) {
+		//Es existieren keine Accounts, deswegen brauchen wir auch
+		//nichts machen, erst wenn wir mit einem gültigen aqb_Accounts
+		//Objekt aufgerufen werden erstellen wir auch die Daten
+		return; //Abbrechen
+	}
+
+	//wir wollen hier eine zusammenfassung der Banken, damit unter einer
+	//Bank nur die Konten bei dieser Bank angezeigt werden.
+
+	//erstmal fügen wir alle BLZs einer Liste hinzu und löschen alle duplikate
+	QStringList BLZs;
+	foreach(const aqb_AccountInfo* acc, this->m_accounts->getAccountHash().values()) {
+		BLZs.append(acc->BankCode());
+	}
+	BLZs.removeDuplicates(); //duplicate löschen
+
+	//Danach gehen wir die erstellte Liste durch und ausserdem alle Konten.
+	//Wenn ein Konto zu einer Bankleitzahl gehört fügen wir es unterhalb
+	//der Bank hinzu.
+
+	bool doTop = true;
+	int ItemCount = 0;
+	QTreeWidgetItem *topItem = NULL;
+	QTreeWidgetItem *Item = NULL;
+	QTreeWidgetItem *FirstItem = NULL;
+	//Alle BLZs durchgehen
+	foreach(const QString blz, BLZs) {
+		doTop = true;
+		//Alle Konten durchgehen
+		foreach (const aqb_AccountInfo* acc, this->m_accounts->getAccountHash().values()) {
+			//gehört dieses Konto zur BLZ?
+			if (blz == acc->BankCode()) {
+				if (doTop) { //wenn ein TopItem erstellt werden muss
+					topItem = new QTreeWidgetItem;
+					ItemCount++;
+					topItem->setData(0, Qt::DisplayRole, acc->BankCode());
+					topItem->setData(1, Qt::DisplayRole, acc->BankName());
+					topItem->setFlags(Qt::ItemIsEnabled);
+					this->ui->treeWidget->addTopLevelItem(topItem);
+					doTop = false;
+				}
+				Item = new QTreeWidgetItem;
+				ItemCount++;
+				//Alle Werte für das neu erstellte Item setzen.
+				this->setValuesForItem(Item, acc);
+
+				if (!FirstItem) { //damit es später ausgewählt werden kann
+					FirstItem = Item;
+				}
+				//Die Werte des Accounts der BLZ zuweisen
+				topItem->addChild(Item);
+			}
+		}
+	}
+
+	this->ui->treeWidget->expandAll(); //Alles aufklappen
+	//Alle Spalten auf "perfekte" Breite anpassen
+	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
+
+	//Erstes wählbares Item auswählen, wenn vorhanden
+	if (FirstItem) {
+		ui->treeWidget->setItemSelected(FirstItem, true);
+	}
+
+	int itemHeight = this->ui->treeWidget->fontMetrics().height()+4;
+
+	//ItemCount+2 = 1xHeader und 1x damit alle angezeigt werden auch wenn
+	//eine horizontale Scrollbar vorhanden ist.
+	this->setMinimumHeight(itemHeight*(ItemCount+2) + 8);
+
+	//eventFilter einsetzen damit wir Drag&Drop verwalten können
+	this->ui->treeWidget->viewport()->installEventFilter(this);
+
+	//Alle accounts mit unserem Slot verbinden, damit bei einer Änderung
+	//die angezeigten Werte aktualisert werden können
+	foreach(const aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
+		connect(acc, SIGNAL(accountStatusChanged(const aqb_AccountInfo*)),
+			this, SLOT(accountChangedUpdateDisplay(const aqb_AccountInfo*)));
+	}
+
 }
 
 //private

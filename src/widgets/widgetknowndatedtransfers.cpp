@@ -36,10 +36,10 @@
 #include "../abt_settings.h"
 #include "../abt_conv.h"
 
-widgetKnownDatedTransfers::widgetKnownDatedTransfers(const aqb_AccountInfo *account, QWidget *parent) :
+widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_account = account;
+	this->m_account = NULL;
 	this->m_DatedTransfers = NULL;
 
 	QHBoxLayout *layoutMain = new QHBoxLayout();
@@ -59,7 +59,7 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(const aqb_AccountInfo *acco
 
 	//setzt den aktuellen account, stellt alle connections her und
 	//aktualisiert die Anzeige des treeWidgets
-	this->setAccount(account);
+	this->setAccount(this->m_account);
 }
 
 
@@ -98,17 +98,15 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 		return; //Die DAs betreffen nicht den von uns verwalteten account
 	}
 
-	//Wenn kein aktueller Account existiert auch nichts machen
-	if (this->m_account == NULL) {
-		return; //Kein Account vorhanden
-		/** \todo Anzeige das kein Account vorhanden ist einbringen */
-	}
-
-	this->m_DatedTransfers = account->getKnownDatedTransfers();
-
-
 	//Alle bekannten DAs des Accounts aus dem treeWidget entfernen
 	this->treeWidget->clear(); //löscht auch die Objecte!
+
+	//Wenn kein aktueller Account existiert, existieren auch keine DatedTransfers
+	if (this->m_account == NULL) {
+		this->m_DatedTransfers = NULL;
+	} else {
+		this->m_DatedTransfers = this->m_account->getKnownDatedTransfers();
+	}
 
 	//Alle bekannten DAs des Accounts im treeWidget anzeigen
 	if ((this->m_DatedTransfers == NULL) ||
@@ -177,10 +175,11 @@ void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 			   this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
 	}
 
-	if (account != NULL) {
-		this->m_account = account; //neuen account merken
-		this->refreshKnownDatedTransfers(account); //DTs des account anzeigen
+	this->m_account = account; //neuen account merken
+	//DatedTransfers des Accounts anzeigen (bzw. das keine existieren)
+	this->refreshKnownDatedTransfers(account);
 
+	if (account != NULL) {
 		//darüber informiert werden wenn sich die DTs des accounts ändern
 		connect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
 			this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));

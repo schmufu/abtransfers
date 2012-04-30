@@ -50,6 +50,7 @@ private:
 	const aqb_Accounts *m_allAccounts;
 	QComboBox *comboBox;
 
+	void fillComboBox();
 public:
 	const aqb_AccountInfo* getAccount() const;
 	bool hasChanges() const;
@@ -62,6 +63,7 @@ private slots:
 
 public slots:
 	void setSelectedAccount(const aqb_AccountInfo* account);
+	void setAllAccounts(const aqb_Accounts *allAccounts);
 
 };
 

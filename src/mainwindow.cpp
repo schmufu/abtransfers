@@ -79,28 +79,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->history = new abt_history(this->accounts, this);
-	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
+	this->history = new abt_history(this);
 	this->logw = new page_log();
-	this->outw = new Page_Ausgang(this->jobctrl);
+	this->outbox = new Page_Ausgang();
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
+	this->dock_Accounts = NULL;
 
 	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
 	//können die Daten mit dem parser geladen werden
-	AB_IMEXPORTER_CONTEXT *ctx;
-	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
-					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
-
+	this->loadAccountData();
 	//Auch die History-Daten müssen geladen werden
-	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
-					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts, this->history);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
-
+	this->loadHistoryData();
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -112,24 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	outLayout->setMargin(0);
 	outLayout->setSpacing(2);
 	ui->Ausgang->setLayout(outLayout);
-	ui->Ausgang->layout()->addWidget(this->outw);
-
-	/***** Signals und Slots der Objecte verbinden ******/
-	//Nicht mögliche Aufträge in der StatusBar anzeigen
-	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
-		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
-
-	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
-	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
-		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
-
-	//Logs von abt_job_ctrl in der Log-Seite anzeigen
-	connect(this->jobctrl, SIGNAL(log(QString)),
-		this->logw, SLOT(appendLogText(QString)));
-
-	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
-	connect(this->outw, SIGNAL(edit_Job(const abt_jobInfo*)),
-		this, SLOT(onEditJobFromOutbox(const abt_jobInfo*)));
+	ui->Ausgang->layout()->addWidget(this->outbox);
 
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
@@ -145,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->createDockBankAccountWidget();
 	this->createDockStandingOrders();
 	this->createDockDatedTransfers();
+
+	this->createJobCtrlAndConnections(); //zwingend nach createDock...
 
 	this->createActions();
 	this->createMenus();
@@ -199,7 +175,7 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->outw;	//AusgangsWidget löschen
+	delete this->outbox;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
 	delete this->history;
@@ -251,21 +227,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	  * Aktualisiseren automatisch gespeichert wird.
 	  */
 
-	//Bevor wir geschlossen werden noch alle Daten sichern!
-	AB_IMEXPORTER_CONTEXT *ctx = NULL;
-	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
-	ctx = abt_parser::create_ctx_from(this->accounts);
-	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
-				   "ctxfile", "default");
-	//ctx wieder freigeben!
-	AB_ImExporterContext_free(ctx);
-
-	//Die History in einer Separaten Datei speichern
-	ctx = this->history->getContext();
-	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
-				   "ctxfile", "default");
-	//ctx wieder freigeben!
-	AB_ImExporterContext_free(ctx);
+	//Alle Daten speichern
+	this->actSaveAllData->trigger();
 
 	//jetzt können wir geschlossen werden
 	e->accept();
@@ -280,6 +243,7 @@ void MainWindow::TimerTimeOut()
 
 	disconnect(this, SLOT(TimerTimeOut())); //connection entfernen
 	delete this->timer; //Der Timer wird nicht länger benötigt
+	this->timer = NULL;
 
 
 	abt_dialog dia(this,
@@ -383,6 +347,12 @@ void MainWindow::createActions()
 	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
 
+	actSaveAllData = new QAction(this);
+	actSaveAllData->setText(tr("Speichern"));
+	actSaveAllData->setIcon(QIcon::fromTheme("document-save"));
+	connect(actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
+
+
 #ifdef TESTWIDGETACCESS
 	actTestWidgetAccess = new QAction(tr("TestWidget"), this);
 	connect(actTestWidgetAccess, SIGNAL(triggered()), this, SLOT(onActionTestWidgetAccessTriggered()));
@@ -434,41 +404,55 @@ void MainWindow::createDockToolbar()
 //private
 void MainWindow::createWidgetsInScrollArea()
 {
-	QVBoxLayout *layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
+	//wir löschen alles in der ScrollArea, und erstellen dann alles neu
+
+	//Vielliecht besitzen wir schon ein Layout
+	QVBoxLayout *layoutScrollArea = dynamic_cast<QVBoxLayout*>(this->ui->scrollAreaWidgetContents->layout());
+	if (layoutScrollArea) { //layout vorhanden somit sind auch QGroupBoxen
+		//vorhanden, alle childs löschen
+		QList<QGroupBox*> list = this->ui->scrollAreaWidgetContents->findChildren<QGroupBox*>();
+		while(!list.isEmpty()) {
+			delete list.takeFirst();
+		}
+	} else { //neues Layout erstellen
+		layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
+	}
 
 	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		//Bekannte Daueraufträge
 		QGroupBox *grpSO = new QGroupBox(this);
 		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
 		grpSO->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(acc, this);
+		widgetKnownStandingOrders *standingOrders = new widgetKnownStandingOrders(this->ui->scrollAreaWidgetContents);
+		standingOrders->setAccount(acc);;
 
-		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+		connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		connect(standingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
-		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		connect(standingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
-		lSO->addWidget(StandingOrders);
+		lSO->addWidget(standingOrders);
 		layoutScrollArea->addWidget(grpSO);
 
 		//Bekannte Terminüberweisungen
 		QGroupBox *grpDT = new QGroupBox(this);
 		QVBoxLayout *lDT = new QVBoxLayout(grpDT);
 		grpDT->setTitle(tr("Terminierte Überweisungen von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownDatedTransfers *DatedTransfers = new widgetKnownDatedTransfers(acc, this);
+		widgetKnownDatedTransfers *datedTransfers = new widgetKnownDatedTransfers(this->ui->scrollAreaWidgetContents);
+		datedTransfers->setAccount(acc);
 
-		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+		connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+		connect(datedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
 			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
-		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+		connect(datedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
 			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
 
-		lDT->addWidget(DatedTransfers);
+		lDT->addWidget(datedTransfers);
 		layoutScrollArea->addWidget(grpDT);
 	}
 }
@@ -546,26 +530,19 @@ void MainWindow::createDockStandingOrders()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	//den zuletzt gewählten Account wieder anzeigen
-	int SelAccID = settings->loadSelAccountInWidget("StandingOrders");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
-								       this->accounts);
 	widgetKnownStandingOrders *StandingOrders;
 	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
 	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
 	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
-	StandingOrders = new widgetKnownStandingOrders(accComboBox->getAccount());
+	StandingOrders = new widgetKnownStandingOrders();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
 	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedStandingOrdersAccountChanged(const aqb_AccountInfo*)));
-
-	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
 	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
@@ -588,6 +565,31 @@ void MainWindow::createDockStandingOrders()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownStandingOrders = dock;
+
+	this->dockStandingOrdersSetAccounts();
+}
+
+void MainWindow::dockStandingOrdersSetAccounts()
+{
+	widgetAccountComboBox *accComboBox = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+
+	if ((accComboBox == NULL) || (standingOrders == NULL)) {
+		return; //ein widget fehlt, abbruch
+	}
+
+	//den zuletzt gewählten Account herausfinden
+	int selAccID = settings->loadSelAccountInWidget("StandingOrders");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+
+	//Alle bekannten Accounts in der ComboBox setzen
+	accComboBox->setAllAccounts(this->accounts);
+	//und den zuletzt gewählten Anzeigen
+	accComboBox->setSelectedAccount(lastAcc);
+
+	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
+	//der account in standingOrders geändert!
+	//standingOrders->setAccount(lastAcc);
 }
 
 //private
@@ -600,17 +602,13 @@ void MainWindow::createDockDatedTransfers()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	//den zuletzt gewählten Account wieder anzeigen
-	int SelAccID = settings->loadSelAccountInWidget("DatedTransfers");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
-								       this->accounts);
 	widgetKnownDatedTransfers *DatedTransfers;
 	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
 	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
 	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
-	DatedTransfers = new widgetKnownDatedTransfers(accComboBox->getAccount());
+	DatedTransfers = new widgetKnownDatedTransfers();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
@@ -618,9 +616,6 @@ void MainWindow::createDockDatedTransfers()
 	//Änderungen der Account-Wahl in der settings.ini speichern
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
-
-	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
 	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
 		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
@@ -643,7 +638,146 @@ void MainWindow::createDockDatedTransfers()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownDatedTransfers = dock;
+
+	this->dockDatedTransfersSetAccounts();
 }
+
+//private
+void MainWindow::dockDatedTransfersSetAccounts()
+{
+	widgetAccountComboBox *accComboBox = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+
+	if ((accComboBox == NULL) || (datedTransfers == NULL)) {
+		return; //ein widget fehlt, abbruch
+	}
+
+	//den zuletzt gewählten Account herausfinden
+	int selAccID = settings->loadSelAccountInWidget("DatedTransfers");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+
+	//Alle bekannten Accounts in der ComboBox setzen
+	accComboBox->setAllAccounts(this->accounts);
+	//und den zuletzt gewählten Anzeigen
+	accComboBox->setSelectedAccount(lastAcc);
+
+	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
+	//der account in standingOrders geändert!
+	//standingOrders->setAccount(lastAcc);
+}
+
+
+//private
+void MainWindow::createJobCtrlAndConnections()
+{
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+
+	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
+
+	/***** Signals und Slots der Objecte verbinden ******/
+	//Nicht mögliche Aufträge in der StatusBar anzeigen
+	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
+
+	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
+	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
+		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
+
+	//Logs von abt_job_ctrl in der Log-Seite anzeigen
+	connect(this->jobctrl, SIGNAL(log(QString)),
+		this->logw, SLOT(appendLogText(QString)));
+
+	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
+	connect(this->outbox, SIGNAL(editJob(int)),
+		this, SLOT(onEditJobFromOutbox(int)));
+
+	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+		this, SLOT(onJobCtrlQueueListChanged()));
+	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
+		this->jobctrl, SLOT(moveJob(int,int)));
+	connect(this->outbox, SIGNAL(executeClicked()),
+		this->jobctrl, SLOT(execQueuedTransactions()));
+	connect(this->outbox, SIGNAL(removeJob(int)),
+		this->jobctrl, SLOT(deleteJob(int)));
+
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+	connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+	connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+
+}
+
+/** \brief Lädt alle Account Daten */
+//private
+void MainWindow::loadAccountData()
+{
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	AB_IMEXPORTER_CONTEXT *ctx;
+
+	//Account Daten aus der entsprechenden Datei laden
+	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
+}
+
+/** \brief Speichert alle Account Daten */
+//private
+void MainWindow::saveAccountData()
+{
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+
+	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
+	ctx = abt_parser::create_ctx_from(this->accounts);
+
+	//wenn kein ctx vorhanden ist müssen wir auch nichts speichern
+	if (!ctx) return;
+
+	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+}
+
+/** \brief Lädt alle History Daten */
+//private
+void MainWindow::loadHistoryData()
+{
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	AB_IMEXPORTER_CONTEXT *ctx;
+
+	//wir laden die History neu, deswegen erstmal alle Einträge löschen
+	this->history->clearAll();
+
+	//History-Daten aus der entsprechenden Datei laden
+	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts, this->history);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
+}
+
+/** \brief Speichert alle History Daten */
+//private
+void MainWindow::saveHistoryData()
+{
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+
+	//Die History in einer Separaten Datei speichern
+	ctx = this->history->getContext();
+	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+}
+
 
 void MainWindow::on_actionDebug_Info_triggered()
 {
@@ -877,12 +1011,14 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 //private slot
 void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
 {
+	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
 	settings->saveSelAccountInWidget("StandingOrders", acc);
 }
 
 //private slot
 void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
 {
+	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
 	settings->saveSelAccountInWidget("DatedTransfers", acc);
 }
 
@@ -1752,7 +1888,7 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 }
 
 //private Slot
-void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
+void MainWindow::onEditJobFromOutbox(int itemNr)
 {
 	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
 		  dies sollte in diesem auch gesetzt werden, damit bei Klick
@@ -1761,6 +1897,9 @@ void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 
 	widgetTransfer *transW;
 	const aqb_AccountInfo *acc = NULL;
+
+	//Die itemNr enthält die Position in der JobQueueList
+	const abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
 	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
@@ -1793,8 +1932,23 @@ void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 	//den neuen tab gleich darstellen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 
+	//den Job aus der JobQueueList entfernen
+	this->jobctrl->deleteJob(itemNr, true);
+
 }
 
+//private slot
+void MainWindow::onJobCtrlQueueListChanged()
+{
+	this->outbox->refreshTreeWidget(this->jobctrl);
+}
+
+//private slot
+void MainWindow::onActionSaveAllDataTriggered()
+{
+	this->saveAccountData();
+	this->saveHistoryData();
+}
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
@@ -2121,23 +2275,96 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	GWEN_DIALOG *dlg;
 	int rv;
 
+	/* Der Setup-Dialog darf nur ausgeführt werden wenn keine Jobs
+	 * im Ausgang vorhanden sind, bzw. keine Daten der Accounts
+	 * in anderen Objekten verwendet werden die nach dem ausführen
+	 * des Setup-Dialogs evt. nicht mehr gültig sind und somit nicht
+	 * mehr verwendet werden dürfen! (z.B. Pointer auf aqb_accountInfo
+	 * Objecte!)
+	 */
+
+	int outboxCnt = this->jobctrl->jobqueueList()->size();
+	int editCnt = this->ui->tabWidget_UW->count() - 1; //Übersicht ist immer vorhanden
+
+	if ((outboxCnt != 0) || (editCnt != 0)) {
+		QMessageBox::information(this,
+					 tr("AqBanking einrichten ..."),
+					 tr("\"AqBanking einrichten ...\" kann nur "
+					    "aufgerufen werden wenn keine Aufträge "
+					    "im Ausgang sind und auch keine Aufträge "
+					    "in Bearbeitung sind.<br />"
+					    "Wenn ein Auftrag im Ausgang ist und "
+					    "das entsprechende Konto gelöscht "
+					    "werden würde, würde das Ausführen "
+					    "zu einem Absturz führen!<br />"
+					    "<br />"
+					    "Bitte schließen Sie alle Bearbeitungen "
+					    "vollständig ab und rufen erst dann "
+					    "\"AqBanking einrichten ...\" auf."),
+					 QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
+
 	dlg = AB_SetupDialog_new(banking->getAqBanking());
 	if (!dlg) {
 		qWarning() << Q_FUNC_INFO << "could not create AqBanking setup dialog";
 		return;
 	}
 
+	/* Hier müssen alle accounts gelöscht werden, damit sie, nach dem
+	 * AqBanking-Setup Dialog, wieder neu erstellt werden können.
+	 * Dabei werden dann einfach alle Daten neu geladen.
+	 */
+
+	//Alle Verwendungen von accounts auf NULL setzen und somit in den
+	//einzelnen Widgets auf 'ungültig' setzen.
+	BankAccountsWidget *baw = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	baw->setAccounts(NULL);
+
+	widgetAccountComboBox *accBoxDated = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+	accBoxDated->setAllAccounts(NULL);
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+	datedTransfers->setAccount(NULL);
+
+	widgetAccountComboBox *accBoxStanding = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+	accBoxStanding->setAllAccounts(NULL);
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+	standingOrders->setAccount(NULL);
+
+	this->saveAccountData(); //Alle Account-Daten sichern
+
+	//Alle Accounts löschen
+	delete this->jobctrl; //löscht auch alle Connections
+	delete this->accounts;
+
+	//AqBanking Setup Dialog ausführen
 	rv = GWEN_Gui_ExecDialog(dlg, 0);
 	if (rv == 0) {
 		qDebug() << Q_FUNC_INFO << "AqBanking setup dialog aborted by user";
 	}
 
-	/** \todo Sind Änderungen sofort verfügbar oder müssen unsere Objecte
-		  neu erstellt werden damit die Änderungen dort auch angezeigt
-		  werden?
-		  Auf jeden fall sollte ein "Update" der Anzeigen erfolgen, da
-		  sich evt. die Daten geändert haben!
-	*/
+	/* Der AqBanking Setup Dialog wurde beendet, jetzt müssen alle Account
+	 * Daten neu geladen werden.
+	 * Und auch alle Connections neu aufgebaut werden.
+	 */
+
+	//Es könnten sich Accounts geändert haben, deswegen alle neu erstellen
+	this->accounts = new aqb_Accounts(banking->getAqBanking());
+
+	//den JobController und dessen Connections wieder erstellen
+	this->createJobCtrlAndConnections();
+
+	//Alle Account-Daten laden
+	this->loadAccountData();
+
+	//Die Accounts in den Widgets wieder setzen
+	this->dockDatedTransfersSetAccounts();
+	this->dockStandingOrdersSetAccounts();
+	baw->setAccounts(this->accounts); //baw wurde oben zugewiesen!
+
+	//Die Daten in der ScrollArea neu aufbauen
+	this->createWidgetsInScrollArea();
 
 	GWEN_Dialog_free(dlg);
 }

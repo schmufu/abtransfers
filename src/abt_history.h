@@ -52,12 +52,12 @@ class abt_history: public QObject {
 	Q_OBJECT
 
 public:
-	abt_history(const aqb_Accounts *allAccounts, QObject *parent = 0);
+	abt_history(/*const aqb_Accounts *allAccounts,*/ QObject *parent = 0);
 	~abt_history();
 
 private:
-	//! \brief Liste aller Accounts
-	const aqb_Accounts *m_allAccounts;
+//	//! \brief Liste aller Accounts
+//	const aqb_Accounts *m_allAccounts;
 	//! \brief In dieser Liste werden die durchgeführten Aufträge verwaltet
 	QList<abt_jobInfo*> *m_historyList;
 
@@ -68,6 +68,9 @@ public:
 	bool remove(abt_jobInfo *job);
 	//! \overload
 	bool remove(int pos);
+	//! \brief Löscht alle jobs in der history-Liste
+	void clearAll();
+
 
 	//! \brief erstellt einen AB_IMEXPORTER_CONTEXT der dann gespeichert werden kann
 	AB_IMEXPORTER_CONTEXT *getContext() const;

@@ -42,7 +42,6 @@ namespace Ui {
 class Page_Ausgang : public QFrame {
 	Q_OBJECT
 private:
-	abt_job_ctrl *jobctrl;
 	int selectedItem; //!< temporaly var for the currently selected item
 
 	QAction *actEdit;
@@ -58,7 +57,7 @@ private:
 	static bool isJobTypeEditable(const AB_JOB_TYPE type);
 
 public:
-	Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent = 0);
+	Page_Ausgang(QWidget *parent = 0);
 	~Page_Ausgang();
 
 protected:
@@ -69,11 +68,13 @@ private:
 	Ui::Page_Ausgang *ui;
 
 signals:
-	void Execute_Clicked();
-	void edit_Job(const abt_jobInfo* job);
+	void executeClicked();
+	void editJob(int itemNr);
+	void moveJobInList(int itemNr, int updown);
+	void removeJob(int itemNr);
 
 public slots:
-	void refreshTreeWidget();
+	void refreshTreeWidget(const abt_job_ctrl *jobctrl);
 
 
 private slots:
@@ -82,6 +83,7 @@ private slots:
 	void onActionUpTriggered();
 	void onActionDownTriggered();
 
+	void on_pushButton_exec_clicked();
 	void on_treeWidget_customContextMenuRequested(QPoint pos);
 	void on_treeWidget_itemSelectionChanged();
 };

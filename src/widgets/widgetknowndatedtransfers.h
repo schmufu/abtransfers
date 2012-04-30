@@ -42,7 +42,7 @@ class widgetKnownDatedTransfers : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetKnownDatedTransfers(const aqb_AccountInfo *account, QWidget *parent = 0);
+	explicit widgetKnownDatedTransfers(QWidget *parent = 0);
 
 private:
 	QTreeWidget *treeWidget;

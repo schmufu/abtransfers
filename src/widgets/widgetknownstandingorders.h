@@ -42,7 +42,7 @@ class widgetKnownStandingOrders : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetKnownStandingOrders(const aqb_AccountInfo *account, QWidget *parent = 0);
+	explicit widgetKnownStandingOrders(QWidget *parent = 0);
 
 private:
 	QTreeWidget *treeWidget;

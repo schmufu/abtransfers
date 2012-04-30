@@ -92,6 +92,7 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 				const QString &exporterName,
 				const QString &profileName)
 {
+	Q_ASSERT(ctx);
 	int ret;
 
 	ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
@@ -119,12 +120,16 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 
 
 /**
+  * Wenn keine Accounts übergeben wurden wird NULL zurück gegeben!
+  *
   * Der zurückgegebene Context muss über AB_ImExporterContext_free() wieder
   * freigegeben werden!
   */
 //static
 AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccounts)
 {
+	if (!allAccounts) return NULL; //Abbruch, keine Accounts vorhanden
+
 	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
 
 	//wir gehen alle Objecte durch und holen uns den jeweiligen IE-Context
@@ -280,7 +285,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 			v = AB_AccountStatus_GetBankLine(as);
 			if (v) {
-				logmsg2 = QString("BankLine:\t\t%1").arg(
+				logmsg2 = QString("BankLine:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 				qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 			}
@@ -314,7 +319,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 
 			v = AB_AccountStatus_GetDisposed(as);
 			if (v) {
-				logmsg2 = QString("Disposed:\t\t%1").arg(
+				logmsg2 = QString("Disposed:\t%1").arg(
 						AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 				qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 			}
@@ -344,20 +349,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		while (t) {
 			//die terminierte Überweisung dem Account zufügen
 			//oder evt. auch löschen. Abhängig vom Status.
-			qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - creating abt_datedTransferInfo";
 			abt_datedTransferInfo *dt = new abt_datedTransferInfo(t);
-			qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - created abt_datedTransferInfo";
 			if (dt->getTransaction()->getStatus() == AB_Transaction_StatusRevoked) {
 				//Dem account werden nur gültige Terminüberweisungen
 				//zugeordnet, gelöschte erscheinen nur in der History
-				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - removing DatedTransfer from accountInfo";
 				acc->removeDatedTransfer(dt);
-				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - removed DatedTransfer from accountInfo";
 				delete dt; //dt wird nicht länger benötigt
 			} else {
-				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - adding DatedTransfer to accountInfo";
 				acc->addDatedTransfer(dt);
-				qDebug() << Q_FUNC_INFO << "DatedTransfer extra debug - added DatedTransfer to accountInfo";
 				//dt wird durch den Account wieder gelöscht
 			}
 

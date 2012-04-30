@@ -43,9 +43,9 @@ namespace Ui {
 class BankAccountsWidget : public QWidget {
 	Q_OBJECT
 private:
-	aqb_Accounts *m_accounts;
+	const aqb_Accounts *m_accounts;
 public:
-	BankAccountsWidget(aqb_Accounts *accounts, QWidget *parent = 0);
+	BankAccountsWidget(const aqb_Accounts *accounts, QWidget *parent = 0);
 	~BankAccountsWidget();
 
 	aqb_AccountInfo *getSelectedAccount();
@@ -71,6 +71,7 @@ signals:
 public slots:
 	void setSelectedAccount(const aqb_AccountInfo *account);
 	void accountChangedUpdateDisplay(const aqb_AccountInfo *account);
+	void setAccounts(const aqb_Accounts *accounts);
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();

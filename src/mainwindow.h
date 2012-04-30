@@ -69,7 +69,7 @@ private:
 	abt_job_ctrl *jobctrl;
 	abt_history *history;
 	page_log *logw;
-	Page_Ausgang *outw;
+	Page_Ausgang *outbox;
 
 	QAction *actTransferNational;
 	QAction *actTransferInternational;
@@ -83,7 +83,7 @@ private:
 	QAction *actDebitNoteSepa;
 	QAction *actUpdateBalance;
 	QAction *actShowAvailableJobs;
-//	QAction *act;
+	QAction *actSaveAllData;
 //	QAction *act;
 //	QAction *act;
 
@@ -141,6 +141,16 @@ private:
 	bool isDatedTransferInOutbox(const abt_datedTransferInfo *dti);
 	bool isDatedTransferOutdated(const aqb_AccountInfo *acc, const abt_datedTransferInfo *dti);
 
+	void loadAccountData();
+	void saveAccountData();
+	void loadHistoryData();
+	void saveHistoryData();
+
+	void dockStandingOrdersSetAccounts();
+	void dockDatedTransfersSetAccounts();
+
+	void createJobCtrlAndConnections();
+
 private slots:
 	void on_actionAqBankingSetup_triggered();
 	void on_tabWidget_UW_tabCloseRequested(int index);
@@ -174,6 +184,7 @@ private slots:
 	void onActionDebitNoteSepaTriggered();
 	void onActionUpdateBalanceTriggered();
 	void onActionShowAvailableJobsTriggered();
+	void onActionSaveAllDataTriggered();
 
 #ifdef TESTWIDGETACCESS
 	void onActionTestWidgetAccessTriggered();
@@ -188,7 +199,10 @@ private slots:
 	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 
-	void onEditJobFromOutbox(const abt_jobInfo* job);
+	void onEditJobFromOutbox(int itemNr);
+	void onJobCtrlQueueListChanged();
+
+
 
 };
 
