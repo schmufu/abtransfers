@@ -69,7 +69,7 @@ private:
 	abt_job_ctrl *jobctrl;
 	abt_history *history;
 	page_log *logw;
-	Page_Ausgang *outw;
+	Page_Ausgang *outbox;
 
 	QAction *actTransferNational;
 	QAction *actTransferInternational;
@@ -194,7 +194,8 @@ private slots:
 	void onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 	void onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo*di);
 
-	void onEditJobFromOutbox(const abt_jobInfo* job);
+	void onEditJobFromOutbox(int itemNr);
+	void onJobCtrlQueueListChanged();
 
 
 

@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->history = new abt_history(/*this->accounts,*/ this);
 	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
-	this->outw = new Page_Ausgang(this->jobctrl);
+	this->outbox = new Page_Ausgang(); //new Page_Ausgang(this->jobctrl);
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	outLayout->setMargin(0);
 	outLayout->setSpacing(2);
 	ui->Ausgang->setLayout(outLayout);
-	ui->Ausgang->layout()->addWidget(this->outw);
+	ui->Ausgang->layout()->addWidget(this->outbox);
 
 	/***** Signals und Slots der Objecte verbinden ******/
 	//Nicht mögliche Aufträge in der StatusBar anzeigen
@@ -119,8 +119,17 @@ MainWindow::MainWindow(QWidget *parent) :
 		this->logw, SLOT(appendLogText(QString)));
 
 	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
-	connect(this->outw, SIGNAL(edit_Job(const abt_jobInfo*)),
-		this, SLOT(onEditJobFromOutbox(const abt_jobInfo*)));
+	connect(this->outbox, SIGNAL(editJob(int)),
+		this, SLOT(onEditJobFromOutbox(int)));
+
+	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+		this, SLOT(onJobCtrlQueueListChanged()));
+	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
+		this->jobctrl, SLOT(moveJob(int,int)));
+	connect(this->outbox, SIGNAL(executeClicked()),
+		this->jobctrl, SLOT(execQueuedTransactions()));
+	connect(this->outbox, SIGNAL(removeJob(int)),
+		this->jobctrl, SLOT(deleteJob(int)));
 
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
@@ -190,7 +199,7 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->outw;	//AusgangsWidget löschen
+	delete this->outbox;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
 	delete this->history;
@@ -258,6 +267,7 @@ void MainWindow::TimerTimeOut()
 
 	disconnect(this, SLOT(TimerTimeOut())); //connection entfernen
 	delete this->timer; //Der Timer wird nicht länger benötigt
+	this->timer = NULL;
 
 
 	abt_dialog dia(this,
@@ -1799,7 +1809,7 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 }
 
 //private Slot
-void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
+void MainWindow::onEditJobFromOutbox(int itemNr)
 {
 	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
 		  dies sollte in diesem auch gesetzt werden, damit bei Klick
@@ -1808,6 +1818,9 @@ void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 
 	widgetTransfer *transW;
 	const aqb_AccountInfo *acc = NULL;
+
+	//Die itemNr enthält die Position in der JobQueueList
+	const abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
 	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
@@ -1840,6 +1853,15 @@ void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 	//den neuen tab gleich darstellen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 
+	//den Job aus der JobQueueList entfernen
+	this->jobctrl->deleteJob(itemNr, true);
+
+}
+
+//private slot
+void MainWindow::onJobCtrlQueueListChanged()
+{
+	this->outbox->refreshTreeWidget(this->jobctrl);
 }
 
 //private slot

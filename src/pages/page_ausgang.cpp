@@ -38,15 +38,15 @@
 #include "../abt_conv.h"
 #include "../abt_settings.h"
 
-Page_Ausgang::Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent) :
+Page_Ausgang::Page_Ausgang(QWidget *parent) :
 	QFrame(parent),
 	ui(new Ui::Page_Ausgang)
 {
 	ui->setupUi(this);
-	this->jobctrl = jobctrl;
+	//this->jobctrl = jobctrl;
 	this->createAllActions();
 
-	this->refreshTreeWidget();
+	this->refreshTreeWidget(NULL); //erstellt "Keine Aufträge vorhanden"
 
 	this->ui->pushButton_exec->setEnabled(false);
 
@@ -59,21 +59,11 @@ Page_Ausgang::Page_Ausgang(abt_job_ctrl *jobctrl, QWidget *parent) :
 	connect(this->ui->pushButton_down, SIGNAL(clicked()),
 		this->actDown, SLOT(trigger()));
 
-	connect(ui->pushButton_exec, SIGNAL(clicked()),
-		this->jobctrl, SLOT(execQueuedTransactions()));
-
-	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
-		this, SLOT(refreshTreeWidget()));
 }
 
 Page_Ausgang::~Page_Ausgang()
 {
 	delete ui;
-
-	disconnect(ui->pushButton_exec, SIGNAL(clicked()),
-		   this->jobctrl, SLOT(execQueuedTransactions()));
-	disconnect(this->jobctrl, SIGNAL(jobQueueListChanged()),
-		   this, SLOT(refreshTreeWidget()));
 
 	delete this->actDelete;
 	delete this->actEdit;
@@ -158,12 +148,14 @@ void Page_Ausgang::setTreeWidgetColWidths()
 	ui->treeWidget->setColumnWidth(1,currWidth-146);
 }
 
-void Page_Ausgang::refreshTreeWidget()
+//public slot
+void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 {
 	QTreeWidgetItem *item, *topItem;
 	const QStringList *JobInfo;
 
-	if (this->jobctrl->jobqueueList()->size() == 0) {
+	if ((jobctrl == NULL) ||
+	    (jobctrl->jobqueueList()->size() == 0)) {
 		this->ui->treeWidget->clear(); //Alle Items löschen
 		this->ui->treeWidget->setColumnCount(1);
 		this->ui->treeWidget->setHeaderHidden(true);
@@ -186,13 +178,12 @@ void Page_Ausgang::refreshTreeWidget()
 			QVariant tliVar = this->ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole);
 			expanded.append(tliVar.value<abt_jobInfo*>());
 		}
-
 	}
 
 	this->ui->treeWidget->clear(); //alle Items löschen
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 
-	const QList<abt_jobInfo*> *jql = this->jobctrl->jobqueueList();
+	const QList<abt_jobInfo*> *jql = jobctrl->jobqueueList();
 	for (int i=0; i<jql->size(); ++i) {
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole, tr("%1").arg(i+1));
@@ -256,7 +247,7 @@ void Page_Ausgang::onActionUpTriggered()
 
 	 //damit in refreshTreeWidget() das Item wieder ausgewählt wird
 	this->selectedItem = itemNr-1;
-	this->jobctrl->moveJob(itemNr, -1);
+	emit this->moveJobInList(itemNr, -1);
 }
 
 /** Den aktuell ausgewählten Eintrag um 1 nach unten verschieben */
@@ -268,7 +259,7 @@ void Page_Ausgang::onActionDownTriggered()
 
 	//damit in refreshTreeWidget() das Item wieder ausgewählt wird
 	this->selectedItem = itemNr+1;
-	this->jobctrl->moveJob(itemNr, 1);
+	emit this->moveJobInList(itemNr, 1);
 }
 
 /** Den aktuell ausgewählten Eintrag löschen */
@@ -291,7 +282,7 @@ void Page_Ausgang::onActionDeleteTriggered()
 		return; //Abbruch
 	}
 
-	this->jobctrl->deleteJob(itemNr);
+	emit this->removeJob(itemNr);
 }
 
 
@@ -319,11 +310,7 @@ void Page_Ausgang::onActionEditTriggered()
 		return; //Abbruch
 	}
 
-	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
-
-	emit edit_Job(job);
-
-	this->jobctrl->deleteJob(itemNr);
+	emit this->editJob(itemNr); //Job soll editiert werden
 }
 
 //static  private
@@ -353,10 +340,15 @@ void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 	if (disabled) { //keine Items ausgewählt oder keine vorhanden
 		editable = false;
 	} else { //Items ausgewählt, somit auch vorhanden!
-		//repräsentiert auch gleichzeitig die Position in der jobqueliste
-		int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
-		const AB_JOB_TYPE jobType = this->jobctrl->jobqueueList()->at(itemNr)->getAbJobType();
-		editable = this->isJobTypeEditable(jobType);
+		//Die UserRole enthält die Adresse des Jobs
+		const QVariant var = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole);
+		if (var.canConvert<abt_jobInfo*>()) {
+			const abt_jobInfo *job = var.value<abt_jobInfo*>();
+			const AB_JOB_TYPE jobType = job->getAbJobType();
+			editable = this->isJobTypeEditable(jobType);
+		} else {
+			editable = false;
+		}
 	}
 
 	this->actEdit->setEnabled(editable);
@@ -370,4 +362,9 @@ void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 	contextMenu->addAction(this->actEdit);
 	contextMenu->addAction(this->actDelete);
 	contextMenu->exec(this->ui->treeWidget->viewport()->mapToGlobal(pos));
+}
+
+void Page_Ausgang::on_pushButton_exec_clicked()
+{
+	emit this->executeClicked();
 }
