@@ -86,6 +86,10 @@ private:
 	QHash<AB_JOB_TYPE, abt_transactionLimits*> *m_limits;
 	QHash<AB_JOB_TYPE, bool> *m_availableJobs;
 
+	//! \brief löscht alle internen Daten und setzt sie auf NULL
+	void freeAllInternalData();
+	void updateAllInternalData();
+
 public:
 	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
 	~aqb_AccountInfo();
@@ -137,6 +141,11 @@ protected: //from friend classes useable! (speziell: abt_parser)
 	//! \brief fügt die terminierte Überweisung \a dt der Liste hinzu
 	void addDatedTransfer(abt_datedTransferInfo *dt);
 
+public slots:
+	//! \brief setzt den zu verwendenden Account
+	void setAccount(AB_ACCOUNT *account);
+
+
 signals:
 	//! \brief wird gesendet wenn sich die StandingOrders geändert haben.
 	void knownStandingOrdersChanged(const aqb_AccountInfo *account);
@@ -144,6 +153,9 @@ signals:
 	void knownDatedTransfersChanged(const aqb_AccountInfo *account);
 	//! \brief wird gesendet wenn sich der Status (Saldo) des Accounts geändert hat.
 	void accountStatusChanged(const aqb_AccountInfo *account);
+	//! \brief wenn sich der Account geändert hat (durch setAccount())
+	void accountChanged(const aqb_AccountInfo *account);
+
 };
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);

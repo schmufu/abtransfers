@@ -32,13 +32,14 @@
 
 #include "abt_history.h"
 
-abt_history::abt_history(const aqb_Accounts *allAccounts, QObject *parent) :
+abt_history::abt_history(/*const aqb_Accounts *allAccounts,*/ QObject *parent) :
 	QObject(parent)
 {
-	Q_ASSERT(allAccounts);
+	//Q_ASSERT(allAccounts);
 	this->m_historyList = new QList<abt_jobInfo*>;
 
-	this->m_allAccounts = allAccounts;
+	//this->m_allAccounts = allAccounts;
+	this->m_allAccounts = NULL;
 }
 
 abt_history::~abt_history()

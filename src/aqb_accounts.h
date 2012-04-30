@@ -53,6 +53,11 @@ public:
 	aqb_Accounts(AB_BANKING *ab);
 	~aqb_Accounts();
 
+	//! \brief lädt alle Account-Daten von AqBanking
+	void loadAccountsFromAqBanking();
+	//! \brief löscht alle verwalteten aqb_accountInfos
+	void freeAccounts();
+
 	const QHash<int, aqb_AccountInfo*>& getAccountHash() const
 		{ return this->m_accounts; }
 	aqb_AccountInfo* getAccount(int ID) const

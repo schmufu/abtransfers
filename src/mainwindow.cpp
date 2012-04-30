@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->history = new abt_history(this->accounts, this);
+	this->history = new abt_history(/*this->accounts,*/ this);
 	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
 	this->outw = new Page_Ausgang(this->jobctrl);
@@ -2121,11 +2121,24 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	GWEN_DIALOG *dlg;
 	int rv;
 
+	/** \todo Der Setup-Dialog darf nur ausgeführt werden wenn keine Jobs
+		  im Ausgang vorhanden sind, bzw. keine Daten der Accounts
+		  in anderen Objekten Verwendet werden die nach dem ausführen
+		  des Setup-Dialogs evt. nicht mehr gültig sind und somit nicht
+		  mehr verwendet werden dürfen! (z.B. Pointer auf aqb_accountInfo
+		  Objecte!)
+	*/
+
 	dlg = AB_SetupDialog_new(banking->getAqBanking());
 	if (!dlg) {
 		qWarning() << Q_FUNC_INFO << "could not create AqBanking setup dialog";
 		return;
 	}
+
+	/** \todo Hier muss all_accounts gelöscht werden, damit es nach dem
+		  AqBanking-Setup Dialog wieder neu erstellt werden kann.
+		  Dabei müssen dann auch alle Daten neu geladen werden.
+	*/
 
 	rv = GWEN_Gui_ExecDialog(dlg, 0);
 	if (rv == 0) {

@@ -36,15 +36,142 @@
 #include "abt_job_ctrl.h"
 #include "abt_conv.h"
 
+
+/**
+  * \a account darf NULL sein, dann werden allerdings keine Daten geladen und
+  * der AB_ACCOUNT muss später über setAccount() gesetzt werden!
+  */
 aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	QObject(parent)
 {
-	this->m_account = account;
-	this->m_ID = AB_Account_GetUniqueId(this->m_account);
+	//Initialisierung
 	this->m_standingOrders = NULL;
 	this->m_datedTransfers = NULL;
 	this->m_availableJobs = NULL;
 	this->account_status = NULL;
+	this->m_limits = NULL;
+
+	//account could be NULL, but this is handled by setAccount()
+	this->setAccount(account);
+
+}
+
+aqb_AccountInfo::~aqb_AccountInfo()
+{
+	this->freeAllInternalData();
+	//Alle Verbindungen löschen
+	this->disconnect();
+
+	qDebug() << Q_FUNC_INFO << this << "deleted";
+}
+
+//private
+void aqb_AccountInfo::freeAllInternalData()
+{
+	//Da wir relativ viel Ändern keine Signale senden! Diese werden gesendet
+	//wenn alles fertig ist!
+	//Wir merken uns den vorherigen zustand und stellen diesen bevor die
+	//Signale gesendet werden wieder her.
+	bool preBlocked = this->blockSignals(true);
+
+	//der account_status ist eine von uns angelegte Kopie, diese freigeben
+	if (this->account_status) {
+		AB_AccountStatus_free(this->account_status);
+		this->account_status = NULL;
+	}
+
+	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
+	delete this->m_standingOrders; //und liste löschen
+	this->m_standingOrders = NULL;
+
+	this->clearDatedTransfers(); //Alle DatedTransfers wieder freigeben
+	delete this->m_datedTransfers; //und liste löschen
+	this->m_datedTransfers = NULL;
+
+	//Alle abt_transactionLimit-Objecte und den QHash wieder löschen
+	if (this->m_limits) {
+		foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
+			delete this->m_limits->take(type);
+		}
+		delete this->m_limits;
+		this->m_limits = NULL;
+	}
+
+	delete this->m_availableJobs;
+	this->m_availableJobs = NULL;
+
+	this->m_ID = 0;
+	this->m_BankCode = "";
+	this->m_BankName = "";
+	this->m_Number = "";
+	this->m_Name = "";
+	this->m_BackendName = "";
+	this->m_SubAccountId = "";
+	this->m_IBAN = "";
+	this->m_BIC = "";
+	this->m_OwnerName = "";
+	this->m_Currency = "";
+	this->m_Country = "";
+	this->m_AccountType = "";
+
+
+	//geblockte Signale wieder auf den vorherigen Zustand setzen
+	this->blockSignals(preBlocked);
+
+	//Alle Signale senden die über Änderungen informieren
+	emit this->accountChanged(this);
+	emit this->accountStatusChanged(this);
+	emit this->knownDatedTransfersChanged(this);
+	emit this->knownStandingOrdersChanged(this);
+}
+
+//public slot
+void aqb_AccountInfo::setAccount(AB_ACCOUNT *account)
+{
+	//Es ein neuer oder kein Account übergeben, wir löschen erstmal alle
+	//Daten die wir für den jetzigen Account vorhalten.
+
+	//Da wir relativ viel Ändern keine Signale senden! Diese werden gesendet
+	//wenn alles fertig ist!
+	this->blockSignals(true);
+
+	this->freeAllInternalData(); //löscht alle internen Daten
+
+	this->m_account = account;
+	if (! this->m_account) {
+		//Kein gültiger Account übergeben!
+		this->m_ID = 0;
+		this->blockSignals(false); //Signale wieder freigeben
+
+		//Alle Signale senden die über Änderungen informieren
+		emit this->accountChanged(this);
+		emit this->accountStatusChanged(this);
+		emit this->knownDatedTransfersChanged(this);
+		emit this->knownStandingOrdersChanged(this);
+		return; //Abbruch
+	}
+
+	this->updateAllInternalData();
+
+	this->blockSignals(false); //Signale wieder freigeben
+
+	//Alle Signale senden die über Änderungen informieren
+	emit this->accountChanged(this);
+	emit this->accountStatusChanged(this);
+	emit this->knownDatedTransfersChanged(this);
+	emit this->knownStandingOrdersChanged(this);
+
+	qDebug().nospace() << Q_FUNC_INFO << " " << this
+			   << " AccountInfo for Account " << this->Number()
+			   << " created. (ID:" << this->get_ID() << ")";
+}
+
+//private
+void aqb_AccountInfo::updateAllInternalData()
+{
+	Q_ASSERT(this->m_account);
+
+	this->m_ID = AB_Account_GetUniqueId(this->m_account);
 
 	this->m_BankCode = QString::fromUtf8(AB_Account_GetBankCode(this->m_account));
 	this->m_BankName = QString::fromUtf8(AB_Account_GetBankName(this->m_account));
@@ -90,34 +217,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_availableJobs = new QHash<AB_JOB_TYPE, bool>;
 	abt_job_ctrl::createAvailableHashFor(this->m_account, this->m_availableJobs);
 
-	qDebug().nospace() << Q_FUNC_INFO << " " << this
-			   << " AccountInfo for Account " << this->Number()
-			   << " created. (ID:" << this->get_ID() << ")";
 }
-
-aqb_AccountInfo::~aqb_AccountInfo()
-{
-	//der account_status ist eine von uns angelegte Kopie, diese wieder
-	//freigeben
-	if (this->account_status) {
-		AB_AccountStatus_free(this->account_status);
-	}
-
-	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
-	delete this->m_standingOrders; //und liste löschen
-
-	this->clearDatedTransfers(); //Alle DatedTransfers wieder freigeben
-	delete this->m_datedTransfers; //und liste löschen
-
-	//Alle abt_transactionLimits und den QHash wieder löschen
-	foreach (AB_JOB_TYPE type, this->m_limits->keys()) {
-		delete this->m_limits->take(type);
-	}
-	delete this->m_limits;
-
-	qDebug() << Q_FUNC_INFO << this << "deleted";
-}
-
 
 //public
 const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const

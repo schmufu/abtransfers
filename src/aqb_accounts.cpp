@@ -37,6 +37,43 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 	this->m_accounts.clear();
 	this->m_ab = ab;
 
+	this->loadAccountsFromAqBanking();
+}
+
+aqb_Accounts::~aqb_Accounts()
+{
+	this->freeAccounts();
+}
+
+
+/**
+  * Nach dem Aufruf dieser Funktion dürfen die Pointer auf die aqb_accountInfo
+  * Objecte _nicht_ mehr verwendet werden!
+  */
+void aqb_Accounts::freeAccounts()
+{
+	//Alle AccountInfo-Objecte löschen
+	foreach (int key, this->m_accounts.keys()) {
+		delete this->m_accounts.take(key);
+	}
+}
+
+/**
+  * Diese Funktion wird bereits beim erstellen des Objects einmal aufgerufen.
+  * Somit muss dies nicht separat geschehen!
+  *
+  * Es werden zuerst ALLE bekannten aqb_accountInfo-Objecte gelöscht und dann
+  * für jeden in AqBanking vorhandenen Account ein neues aqb_accountInfo-Object
+  * erstellt. Die werden in dem internen QHash verwaltet.
+  *
+  * Alle Pointer zu den aqb_accountInfo Objecten sind hiernach nicht mehr
+  * gültig und müssen neu zugewiesen werden!
+  */
+void aqb_Accounts::loadAccountsFromAqBanking()
+{
+	//Erstmal alle AccountInfo-Objecte löschen (sofern vorhanden)
+	this->freeAccounts();
+
 	AB_ACCOUNT_LIST2 *accs;
 
 	/* Get a list of accounts which are known to AqBanking.
@@ -51,7 +88,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 	 * The rest of this tutorial shows how lists are generally used by
 	 * AqBanking.
 	 */
-	 accs=AB_Banking_GetAccounts(ab);
+	 accs=AB_Banking_GetAccounts(this->m_ab);
 	 if (accs) {
 		AB_ACCOUNT_LIST2_ITERATOR *it;
 
@@ -99,14 +136,7 @@ aqb_Accounts::aqb_Accounts(AB_BANKING *ab)
 
 	}
 
-}
 
-aqb_Accounts::~aqb_Accounts()
-{
-	//Alle AccountInfo-Objecte wieder löschen
-	foreach (int key, this->m_accounts.keys()) {
-		delete this->m_accounts.take(key);
-	}
 }
 
 aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
