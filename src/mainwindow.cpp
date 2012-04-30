@@ -79,10 +79,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->history = new abt_history(/*this->accounts,*/ this);
+	this->history = new abt_history(this);
 	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
-	this->outbox = new Page_Ausgang(); //new Page_Ausgang(this->jobctrl);
+	this->outbox = new Page_Ausgang();
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
@@ -678,6 +678,9 @@ void MainWindow::loadHistoryData()
 	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
 	if (!this->accounts) return; //Abbruch wenn keine Accounts vorhanden
 	AB_IMEXPORTER_CONTEXT *ctx;
+
+	//wir laden die History neu, deswegen erstmal alle Einträge löschen
+	this->history->clearAll();
 
 	//History-Daten aus der entsprechenden Datei laden
 	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),

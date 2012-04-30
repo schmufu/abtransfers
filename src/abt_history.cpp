@@ -32,24 +32,16 @@
 
 #include "abt_history.h"
 
-abt_history::abt_history(/*const aqb_Accounts *allAccounts,*/ QObject *parent) :
+abt_history::abt_history(QObject *parent) :
 	QObject(parent)
 {
-	//Q_ASSERT(allAccounts);
 	this->m_historyList = new QList<abt_jobInfo*>;
-
-	//this->m_allAccounts = allAccounts;
-	this->m_allAccounts = NULL;
 }
 
 abt_history::~abt_history()
 {	
 	//Alle Objecte und die Liste selbst löschen
-	while (this->m_historyList->size() != 0) {
-		abt_jobInfo *j = this->m_historyList->takeFirst();
-		delete j;
-	}
-
+	this->clearAll();
 	delete this->m_historyList;
 }
 
@@ -75,6 +67,16 @@ bool abt_history::remove(int pos)
 	this->m_historyList->removeAt(pos);
 
 	return true;
+}
+
+//public
+void abt_history::clearAll()
+{
+	//Alle Objecte löschen
+	while (this->m_historyList->size() != 0) {
+		abt_jobInfo *j = this->m_historyList->takeFirst();
+		delete j;
+	}
 }
 
 /**
