@@ -2255,6 +2255,29 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 		  Objecte!)
 	*/
 
+	int outboxCnt = this->jobctrl->jobqueueList()->size();
+	int editCnt = this->ui->tabWidget_UW->count() - 1; //Übersicht ist immer vorhanden
+
+	if ((outboxCnt != 0) || (editCnt != 0)) {
+		QMessageBox::information(this,
+					 tr("AqBanking einrichten ..."),
+					 tr("\"AqBanking einrichten ...\" kann nur "
+					    "aufgerufen werden wenn keine Aufträge "
+					    "im Ausgang sind und auch keine Aufträge "
+					    "in Bearbeitung sind.<br />"
+					    "Wenn ein Auftrag im Ausgang ist und "
+					    "das entsprechende Konto gelöscht "
+					    "werden würde, würde das Ausführen "
+					    "zu einem Absturz führen!<br />"
+					    "<br />"
+					    "Bitte schließen Sie alle Bearbeitungen "
+					    "vollständig ab und rufen erst dann "
+					    "\"AqBanking einrichten ...\" auf."),
+					 QMessageBox::Ok, QMessageBox::Ok);
+		return; //Abbruch
+	}
+
+
 	dlg = AB_SetupDialog_new(banking->getAqBanking());
 	if (!dlg) {
 		qWarning() << Q_FUNC_INFO << "could not create AqBanking setup dialog";
