@@ -92,6 +92,7 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 				const QString &exporterName,
 				const QString &profileName)
 {
+	Q_ASSERT(ctx);
 	int ret;
 
 	ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
@@ -119,12 +120,16 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 
 
 /**
+  * Wenn keine Accounts übergeben wurden wird NULL zurück gegeben!
+  *
   * Der zurückgegebene Context muss über AB_ImExporterContext_free() wieder
   * freigegeben werden!
   */
 //static
 AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccounts)
 {
+	if (!allAccounts) return NULL; //Abbruch, keine Accounts vorhanden
+
 	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
 
 	//wir gehen alle Objecte durch und holen uns den jeweiligen IE-Context

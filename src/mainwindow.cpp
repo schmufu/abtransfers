@@ -89,18 +89,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
 	//können die Daten mit dem parser geladen werden
-	AB_IMEXPORTER_CONTEXT *ctx;
-	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
-					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
-
+	this->loadAccountData();
 	//Auch die History-Daten müssen geladen werden
-	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
-					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts, this->history);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
-
+	this->loadHistoryData();
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
@@ -251,21 +242,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	  * Aktualisiseren automatisch gespeichert wird.
 	  */
 
-	//Bevor wir geschlossen werden noch alle Daten sichern!
-	AB_IMEXPORTER_CONTEXT *ctx = NULL;
-	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
-	ctx = abt_parser::create_ctx_from(this->accounts);
-	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
-				   "ctxfile", "default");
-	//ctx wieder freigeben!
-	AB_ImExporterContext_free(ctx);
-
-	//Die History in einer Separaten Datei speichern
-	ctx = this->history->getContext();
-	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
-				   "ctxfile", "default");
-	//ctx wieder freigeben!
-	AB_ImExporterContext_free(ctx);
+	//Alle Daten speichern
+	this->actSaveAllData->trigger();
 
 	//jetzt können wir geschlossen werden
 	e->accept();
@@ -382,6 +360,12 @@ void MainWindow::createActions()
 	actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
 	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
+
+	actSaveAllData = new QAction(this);
+	actSaveAllData->setText(tr("Speichern"));
+	actSaveAllData->setIcon(QIcon::fromTheme("document-save"));
+	connect(actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
+
 
 #ifdef TESTWIDGETACCESS
 	actTestWidgetAccess = new QAction(tr("TestWidget"), this);
@@ -644,6 +628,69 @@ void MainWindow::createDockDatedTransfers()
 
 	this->dock_KnownDatedTransfers = dock;
 }
+
+/** \brief Lädt alle Account Daten */
+//private
+void MainWindow::loadAccountData()
+{
+	if (!this->accounts) return; //Abbruch wenn keine Accounts vorhanden
+	AB_IMEXPORTER_CONTEXT *ctx;
+
+	//Account Daten aus der entsprechenden Datei laden
+	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
+}
+
+/** \brief Speichert alle Account Daten */
+//private
+void MainWindow::saveAccountData()
+{
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+
+	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
+	ctx = abt_parser::create_ctx_from(this->accounts);
+
+	//wenn kein ctx vorhanden ist müssen wir auch nichts speichern
+	if (!ctx) return;
+
+	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+}
+
+/** \brief Lädt alle History Daten */
+//private
+void MainWindow::loadHistoryData()
+{
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	if (!this->accounts) return; //Abbruch wenn keine Accounts vorhanden
+	AB_IMEXPORTER_CONTEXT *ctx;
+
+	//History-Daten aus der entsprechenden Datei laden
+	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
+					 "ctxfile", "default");
+	abt_parser::parse_ctx(ctx, this->accounts, this->history);
+	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
+}
+
+/** \brief Speichert alle History Daten */
+//private
+void MainWindow::saveHistoryData()
+{
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+
+	//Die History in einer Separaten Datei speichern
+	ctx = this->history->getContext();
+	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
+				   "ctxfile", "default");
+	//ctx wieder freigeben!
+	AB_ImExporterContext_free(ctx);
+
+}
+
 
 void MainWindow::on_actionDebug_Info_triggered()
 {
@@ -1795,6 +1842,12 @@ void MainWindow::onEditJobFromOutbox(const abt_jobInfo *job)
 
 }
 
+//private slot
+void MainWindow::onActionSaveAllDataTriggered()
+{
+	this->saveAccountData();
+	this->saveHistoryData();
+}
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
