@@ -146,6 +146,9 @@ private:
 	void loadHistoryData();
 	void saveHistoryData();
 
+	void dockStandingOrdersSetAccounts();
+	void dockDatedTransfersSetAccounts();
+
 private slots:
 	void on_actionAqBankingSetup_triggered();
 	void on_tabWidget_UW_tabCloseRequested(int index);

@@ -36,10 +36,10 @@
 #include "../abt_settings.h"
 #include "../abt_conv.h"
 
-widgetKnownDatedTransfers::widgetKnownDatedTransfers(const aqb_AccountInfo *account, QWidget *parent) :
+widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_account = account;
+	this->m_account = NULL;
 	this->m_DatedTransfers = NULL;
 
 	QHBoxLayout *layoutMain = new QHBoxLayout();
@@ -59,7 +59,7 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(const aqb_AccountInfo *acco
 
 	//setzt den aktuellen account, stellt alle connections her und
 	//aktualisiert die Anzeige des treeWidgets
-	this->setAccount(account);
+	this->setAccount(this->m_account);
 }
 
 

@@ -435,7 +435,8 @@ void MainWindow::createWidgetsInScrollArea()
 		QGroupBox *grpSO = new QGroupBox(this);
 		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
 		grpSO->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(acc, this);
+		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(this);
+		StandingOrders->setAccount(acc);;
 
 		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
@@ -452,7 +453,8 @@ void MainWindow::createWidgetsInScrollArea()
 		QGroupBox *grpDT = new QGroupBox(this);
 		QVBoxLayout *lDT = new QVBoxLayout(grpDT);
 		grpDT->setTitle(tr("Terminierte Überweisungen von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownDatedTransfers *DatedTransfers = new widgetKnownDatedTransfers(acc, this);
+		widgetKnownDatedTransfers *DatedTransfers = new widgetKnownDatedTransfers(this);
+		DatedTransfers->setAccount(acc);
 
 		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
@@ -540,17 +542,13 @@ void MainWindow::createDockStandingOrders()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	//den zuletzt gewählten Account wieder anzeigen
-	int SelAccID = settings->loadSelAccountInWidget("StandingOrders");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
-								       this->accounts);
 	widgetKnownStandingOrders *StandingOrders;
 	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
 	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
 	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
-	StandingOrders = new widgetKnownStandingOrders(accComboBox->getAccount());
+	StandingOrders = new widgetKnownStandingOrders();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
@@ -582,6 +580,31 @@ void MainWindow::createDockStandingOrders()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownStandingOrders = dock;
+
+	this->dockStandingOrdersSetAccounts();
+}
+
+void MainWindow::dockStandingOrdersSetAccounts()
+{
+	widgetAccountComboBox *accComboBox = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+
+	if ((accComboBox == NULL) || (standingOrders == NULL)) {
+		return; //ein widget fehlt, abbruch
+	}
+
+	//den zuletzt gewählten Account herausfinden
+	int selAccID = settings->loadSelAccountInWidget("StandingOrders");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+
+	//Alle bekannten Accounts in der ComboBox setzen
+	accComboBox->setAllAccounts(this->accounts);
+	//und den zuletzt gewählten Anzeigen
+	accComboBox->setSelectedAccount(lastAcc);
+
+	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
+	//der account in standingOrders geändert!
+	//standingOrders->setAccount(lastAcc);
 }
 
 //private
@@ -594,17 +617,13 @@ void MainWindow::createDockDatedTransfers()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	//den zuletzt gewählten Account wieder anzeigen
-	int SelAccID = settings->loadSelAccountInWidget("DatedTransfers");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(SelAccID);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(lastAcc,
-								       this->accounts);
 	widgetKnownDatedTransfers *DatedTransfers;
 	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
 	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
 	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
-	DatedTransfers = new widgetKnownDatedTransfers(accComboBox->getAccount());
+	DatedTransfers = new widgetKnownDatedTransfers();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
@@ -637,7 +656,34 @@ void MainWindow::createDockDatedTransfers()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownDatedTransfers = dock;
+
+	this->dockDatedTransfersSetAccounts();
 }
+
+//private
+void MainWindow::dockDatedTransfersSetAccounts()
+{
+	widgetAccountComboBox *accComboBox = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+
+	if ((accComboBox == NULL) || (datedTransfers == NULL)) {
+		return; //ein widget fehlt, abbruch
+	}
+
+	//den zuletzt gewählten Account herausfinden
+	int selAccID = settings->loadSelAccountInWidget("DatedTransfers");
+	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+
+	//Alle bekannten Accounts in der ComboBox setzen
+	accComboBox->setAllAccounts(this->accounts);
+	//und den zuletzt gewählten Anzeigen
+	accComboBox->setSelectedAccount(lastAcc);
+
+	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
+	//der account in standingOrders geändert!
+	//standingOrders->setAccount(lastAcc);
+}
+
 
 /** \brief Lädt alle Account Daten */
 //private
@@ -937,12 +983,14 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 //private slot
 void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
 {
+	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
 	settings->saveSelAccountInWidget("StandingOrders", acc);
 }
 
 //private slot
 void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
 {
+	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
 	settings->saveSelAccountInWidget("DatedTransfers", acc);
 }
 

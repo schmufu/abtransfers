@@ -36,7 +36,7 @@
 #include "../abt_settings.h"
 #include "../abt_conv.h"
 
-widgetKnownStandingOrders::widgetKnownStandingOrders(const aqb_AccountInfo *account, QWidget *parent) :
+widgetKnownStandingOrders::widgetKnownStandingOrders(QWidget *parent) :
 	QWidget(parent)
 {
 	this->m_account = NULL;	//init
@@ -59,7 +59,7 @@ widgetKnownStandingOrders::widgetKnownStandingOrders(const aqb_AccountInfo *acco
 
 	//setzt den aktuellen account, stellt alle connections her und
 	//aktualisiert die Anzeige des treeWidgets
-	this->setAccount(account);
+	this->setAccount(this->m_account);
 }
 
 

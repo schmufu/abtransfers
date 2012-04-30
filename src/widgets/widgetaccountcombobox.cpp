@@ -39,8 +39,8 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 					     QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_startAccount = acc;
-	this->m_allAccounts = allAccounts;
+	this->m_startAccount = acc; //could be NULL!
+	this->m_allAccounts = allAccounts; //could be NULL!
 
 	QVBoxLayout *layoutMain = new QVBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
@@ -48,11 +48,8 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 	this->comboBox = new QComboBox(this);
 	this->comboBox->setMinimumHeight(25);
 
-	//Alle Accounts in der ComboBox darstellen
-	foreach(const aqb_AccountInfo *account, allAccounts->getAccountHash().values()) {
-		QString cbText = QString("%1").arg(account->Name());
-		this->comboBox->addItem(cbText, QVariant::fromValue(account));
-	}
+	//Alle Accounts in der ComboBox darstellen, wenn vorhanden
+	this->fillComboBox();
 
 	layoutMain->addWidget(this->comboBox);
 
@@ -63,6 +60,25 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 	connect(this->comboBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(comboBoxNewAccountSelected(int)));
 
+}
+
+//private
+void widgetAccountComboBox::fillComboBox()
+{
+	this->comboBox->clear();
+
+	if (this->m_allAccounts == NULL) {
+		//Es existieren keine Accounts
+		this->comboBox->setDisabled(true);
+		return; //nichts zu tun
+	}
+
+	this->comboBox->setDisabled(false); //es sind Accounts vorhanden
+
+	foreach(const aqb_AccountInfo *account, this->m_allAccounts->getAccountHash().values()) {
+		QString cbText = QString("%1").arg(account->Name());
+		this->comboBox->addItem(cbText, QVariant::fromValue(account));
+	}
 }
 
 //public
@@ -89,7 +105,7 @@ void widgetAccountComboBox::comboBoxNewAccountSelected(int idx)
 //public slot
 void widgetAccountComboBox::setSelectedAccount(const aqb_AccountInfo *account)
 {
-	//den übergebenen Account auswählen
+	//den übergebenen Account auswählen (Wenn account == NULL wird 0 als Index gesetzt!)
 	int cbIdx = this->comboBox->findData(QVariant::fromValue(account));
 	if (cbIdx != -1) {
 		//qDebug("CBIDX != -1 IST TRUE");
@@ -98,4 +114,11 @@ void widgetAccountComboBox::setSelectedAccount(const aqb_AccountInfo *account)
 		qDebug("widgetAccountComboBox::setSelectedAccount: cbIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
 		this->comboBox->setCurrentIndex(0);
 	}
+}
+
+//public slot
+void widgetAccountComboBox::setAllAccounts(const aqb_Accounts *allAccounts)
+{
+	this->m_allAccounts = allAccounts;
+	this->fillComboBox();
 }
