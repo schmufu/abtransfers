@@ -149,6 +149,8 @@ private:
 	void dockStandingOrdersSetAccounts();
 	void dockDatedTransfersSetAccounts();
 
+	void createJobCtrlAndConnections();
+
 private slots:
 	void on_actionAqBankingSetup_triggered();
 	void on_tabWidget_UW_tabCloseRequested(int index);

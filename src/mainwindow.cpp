@@ -80,12 +80,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->history = new abt_history(this);
-	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 	this->logw = new page_log();
 	this->outbox = new Page_Ausgang();
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
+	this->dock_Accounts = NULL;
 
 	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
 	//können die Daten mit dem parser geladen werden
@@ -105,31 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->Ausgang->setLayout(outLayout);
 	ui->Ausgang->layout()->addWidget(this->outbox);
 
-	/***** Signals und Slots der Objecte verbinden ******/
-	//Nicht mögliche Aufträge in der StatusBar anzeigen
-	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
-		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
-
-	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
-	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
-		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
-
-	//Logs von abt_job_ctrl in der Log-Seite anzeigen
-	connect(this->jobctrl, SIGNAL(log(QString)),
-		this->logw, SLOT(appendLogText(QString)));
-
-	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
-	connect(this->outbox, SIGNAL(editJob(int)),
-		this, SLOT(onEditJobFromOutbox(int)));
-
-	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
-		this, SLOT(onJobCtrlQueueListChanged()));
-	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
-		this->jobctrl, SLOT(moveJob(int,int)));
-	connect(this->outbox, SIGNAL(executeClicked()),
-		this->jobctrl, SLOT(execQueuedTransactions()));
-	connect(this->outbox, SIGNAL(removeJob(int)),
-		this->jobctrl, SLOT(deleteJob(int)));
+	this->createJobCtrlAndConnections();
 
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
@@ -556,9 +532,6 @@ void MainWindow::createDockStandingOrders()
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedStandingOrdersAccountChanged(const aqb_AccountInfo*)));
 
-	connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
-
 	connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 		this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 	connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
@@ -632,9 +605,6 @@ void MainWindow::createDockDatedTransfers()
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
 
-	connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
-
 	connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
 		this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*,const abt_datedTransferInfo*)));
 	connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*,const abt_datedTransferInfo*)),
@@ -684,6 +654,47 @@ void MainWindow::dockDatedTransfersSetAccounts()
 	//standingOrders->setAccount(lastAcc);
 }
 
+
+//private
+void MainWindow::createJobCtrlAndConnections()
+{
+	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
+
+	/***** Signals und Slots der Objecte verbinden ******/
+	//Nicht mögliche Aufträge in der StatusBar anzeigen
+	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
+
+	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
+	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
+		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
+
+	//Logs von abt_job_ctrl in der Log-Seite anzeigen
+	connect(this->jobctrl, SIGNAL(log(QString)),
+		this->logw, SLOT(appendLogText(QString)));
+
+	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
+	connect(this->outbox, SIGNAL(editJob(int)),
+		this, SLOT(onEditJobFromOutbox(int)));
+
+	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+		this, SLOT(onJobCtrlQueueListChanged()));
+	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
+		this->jobctrl, SLOT(moveJob(int,int)));
+	connect(this->outbox, SIGNAL(executeClicked()),
+		this->jobctrl, SLOT(execQueuedTransactions()));
+	connect(this->outbox, SIGNAL(removeJob(int)),
+		this->jobctrl, SLOT(deleteJob(int)));
+
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+	connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+	connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+
+}
 
 /** \brief Lädt alle Account Daten */
 //private
@@ -2289,6 +2300,25 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 		  Dabei müssen dann auch alle Daten neu geladen werden.
 	*/
 
+	//Alle Objecte Löschen die mit Accounts zu tun haben
+	BankAccountsWidget *baw = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	baw->setAccounts(NULL);
+
+	widgetAccountComboBox *accBoxDated = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+	accBoxDated->setAllAccounts(NULL);
+	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+	datedTransfers->setAccount(NULL);
+
+	widgetAccountComboBox *accBoxStanding = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+	accBoxStanding->setAllAccounts(NULL);
+	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+	standingOrders->setAccount(NULL);
+
+	this->saveAccountData(); //Alle Account-Daten sichern
+
+	delete this->jobctrl; //löscht auch alle Connections
+	delete this->accounts;
+
 	rv = GWEN_Gui_ExecDialog(dlg, 0);
 	if (rv == 0) {
 		qDebug() << Q_FUNC_INFO << "AqBanking setup dialog aborted by user";
@@ -2300,6 +2330,20 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 		  Auf jeden fall sollte ein "Update" der Anzeigen erfolgen, da
 		  sich evt. die Daten geändert haben!
 	*/
+	//Es könnten sich Accounts geändert haben, deswegen alle neu erstellen
+	this->accounts = new aqb_Accounts(banking->getAqBanking());
+
+	//den JobController und dessen Connections wieder erstellen
+	this->createJobCtrlAndConnections();
+
+	//Alle Account-Daten laden
+	this->loadAccountData();
+
+	//Die Accounts in den Widgets wieder setzen
+	this->dockDatedTransfersSetAccounts();
+	this->dockStandingOrdersSetAccounts();
+	baw->setAccounts(this->accounts);
+
 
 	GWEN_Dialog_free(dlg);
 }
