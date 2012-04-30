@@ -105,8 +105,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->Ausgang->setLayout(outLayout);
 	ui->Ausgang->layout()->addWidget(this->outbox);
 
-	this->createJobCtrlAndConnections();
-
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
 			     QMainWindow::AllowTabbedDocks);// |
@@ -121,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->createDockBankAccountWidget();
 	this->createDockStandingOrders();
 	this->createDockDatedTransfers();
+
+	this->createJobCtrlAndConnections(); //zwingend nach createDock...
 
 	this->createActions();
 	this->createMenus();
@@ -404,6 +404,10 @@ void MainWindow::createDockToolbar()
 //private
 void MainWindow::createWidgetsInScrollArea()
 {
+	//wir löschen alles in der ScrollArea
+	delete this->ui->scrollAreaWidgetContents->layout();
+
+	//und erstellen dann alles einfach neu
 	QVBoxLayout *layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
 
 	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
@@ -411,36 +415,36 @@ void MainWindow::createWidgetsInScrollArea()
 		QGroupBox *grpSO = new QGroupBox(this);
 		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
 		grpSO->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownStandingOrders *StandingOrders = new widgetKnownStandingOrders(this);
-		StandingOrders->setAccount(acc);;
+		widgetKnownStandingOrders *standingOrders = new widgetKnownStandingOrders(this);
+		standingOrders->setAccount(acc);;
 
-		connect(StandingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
+		connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
-		connect(StandingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		connect(standingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
-		connect(StandingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
+		connect(standingOrders, SIGNAL(deleteStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 			this, SLOT(onStandingOrderDeleteRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
 
-		lSO->addWidget(StandingOrders);
+		lSO->addWidget(standingOrders);
 		layoutScrollArea->addWidget(grpSO);
 
 		//Bekannte Terminüberweisungen
 		QGroupBox *grpDT = new QGroupBox(this);
 		QVBoxLayout *lDT = new QVBoxLayout(grpDT);
 		grpDT->setTitle(tr("Terminierte Überweisungen von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
-		widgetKnownDatedTransfers *DatedTransfers = new widgetKnownDatedTransfers(this);
-		DatedTransfers->setAccount(acc);
+		widgetKnownDatedTransfers *datedTransfers = new widgetKnownDatedTransfers(this);
+		datedTransfers->setAccount(acc);
 
-		connect(DatedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
+		connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
 			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-		connect(DatedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+		connect(datedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
 			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
-		connect(DatedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
+		connect(datedTransfers, SIGNAL(deleteDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
 			this, SLOT(onDatedTransferDeleteRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
 
-		lDT->addWidget(DatedTransfers);
+		lDT->addWidget(datedTransfers);
 		layoutScrollArea->addWidget(grpDT);
 	}
 }
@@ -658,6 +662,9 @@ void MainWindow::dockDatedTransfersSetAccounts()
 //private
 void MainWindow::createJobCtrlAndConnections()
 {
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+
 	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 
 	/***** Signals und Slots der Objecte verbinden ******/
@@ -700,7 +707,7 @@ void MainWindow::createJobCtrlAndConnections()
 //private
 void MainWindow::loadAccountData()
 {
-	if (!this->accounts) return; //Abbruch wenn keine Accounts vorhanden
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
 	AB_IMEXPORTER_CONTEXT *ctx;
 
 	//Account Daten aus der entsprechenden Datei laden
@@ -714,6 +721,7 @@ void MainWindow::loadAccountData()
 //private
 void MainWindow::saveAccountData()
 {
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
 	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
@@ -733,7 +741,7 @@ void MainWindow::saveAccountData()
 void MainWindow::loadHistoryData()
 {
 	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
-	if (!this->accounts) return; //Abbruch wenn keine Accounts vorhanden
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
 	AB_IMEXPORTER_CONTEXT *ctx;
 
 	//wir laden die History neu, deswegen erstmal alle Einträge löschen
@@ -750,6 +758,8 @@ void MainWindow::loadHistoryData()
 //private
 void MainWindow::saveHistoryData()
 {
+	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
+	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
 	//Die History in einer Separaten Datei speichern
@@ -758,7 +768,6 @@ void MainWindow::saveHistoryData()
 				   "ctxfile", "default");
 	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);
-
 }
 
 
@@ -2343,6 +2352,9 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	this->dockDatedTransfersSetAccounts();
 	this->dockStandingOrdersSetAccounts();
 	baw->setAccounts(this->accounts);
+
+	//Die Daten in der ScrollArea neu aufbauen
+	this->createWidgetsInScrollArea();
 
 
 	GWEN_Dialog_free(dlg);

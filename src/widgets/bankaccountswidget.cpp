@@ -174,8 +174,6 @@ void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
 {
 	this->m_accounts = accounts; //could be NULL!
 
-	//Alle Verbindungen zu existierenden Accounts löschen
-	this->disconnect(SLOT(accountChangedUpdateDisplay(const aqb_AccountInfo*)));
 	this->ui->treeWidget->clear();//alle vorhandenen Einträge löschen
 	//kein Drag&Drop mehr verwalten (keine Objecte im treeWidget!)
 	this->ui->treeWidget->viewport()->removeEventFilter(this);
@@ -251,7 +249,7 @@ void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
 	//eine horizontale Scrollbar vorhanden ist.
 	this->setMinimumHeight(itemHeight*(ItemCount+2) + 8);
 
-	//eventFilter einsetzen damit wir drag&drop bestimmen können
+	//eventFilter einsetzen damit wir Drag&Drop verwalten können
 	this->ui->treeWidget->viewport()->installEventFilter(this);
 
 	//Alle accounts mit unserem Slot verbinden, damit bei einer Änderung
