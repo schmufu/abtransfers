@@ -1422,7 +1422,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 	int cycle = recurrence->getCycle();
 	//depends on cylce (Weekday Mo(1),Di(2),Mi(2) or Day 1,2...31,[97],[98],[99])
 	//99 (Ultimo) / 98 (Ultimo-1) / 97 (Ultimo-2)
-	int executionDay = recurrence->getExecutionDay();
+	int execDay = recurrence->getExecutionDay();
 
 	//Wir gehen davon aus das der executionDay, die period und der cycle
 	//richtig gewählt wurden und stellen dementsprechend das first-, last-
@@ -1435,26 +1435,34 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 
 	switch(period) {
 	case AB_Transaction_PeriodWeekly: {
-		//zu jedem Datum werden solange Tage addiert bis der gewählte
+		//zum firstDate werden solange Tage addiert bis der gewählte
 		//Wochentag dem Datum entspricht
-		while (correctFirstDate.dayOfWeek() != executionDay)
+		while (correctFirstDate.dayOfWeek() != execDay)
 			correctFirstDate = correctFirstDate.addDays(1);
 
 		//nextDate must be the same as firstDate
 		correctNextDate = correctFirstDate;
 
-		//Wenn das Datum ungültig ist soll der DA ohne Enddatum laufen
+		//Wenn lastDate ungültig ist soll der Dauerauftrag "bis auf
+		//weiteres" durchgeführt werden (Kein Enddatum)
 		if (!lastDate.isValid()) break;
 
 		//Ansonsten stellen wir das Enddatum auf den richtigen Wochentag
-		while (correctLastDate.dayOfWeek() != executionDay)
-			correctLastDate = correctLastDate.addDays(1);
+		//In diesem Fall der erste Wochentag der VOR dem eingestelltem
+		//Datum mit dem gewählten Wochentag übereinstimmt
+		while (correctLastDate.dayOfWeek() != execDay)
+			correctLastDate = correctLastDate.addDays(-1);
 
-		//jetzt stimmt schonmal der Wochentag des letzten Datums,
-		//der Zyklus muss aber auch stimmen (Erstmalig und Letztmalig
-		//dürfen nicht gleich sein)
+		//Jetzt stimmt der Wochentag von lastDate
+
+		// - firstDate und lastDate dürfen nicht gleich sein
+		// - lastDate darf nicht vor firstDate liegen
+		if (correctFirstDate >= correctLastDate)
+			correctLastDate = correctFirstDate.addDays(7*cycle);
+
+		// - der Zyklus muss auch stimmen
 		QDate testDate = correctFirstDate;
-		while (testDate <= correctLastDate)
+		while (testDate < correctLastDate)
 			testDate = testDate.addDays(7*cycle); //Wöchentliche Ausführung!
 
 		correctLastDate = testDate;
@@ -1465,7 +1473,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//Für 'Erstmalig' setzen wir den erstmöglichen Tag der nach dem
 		//eingestellten Datum liegt unter Berücksichtigung des
 		//eingestellten Ausführungstags
-		switch(executionDay) {
+		switch(execDay) {
 		case 99: //"Ultimo" - der Tag muss der letzte Tag des Monats sein
 			if (firstDate.day() != firstDate.daysInMonth() )
 				correctFirstDate = correctFirstDate.addDays( correctFirstDate.daysInMonth() - correctFirstDate.day());
@@ -1489,14 +1497,14 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 			}
 			break;
 		default:
-			if ( firstDate.daysInMonth() < executionDay ) {
+			if ( firstDate.daysInMonth() < execDay ) {
 				// In desem Fall wird der letzte Tag ausgewält.
 				if ( firstDate.day() != firstDate.daysInMonth() )
 					correctFirstDate.addDays(firstDate.daysInMonth() - firstDate.day() );
 			} else {
-				if ( firstDate.day() > executionDay )
+				if ( firstDate.day() > execDay )
 					correctFirstDate = firstDate.addMonths(1);
-				correctFirstDate = correctFirstDate.addDays( executionDay - correctFirstDate.day() );
+				correctFirstDate = correctFirstDate.addDays( execDay - correctFirstDate.day() );
 			}
 		break;
 		} //switch(executionDay)
@@ -1508,7 +1516,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		if ( monthDiff > 0 ) {
 			correctLastDate = correctLastDate.addMonths( -monthDiff );
 
-			switch(executionDay) {
+			switch(execDay) {
 			case 99: // Der Tag muss den letzten Tag des Monats sein
 				if ( correctLastDate.day() != correctLastDate.daysInMonth() )
 					correctLastDate.setDate(correctLastDate.year(),
@@ -1528,7 +1536,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 								correctLastDate.daysInMonth() - 2);
 				break;
 			default:
-				if ( lastDate.daysInMonth() < executionDay ) {
+				if ( lastDate.daysInMonth() < execDay ) {
 					// In desem Fall wird der letzte Tag ausgewält.
 					// ich weiß nich ob das eine richtige Lösung ist!
 					if ( lastDate.day() != lastDate.daysInMonth() )
@@ -1538,12 +1546,12 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 				} else {
 					correctLastDate.setDate(correctLastDate.year(),
 								correctLastDate.month(),
-								executionDay);
+								execDay);
 				}
 				break;
 			} //switch(executionDay)
 		} else if (monthDiff == 0 ) {
-			switch(executionDay) {
+			switch(execDay) {
 			case 99: // Der Tag muss den letzten Tag des Monats sein
 				if ( correctLastDate.day() != correctLastDate.daysInMonth() )
 					correctLastDate = correctLastDate.addMonths(-cycle);
@@ -1577,7 +1585,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 				}
 				break;
 			default:
-				if ( lastDate.daysInMonth() < executionDay ) {
+				if ( lastDate.daysInMonth() < execDay ) {
 					// In desem Fall wird der letzte Tag ausgewält.
 					// ich weiß nich ob das eine richtige Lösung ist!
 					if ( lastDate.day() < lastDate.daysInMonth() ) {
@@ -1586,15 +1594,15 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 									correctLastDate.month(),
 									correctLastDate.daysInMonth());
 					}
-				} else if ( lastDate.day() < executionDay ) {
+				} else if ( lastDate.day() < execDay ) {
 					correctLastDate = correctLastDate.addMonths(-cycle);
 					correctLastDate.setDate(correctLastDate.year(),
 								correctLastDate.month(),
-								executionDay);
-				} else if (lastDate.day() > executionDay )
+								execDay);
+				} else if (lastDate.day() > execDay )
 					correctLastDate.setDate(correctLastDate.year(),
 								correctLastDate.month(),
-								executionDay);
+								execDay);
 				break;
 			} //switch(executionDay
 		} //else if (monthDiff == 0 )
