@@ -850,25 +850,31 @@ bool widgetTransfer::isRecurrenceInputOk(QString &errorMsg) const
 				lastDateDay = execDay;
 			}
 
-			if (FirstDate.day() != firstDateDay) {
+			//Der Tag von FirstDate muss mit dem Ausführungstag überein
+			//stimmen. Wenn allerdings z.B. der 28.02. gewählt ist
+			//Ist als Ausführungstag auch 30 zugelassen!
+			if ((FirstDate.day() != firstDateDay) &&
+			    (FirstDate.daysInMonth() >= firstDateDay)){
 				recurrenceMsg.append(tr(" - Tag von Erstmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
 			}
 
-			//wenn LastDate nicht Valid ist ist der Dauerauftrag bis auf wiederruf gültig!
-			if (LastDate.isValid() && LastDate.day() != lastDateDay) {
+			//wenn LastDate ungültig ist, soll der Dauerauftrag bis auf wiederruf gültig sein!
+			if (LastDate.isValid() &&
+			    (LastDate.day() != lastDateDay) &&
+			    (LastDate.daysInMonth() >= lastDateDay)) {
 				recurrenceMsg.append(tr(" - Tag von Letztmalig stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
 			}
 
 			//Nächste Ausführung wird momentan nicht verwendet und
 			//immer auf "firstDate" gesetzt!
 			//Dewegen Prüfung gegen den firstDateDay
-			if (NextDate.day() != firstDateDay) {
+			if (NextDate.day() != FirstDate.day()) {
 				recurrenceMsg.append(tr(" - Tag von Nächste Ausf. stimmt nicht mit dem Ausführungstag<br />&nbsp;&nbsp;überein<br />"));
 			}
 
 			//LastDate muss im Kontext mit Cycle und FirstDate stehen.
 			testDate = FirstDate;
-			//wenn LastDate nicht Valid ist ist der Dauerauftrag bis auf wiederruf gültig!
+			//wenn LastDate ungültig ist, ist der Dauerauftrag bis auf wiederruf gültig!
 			if (LastDate.isValid()) {
 				DateTestOK = false;
 				while (testDate.year() <= LastDate.year()) {
