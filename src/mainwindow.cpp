@@ -1462,26 +1462,22 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//Ansonsten stellen wir das Enddatum auf den richtigen Wochentag
 		//In diesem Fall der erste Wochentag der VOR dem eingestelltem
 		//Datum mit dem gewählten Wochentag übereinstimmt
-		while (correctLastDate.dayOfWeek() != execDay) {
-			correctLastDate = correctLastDate.addDays(-1);
+
+		int diffTage  = correctFirstDate.daysTo(correctLastDate);
+		if ( diffTage < (cycle * 7) ) {
+			// - firstDate und lastDate dürfen nicht gleich sein
+			// - lastDate darf nicht vor firstDate liegen
+			correctLastDate = correctFirstDate.addDays(cycle * 7);
+		} else {
+			// - Der Zyklus muss stimmen
+			//Abweichung vom gewählten Wochentag (could be 0)
+			int remTage = diffTage % 7;
+			//Abweichung vom gewählten Zyklus (could be 0)
+			int diffWochen = ( diffTage - remTage ) % cycle;
+			//lastDate auf einen gültigen Tag, vor dem einstellten
+			//Tag, setzen.
+			correctLastDate = correctLastDate.addDays( -remTage -diffWochen*7 );
 		}
-
-		//Jetzt stimmt der Wochentag von lastDate
-
-		// - firstDate und lastDate dürfen nicht gleich sein
-		// - lastDate darf nicht vor firstDate liegen
-		if (correctFirstDate >= correctLastDate) {
-			correctLastDate = correctFirstDate.addDays(7*cycle);
-		}
-
-		// - der Zyklus muss auch stimmen
-		QDate testDate = correctFirstDate;
-		while (testDate < correctLastDate) {
-			testDate = testDate.addDays(7*cycle); //Wöchentliche Ausführung!
-		}
-
-		correctLastDate = testDate;
-
 	} //case AB_Transaction_PeriodWeekly:
 		break;
 	case AB_Transaction_PeriodMonthly: {
