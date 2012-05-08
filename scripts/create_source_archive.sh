@@ -52,11 +52,11 @@ function modify_dynamic_project_rules() {
 	echo "modifying dynamic values in project qmake rules to static values"
 	
 	#svn revision replacement with static value
-	sed -i "s/SVN_REVISION = .*/SVN_REVISION = ${1}/" ab_transfer.pro
+	sed -i "s/SVN_REVISION = .*/SVN_REVISION = ${1}/" abtransfers.pro
 	#remove backslash from ABTRANSFER_VERSION line
-	sed -i "s/\([ ]*ABTRANSFER_VERSION=.*\) \\\/\1/" ab_transfer.pro
+	sed -i "s/\([ ]*ABTRANSFER_VERSION=.*\) \\\/\1/" abtransfers.pro
 	#remove the whole ABTRANSFER_VERSION_EXTRA line
-	sed -i "s/[ ]*ABTRANSFER_VERSION_EXTRA=.*//" ab_transfer.pro	    
+	sed -i "s/[ ]*ABTRANSFER_VERSION_EXTRA=.*//" abtransfers.pro	    
 }
 
 function remove_files_only_for_development() {
