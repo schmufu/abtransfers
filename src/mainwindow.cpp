@@ -1295,6 +1295,7 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
 
+	//Den neuen Tab auch gleich als aktuellen Tab setzen
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
@@ -1302,6 +1303,11 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 		this, SLOT(onWidgetTransferCreateTransfer(AB_JOB_TYPE,const widgetTransfer*)));
 	connect(trans, SIGNAL(cancelClicked(widgetTransfer*)),
 		this, SLOT(onWidgetTransferCancelClicked(widgetTransfer*)));
+
+	//Sicherstellen das die Übersichts-Seite angezeigt wird (damit der neue
+	//Tab auch gleich sichtbar ist)
+	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
+
 	return trans;
 }
 
@@ -1779,8 +1785,6 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyStandingOrder,
 						     acc);
 	transW->setValuesFromTransaction(da->getTransaction());
-	//Sicherstellen das "Übersicht" im listWidget gewählt ist
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private Slot
@@ -1891,8 +1895,6 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 	transW = this->createTransferWidgetAndAddTab(AB_Job_TypeModifyDatedTransfer,
 						     acc);
 	transW->setValuesFromTransaction(di->getTransaction());
-	//Sicherstellen das "Übersicht" im listWidget gewählt ist
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 }
 
 //private Slot
@@ -1949,12 +1951,8 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 
 	transW->setValuesFromTransaction(job->getTransaction());
 
-	//den neuen tab gleich darstellen
-	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
-
 	//den Job aus der JobQueueList entfernen
 	this->jobctrl->deleteJob(itemNr, true);
-
 }
 
 //private slot
