@@ -995,7 +995,7 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 	QString msg;
 	msg.append(abt_conv::JobTypeToQString(type));
 	msg.append(tr(" - Auftrag wird von der Bank nicht unterstützt!"));
-	ui->statusBar->showMessage(msg);
+	this->ui->statusBar->showMessage(msg, 8000);
 }
 
 //private slot
@@ -1291,6 +1291,13 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 		acc = bankAccW->getSelectedAccount();
 	} else {
 		acc = account;
+	}
+
+	if (acc == NULL) {
+		this->ui->statusBar->showMessage(tr("Kein Konto vorhanden! "
+						    " -- Ist ein Konto in \"Online "
+						    "Konten\" gewählt?"), 8000);
+		return NULL; //Abbruch, ohne Account können wir nichts machen!
 	}
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
