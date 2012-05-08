@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.3.0 # Version of AB-Transfers
+VERSION = 0.0.3.0
 TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
@@ -111,7 +111,7 @@ SVN_REVISION = $$system(svnversion -n) # current repository revision (without ne
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
-    ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
+    ABTRANSFER_VERSION_EXTRA=\\\"release-candidate\\\" # keine space möglich!
 
 # NO_DEBUG
 # QT_NO_DEBUG \
