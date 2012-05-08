@@ -124,10 +124,10 @@ if [[ "${MODIFYPRJFILE}" == "true" ]]; then
 	echo -n " - modify the project file - replaced: "
 	
 	#replace the version with the supplied one
-	sed -i "s/VERSION =.*/VERSION = ${VERSION}/" /tmp/abtransfers_branch_temp/ab_transfer.pro
+	sed -i "s/VERSION =.*/VERSION = ${VERSION}/" /tmp/abtransfers_branch_temp/abtransfers.pro
 	echo -n "version " 
 	#replace development-version with release-candidate
-	sed -i "s/\([ ]*ABTRANSFER_VERSION_EXTRA=\\\*\"\)development-version\(.*\)/\1release-candidate\2/" /tmp/abtransfers_branch_temp/ab_transfer.pro
+	sed -i "s/\([ ]*ABTRANSFER_VERSION_EXTRA=\\\*\"\)development-version\(.*\)/\1release-candidate\2/" /tmp/abtransfers_branch_temp/abtransfers.pro
 	echo "Version-Extra"
 	
 	echo " - commit the modified project file to the repository"

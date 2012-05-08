@@ -101,13 +101,13 @@ if [[ "${MODIFYPRJFILE}" == "true" ]]; then
 	echo -n " - modify the project file - replaced: "
 	
 	#replace the version with the supplied one
-	sed -i "s/VERSION =.*/VERSION = ${VERSION}/" /tmp/abtransfers_branch_temp/ab_transfer.pro
+	sed -i "s/VERSION =.*/VERSION = ${VERSION}/" /tmp/abtransfers_branch_temp/abtransfers.pro
 	echo -n "version " 
 	
 	#remove backslash from ABTRANSFER_VERSION line
-	sed -i "s/\([ ]*ABTRANSFER_VERSION=.*\) \\\/\1/" /tmp/abtransfers_branch_temp/ab_transfer.pro
+	sed -i "s/\([ ]*ABTRANSFER_VERSION=.*\) \\\/\1/" /tmp/abtransfers_branch_temp/abtransfers.pro
 	#remove the whole ABTRANSFER_VERSION_EXTRA line (now it is an official release)
-	sed -i "s/[ ]*ABTRANSFER_VERSION_EXTRA=.*//" /tmp/abtransfers_branch_temp/ab_transfer.pro
+	sed -i "s/[ ]*ABTRANSFER_VERSION_EXTRA=.*//" /tmp/abtransfers_branch_temp/abtransfers.pro
 	echo "Version-Extra"
 	
 	echo "done"
