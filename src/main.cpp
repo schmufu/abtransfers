@@ -30,6 +30,8 @@
 
 #include <QtGui/QApplication>
 #include <QTextCodec>
+#include <QSharedMemory>
+#include <QMessageBox>
 #include "mainwindow.h"
 #include "aqb_banking.h"
 #include "abt_transaction_base.h"
@@ -70,6 +72,60 @@ int main(int argc, char *argv[])
 	app.setOrganizationName("Patrick Wacker");
 	app.setOrganizationDomain("schmufu.dyndns.org");
 	app.setApplicationName("AB-Transfers");
+
+	//Das Programm soll nur ein mal gestartet werden!
+	//Als key nutzen wir den Programmnamen sowie die "Key-ID" von meinem
+	//PGP-Schlüssel (Patrick Wacker <schmufu.s@gmx.net>)
+	QString smKey = app.applicationName();
+	smKey.append("-49E8D03B0700F6C4"); //PGP Key-ID von Patrick Wacker
+	QSharedMemory myMem(smKey);
+	if ( !myMem.create(sizeof(int)) ) {
+		//SharedMemory konnte nicht erstellt werden
+		qDebug() << Q_FUNC_INFO << "SharedMemoryError:" << myMem.errorString();
+		if (myMem.error() == QSharedMemory::AlreadyExists) {
+			//Das Programm läuft bereits, oder die letzte Instanz
+			//ist abgestürzt und konnte den Speicher nicht wieder
+			//freigeben!
+			//Existiert noch ein anderer AB-Transfers Prozess?
+			//--> Hier wird zu viel zwischen Linux und Windows
+			//    unterschiedlich! Wir fragen einfach den user!
+			// Windows: beim Crash wird der sharedMemory wieder freigeben
+			// Linux: sharedMemory bleibt erhalten und muss durch
+			//        die Anwendung wieder freigegeben werden.
+			int msgRet = QMessageBox::critical(
+					NULL,
+					QObject::tr("%1 bereits gestartet").arg(app.applicationName()),
+					QObject::tr("Es sieht so aus als würde %1 "
+					   "bereits gestartet sein!<br />"
+					   "%1 sollte auf keinen Fall mehrmals "
+					   "gestartet werden, dies könnte zu "
+					   "nicht vorhersagbaren Fehlern "
+					   "führen!<br />"
+					   "<i>Wenn %1 beim letzten ausführen "
+					   "abgestürzt ist, ist es sicher diese "
+					   "Abfrage mit \"Ja\" zu quittieren.</i>"
+					   "<br /><br />"
+					   "Soll %1 wirklich gestartet werden?").arg(app.applicationName()),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::No);
+
+			if (msgRet != QMessageBox::Yes) {
+				//Aufräumen
+				qInstallMsgHandler(NULL);
+				delete debugDialog;
+				return 9; //Abbruch
+			}
+			//Programm soll trotzdem gestartet werden!
+		}
+
+		//wir übernehmen den SharedMemory, damit er beim beenden wieder
+		//freigegeben wird und der nächste Start fehlerfrei sein kann.
+		if (!myMem.attach()) {
+			qWarning() << "could not attach SharedMemory!"
+				   << "Error:" << myMem.errorString();
+		}
+	}
+
 
 	//globale Objecte erzeugen
 	settings = new abt_settings(); //für Programmweite Einstellungen
