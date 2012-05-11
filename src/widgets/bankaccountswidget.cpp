@@ -275,7 +275,7 @@ void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
 	item->setData(3, Qt::DisplayRole, acc->Currency());
 	item->setData(4, Qt::DisplayRole, acc->getBankLine());
 	item->setData(4, Qt::TextAlignmentRole, Qt::AlignRight); //Dispo rechtsbündig
-	item->setData(5, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString(Qt::DefaultLocaleLongDate)));
+	item->setData(5, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString("ddd dd. MMM yyyy")));
 	item->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum mittig
 	item->setData(6, Qt::DisplayRole, acc->AccountType());
 	item->setData(7, Qt::DisplayRole, acc->Country());
