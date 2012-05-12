@@ -44,7 +44,6 @@
 #include "widgetaccountcombobox.h"
 
 #include "../abt_validators.h"
-//#include "../aqb_accountinfo.h"
 #include "../aqb_accounts.h"
 #include "../globalvars.h"
 
@@ -104,8 +103,8 @@ void widgetAccountData::createRemoteAccountWidget()
 	QRegExpValidator *validatorAccNr = new QRegExpValidator(this);
 	QRegExpValidator *validatorBLZ = new QRegExpValidator(this);
 
-	validatorAccNr->setRegExp(QRegExp("[0-9]*", Qt::CaseSensitive));
-	validatorBLZ->setRegExp(QRegExp("[0-9]*", Qt::CaseSensitive));
+	validatorAccNr->setRegExp(QRegExp("\\d*", Qt::CaseSensitive));
+	validatorBLZ->setRegExp(QRegExp("\\d{8}|\\d{3} \\d{3} \\d{2}", Qt::CaseSensitive));
 
 	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen
 //	UppercaseValidator *validatorText = new UppercaseValidator(this);
@@ -219,7 +218,9 @@ void widgetAccountData::setEditAllowed(bool b)
 void widgetAccountData::lineEditBankCode_editingFinished()
 {
 	QString Institut;
-	Institut = banking->getInstituteFromBLZ(this->llBankCode->lineEdit->text().toUtf8());
+	//Institut = banking->getInstituteFromBLZ(this->llBankCode->lineEdit->text().toUtf8());
+	//getBankCode() liefert die BLZ ohne Leerzeichen
+	Institut = banking->getInstituteFromBLZ(this->getBankCode());
 	this->setBankName(Institut);
 }
 
@@ -457,20 +458,33 @@ QString widgetAccountData::getAccountNumber() const
 }
 
 //public
-/** Nur wenn das Feld aktiviert ist wird der Inhalt zurückgegeben,
- *  ansonsten ein QString("");
+/** \brief Gibt die Bankleitzahl (BLZ) ohne Leerzeichen zurück.
+ *
+ * Nur wenn das Feld aktiviert ist wird der Inhalt zurückgegeben,
+ * ansonsten ein QString("").
+ *
+ * Die Zurückgegebene BLZ ist immer ohne leerzeichen, auch wenn diese mit
+ * Leerzeichen im Edit-Feld eingegeben wurde.
  */
 QString widgetAccountData::getBankCode() const
 {
 	if (this->comboBoxAccounts != NULL) {
+		//wir sind ein "localAccount", somit holen wir die BLZ aus dem
+		//aktuell gewählten Account-Objekt
 		return this->currAccount->BankCode();
 	}
 
+	//Wir sind ein "remoteAccount", somit erfolgt die Angabe der BLZ vom User
 	if (this->llBankCode->isEnabled()) {
-		return this->llBankCode->lineEdit->text();
-	} else {
-		return QString("");
+		//Eingabe ist durch die "Limits" erlaubt.
+		//Wir geben eine BLZ ohne Leerzeichen zurück.
+		return this->llBankCode->lineEdit->text().replace(" ", "");
 	}
+
+	//Wir sind kein "localAccount" und die Eingabe als "remoteAccount" ist
+	//nicht erlaubt. Wir geben einen leeren String zurück.
+	return QString("");
+
 }
 
 //public
