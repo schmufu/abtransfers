@@ -104,7 +104,7 @@ void widgetAccountData::createRemoteAccountWidget()
 	QRegExpValidator *validatorBLZ = new QRegExpValidator(this);
 
 	validatorAccNr->setRegExp(QRegExp("\\d*", Qt::CaseSensitive));
-	validatorBLZ->setRegExp(QRegExp("\\d{8}|\\d{3} \\d{3} \\d{2}", Qt::CaseSensitive));
+	validatorBLZ->setRegExp(QRegExp("\\d{3} ?\\d{3} ?\\d{2}", Qt::CaseSensitive));
 
 	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen
 //	UppercaseValidator *validatorText = new UppercaseValidator(this);
