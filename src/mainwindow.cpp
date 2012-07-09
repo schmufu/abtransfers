@@ -93,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	//Auch die History-Daten müssen geladen werden
 	this->loadHistoryData();
 
+	this->pageHistory = new page_history(this->history);
+
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
 	logLayout->setSpacing(2);
@@ -104,6 +106,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	outLayout->setSpacing(2);
 	ui->Ausgang->setLayout(outLayout);
 	ui->Ausgang->layout()->addWidget(this->outbox);
+
+	QVBoxLayout *historyLayout = new QVBoxLayout(ui->history);
+	historyLayout->setMargin(0);
+	historyLayout->setSpacing(2);
+	ui->history->setLayout(historyLayout);
+	ui->history->layout()->addWidget(this->pageHistory);
 
 	//default DockOptions setzen
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
@@ -177,6 +185,7 @@ MainWindow::~MainWindow()
 
 	delete this->outbox;	//AusgangsWidget löschen
 	delete this->logw;	//LogWidget löschen
+	delete this->pageHistory; //HistoryWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
 	delete this->history;
 	delete this->accounts;	//account-Object löschen

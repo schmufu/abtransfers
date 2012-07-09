@@ -42,6 +42,7 @@
 
 #include "pages/page_log.h"
 #include "pages/page_ausgang.h"
+#include "pages/page_history.h"
 
 //uncomment the following if access to pagewidgettests.cpp is wanted
 //#define TESTWIDGETACCESS
@@ -70,6 +71,7 @@ private:
 	abt_history *history;
 	page_log *logw;
 	Page_Ausgang *outbox;
+	page_history *pageHistory;
 
 	QAction *actTransferNational;
 	QAction *actTransferInternational;

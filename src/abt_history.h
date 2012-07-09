@@ -75,6 +75,8 @@ public:
 	//! \brief erstellt einen AB_IMEXPORTER_CONTEXT der dann gespeichert werden kann
 	AB_IMEXPORTER_CONTEXT *getContext() const;
 
+	const QList<abt_jobInfo*> *getHistoryList() const { return this->m_historyList; }
+
 private slots:
 
 public slots:

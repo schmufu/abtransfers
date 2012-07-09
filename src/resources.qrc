@@ -15,6 +15,7 @@
         <file alias="delete">../images/delete-icon_16x16.png</file>
         <file alias="ok">../images/ok-icon_16x16.png</file>
         <file alias="knownEmpfaenger">../images/system-users.png</file>
+        <file alias="history-icon">../images/folder_clock_128x128.png</file>
     </qresource>
     <qresource prefix="/text" lang="de">
         <file alias="help">helpText.html</file>
