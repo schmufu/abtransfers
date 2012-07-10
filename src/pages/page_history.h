@@ -43,13 +43,23 @@ class page_history;
 class page_history : public QFrame
 {
 	Q_OBJECT
-	
 public:
 	explicit page_history(const abt_history *history, QWidget *parent = 0);
 	~page_history();
 	
+protected:
+	void changeEvent(QEvent *e);
+	void resizeEvent(QResizeEvent *event);
+
 private:
 	Ui::page_history *ui;
+	const abt_history *history;
+
+	void setTreeWidgetColWidths();
+	void setDefaultTreeWidgetHeader();
+
+public slots:
+	void refreshTreeWidget(const abt_history *hist);
 
 };
 
