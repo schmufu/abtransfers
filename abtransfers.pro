@@ -41,7 +41,8 @@ SOURCES += src/main.cpp \
     src/abt_datedtransferinfo.cpp \
     src/abt_history.cpp \
     src/dialogs/dialogsettings.cpp \
-    src/dialogs/abt_dialog.cpp
+    src/dialogs/abt_dialog.cpp \
+    src/pages/page_history.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -78,7 +79,8 @@ HEADERS += src/mainwindow.h \
     src/abt_datedtransferinfo.h \
     src/abt_history.h \
     src/dialogs/dialogsettings.h \
-    src/dialogs/abt_dialog.h
+    src/dialogs/abt_dialog.h \
+    src/pages/page_history.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
@@ -86,9 +88,11 @@ FORMS += src/mainwindow.ui \
     src/pages/page_log.ui \
     src/pages/page_ausgang.ui \
     src/dialogs/dialogsettings.ui \
-    src/dialogs/abt_dialog.ui
+    src/dialogs/abt_dialog.ui \
+    src/pages/page_history.ui
 OTHER_FILES += images/uerberweisungsformular.gif \
     documentation/Doxyfile \
+    documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html
 RESOURCES += src/resources.qrc
 INCLUDEPATH += /usr/include/aqbanking5 \

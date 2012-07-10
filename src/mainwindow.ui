@@ -87,7 +87,7 @@
          <enum>QListView::IconMode</enum>
         </property>
         <property name="currentRow">
-         <number>0</number>
+         <number>-1</number>
         </property>
         <item>
          <property name="text">
@@ -114,6 +114,15 @@
          <property name="icon">
           <iconset resource="resources.qrc">
            <normaloff>:/icons/Log-Icon</normaloff>:/icons/Log-Icon</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Historie</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/history-icon</normaloff>:/icons/history-icon</iconset>
          </property>
         </item>
        </widget>
@@ -337,7 +346,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>711</width>
-                   <height>319</height>
+                   <height>325</height>
                   </rect>
                  </property>
                 </widget>
@@ -351,6 +360,7 @@
         </widget>
         <widget class="QWidget" name="Ausgang"/>
         <widget class="QWidget" name="Log"/>
+        <widget class="QWidget" name="history"/>
        </widget>
       </item>
      </layout>
@@ -363,7 +373,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
