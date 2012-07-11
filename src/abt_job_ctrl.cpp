@@ -996,11 +996,11 @@ void abt_job_ctrl::execQueuedTransactions()
 /**
   * überprüft den Status der ausgeführten Jobs und verschiebt diese, wenn
   * erfolgreich, in die History-Liste.
-  * Wenn ein Fehler aufgetreten wird der fehlerhafte Job aus der übergebenen
+  * Wenn ein Fehler aufgetreten ist wird der fehlerhafte Job aus der übergebenen
   * AB_JOB_LIST2 \a jl entfernt und ist somit weiterhin verwendbar.
   *
-  * Wenn alle jobs erfolgreich ausgeführt wurden wird true zurück gegeben,
-  * ansonten false.
+  * Wenn alle Jobs erfolgreich ausgeführt wurden wird true zurückgegeben,
+  * ansonsten false.
   */
 //private
 bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)

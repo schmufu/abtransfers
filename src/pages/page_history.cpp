@@ -135,9 +135,14 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 	const QList<abt_jobInfo*> *jql = hist->getHistoryList();
 	for (int i=0; i<jql->size(); ++i) {
 		topItem = new QTreeWidgetItem();
-		topItem->setData(0, Qt::DisplayRole, tr("%1").arg(i+1));
+		topItem->setData(0, Qt::DisplayRole, tr("",
+							"first coloum in the History."
+							"%1 could be used as the position").arg(i+1));
 		topItem->setData(1, Qt::DisplayRole, jql->at(i)->getType());
-		topItem->setData(2, Qt::DisplayRole, jql->at(i)->getTransaction()->getDate());
+		//the idForApplication is the unix timestamp of the creation
+		quint32 ts = jql->at(i)->getTransaction()->getIdForApplication();
+		topItem->setData(2, Qt::DisplayRole, QDateTime::fromTime_t(ts));
+
 		//Die Adresse des abt_job_info Objects in der UserRole merken
 		QVariant var;
 		var.setValue(jql->at(i));

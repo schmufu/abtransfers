@@ -1993,6 +1993,10 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
 	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
 	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
@@ -2047,6 +2051,10 @@ void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
 	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
 	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
@@ -2073,6 +2081,10 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
 	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
@@ -2141,6 +2153,10 @@ void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 	//und diese modifizieren
 	newT->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	newT->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
 	newT->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	newT->setRemoteName(QStringList(sender->remoteAccount->getName()));
 	newT->setRemoteBankCode(sender->remoteAccount->getBankCode());
@@ -2171,6 +2187,10 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 
 	//und diese modifizieren
 	newT->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	newT->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
 	newT->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	newT->setRemoteName(QStringList(sender->remoteAccount->getName()));
@@ -2208,6 +2228,10 @@ void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
 	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
 	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
@@ -2234,6 +2258,10 @@ void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(fromAcc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
 	t->setRemoteAccountNumber(toAcc->Number());
 	t->setRemoteName(QStringList(toAcc->OwnerName()));
