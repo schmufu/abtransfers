@@ -39,6 +39,10 @@ namespace Ui {
 	class Page_Ausgang;
 }
 
+/** \brief Anzeige aller im abt_job_ctrl vorhandenen Aufträge für die Bank
+ *
+ */
+
 class Page_Ausgang : public QFrame {
 	Q_OBJECT
 private:

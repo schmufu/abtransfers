@@ -456,23 +456,6 @@ void widgetTransfer::my_create_recurrence()
 
 
 //private
-void widgetTransfer::setLocalFromAccount(const aqb_AccountInfo *acc)
-{
-	qWarning() << "OBSOLET function called  -  widgetTransfer::setLocalFromAccount()";
-	if (this->localAccount != NULL) {
-		this->localAccount->setName(acc->OwnerName());
-		this->localAccount->setAccountNumber(acc->Number());
-		this->localAccount->setBankCode(acc->BankCode());
-		this->localAccount->setBankName(acc->BankName());
-	} else {
-		qWarning() << this << "setLocalFromAccount() called without"
-				<< "having a localAccountWidget!";
-	}
-
-}
-
-
-//private
 void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 {
 	//wenn keine Limits vorhanden sind alle Widgets disablen, da ein Job

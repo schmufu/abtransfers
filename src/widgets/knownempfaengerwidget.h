@@ -41,6 +41,16 @@ namespace Ui {
 	class KnownEmpfaengerWidget;
 }
 
+/** \brief Widget zur Anzeige aller "Bekannten Empfänger"
+ *
+ * Aus diesem Widget heraus ist es möglich neue Empfänger an zu legen oder
+ * auch bereits vorhandene zu Ändern oder zu Löschen.
+ *
+ * Auch wird Drag'n'Drop unterstützt und ein Empfänger kann aus dieser Liste
+ * heraus in das entsprechende "Formularfeld" gezogen werden.
+ *
+ */
+
 class KnownEmpfaengerWidget : public QGroupBox {
 	Q_OBJECT
 private:

@@ -38,6 +38,10 @@
 class aqb_AccountInfo;
 class abt_standingOrderInfo;
 
+/** \brief Widget zur Anzeige aller bekannten Daueraufträge
+ *
+ */
+
 class widgetKnownStandingOrders : public QWidget
 {
 	Q_OBJECT

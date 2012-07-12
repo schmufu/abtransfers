@@ -37,6 +37,10 @@
 
 #include "../abt_conv.h"
 
+/** \brief Widget zur Anzeige und Eingabe eines Betrages
+ *
+ */
+
 class widgetValue : public QWidget
 {
 	Q_OBJECT

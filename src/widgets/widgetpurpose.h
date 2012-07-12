@@ -38,6 +38,12 @@
 #include <QtGui/QLabel>
 
 
+/** \brief Widget zur Darstellung und Eingabe des Verwendungszwecks
+ *
+ * Wenn die Limits der Bank gesetzt sind wird kontrolliert das die Eingabe
+ * mit den Einschrängungen der Bank übereinstimmen.
+ */
+
 class widgetPurpose : public QWidget
 {
 	Q_OBJECT

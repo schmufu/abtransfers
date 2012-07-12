@@ -37,6 +37,12 @@
 
 #include <QtCore/QStringList>
 
+/** \brief Widget zur Anzeige und Einstellung eines Datums
+ *
+ * Dieses Widget kümmert sich darum das nur Daten eingestellt werden können die
+ * durch die Limits der Bank auch erlaubt sind.
+ */
+
 class widgetDate : public QWidget
 {
 	Q_OBJECT

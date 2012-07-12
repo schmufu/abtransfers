@@ -37,6 +37,10 @@ namespace Ui {
     class page_log;
 }
 
+/** \brief Anzeige aller durch den abt_job_ctrl gesendeten log-Meldungen
+ *
+ */
+
 class page_log : public QFrame {
 	Q_OBJECT
 public:

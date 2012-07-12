@@ -37,6 +37,10 @@
 class aqb_AccountInfo;
 class aqb_Accounts;
 
+/** \brief Widget zur Anzeige aller Accounts in einer ComboBox
+ *
+ */
+
 class widgetAccountComboBox : public QWidget
 {
 	Q_OBJECT

@@ -37,8 +37,13 @@
 class abt_history;
 
 namespace Ui {
-class page_history;
+	class page_history;
 }
+
+/** \brief Anzeige aller bereits durchgeführten und in der abt_history
+ *         gespeicherten Transaktionen
+ *
+ */
 
 class page_history : public QFrame
 {

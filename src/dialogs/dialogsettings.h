@@ -41,6 +41,10 @@ namespace Ui {
 	class DialogSettings;
 }
 
+/** \brief Dialog um alle Einstellbaren Optionen von AB-Transfers zu ändern.
+ *
+ */
+
 class DialogSettings : public QDialog {
 	Q_OBJECT
 public:

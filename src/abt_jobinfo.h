@@ -37,6 +37,7 @@
 
 #include <QMetaType>
 
+class abt_transaction; //Einbindung des Headers erst in der .cpp
 
 /** \brief Bietet eine Abstrahierung von AB_JOB
   *
@@ -57,8 +58,6 @@
   * AB_JOB ein gültiger Zeiger zurückgegeben werden (ansonsten NULL).
   *
   */
-
-class abt_transaction; //Einbindung des Headers erst in der .cpp
 
 class abt_jobInfo
 {

@@ -54,6 +54,13 @@ namespace Ui {
 	class MainWindow;
 }
 
+/** \brief Das Hauptfenster von AB-Transfers
+ *
+ * Alle aktivitäten werden hier koordiniert und von den entsprechenden anderen
+ * Klassen durchgeführt.
+ *
+ */
+
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 public:

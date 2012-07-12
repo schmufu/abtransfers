@@ -38,6 +38,10 @@
 class aqb_AccountInfo;
 class abt_datedTransferInfo;
 
+/** \brief Widget zur Anzeige aller bekannten Terminierten Überweisungen
+ *
+ */
+
 class widgetKnownDatedTransfers : public QWidget
 {
 	Q_OBJECT

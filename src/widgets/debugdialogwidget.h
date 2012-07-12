@@ -37,6 +37,16 @@ namespace Ui {
 	class DebugDialogWidget;
 }
 
+/** \brief Widget um alle Meldungen die per qDebug() oder qWarning() ausgegeben
+ *         werden an zu zeigen.
+ *
+ * Dieses Widget dient der Anzeige der Meldungen die normalerweise nur auf der
+ * Konsole ausgegeben werden.
+ * Über einen in main() gesetzen MsgHandler werden diese Ausgaben zusätzlich
+ * an dieses Widget geleitet und können dann auch zur Laufzeit angezeigt werden.
+ *
+ */
+
 class DebugDialogWidget : public QDialog {
 	Q_OBJECT
 public:

@@ -46,13 +46,18 @@
 
 /*! \todo Daten (mehrzahl von Datum) von Daueraufträgen und Terminüberweisungen
 	  werden irgendwie beim Bearbeiten nicht richtig angezeigt.
-	  Aussederdem sollte beim Bearbeiten eines SOs oder einer DT vorher
-	  eine aktualisierung stattfinden, wenn die letzte aktualisierung schon
-	  länger her ist. (NextExecution <= Heute)
-
+	  Ausserdem sollte beim Bearbeiten eines Dauerauftrages oder einer
+	  terminierten Überweisung vorher eine Aktualisierung stattfinden, wenn
+	  die letzte aktualisierung schon länger her ist. (NextExecution <= Heute)
 */
 
-
+/** \brief Anzeige und Einstellung der Wiederholungs-Daten für einen Dauerauftrag
+ *
+ * Es wird das widgetDate verwendet um die Einstellung der ersten und letzten
+ * Ausführung zu setzen.
+ * Auch kann eingestellt werden an welchem Tag die Ausführung stattfinden soll
+ * und in welchem Zyklus dies erfolgen soll.
+ */
 
 class widgetRecurrence : public QWidget
 {

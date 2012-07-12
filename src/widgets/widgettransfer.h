@@ -52,6 +52,16 @@ class QHBoxLayout;
 class QPushButton;
 class abt_transaction;
 
+/** \brief Widget zum ausfüllen einer Transaktion
+ *
+ * Diese Widget stellt je nach Job-Typ Eingabemöglichkeiten zur Verfügung
+ * um eine Überweisung oder Dauerauftrag zu erstellen oder zu Bearbeiten.
+ *
+ * Dazu werden die anderen "kleinen" Widgets (widgetDate, widgetRecurrence,
+ * widgetValue, widgetPurpose, widgetDate, widgetTextKey, widgetLineEditWithLabel)
+ * genutzt um ein dem Auftrag entsprechendes Formular an zu zeigen.
+ */
+
 class widgetTransfer : public QWidget
 {
 	Q_OBJECT
@@ -109,8 +119,6 @@ private:
 	void my_createNotAvailableJobText();
 
 	void setAllLimits(const abt_transactionLimits *limits);
-	//! \deprecated
-	void setLocalFromAccount(const aqb_AccountInfo *acc);
 
 signals:
 	void createTransfer(AB_JOB_TYPE type, const widgetTransfer *sender);

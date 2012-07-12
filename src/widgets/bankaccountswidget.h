@@ -40,6 +40,12 @@ namespace Ui {
 	class BankAccountsWidget;
 }
 
+/** \brief Widget zur Anzeige aller bei AqBanking registrierten Konten
+ *
+ * Dieses Widget zeigt alle Konten an die bei AqBanking eingetragen sind.
+ *
+ */
+
 class BankAccountsWidget : public QWidget {
 	Q_OBJECT
 private:

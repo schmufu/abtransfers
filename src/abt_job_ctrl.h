@@ -43,6 +43,18 @@
 #include "abt_history.h"
 
 
+/** \brief Verwaltung von Aufträgen für die Bank
+  *
+  * abt_job_ctrl dient der Verwaltung und der Abarbeitung von Aufträgen für
+  * die Bank.
+  *
+  * Dieser Klasse können über die add... Funktionen neue Aufträge zugeteilt
+  * werden. Über execQueuedTransactions() können diese Aufträge dann zur Bank
+  * gesendet werden und die Anworten werden ausgewertet (friend class \ref
+  * abt_parser)
+  *
+  */
+
 class abt_job_ctrl : public QObject
 {
 Q_OBJECT

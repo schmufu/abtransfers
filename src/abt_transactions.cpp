@@ -28,6 +28,9 @@
  *
  ******************************************************************************/
 
+#if false
+//Der hier definierte Code wird nicht verwendet!
+
 #include "abt_transactions.h"
 #include "globalvars.h"
 
@@ -76,4 +79,4 @@ trans_SepaTransfer::trans_SepaTransfer()
 
 
 
-
+#endif

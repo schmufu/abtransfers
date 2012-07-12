@@ -66,6 +66,7 @@
  * Diese Klasse wird nur genutzt um widgets zu testen, im eigentlichen
  * Programm wird Sie nicht verwendet!
  */
+
 class pageWidgetTests : public QWidget
 {
 	Q_OBJECT

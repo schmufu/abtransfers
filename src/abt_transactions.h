@@ -28,6 +28,9 @@
  *
  ******************************************************************************/
 
+#if false
+// Die hier getätigten Deklarationen werden nicht mehr Verwendet!
+
 #ifndef ABT_TRANSACTIONS_H
 #define ABT_TRANSACTIONS_H
 
@@ -83,3 +86,5 @@ public:
 };
 
 #endif // ABT_TRANSACTIONS_H
+
+#endif

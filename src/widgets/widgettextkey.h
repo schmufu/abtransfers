@@ -36,6 +36,10 @@
 class QComboBox;
 class QLabel;
 
+/** \brief Widget zur Anzeige und Auswahl aller unterstützten Textschlüssel
+ *
+ */
+
 class widgetTextKey : public QWidget
 {
 	Q_OBJECT
