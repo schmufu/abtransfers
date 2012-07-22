@@ -211,6 +211,8 @@ private slots:
 	void onEditJobFromOutbox(int itemNr);
 	void onJobCtrlQueueListChanged();
 
+	void createTransferFromJob(const abt_jobInfo *ji);
+
 
 
 };

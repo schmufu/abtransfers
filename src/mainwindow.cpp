@@ -155,6 +155,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
 		this->actDatedUpdate, SLOT(trigger()));
 
+	connect(this->pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
+		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
+
 	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
 	//ist und den default-Entry im ListWidget auf Überweisung setzen
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
@@ -187,7 +190,7 @@ MainWindow::~MainWindow()
 	delete this->logw;	//LogWidget löschen
 	delete this->pageHistory; //HistoryWidget löschen
 	delete this->jobctrl;	//jobControl-Object löschen
-	delete this->history;
+	delete this->history;	//history löschen
 	delete this->accounts;	//account-Object löschen
 	delete ui;
 
@@ -1943,19 +1946,8 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
 	jobAccNumber =AB_Account_GetAccountNumber(AB_Job_GetAccount(job->getJob()));
 
-	//Wir suchen den Account der zu dem bereits erstellten Job gehört
-	QHashIterator<int, aqb_AccountInfo*> i(this->accounts->getAccountHash());
-	//Alle Accounts durchgehen
-	i.toFront();
-	while (i.hasNext()) {
-		i.next();
-		if ((i.value()->BankCode() == jobAccBankcode) &&
-		    (i.value()->Number() == jobAccNumber)) {
-			//we found the account
-			acc = i.value();
-			break; //leave while, we have the account
-		}
-	}
+	//get the account that matches the local transaction data
+	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
 
 	if (acc == NULL) {
 		//account not found
@@ -1975,6 +1967,33 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 void MainWindow::onJobCtrlQueueListChanged()
 {
 	this->outbox->refreshTreeWidget(this->jobctrl);
+}
+
+//private slot
+void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
+{
+	widgetTransfer *transW;
+	const aqb_AccountInfo *acc = NULL;
+	QString jobAccBankcode, jobAccNumber;
+
+	jobAccBankcode = ji->getTransaction()->getLocalBankCode();
+	jobAccNumber = ji->getTransaction()->getLocalAccountNumber();
+
+	//get the account that matches the local transaction data
+	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
+
+	if (acc == NULL) { //no account found
+		QString msg;
+		msg.append(tr("Kein Account gefunden [%1/%2] - Erstellen nicht möglich")
+			   .arg(jobAccNumber, jobAccBankcode));
+		this->ui->statusBar->showMessage(msg, 8000);
+		qWarning() << Q_FUNC_INFO << "account from the job not found, aborting";
+		return;
+	}
+
+	transW = this->createTransferWidgetAndAddTab(ji->getAbJobType(), acc);
+
+	transW->setValuesFromTransaction(ji->getTransaction());
 }
 
 //private slot

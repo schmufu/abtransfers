@@ -33,6 +33,7 @@
 #define PAGE_HISTORY_H
 
 #include <QFrame>
+#include "../abt_jobinfo.h"
 
 class abt_history;
 
@@ -60,8 +61,25 @@ private:
 	Ui::page_history *ui;
 	const abt_history *history;
 
+	QAction *actGenerateNewTransaction;
+	QAction *actDeleteSelected;
+	QAction *actExportSelected;
+
 	void setTreeWidgetColWidths();
 	void setDefaultTreeWidgetHeader();
+	void createActions();
+
+signals:
+	void createNewFromHistory(const abt_jobInfo *jobInfo);
+	void deleteFromHistory(const QList<int> historyIndexes);
+	void exportFromHistory(const QList<int> historyIndexes);
+
+private slots:
+	void onActGenerateNewTransaction();
+	void onActDeleteSelected();
+	void onActExportSelected();
+
+	void on_treeWidget_itemSelectionChanged();
 
 public slots:
 	void refreshTreeWidget(const abt_history *hist);

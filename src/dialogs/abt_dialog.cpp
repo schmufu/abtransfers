@@ -39,14 +39,14 @@
 #include "../globalvars.h" //für das settings-Object
 
 abt_dialog::abt_dialog(QWidget *parent,
-			       QString title,
-			       QString msgtext,
-			       QDialogButtonBox::StandardButtons buttons,
-			       QDialogButtonBox::StandardButton defaultButton /* = QDialogButtonBox::NoButton */,
-			       QMessageBox::Icon icon /* = QMessageBox::NoIcon */,
-			       QString dialogName /* = "" */,
-			       bool showCheckBox /* = true */,
-			       QString checkBoxText /* = "" */) :
+		       QString title,
+		       QString msgtext,
+		       QDialogButtonBox::StandardButtons buttons,
+		       QDialogButtonBox::StandardButton defaultButton /* = QDialogButtonBox::NoButton */,
+		       QMessageBox::Icon icon /* = QMessageBox::NoIcon */,
+		       QString dialogName /* = "" */,
+		       bool showCheckBox /* = true */,
+		       QString checkBoxText /* = "" */) :
 	QDialog(parent),
 	ui(new Ui::abt_dialog)
 {
