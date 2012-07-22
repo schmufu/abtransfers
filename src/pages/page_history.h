@@ -71,8 +71,8 @@ private:
 
 signals:
 	void createNewFromHistory(const abt_jobInfo *jobInfo);
-	void deleteFromHistory(const QList<int> historyIndexes);
-	void exportFromHistory(const QList<int> historyIndexes);
+	void deleteFromHistory(const QList<abt_jobInfo*> historyIndexes);
+	void exportFromHistory(const QList<abt_jobInfo*> historyIndexes);
 
 private slots:
 	void onActGenerateNewTransaction();

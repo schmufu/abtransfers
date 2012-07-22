@@ -51,12 +51,21 @@ void abt_history::add(abt_jobInfo *job)
 	if (!job) return; //keine NULL-Objekte hinzufügen
 
 	this->m_historyList->prepend(job);
+	emit this->historyListChanged(this);
 }
 
 //public
 bool abt_history::remove(abt_jobInfo *job)
 {
-	return this->m_historyList->removeOne(job);
+
+	if (this->m_historyList->removeOne(job)) {
+		//job removed, also delete it
+		delete job;
+		emit this->historyListChanged(this);
+		return true;
+	}
+
+	return false;
 }
 
 //public
@@ -64,8 +73,9 @@ bool abt_history::remove(int pos)
 {
 	if (pos >= this->m_historyList->size()) return false;
 
-	this->m_historyList->removeAt(pos);
-
+	abt_jobInfo *j = this->m_historyList->takeAt(pos);
+	delete j;
+	emit this->historyListChanged(this);
 	return true;
 }
 
@@ -77,6 +87,7 @@ void abt_history::clearAll()
 		abt_jobInfo *j = this->m_historyList->takeFirst();
 		delete j;
 	}
+	emit this->historyListChanged(this);
 }
 
 /**

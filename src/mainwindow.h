@@ -213,6 +213,7 @@ private slots:
 
 	void createTransferFromJob(const abt_jobInfo *ji);
 
+	void deleteHistoryItems(QList<abt_jobInfo*> jiList);
 
 
 };

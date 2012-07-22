@@ -157,6 +157,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(this->pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
 		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
+	connect(this->pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
+		this, SLOT(deleteHistoryItems(QList<abt_jobInfo*>)));
+
 
 	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
 	//ist und den default-Entry im ListWidget auf Überweisung setzen
@@ -1994,6 +1997,14 @@ void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
 	transW = this->createTransferWidgetAndAddTab(ji->getAbJobType(), acc);
 
 	transW->setValuesFromTransaction(ji->getTransaction());
+}
+
+//private slot
+void MainWindow::deleteHistoryItems(QList<abt_jobInfo *> jiList)
+{
+	foreach(abt_jobInfo* ji, jiList) {
+		this->history->remove(ji);
+	}
 }
 
 //private slot

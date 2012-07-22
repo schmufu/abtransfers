@@ -34,6 +34,7 @@
 
 #include <QMessageBox>
 
+#include "../dialogs/abt_dialog.h"
 #include "../abt_history.h"
 
 
@@ -52,6 +53,8 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	//calling the itemSelectionChanged() slot enables/disables the actions
 	this->on_treeWidget_itemSelectionChanged();
 
+	connect(this->history, SIGNAL(historyListChanged(const abt_history*)),
+		this, SLOT(refreshTreeWidget(const abt_history*)));
 
 }
 
@@ -149,7 +152,31 @@ void page_history::onActGenerateNewTransaction()
 //private slot
 void page_history::onActDeleteSelected()
 {
+	QList<QTreeWidgetItem*> items;
+	QList<abt_jobInfo*> jiList;
 
+	QString msgTitle = tr("Historie löschen");
+	QString msgText = tr("Sollen die gewählten Einträge aus der Historie "
+			     "gelöscht werden?<br />"
+			     "<i>(Dies kann nicht rückgängig gemacht werden)</i>");
+	abt_dialog dialog(this, msgTitle, msgText,
+			  QDialogButtonBox::Yes | QDialogButtonBox::No,
+			  QDialogButtonBox::Yes, QMessageBox::Question,
+			  "historyDelete");
+	int ret = dialog.exec();
+
+	if (ret != QDialogButtonBox::Yes) {
+		return;
+	}
+
+	items = this->ui->treeWidget->selectedItems();
+
+	for(int i=0; i<items.size(); ++i) {
+		QVariant var = items.at(i)->data(0, Qt::UserRole);
+		jiList.append(var.value<abt_jobInfo*>());
+	}
+
+	emit deleteFromHistory(jiList);
 }
 
 //private slot
