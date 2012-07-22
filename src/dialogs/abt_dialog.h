@@ -86,6 +86,7 @@ private:
 	bool m_showThisDialog;
 	QString m_dialogName;
 	QDialogButtonBox::StandardButton m_defaultButton;
+	int m_result;
 
 private slots:
 	void on_buttonBox_clicked(QAbstractButton* button);

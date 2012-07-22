@@ -54,6 +54,7 @@ abt_dialog::abt_dialog(QWidget *parent,
 
 	this->m_dialogName = dialogName; //wir merken uns unseren Namen
 	this->m_defaultButton = defaultButton;
+	this->m_result = QDialogButtonBox::NoButton;
 
 	if (m_dialogName.isEmpty() ||
 	    (this->m_defaultButton == QDialogButtonBox::NoButton)) {
@@ -145,11 +146,12 @@ void abt_dialog::changeEvent(QEvent *e)
 void abt_dialog::on_buttonBox_clicked(QAbstractButton* button)
 {
 	//Als result liefern wir das Ergebiss welcher Button geklickt wurde zurück
-	this->setResult(this->ui->buttonBox->standardButton(button));
+	this->m_result = this->ui->buttonBox->standardButton(button);
+	this->setResult(this->m_result);
 
 	//Nur wenn der Dialog mit dem angegebenen Default-Button akzeptiert wurde
 	//den Zustand der CheckBox in der ini-Datei speichern.
-	if (this->m_defaultButton == this->result()) {
+	if (this->m_defaultButton == this->m_result) {
 		//merken ob der Dialog ein weiteres mal angezeigt werden soll
 		settings->setShowDialog(this->m_dialogName, !this->ui->checkBox->isChecked());
 	}
@@ -160,10 +162,14 @@ void abt_dialog::on_buttonBox_clicked(QAbstractButton* button)
 int abt_dialog::exec()
 {
 	//Wenn der Dialog angezeigt werden soll führen wir exec() vom QDialog aus.
-	if (this->m_showThisDialog) return QDialog::exec();
+	if (this->m_showThisDialog) {
+		QDialog::exec();
+		return this->m_result;
+	}
 
 	//Unser Dialog soll nicht angezeigt werden, wir setzen einfach
 	//den default return Wert und beenden uns wieder
 	this->setResult(this->m_defaultButton);
-	return this->result();
+	this->m_result = this->m_defaultButton;
+	return this->m_result;
 }
