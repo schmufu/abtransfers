@@ -48,10 +48,30 @@ abt_history::~abt_history()
 //public
 void abt_history::add(abt_jobInfo *job)
 {
-	if (!job) return; //keine NULL-Objekte hinzufügen
+	if (!job) return; //no NULL objects
 
-	this->m_historyList->prepend(job);
-	emit this->historyListChanged(this);
+	//only at job to history if wanted
+	switch (job->getAbJobType()) {
+	case AB_Job_TypeCreateDatedTransfer:
+	case AB_Job_TypeCreateStandingOrder:
+	case AB_Job_TypeDebitNote:
+//	case AB_Job_TypeDeleteDatedTransfer:
+//	case AB_Job_TypeDeleteStandingOrder:
+	case AB_Job_TypeEuTransfer:
+	case AB_Job_TypeInternalTransfer:
+	case AB_Job_TypeLoadCellPhone:
+	case AB_Job_TypeModifyDatedTransfer:
+	case AB_Job_TypeModifyStandingOrder:
+	case AB_Job_TypeSepaDebitNote:
+	case AB_Job_TypeSepaTransfer:
+	case AB_Job_TypeTransfer:
+		this->m_historyList->prepend(job);
+		emit this->historyListChanged(this);
+		break;
+	default:
+		break;
+	}
+
 }
 
 //public
