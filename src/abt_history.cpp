@@ -130,8 +130,17 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 
 	Q_FOREACH(const abt_jobInfo* job, *this->m_historyList) {
 
-		//hier muss evt. noch der Status des Jobs in die Transaction
-		//übertragen werden!
+		/** \todo Hier muss evt. noch der Status des Jobs in die
+		 *        Transaction übertragen werden!
+		 */
+
+		/** \todo Hierdurch wird z.B. eine Umbuchung als Überweisung
+		 *	  gespeichert. Beim laden der History wird somit eine
+		 *	  Umbuchung als "Überweisung" und nicht mehr als
+		 *	  Umbuchung angezeigt.
+		 *	  Welches Feld von AB_TRANSACTION könnte "missbraucht"
+		 *	  werden um den 'wahren' Typ zu Kennzeichnen? (Category?)
+		 */
 
 		AB_TRANSACTION *t = NULL;
 
