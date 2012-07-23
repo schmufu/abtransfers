@@ -88,7 +88,7 @@ void page_history::resizeEvent(QResizeEvent *event)
 void page_history::setTreeWidgetColWidths()
 {
 	if (ui->treeWidget->header()->stretchLastSection())
-		return; //nichts ändern, es werden keine Items angezeigt
+		return; //do nothing! No items shown.
 
 	int currWidth = ui->treeWidget->width();
 	ui->treeWidget->setColumnWidth(0,40);
@@ -155,14 +155,14 @@ void page_history::onActDeleteSelected()
 	QList<QTreeWidgetItem*> items;
 	QList<abt_jobInfo*> jiList;
 
-	QString msgTitle = tr("Historie löschen");
-	QString msgText = tr("Sollen die gewählten Einträge aus der Historie "
+	QString msgTitle = tr("Historie Eintrag löschen");
+	QString msgText = tr("Sollen die gewählten Einträge aus der Historie wirklich "
 			     "gelöscht werden?<br />"
 			     "<i>(Dies kann nicht rückgängig gemacht werden)</i>");
 	abt_dialog dialog(this, msgTitle, msgText,
 			  QDialogButtonBox::Yes | QDialogButtonBox::No,
 			  QDialogButtonBox::Yes, QMessageBox::Question,
-			  "historyDelete");
+			  "HistoryConfirmDelete");
 	int ret = dialog.exec();
 
 	if (ret != QDialogButtonBox::Yes) {
@@ -182,15 +182,25 @@ void page_history::onActDeleteSelected()
 //private slot
 void page_history::onActExportSelected()
 {
-	QMessageBox::information(this, tr("Export"),
-				 tr("Exportieren von durchgeführten Aufträgen "
-				    "ist derzeit leider noch nicht möglich.<br />"
-				    "<br />"
-				    "Dies wird vorraussichtlich in der nächsten "
-				    "Version enthalten sein."),
-				 QMessageBox::Ok);
+	QMessageBox::information(
+		this, tr("Export"),
+		tr("Exportieren von durchgeführten Aufträgen ist derzeit leider "
+		   "noch nicht möglich.<br /><br />"
+		   "Dies wird vorraussichtlich in der nächsten Version "
+		   "enthalten sein."),
+		QMessageBox::Ok);
 }
 
+
+/** \brief creates all history items in the treeWidget
+ *
+ * This slot can be called to delete all items in the treeWidget and recreate
+ * them.
+ * The items that are expanded are memorized and if the ever exist the will be
+ * expanded after the new creation.
+ *
+ * If no history items available a message is shown that no items exist.
+ */
 //public slot
 void page_history::refreshTreeWidget(const abt_history *hist)
 {
@@ -199,20 +209,21 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 
 	if ((hist == NULL) ||
 	    (hist->getHistoryList()->size() == 0)) {
-		this->ui->treeWidget->clear(); //Alle Items löschen
+		this->ui->treeWidget->clear(); //delete all items
 		this->ui->treeWidget->setColumnCount(1);
 		this->ui->treeWidget->setHeaderHidden(true);
 		this->ui->treeWidget->header()->setStretchLastSection(true);
 
 		topItem = new QTreeWidgetItem();
-		topItem->setData(0, Qt::DisplayRole, tr("Keine Einträge in der Historie vorhanden"));
+		topItem->setData(0, Qt::DisplayRole,
+				 tr("Keine Einträge in der Historie vorhanden"));
 		topItem->setFlags(Qt::ItemIsSelectable);
 		ui->treeWidget->addTopLevelItem(topItem);
 		return; //fertig
 	}
 
-	// der Status des Items soll erhalten bleiben (expanded/selected)
-	// alle expandierten abt_job_info Adressen in einer Liste speichern
+	// the current state of the item should be recoverd (expanded/selected).
+	// Saving all adresses of abt_jobInfo* in the expanded list.
 	QList<const abt_jobInfo*> expanded;
 	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
 		if (this->ui->treeWidget->topLevelItem(i)->isExpanded()) {
@@ -221,7 +232,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		}
 	}
 
-	this->ui->treeWidget->clear(); //alle Items löschen
+	this->ui->treeWidget->clear(); //delete all items
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 
 	const QList<abt_jobInfo*> *jql = hist->getHistoryList();
@@ -235,7 +246,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		quint32 ts = jql->at(i)->getTransaction()->getIdForApplication();
 		topItem->setData(2, Qt::DisplayRole, QDateTime::fromTime_t(ts));
 
-		//Die Adresse des abt_job_info Objects in der UserRole merken
+		//store the address of the abt_job_info Objects in the UserRoles
 		QVariant var;
 		var.setValue(jql->at(i));
 		topItem->setData(0, Qt::UserRole, var);
@@ -251,22 +262,15 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 
 		ui->treeWidget->addTopLevelItem(topItem);
 
-		//den zustand wie vor dem refresh wieder herstellen
+		//recover the state of the item
 		if (expanded.contains(jql->at(i))) {
 			topItem->setExpanded(true);
 		}
 
-//		if (this->selectedItem == i) {
-//			//die vorherige Selection wieder herstellen
-//			topItem->setSelected(true);
-//			this->selectedItem = -1; //nur 1 Item auswählbar
-//		}
-
 	}
-	//Ausführen Button Enablen
-//	this->ui->pushButton_exec->setEnabled(true);
 }
 
+//private slot
 void page_history::on_treeWidget_itemSelectionChanged()
 {
 	bool enabled = (this->ui->treeWidget->selectedItems().size() > 0);
