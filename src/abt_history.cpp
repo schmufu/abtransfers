@@ -66,11 +66,14 @@ void abt_history::add(abt_jobInfo *job)
 	case AB_Job_TypeSepaTransfer:
 	case AB_Job_TypeTransfer:
 		this->m_historyList->prepend(job);
+		this->sortListByTimestamp();
 		emit this->historyListChanged(this);
 		break;
 	default:
 		break;
 	}
+
+
 
 }
 
@@ -81,6 +84,7 @@ bool abt_history::remove(abt_jobInfo *job)
 	if (this->m_historyList->removeOne(job)) {
 		//job removed, also delete it
 		delete job;
+		this->sortListByTimestamp();
 		emit this->historyListChanged(this);
 		return true;
 	}
@@ -95,6 +99,7 @@ bool abt_history::remove(int pos)
 
 	abt_jobInfo *j = this->m_historyList->takeAt(pos);
 	delete j;
+	this->sortListByTimestamp();
 	emit this->historyListChanged(this);
 	return true;
 }
@@ -181,4 +186,35 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 	AB_ImExporterContext_AddAccountInfo(iec, iea);
 
 	return iec;
+}
+
+/**
+ * In the IdForApplication the unix timestamp of the creation is saved.
+ * This function sorts all items by this timestamp in an descending order (default)
+ **/
+//private
+void abt_history::sortListByTimestamp(bool descending)
+{
+	//bubble sort
+	QList<abt_jobInfo*> *hl = this->m_historyList;	//history list
+
+	bool swapped = true;
+	while(swapped) {
+		swapped = false;
+		for(int i=0; i<hl->size()-1; ++i) {
+			if (descending) {
+				if (hl->at(i)->getTransaction()->getIdForApplication() <
+				    hl->at(i+1)->getTransaction()->getIdForApplication()) {
+					hl->swap(i, i+1);
+					swapped = true;
+				}
+			} else {
+				if (hl->at(i)->getTransaction()->getIdForApplication() >
+				    hl->at(i+1)->getTransaction()->getIdForApplication()) {
+					hl->swap(i, i+1);
+					swapped = true;
+				}
+			}
+		}
+	}
 }

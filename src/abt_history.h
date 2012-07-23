@@ -61,6 +61,9 @@ private:
 	//! \brief In dieser Liste werden die durchgeführten Aufträge verwaltet
 	QList<abt_jobInfo*> *m_historyList;
 
+	//! \brief Sorts the list of history items depending on their creation
+	void sortListByTimestamp(bool descending = true);
+
 public:
 	//! \brief Fügt den \a job der history-Liste hinzu
 	void add(abt_jobInfo *job);
@@ -75,6 +78,7 @@ public:
 	//! \brief erstellt einen AB_IMEXPORTER_CONTEXT der dann gespeichert werden kann
 	AB_IMEXPORTER_CONTEXT *getContext() const;
 
+	//! \brief return the current history list as a const object
 	const QList<abt_jobInfo*> *getHistoryList() const { return this->m_historyList; }
 
 private slots:
