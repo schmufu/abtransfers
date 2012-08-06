@@ -22,9 +22,9 @@
  * $Rev$
  *
  * description:
- *	Diese Klasse wird genutzt um die durchgeführten Aufträge zu verwalten.
- *	Ein Widget kann diese Daten dann nutzen um die durchgeführten Aufträge
- *	anzuzeigen.
+ *	This class is used to manage the executed jobs.
+ *	A widget can use the data of this class and display the jobs from
+ *	the past executions.
  *
  * changes not documented here, see svn
  *
@@ -40,17 +40,26 @@ abt_history::abt_history(QObject *parent) :
 
 abt_history::~abt_history()
 {	
-	//Alle Objecte und die Liste selbst löschen
+	//delete all objects and the list itself
 	this->clearAll();
 	delete this->m_historyList;
 }
 
+/**
+ * the \a job is added to the history only if the kind of job is supported by
+ * the history (all transfer types but no deletion or status updates).
+ *
+ * After adding the job to the list, the list is resorted in the descending
+ * order of the time of execution.
+ *
+ * At least the signal historyListChanged() is emitted.
+ */
 //public
 void abt_history::add(abt_jobInfo *job)
 {
 	if (!job) return; //no NULL objects
 
-	//only at job to history if wanted
+	//only add job to history if wanted
 	switch (job->getAbJobType()) {
 	case AB_Job_TypeCreateDatedTransfer:
 	case AB_Job_TypeCreateStandingOrder:
@@ -77,6 +86,15 @@ void abt_history::add(abt_jobInfo *job)
 
 }
 
+/**
+ * the \a job is removed from the list.
+ *
+ * After a job is removed the list is sorted by the timestamp of execution
+ * and the signal historyListChanged() is emitted.
+ *
+ * \returns true if the job was removed.
+ * \returns false if the job could not be removed or isnt in the list.
+ */
 //public
 bool abt_history::remove(abt_jobInfo *job)
 {
@@ -104,6 +122,11 @@ bool abt_history::remove(int pos)
 	return true;
 }
 
+/**
+ * removes all jobs from the history list.
+ *
+ * After the list is empty the signal historyListChanged() is emitted.
+ */
 //public
 void abt_history::clearAll()
 {
@@ -116,9 +139,11 @@ void abt_history::clearAll()
 }
 
 /**
-  * der zurück gegebene AB_IMEXPORTER_CONTEXT muss über AB_ImExporterContext_free()
-  * wieder freigegeben werden!
-  */
+ * Created a new AB_IMEXPORTER_CONTEXT which could be exported (saved) by the
+ * corresponding aqbanking function.
+ *
+ * The returned AB_IMEXPORTER_CONTEXT \b must be deleted by the calling function!
+ */
 //public
 AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 {
@@ -193,9 +218,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
  * This function sorts all items by this timestamp in an descending order (default)
  **/
 //private
-void abt_history::sortListByTimestamp(bool descending)
+void abt_history::sortListByTimestamp(bool descending /* = true */)
 {
-	//bubble sort
 	QList<abt_jobInfo*> *hl = this->m_historyList;	//history list
 
 	bool swapped = true;

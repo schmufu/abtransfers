@@ -22,9 +22,9 @@
  * $Rev$
  *
  * description:
- *	Diese Klasse wird genutzt um die durchgeführten Aufträge zu verwalten.
- *	Ein Widget kann diese Daten dann nutzen um die durchgeführten Aufträge
- *	anzuzeigen.
+ *	This class is used to manage the executed jobs.
+ *	A widget can use the data of this class and display the jobs from
+ *	the past executions.
  *
  * changes not documented here, see svn
  *
@@ -40,12 +40,15 @@
 #include "abt_jobinfo.h"
 
 
-/** \brief Verwaltung von durchgeführten Aufträgen
+/** \brief management of the realized jobs
   *
-  * Beim Starten wird durch das MainWindow ein History-Objekt erzeugt und
-  * die Daten der history-Datei durch den entsprechenden parser ausgewertet.
-  * Die passenden Daten die der parser findet werden dann diesem Objekt
-  * übergeben.
+  * At start the MainWindow creates a history object and the needed data is
+  * read by the history-parser from the history-file.
+  * All data that the parser found is added to this object.
+  *
+  * If a new job is executed the result would at first be saved in this object
+  * and at destruction of the MainWindow the data is exported to an
+  * AB_IMEXPORTER_CONTEXT and saved in the history file.
   */
 
 class abt_history: public QObject {
@@ -58,27 +61,27 @@ public:
 private:
 //	//! \brief Liste aller Accounts
 //	const aqb_Accounts *m_allAccounts;
-	//! \brief In dieser Liste werden die durchgeführten Aufträge verwaltet
+	//! \brief the list in which the job-items are stored
 	QList<abt_jobInfo*> *m_historyList;
 
 	//! \brief Sorts the list of history items depending on their creation
 	void sortListByTimestamp(bool descending = true);
 
 public:
-	//! \brief Fügt den \a job der history-Liste hinzu
+	//! \brief adds the \a job to the history list
 	void add(abt_jobInfo *job);
-	//! \brief Löscht den \a job in der history-Liste
+	//! \brief deletes the \a job from the history list
 	bool remove(abt_jobInfo *job);
 	//! \overload
 	bool remove(int pos);
-	//! \brief Löscht alle jobs in der history-Liste
+	//! \brief removes all jobs from the history list
 	void clearAll();
 
 
-	//! \brief erstellt einen AB_IMEXPORTER_CONTEXT der dann gespeichert werden kann
+	//! \brief creates an AB_IMEXPORTER_CONTEXT that could be saved troug aqbanking
 	AB_IMEXPORTER_CONTEXT *getContext() const;
 
-	//! \brief return the current history list as a const object
+	//! \brief returns the current history list as a const object
 	const QList<abt_jobInfo*> *getHistoryList() const { return this->m_historyList; }
 
 private slots:
