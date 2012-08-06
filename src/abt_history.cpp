@@ -160,16 +160,23 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 
 	Q_FOREACH(const abt_jobInfo* job, *this->m_historyList) {
 
-		/** \todo Hier muss evt. noch der Status des Jobs in die
-		 *        Transaction übertragen werden!
+		/** \todo the state of the job should be saved.
+		 *
+		 *	  We need to save if the job was succesfull or not.
 		 */
 
-		/** \todo Hierdurch wird z.B. eine Umbuchung als Überweisung
-		 *	  gespeichert. Beim laden der History wird somit eine
-		 *	  Umbuchung als "Überweisung" und nicht mehr als
-		 *	  Umbuchung angezeigt.
-		 *	  Welches Feld von AB_TRANSACTION könnte "missbraucht"
-		 *	  werden um den 'wahren' Typ zu Kennzeichnen? (Category?)
+		/** \todo save the real job type in the exportet context
+		 *
+		 *	  Because we want to display the done job type we must
+		 *	  store this in the transaction that is exported.
+		 *	  Can we export a job? There the type would be saved!
+		 *
+		 *	  The currently used exporter only stores the values
+		 *	  of AB_TRANSACTION fields and therefore the job type
+		 *	  is getting lost.
+		 *
+		 *	  At the moment we can only distinguish between a
+		 *	  standing order, dated transfer and all other transfers.
 		 */
 
 		AB_TRANSACTION *t = NULL;
