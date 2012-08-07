@@ -794,23 +794,52 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
 		while (t) {
-			QString t_kto = AB_Transaction_GetLocalAccountNumber(t);
-			QString t_blz = AB_Transaction_GetLocalBankCode(t);
-			aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
+			QString lclKto = AB_Transaction_GetLocalAccountNumber(t);
+			QString lclBLZ = AB_Transaction_GetLocalBankCode(t);
+
+			aqb_AccountInfo *acc = allAccounts->getAccount(lclKto, lclBLZ);
 			if (!acc) {
 				// keinen passenden Account gefunden, Nächste
 				qWarning() << logmsg << "No matching account found!"
-						     << "( KTO:" << t_kto
-						     << " - BLZ:" << t_blz << ")";
+						     << "( KTO:" << lclKto
+						     << " - BLZ:" << lclBLZ << ")";
 				t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
 				continue;
 			}
 			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
-			abt_jobInfo *ji = new abt_jobInfo(
-					AB_Job_TypeTransfer,
-					AB_Job_StatusFinished, t, a);
+			QString rmtKto = AB_Transaction_GetRemoteAccountNumber(t);
+			QString rmtBLZ = AB_Transaction_GetRemoteBankCode(t);
 
+			//check if the remote account matches one of the local
+			//accounts. The BLZ and the owner of remote and local
+			//must also be identical.
+			AB_JOB_TYPE supposedJobType = AB_Job_TypeTransfer;
+			if (lclBLZ == rmtBLZ) {
+				//the transfer was within the same institute!
+				//was it an internal transfer?
+				aqb_AccountInfo *rmtAcc = allAccounts->getAccount(rmtKto, rmtBLZ);
+				if (rmtAcc) {
+					//we know the remote account, is it the
+					//same owner or a different owner
+					if (acc->OwnerName() == rmtAcc->OwnerName()) {
+						//The owner is the same.
+						//If internal transfers are supported,
+						//this transfers supposed to be an
+						//internal transfer
+						if (rmtAcc->limits(AB_Job_TypeInternalTransfer)) {
+							//This WAS a internal transfer
+							supposedJobType = AB_Job_TypeInternalTransfer;
+						}
+					}
+				}
+			}
+			/** \todo more checks needed, to catch the possible transfers */
+
+
+			abt_jobInfo *ji = new abt_jobInfo(
+						  supposedJobType,
+						  AB_Job_StatusFinished, t, a);
 			history->add(ji);
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
