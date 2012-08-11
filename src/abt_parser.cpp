@@ -46,6 +46,48 @@
 #include <aqbanking/accstatus.h>
 
 
+/**
+ * When a AB_TRANSACTION is exported from the history by the AB_IMEXPORTER_CONTEXT,
+ * that is created at abt_history::getContext(), the AB_JOB_TYPE and AB_JOB_STATUS
+ * is stored in the category field of the AB_TRANSACTION.
+ *
+ * This function searches the category fields for this values and sets the
+ * \a jobType and \a jobStatus to the found values.
+ *
+ * If nothing is found, the \a jobType is set to AB_Job_TypeUnknown and the
+ * \a jobStatus is set to AB_Job_StatusUnknown.
+ *
+ * The values will also be removed from the category field of the AB_TRANSACTION!
+ *
+ */
+//private static
+void abt_parser::getJobStatesFromTransaction(AB_TRANSACTION *t, AB_JOB_TYPE &jobType, AB_JOB_STATUS &jobStatus)
+{
+	jobStatus = AB_Job_StatusUnknown; //default Value
+	jobType	= AB_Job_TypeUnknown; //default Value
+
+	const GWEN_STRINGLIST *gsl = AB_Transaction_GetCategory(t);
+	if (!gsl) return; //abort, no category exist
+
+	//we need a copy, so that we dont modify our stringlist while we
+	//iterating over it.
+	GWEN_STRINGLIST *sl = GWEN_StringList_dup(gsl);
+	if (!sl) return; //abort
+
+	for(unsigned int i=0; i<GWEN_StringList_Count(sl); i++) {
+		QString s = QString::fromUtf8(GWEN_StringList_StringAt(sl, i));
+		if (s.startsWith("JobType:")) {
+			jobType = AB_JOB_TYPE(s.right(s.length() - QString("JobType: ").length()).toInt());
+			AB_Transaction_RemoveCategory(t, s.toUtf8());
+		}
+		if (s.startsWith("JobStatus:")) {
+			jobStatus = AB_JOB_STATUS(s.right(s.length() - QString("JobStatus: ").length()).toInt());
+			AB_Transaction_RemoveCategory(t, s.toUtf8());
+		}
+	}
+
+	GWEN_StringList_free(sl);
+}
 
 abt_parser::abt_parser()
 {
@@ -143,6 +185,17 @@ AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccoun
 	return ctx;
 }
 
+/**
+ * parses the supplied AB_IMEXPORTER_CONTEXT \a iec and adds the found
+ * transactions to the corresponding aqb_Accounts \a allAccounts.
+ *
+ * This function should be used to parse the account data and the context which
+ * is returned from the bank.
+ *
+ * (the parse_ctx() function wich also has an abt_history parameter should be
+ *  used so load the saved history transactions).
+ *
+ */
 //static
 void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts)
 {
@@ -565,7 +618,11 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 }
 
 
-// Zum import der History
+/**
+ * parses the supplied AB_IMEXPORTER_CONTEXT \a iec and adds the found
+ * transactions as abt_jobinfo types in the supplied abt_history \a history.
+ *
+ */
 //static
 void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			   const aqb_Accounts *allAccounts,
@@ -699,9 +756,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			}
 			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
-			abt_jobInfo *ji = new abt_jobInfo(
-					AB_Job_TypeCreateDatedTransfer,
-					AB_Job_StatusFinished, t, a);
+			AB_JOB_TYPE jtype;
+			AB_JOB_STATUS jstatus;
+
+			//get the jobType and jobStatus from the category field
+			//if the saved transaction.
+			getJobStatesFromTransaction(t, jtype, jstatus);
+
+			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t, a);
 
 			history->add(ji);
 
@@ -753,9 +815,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			}
 			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
-			abt_jobInfo *ji = new abt_jobInfo(
-					AB_Job_TypeCreateStandingOrder,
-					AB_Job_StatusFinished, t, a);
+			AB_JOB_TYPE jtype;
+			AB_JOB_STATUS jstatus;
+
+			//get the jobType and jobStatus from the category field
+			//if the saved transaction.
+			getJobStatesFromTransaction(t, jtype, jstatus);
+
+			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t, a);
 
 			history->add(ji);
 
@@ -807,40 +874,15 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 				continue;
 			}
 
-			QString rmtKto = AB_Transaction_GetRemoteAccountNumber(t);
-			QString rmtBLZ = AB_Transaction_GetRemoteBankCode(t);
+			AB_JOB_TYPE jtype;
+			AB_JOB_STATUS jstatus;
+			//get the jobType and jobStatus from the category field
+			//if the saved transaction.
+			getJobStatesFromTransaction(t, jtype, jstatus);
 
-			//check if the remote account matches one of the local
-			//accounts. The BLZ and the owner of remote and local
-			//must also be identical.
-			AB_JOB_TYPE supposedJobType = AB_Job_TypeTransfer;
-			if (lclBLZ == rmtBLZ) {
-				//the transfer was within the same institute!
-				//was it an internal transfer?
-				aqb_AccountInfo *rmtAcc = allAccounts->getAccount(rmtKto, rmtBLZ);
-				if (rmtAcc) {
-					//we know the remote account, is it the
-					//same owner or a different owner
-					if (lclAcc->OwnerName() == rmtAcc->OwnerName()) {
-						//The owner is the same.
-						//If internal transfers are supported,
-						//this transfers supposed to be an
-						//internal transfer
-						if (lclAcc->limits(AB_Job_TypeInternalTransfer)) {
-							//InternalTransfers are allowed for the lclAcc
-							//so we suppose this was an internal transfer
-							supposedJobType = AB_Job_TypeInternalTransfer;
-						}
-					}
-				}
-			}
-			/** \todo more checks needed, to catch the possible transfers */
+			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t,
+							  lclAcc->get_AB_ACCOUNT());
 
-
-			abt_jobInfo *ji = new abt_jobInfo(
-						  supposedJobType,
-						  AB_Job_StatusFinished, t,
-						  lclAcc->get_AB_ACCOUNT());
 			history->add(ji);
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);

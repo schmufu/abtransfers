@@ -78,7 +78,7 @@ public:
 	void clearAll();
 
 
-	//! \brief creates an AB_IMEXPORTER_CONTEXT that could be saved troug aqbanking
+	//! \brief creates an AB_IMEXPORTER_CONTEXT that could be saved trough aqbanking
 	AB_IMEXPORTER_CONTEXT *getContext() const;
 
 	//! \brief returns the current history list as a const object

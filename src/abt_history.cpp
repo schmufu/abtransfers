@@ -123,8 +123,6 @@ bool abt_history::remove(int pos)
 }
 
 /**
- * removes all jobs from the history list.
- *
  * After the list is empty the signal historyListChanged() is emitted.
  */
 //public
@@ -139,8 +137,13 @@ void abt_history::clearAll()
 }
 
 /**
- * Created a new AB_IMEXPORTER_CONTEXT which could be exported (saved) by the
+ * Creates a new AB_IMEXPORTER_CONTEXT which could be exported (saved) by the
  * corresponding aqbanking function.
+ *
+ * The AB_JOB_TYPE and AB_JOB_STATUS is added to the category-fiels of the
+ * AB_TRANSACTION which is then added to the returned AB_IMEXPORTER_CONTEXT.
+ * At loading from the history-file this information is read from the category
+ * and removed (see @ref abt_parser::parse_ctx() ).
  *
  * The returned AB_IMEXPORTER_CONTEXT \b must be deleted by the calling function!
  */
@@ -160,26 +163,14 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 
 	Q_FOREACH(const abt_jobInfo* job, *this->m_historyList) {
 
-		/** \todo the state of the job should be saved.
-		 *
-		 *	  We need to save if the job was succesfull or not.
-		 */
-
-		/** \todo save the real job type in the exportet context
-		 *
-		 *	  Because we want to display the done job type we must
-		 *	  store this in the transaction that is exported.
-		 *	  Can we export a job? There the type would be saved!
-		 *
-		 *	  The currently used exporter only stores the values
-		 *	  of AB_TRANSACTION fields and therefore the job type
-		 *	  is getting lost.
-		 *
-		 *	  At the moment we can only distinguish between a
-		 *	  standing order, dated transfer and all other transfers.
-		 */
+		//To store the state and type of the job in the transaction we
+		//use the category stringlist of the transaction.
+		//We append the state and the type to the list.
+		//This information is read and removed by the history-parser at
+		//the time where the transaction is loaded from the history file.
 
 		AB_TRANSACTION *t = NULL;
+
 
 		switch(job->getAbJobType()) {
 		case AB_Job_TypeCreateDatedTransfer:
@@ -187,6 +178,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeDeleteDatedTransfer:
 			//DatedTransfer der History hinzufügen
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddDatedTransfer(iea, t);
 			break;
 		case AB_Job_TypeCreateStandingOrder:
@@ -194,6 +187,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeDeleteStandingOrder:
 			//StandingOrder der History hinzufügen
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddStandingOrder(iea, t);
 			break;
 		case AB_Job_TypeTransfer:
@@ -205,6 +200,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeSepaTransfer:
 			//Transfer der History hinzufügen
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddTransfer(iea, t);
 			break;
 

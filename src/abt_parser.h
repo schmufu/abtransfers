@@ -79,6 +79,10 @@ class abt_parser
 {
 private:
 	//static AB_IMEXPORTER_CONTEXT *ctx;
+	/** \brief reads the type and status from the category field */
+	static void getJobStatesFromTransaction(AB_TRANSACTION *t,
+						AB_JOB_TYPE &jobType,
+						AB_JOB_STATUS &jobStatus);
 
 public:
 	abt_parser();
