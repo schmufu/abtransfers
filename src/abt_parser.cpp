@@ -797,8 +797,8 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			QString lclKto = AB_Transaction_GetLocalAccountNumber(t);
 			QString lclBLZ = AB_Transaction_GetLocalBankCode(t);
 
-			aqb_AccountInfo *acc = allAccounts->getAccount(lclKto, lclBLZ);
-			if (!acc) {
+			aqb_AccountInfo *lclAcc = allAccounts->getAccount(lclKto, lclBLZ);
+			if (!lclAcc) {
 				// keinen passenden Account gefunden, Nächste
 				qWarning() << logmsg << "No matching account found!"
 						     << "( KTO:" << lclKto
@@ -806,7 +806,6 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 				t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
 				continue;
 			}
-			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
 			QString rmtKto = AB_Transaction_GetRemoteAccountNumber(t);
 			QString rmtBLZ = AB_Transaction_GetRemoteBankCode(t);
@@ -822,13 +821,14 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 				if (rmtAcc) {
 					//we know the remote account, is it the
 					//same owner or a different owner
-					if (acc->OwnerName() == rmtAcc->OwnerName()) {
+					if (lclAcc->OwnerName() == rmtAcc->OwnerName()) {
 						//The owner is the same.
 						//If internal transfers are supported,
 						//this transfers supposed to be an
 						//internal transfer
-						if (rmtAcc->limits(AB_Job_TypeInternalTransfer)) {
-							//This WAS a internal transfer
+						if (lclAcc->limits(AB_Job_TypeInternalTransfer)) {
+							//InternalTransfers are allowed for the lclAcc
+							//so we suppose this was an internal transfer
 							supposedJobType = AB_Job_TypeInternalTransfer;
 						}
 					}
@@ -839,7 +839,8 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 
 			abt_jobInfo *ji = new abt_jobInfo(
 						  supposedJobType,
-						  AB_Job_StatusFinished, t, a);
+						  AB_Job_StatusFinished, t,
+						  lclAcc->get_AB_ACCOUNT());
 			history->add(ji);
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
