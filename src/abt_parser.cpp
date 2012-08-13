@@ -708,7 +708,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			continue;
 		}
 
-		logmsg2 = QString("%1 [%2] Owner: %4").arg(KtoNr, BLZ, Owner);
+		logmsg2 = QString("%1 [%2] Owner: %3").arg(KtoNr, BLZ, Owner);
 		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 
 
