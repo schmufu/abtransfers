@@ -33,6 +33,7 @@
 #include "ui_page_history.h"
 
 #include <QMessageBox>
+#include <QtGui/QMenu>
 
 #include "../dialogs/abt_dialog.h"
 #include "../abt_history.h"
@@ -122,14 +123,7 @@ void page_history::createActions()
 	connect(this->actGenerateNewTransaction, SIGNAL(triggered()),
 		this, SLOT(onActGenerateNewTransaction()));
 	this->ui->toolButton_new->setDefaultAction(this->actGenerateNewTransaction);
-
-	QIcon deleteIcon = this->ui->toolButton_delete->icon();
-	this->actDeleteSelected = new QAction(deleteIcon, tr("Löschen"), this);
-	this->actDeleteSelected->setToolTip(tr("Löscht die ausgewählten Einträge "
-					       "aus der Historie."));
-	connect(this->actDeleteSelected, SIGNAL(triggered()),
-		this, SLOT(onActDeleteSelected()));
-	this->ui->toolButton_delete->setDefaultAction(this->actDeleteSelected);
+	this->ui->treeWidget->addAction(this->actGenerateNewTransaction);
 
 	QIcon exportIcon = this->ui->toolButton_export->icon();
 	this->actExportSelected = new QAction(exportIcon, tr("Exportieren"), this);
@@ -138,6 +132,16 @@ void page_history::createActions()
 	connect(this->actExportSelected, SIGNAL(triggered()),
 		this, SLOT(onActExportSelected()));
 	this->ui->toolButton_export->setDefaultAction(this->actExportSelected);
+	this->ui->treeWidget->addAction(this->actExportSelected);
+
+	QIcon deleteIcon = this->ui->toolButton_delete->icon();
+	this->actDeleteSelected = new QAction(deleteIcon, tr("Löschen"), this);
+	this->actDeleteSelected->setToolTip(tr("Löscht die ausgewählten Einträge "
+					       "aus der Historie."));
+	connect(this->actDeleteSelected, SIGNAL(triggered()),
+		this, SLOT(onActDeleteSelected()));
+	this->ui->toolButton_delete->setDefaultAction(this->actDeleteSelected);
+	this->ui->treeWidget->addAction(this->actDeleteSelected);
 }
 
 //private slot
