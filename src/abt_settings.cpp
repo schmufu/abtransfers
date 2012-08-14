@@ -41,7 +41,7 @@ abt_settings::abt_settings(QObject *parent) :
 {
 	qDebug() << Q_FUNC_INFO << "created";
 
-	//Der Standart-Speicherordner ist .abtransfers im /home/USER Verzeichniss
+	//Der Standard-Speicherordner ist .abtransfers im /home/USER Verzeichnis
 	//dort liegt auch IMMER die settings.ini
 
 	QString homePath = QDir::homePath();
@@ -371,6 +371,19 @@ bool abt_settings::appendJobToOutbox(const QString &jobname) const
 void abt_settings::setAppendJobToOutbox(const QString &jobname, bool get)
 {
 	this->settings->setValue(QString("LoadAtStart/").append(jobname), get);
+}
+
+
+//public
+bool abt_settings::autoAddNewRecipients() const
+{
+	return this->settings->value("General/autoAddNewRecipients", true).toBool();
+}
+
+//public
+void abt_settings::setAutoAddNewRecipients(bool value)
+{
+	this->settings->setValue("General/autoAddNewRecipients", value);
 }
 
 

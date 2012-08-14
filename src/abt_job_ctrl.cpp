@@ -1041,11 +1041,16 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			//	verwaltet und benötigte Daten des Jobs kopiert.
 
 
-			/** \todo Status in der ausgeführten Transaction setzen.
-			  * Der Status sollte innherhalb der Transaction gespeichert
-			  * werden. Damit die History auch anzeigt wie der Status
-			  * des Auftrages war.
-			  */
+			/* \todo Status in der ausgeführten Transaction setzen.
+			 * Der Status sollte innherhalb der Transaction gespeichert
+			 * werden. Damit die History auch anzeigt wie der Status
+			 * des Auftrages war.
+			 *
+			 * -->	Der Status wird jetzt in durch abt_history beim
+			 *	speichern in der Transaction gesetzt und durch
+			 *	den parser wieder in abt_jobInfo gesetzt.
+			 *	Details siehe abt_history::getContext()
+			 */
 			//AB_Transaction_SetType(t, AB_Transaction_TypeTransaction);
 			//AB_Transaction_SetSubType(t, AB_Transaction_SubTypeStandard);
 			//AB_Transaction_SetStatus(t, AB_Transaction_StatusRevoked);
@@ -1057,6 +1062,29 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
 					"Der Auftrag wurde zur Historie hinzugefügt").arg(
 							abt_conv::JobTypeToQString(jobType)));
+
+			//if wanted, we add a new known recipient
+			if (settings->autoAddNewRecipients()) {
+				switch(jobType) {
+				//we dont add internalTransfer recipients
+				//because they are already known by the account
+				case AB_Job_TypeCreateDatedTransfer:
+				case AB_Job_TypeCreateStandingOrder:
+				case AB_Job_TypeDebitNote:
+				case AB_Job_TypeEuTransfer:
+				case AB_Job_TypeModifyDatedTransfer:
+				case AB_Job_TypeModifyStandingOrder:
+				case AB_Job_TypeSepaDebitNote:
+				case AB_Job_TypeSepaTransfer:
+				case AB_Job_TypeTransfer:
+					this->addNewRecipient(jobInfo);
+					break;
+				default:
+					//don't try to save a recipient were
+					//no one exists.
+					break;
+				}
+			}
 
 
 			//Je nachdem was gemacht wurde müssen evt. noch die
@@ -1174,6 +1202,35 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
 
 	return ret;
+}
+
+/**
+ * If the recipient from the \a jobInfo is already known, nothing happen.
+ * Otherwise the recipient is added to the list of known recipients.
+ */
+//private
+void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
+{
+	QString rcp_name = jobInfo->getTransaction()->getRemoteName().at(0);
+	QString rcp_kto = jobInfo->getTransaction()->getRemoteAccountNumber();
+	QString rcp_blz = jobInfo->getTransaction()->getRemoteBankCode();
+	abt_EmpfaengerInfo *ei = new abt_EmpfaengerInfo(rcp_name, rcp_kto, rcp_blz);
+
+	bool recipientAlreadyKnown = false;
+	const QList<abt_EmpfaengerInfo*> *rcpList = settings->getKnownRecipients();
+	for(int i=0; i<rcpList->size(); ++i) {
+		//we need to dereference the pointer so that the == operator
+		//of abt_EmpfaengerInfo checks for equal data
+		if (*rcpList->at(i) == *ei) {
+			recipientAlreadyKnown = true;
+			break; //known recipient found, abort search
+		}
+	}
+
+	//only add the new recipient if we do not already know it
+	if (!recipientAlreadyKnown) {
+		settings->addKnownRecipient(ei);
+	}
 }
 
 

@@ -114,8 +114,8 @@ public:
 
 	const abt_transactionLimits* limits(AB_JOB_TYPE type) const;
 
-	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_availableJobs; };
-	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_availableJobs->value(type, false); };
+	const QHash<AB_JOB_TYPE, bool>* availableJobsHash() const { return this->m_availableJobs; }
+	bool isAvailable(const AB_JOB_TYPE type) const { return this->m_availableJobs->value(type, false); }
 
 	QString getBankLine() const;
 	QString getNotedBalance() const;
@@ -159,7 +159,7 @@ signals:
 };
 
 //Q_DECLARE_METATYPE(aqb_AccountInfo);
-Q_DECLARE_METATYPE(aqb_AccountInfo*);
-Q_DECLARE_METATYPE(const aqb_AccountInfo*);
+Q_DECLARE_METATYPE(aqb_AccountInfo*)
+Q_DECLARE_METATYPE(const aqb_AccountInfo*)
 
 #endif // AQB_ACCOUNTINFO_H

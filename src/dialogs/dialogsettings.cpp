@@ -92,6 +92,8 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
 	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
 	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
+
+	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
 }
 
 //private
@@ -110,6 +112,7 @@ void DialogSettings::saveToSettings()
 	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
 	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
 
+	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 }
 
 //private slot

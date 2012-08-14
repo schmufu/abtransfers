@@ -99,7 +99,7 @@ p, li { white-space: pre-wrap; }
     <item row="0" column="0">
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Standart-Ordner</string>
+       <string>Standard-Ordner</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -350,10 +350,7 @@ Hinweis angezeigt.</string>
     </property>
    </widget>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
+  <widget class="QCheckBox" name="checkBox_autoAddNewRecipients">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -490,7 +487,7 @@ nach dem starten zum Insititut übertragen.</string>
   <tabstop>lineEdit_recipients</tabstop>
   <tabstop>toolButton_selectRecipients</tabstop>
   <tabstop>checkBox_debugInfoDialog</tabstop>
-  <tabstop>checkBox</tabstop>
+  <tabstop>checkBox_autoAddNewRecipients</tabstop>
   <tabstop>checkBox_warnCosts</tabstop>
   <tabstop>checkBox_jobAddedToOutput</tabstop>
   <tabstop>checkBox_getBalance</tabstop>

@@ -76,12 +76,14 @@ public:
 
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
+	const QList<abt_EmpfaengerInfo*>* getKnownRecipients() const { return this->m_recipientsList; }
 
 	const QHash<int, QString> *getTextKeyDescriptions() const;
 
 	void saveWindowStateGeometry(const QByteArray state, const QByteArray geometry);
 	QByteArray loadWindowState() const;
 	QByteArray loadWindowGeometry() const;
+
 
 	void saveSelAccountInWidget(const QString &widgetName, const aqb_AccountInfo *acc);
 	int loadSelAccountInWidget(const QString &widgetName) const;
@@ -92,11 +94,13 @@ public:
 	bool appendJobToOutbox(const QString &jobname) const;
 	void setAppendJobToOutbox(const QString &jobname, bool get);
 
+	bool autoAddNewRecipients() const;
+	void setAutoAddNewRecipients(bool value);
+
 	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
-
 
 signals:
 	void recipientsListChanged();

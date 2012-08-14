@@ -77,6 +77,9 @@ private:
 	//! Prüft die übergebene ausgeführte JobListe \a jl auf Fehler
 	bool parseExecutedJobs(AB_JOB_LIST2 *jl);
 
+	//! adds the recipient from the \a jobInfo to the known recipients
+	void addNewRecipient(const abt_jobInfo *jobInfo);
+
 public:
 	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
 			      QObject *parent = 0);
