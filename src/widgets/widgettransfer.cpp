@@ -637,17 +637,15 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	}
 
 	if (this->remoteAccount != NULL) {
+		//check between internal- and other transfers differ
 		if (this->m_type == AB_Job_TypeInternalTransfer) {
+			//the remoteAccount widget must have a known account!
 			if (this->remoteAccount->getAccount() == NULL) {
 				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount->getAccount == NULL<br />"));
-			} else { //Bei Umbuchung muss Absender und Empfänger unterschiedlich sein
-				if (this->localAccount != NULL) {
-					if (this->localAccount->getAccount() ==
-					    this->remoteAccount->getAccount()) {
-						errorMsg.append(tr(" - Absender und Empfänger müssen unterschiedlich sein<br />"));
-					}
-				}
 			}
+			//the values of the selected local and remote account
+			//are checked further down.
+
 		} else {
 			if (this->remoteAccount->getName().isEmpty()) {
 				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
@@ -746,21 +744,44 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	//Prüfung der Daten von recurrence
 	this->isRecurrenceInputOk(errorMsg);
 
+
+	//Check the values for an internal transfer
 	if (this->m_type == AB_Job_TypeInternalTransfer) {
-		if (this->remoteAccount->getAccount() != NULL) {
-			if (this->localAccount->getAccount() ==
-			    this->remoteAccount->getAccount()) {
-				errorMsg.append(tr(" - Umbuchung von ein auf dasselbe Konto nicht möglich<br />"));
+		//local- and remoteAccountWidget must exist (NULL Pointer dereference)
+		if (this->localAccount && this->remoteAccount) {
+			if (this->remoteAccount->getAccount() == NULL) {
+				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount muss bei Umbuchung einen Account besitzen!<br />"));
+			} else {
+				const aqb_AccountInfo* la = this->localAccount->getAccount(); //local Account
+				const aqb_AccountInfo* ra = this->remoteAccount->getAccount(); //remote Account
+				if (la == ra) {
+					errorMsg.append(tr(" - Absender und Empfänger müssen unterschiedlich sein<br />"
+							   "&nbsp;&nbsp;<i>(Umbuchung von ein auf dasselbe Konto nicht möglich)</i><br />"));
+				} else if (la->BankCode() != ra->BankCode()) {
+					//local and remote account must be at the same bank
+					errorMsg.append(tr(" - Umbuchungungen sind nur zwischen Konten des selben<br />"
+							   "&nbsp;&nbsp;Instituts möglich<br />"));
+				} // else if (la->OwnerName() != ra->OwnerName()) {
+					//local and remote account must have the same owner/user
+					/** \todo Wie wird richtig zwischen 2 konten mit
+					 *	  unterschiedlichen Besitzern unterschieden?
+					 *	  Über den "Owner" oder über den in aqBanking
+					 *	  vorhandenen "User"?
+					 *
+					 *	  Jedes Konto hat einen Owner und ist einem
+					 *	  User zugewiesen. Die User-Verknüpfung
+					 *	  bestimmt z.B. welches Sicherheitsverfahren
+					 *	  verwendet wird.
+					 */
+//					errorMsg.append(tr(" - Absender- und Empfängerkonto müssen derselben Person<br />"
+//							   "&nbsp;&nbsp;zugeordnet sein<br />"));
+//				}
 			}
-			if (this->localAccount->getAccount()->BankCode() !=
-			    this->remoteAccount->getAccount()->BankCode()) {
-				errorMsg.append(tr(" - Umbuchungungen sind nur zwischen Konten desselben Instituts möglich<br />"));
-			}
-		} else {
-			errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount muss bei Umbuchung einen Account besitzen!<br />"));
 		}
 	}
 
+
+	//safety check for modifying transfers
 	if ((this->m_type == AB_Job_TypeModifyDatedTransfer) ||
 	    (this->m_type == AB_Job_TypeModifyStandingOrder)) {
 		if (this->m_origTransaction == NULL) {
@@ -773,8 +794,9 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		return true;
 	}
 
-	//: the same string as used for displaying programmer failures
-	if (errorMsg.contains(tr("Programmierfehler"))) {
+	//append msg that the author make a mistake and that the user can not
+	//correct this if the errorMsg contains "Programmierfehler"
+	if (errorMsg.contains(tr("Programmierfehler", "must be the same string as used in \"Programming Error\" strings"))) {
 		errorMsg.append(tr("<br />"
 				   "<hr>"
 				   "Es sind Fehler aufgetreten an denen Sie nichts ändern "
