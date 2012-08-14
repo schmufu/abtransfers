@@ -208,8 +208,7 @@ void page_history::onActExportSelected()
 //public slot
 void page_history::refreshTreeWidget(const abt_history *hist)
 {
-	QTreeWidgetItem *item, *topItem;
-	const QStringList *historyInfo;
+	QTreeWidgetItem *topItem;
 
 	if ((hist == NULL) ||
 	    (hist->getHistoryList()->size() == 0)) {
@@ -221,7 +220,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole,
 				 tr("Keine Einträge in der Historie vorhanden"));
-		topItem->setFlags(Qt::ItemIsSelectable);
+		topItem->setFlags(Qt::NoItemFlags);
 		ui->treeWidget->addTopLevelItem(topItem);
 		return; //fertig
 	}
@@ -241,6 +240,9 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 
 	const QList<abt_jobInfo*> *jql = hist->getHistoryList();
 	for (int i=0; i<jql->size(); ++i) {
+		QTreeWidgetItem *item;
+		const QStringList *historyInfo;
+
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole, QString("")); // first col empty
 		topItem->setData(1, Qt::DisplayRole, jql->at(i)->getType());
@@ -258,7 +260,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 			item = new QTreeWidgetItem();
 			item->setData(0, Qt::DisplayRole, "");
 			item->setData(1, Qt::DisplayRole, historyInfo->at(j));
-			item->setFlags(Qt::ItemIsSelectable);
+			item->setFlags(Qt::NoItemFlags);
 			topItem->addChild(item);
 		}
 

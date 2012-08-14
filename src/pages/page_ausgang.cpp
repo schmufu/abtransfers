@@ -163,7 +163,7 @@ void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 
 		topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole, tr("Keine Aufträge zum Ausführen vorhanden"));
-		topItem->setFlags(Qt::ItemIsSelectable);
+		topItem->setFlags(Qt::NoItemFlags);
 		ui->treeWidget->addTopLevelItem(topItem);
 		//Ausführen BTN ausschalten, keine Aufträge vorhanden.
 		this->ui->pushButton_exec->setEnabled(false);
@@ -199,7 +199,7 @@ void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 			item = new QTreeWidgetItem();
 			item->setData(0, Qt::DisplayRole, "");
 			item->setData(1, Qt::DisplayRole, JobInfo->at(j));
-			item->setFlags(Qt::ItemIsSelectable);
+			item->setFlags(Qt::NoItemFlags);
 			topItem->addChild(item);
 		}
 
