@@ -297,6 +297,8 @@ void MainWindow::TimerTimeOut()
 		this->jobctrl->execQueuedTransactions();
 	}
 
+	//check if DatedTransfers exists which reached the date of execution.
+	this->checkReachedDatedTransfers();
 }
 
 //private
@@ -2360,6 +2362,56 @@ void MainWindow::appendGetStandingOrdersToOutbox() const
 	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		this->jobctrl->addGetStandingOrders(acc, true);
 	}
+}
+
+/** \brief Checks for DatedTransfers which execution date is reached
+ *
+ * If a DatedTransfer is found that has an execution date which is older or
+ * equal to the current date, then a message is displayed that the known
+ * DatedTransfers should be updated.
+ *
+ */
+//private
+void MainWindow::checkReachedDatedTransfers()
+{
+	QString msgText = "";
+	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+		//next account if this account does not have a datedTransfers-List
+		if (acc->getKnownDatedTransfers() == NULL) continue;
+		for(int i=0; i < acc->getKnownDatedTransfers()->size(); ++i) {
+			abt_datedTransferInfo *dt = acc->getKnownDatedTransfers()->at(i);
+			if (dt->getTransaction()->getDate() <= QDate::currentDate()) {
+				msgText.append("<table>");
+				msgText.append(tr("<tr><td>Begünstigter:</td><td>%1</td></tr>").arg(dt->getTransaction()->getRemoteName().at(0)));
+				msgText.append(tr("<tr><td>Betrag:</td><td>%1</td></tr>").arg(abt_conv::ABValueToString(dt->getTransaction()->getValue(), true)));
+				msgText.append(tr("<tr><td><b>Ausführen am:</b></td><td>%1</td></tr>").arg(dt->getTransaction()->getDate().toString(Qt::SystemLocaleShortDate)));
+				msgText.append("</table>");
+			}
+		}
+	}
+
+	if (!msgText.isEmpty()) {
+		msgText.prepend(tr("Folgende terminierte Überweisungen haben "
+				   "den Ausführungstag erreicht oder "
+				   "überschritten:<br />"));
+		msgText.append(tr("<br /><br />"
+				  "Es wird empfohlen die terminierten "
+				  "Überweisungen zu aktualisieren.<br />"
+				  "<br />"
+				  "Soll bei allen Konten, die terminierte "
+				  "Überweisungen unterstützen, eine "
+				  "Aktualisierung durchgeführt werden?"));
+
+		QMessageBox::StandardButton sel;
+		sel = QMessageBox::information(this, tr("Terminüberweisung"),
+					       msgText, QMessageBox::Yes,
+					       QMessageBox::No);
+		if (sel == QMessageBox::Yes) {
+			this->appendGetDatedTransfersToOutbox();
+			this->jobctrl->execQueuedTransactions();
+		}
+	}
+
 }
 
 void MainWindow::on_actionAqBankingSetup_triggered()

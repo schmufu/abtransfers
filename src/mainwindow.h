@@ -141,6 +141,8 @@ private:
 	/** \brief fügt für alle Konten ein getStandingOrders in den Ausgang ein */
 	void appendGetStandingOrdersToOutbox() const;
 
+	void checkReachedDatedTransfers();
+
 	/** \brief korrigiert automatisch die Datumseingaben beim Dauerauftrag */
 	bool correctRecurrenceDates(widgetRecurrence *recurrence) const;
 
