@@ -32,7 +32,9 @@
 #ifndef PAGE_HISTORY_H
 #define PAGE_HISTORY_H
 
-#include <QFrame>
+#include <QtGui/QFrame>
+#include <QtGui/QTreeWidgetItem>
+
 #include "../abt_jobinfo.h"
 
 class abt_history;
@@ -80,6 +82,7 @@ private slots:
 	void onActExportSelected();
 
 	void on_treeWidget_itemSelectionChanged();
+	void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 public slots:
 	void refreshTreeWidget(const abt_history *hist);

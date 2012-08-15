@@ -284,3 +284,12 @@ void page_history::on_treeWidget_itemSelectionChanged()
 	this->actExportSelected->setEnabled(enabled);
 	this->actDeleteSelected->setEnabled(enabled);
 }
+
+void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* column */)
+{
+	//if the clicked item isnt selectable, switch the selection of the parent
+	if (!(item->flags() & Qt::ItemIsSelectable)) {
+		QTreeWidgetItem *top = item->parent();
+		top->setSelected(!top->isSelected());
+	}
+}
