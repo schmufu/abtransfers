@@ -1,0 +1,68 @@
+# Diese Liste der von HBCI Unterstützten Geschäftsvorfälle ist von
+# http://de.wikipedia.org/wiki/Homebanking_Computer_Interface
+#
+# Jede Zeile die nicht mit # beginnt enhält als erstes die GV-Kennung und nach
+# einen Tab die zugehörige Beschreibung.
+
+#Kennung	Name
+DKPAE 	PIN online ändern
+HIISA 	Übermittlung eines öffentlichen Schlüssels
+HIKIM 	Kreditinstitutsmeldung
+HIPRO 	Statusprotokoll rückmelden
+HIPROS 	Statusprotokoll Parameter
+HISYN 	Synchronisierungsantwort
+HKAOM 	EU-Überweisung
+HKAUB 	Auslandsüberweisung
+HKCCS 	SEPA-Zahlung
+HKDAB 	Dauerauftragsbestand holen
+HKDAE 	Dauerauftrag einrichten
+HKDAL 	Dauerauftrag löschen
+HKDAN 	Dauerauftrag ändern
+HKEKA 	Kontoauszug abholen
+HKEND 	Dialogende
+HKFPO 	Festpreisorder (Eigenhandel)
+HKIDN 	Identifikation
+HKISA 	Anforderung eines öffentlichen Schlüssels
+HKKAN 	Neue Kontoumsätze holen
+HKKAU 	Übersicht Kontoauszüge holen
+HKKAZ 	Kontoumsätze holen
+HKKDM 	Kundenmeldung
+HKLAS 	Einzellastschrift
+HKLSW 	Lastschriftwiderspruch
+HKNEZ 	Neuemission zeichnen (Neuemissionen)
+HKOAN 	Orderanzeige anfordern
+HKPPD 	Handykarte aufladen
+HKPRO 	Statusprotokoll holen
+HKQTG 	Quittung senden
+HKSAL 	Saldo holen
+HKSLA 	Sammellastschrift
+HKSLB 	Terminierte Sammellastschrift Bestand
+HKSLE 	Terminierte Sammellastschrift einreichen
+HKSLL 	Terminierte Sammellastschrift löschen
+HKSPA 	SEPA-Kontoverbindung anfordern
+HKSSP 	Schlüsselsperre
+HKSTP 	Euro-STP-Überweisung
+HKSUB 	Sammelüberweisung
+HKSYN 	Synchronisierungsnachricht
+HKTAB 	TAN-Medien-Bestand anzeigen
+HKTAU 	TAN-Generator an-/ummelden
+HKTAZ 	TAN-Liste anzeigen
+HKTML 	TAN-Medium deaktivieren/löschen
+HKTSB 	Terminierte Sammelüberweisung Bestand
+HKTSE 	Terminierte Sammelüberweisung einreichen
+HKTSL 	Terminierte Sammelüberweisung löschen
+HKTUA 	Terminüberweisung ändern
+HKTUB 	Bestand an Terminüberweisungen holen
+HKTUE 	Terminüberweisung einrichten
+HKTUL 	Terminüberweisung löschen
+HKUEB 	Einzelüberweisung
+HKUMB 	Umbuchung
+HKVVB 	Verarbeitungsvorbereitung
+HKWFO 	Fondsorder (Fonds)
+HKWPD 	Wertpapierdepotaufstellung holen
+HKWPK 	Wertpapierkursabfrage
+HKWPO 	Wertpapierorder (Aktien, Renten, Optionsscheine)
+HKWPR 	Wertpapierreferenznummern holen
+HKWPS 	Orderstreichung
+HKWSD 	Wertpapierstammdaten anfordern
+HKWSO 	Orderstatus anfordern
