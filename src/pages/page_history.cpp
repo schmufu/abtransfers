@@ -34,9 +34,16 @@
 
 #include <QMessageBox>
 #include <QtGui/QMenu>
+#include <QtCore/QDebug>
 
 #include "../dialogs/abt_dialog.h"
 #include "../abt_history.h"
+
+#include "../globalvars.h"
+
+#include <aqbanking/abgui.h>
+#include <aqbanking/dlg_importer.h>
+
 
 
 page_history::page_history(const abt_history *history, QWidget *parent) :
@@ -193,6 +200,97 @@ void page_history::onActExportSelected()
 		   "Dies wird vorraussichtlich in der nächsten Version "
 		   "enthalten sein."),
 		QMessageBox::Ok);
+
+	//get the list of available im/exporters (we must free this)
+	GWEN_PLUGIN_DESCRIPTION_LIST2 *pdl = NULL;
+	pdl = AB_Banking_GetImExporterDescrs(banking->getAqBanking());
+
+	int cnt = GWEN_PluginDescription_List2_GetSize(pdl);
+	qDebug() << Q_FUNC_INFO << "read" << cnt << "Plugin descriptions";
+
+	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
+	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
+	pdli = GWEN_PluginDescription_List2_First(pdl);
+	if (pdli) {
+		pd = GWEN_PluginDescription_List2Iterator_Data(pdli);
+	}
+	int i = 0;
+	while (pd) {
+		const char *name = GWEN_PluginDescription_GetName(pd);
+		QString type = GWEN_PluginDescription_GetType(pd);
+		QString desc_s = GWEN_PluginDescription_GetShortDescr(pd);
+		QString desc_l = GWEN_PluginDescription_GetLongDescr(pd);
+		QString filename = GWEN_PluginDescription_GetFileName(pd);
+		QString path = GWEN_PluginDescription_GetPath(pd);
+
+		qDebug() << ++i << ": " << name << type << desc_s << filename << path;
+		//qDebug() << i << ": " << desc_l;
+
+		//for testing lets see whats inside the profile
+		GWEN_DB_NODE *dbProfiles = AB_Banking_GetImExporterProfiles(banking->getAqBanking(), name);
+		GWEN_DB_NODE *n = GWEN_DB_GetFirstGroup(dbProfiles);
+		while (n) {
+			const char *n_name = GWEN_DB_GetCharValue(n, "name", 0, "notSet");
+			const char *n_file = GWEN_DB_GetCharValue(n, "fileName", 0, "notSet");
+			int n_global = GWEN_DB_GetIntValue(n, "isGlobal", 0, 2);
+			qDebug() << n_name << n_file << n_global;
+
+			GWEN_DB_NODE *nvars = GWEN_DB_GetFirstVar(n);
+			i = 0;
+			while (nvars) {
+				const char *varname = GWEN_DB_VariableName(nvars);
+				GWEN_DB_NODE_TYPE vartype = GWEN_DB_GetVariableType(n, varname);
+
+				QString value;
+				switch(vartype) {
+				case GWEN_DB_NodeType_ValueChar:
+					value = GWEN_DB_GetCharValue(n, varname, 0, "nothing");
+					break;
+				case GWEN_DB_NodeType_ValueInt:
+					value = QString("int %1").arg(GWEN_DB_GetIntValue(n, varname, 0, -9));
+					break;
+				default:
+					value = "Not handled!";
+					break;
+				}
+
+				qDebug() << ++i << ": " << vartype << varname << "=" << value;
+
+				nvars = GWEN_DB_GetNextVar(nvars);
+			}
+
+			n = GWEN_DB_GetNextGroup(n);
+		}
+		GWEN_DB_Group_free(dbProfiles);
+
+		pd = GWEN_PluginDescription_List2Iterator_Next(pdli); //next in list
+	} /* while (pd) */
+
+	//free ListIterator
+	GWEN_PluginDescription_List2Iterator_free(pdli);
+
+
+
+	GWEN_PluginDescription_List2_freeAll(pdl);
+
+//	//AqBanking remains the owner of 'ie', so we must not free it!
+//	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(), "csv");
+
+//	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfiles(banking->getAqBanking(), "csv");
+//	GWEN_DIALOG *pDlg;
+
+//	int ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile, "test", &pDlg);
+
+//	uint32_t guiid = GWEN_Dialog_GetGuiId(pDlg);
+//	GWEN_Gui_ExecDialog(pDlg, guiid);
+
+//	GWEN_Dialog_free(pDlg);
+
+//	qDebug() << Q_FUNC_INFO << "return value:" << ret;
+
+
+//	AB_ImExporter_GetEditProfileDialog(ie, )
+
 }
 
 
