@@ -44,6 +44,7 @@
 #include <aqbanking/abgui.h>
 #include <aqbanking/dlg_importer.h>
 
+#include "../aqb_imexporters.h"
 
 
 page_history::page_history(const abt_history *history, QWidget *parent) :
@@ -201,6 +202,34 @@ void page_history::onActExportSelected()
 		   "enthalten sein."),
 		QMessageBox::Ok);
 
+	//for testing
+	aqb_imexporters* iep = new aqb_imexporters();
+
+	qDebug() << Q_FUNC_INFO << "ImExporters loaded:" << iep->getSize();
+
+	for(int i=0; i<iep->getPlugins()->size(); ++i) {
+		qDebug() << Q_FUNC_INFO
+			 << "Profile:"
+			 << iep->getPlugins()->at(i)->getAuthor() << "-"
+			 << iep->getPlugins()->at(i)->getName() << "-"
+			 << iep->getPlugins()->at(i)->getType() << "-"
+			 << iep->getPlugins()->at(i)->getDescShort();
+
+		for(int j=0; j<iep->getPlugins()->at(i)->getProfiles()->size(); ++j) {
+			aqb_ieProfile *pro = iep->getPlugins()->at(i)->getProfiles()->at(j);
+			qDebug() << Q_FUNC_INFO
+				 << *pro->getNames()
+				 << "-- name:" << pro->getValue("name");
+//				 << "-- global:" << pro->getValue("isGlobal");
+
+		}
+	}
+
+
+	delete iep;
+
+
+#ifdef false
 	//get the list of available im/exporters (we must free this)
 	GWEN_PLUGIN_DESCRIPTION_LIST2 *pdl = NULL;
 	pdl = AB_Banking_GetImExporterDescrs(banking->getAqBanking());
@@ -290,6 +319,7 @@ void page_history::onActExportSelected()
 
 
 //	AB_ImExporter_GetEditProfileDialog(ie, )
+#endif
 
 }
 

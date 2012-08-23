@@ -1,0 +1,168 @@
+/******************************************************************************
+ * Copyright (C) 2012 Patrick Wacker
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307, USA.
+ ******************************************************************************
+ * Dont forget: svn propset svn:keywords "Date Author Rev HeadURL" filename
+ ******************************************************************************
+ * $HeadURL$
+ * $Author$
+ * $Date$
+ * $Rev$
+ *
+ * description:
+ *	uses the imexporters from AqBanking and Gwenhywfar for exporting
+ *	(perhaps later also importing) executed transactions.
+ *
+ * changes not documented here, see svn
+ *
+ ******************************************************************************/
+
+
+#ifndef AQB_IMEXPORTERS_H
+#define AQB_IMEXPORTERS_H
+
+#include <QObject>
+
+#include <gwenhywfar/plugindescr.h>
+#include <gwenhywfar/db.h>
+
+
+class aqb_ieProfile; //forward declaration
+class aqb_iePlugin; //forward declaration
+
+
+
+
+
+
+/** \brief Access to im-/exporters supported by AqBanking
+ *
+ * No general information written, yet.
+ *
+ */
+
+class aqb_imexporters : public QObject
+{
+	Q_OBJECT
+public:
+	explicit aqb_imexporters(QObject *parent = 0);
+	~aqb_imexporters();
+
+private:
+	GWEN_PLUGIN_DESCRIPTION_LIST2 *pdl;
+	QList<aqb_iePlugin*>* plugins;
+
+protected:
+
+
+public:
+	//! returns the count of useable im-/exporters
+	int getSize() const;
+	//! return the list of loaded imexporter Plugins
+	const QList<aqb_iePlugin*>* getPlugins() const { return this->plugins; }
+
+
+signals:
+
+public slots:
+
+};
+
+
+
+/** \brief PluginDescription for im-/exporters
+ *
+ *
+ */
+class aqb_iePlugin: public QObject
+{
+	Q_OBJECT
+public:
+	explicit aqb_iePlugin(GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent = 0);
+	~aqb_iePlugin();
+
+private:
+	GWEN_PLUGIN_DESCRIPTION *pd;
+	const char *name; // GWEN_PluginDescription_GetName(pd);
+	const char *type; // GWEN_PluginDescription_GetType(pd);
+	const char *desc_short; // GWEN_PluginDescription_GetShortDescr(pd);
+	const char *desc_long; // GWEN_PluginDescription_GetLongDescr(pd);
+	const char *filename; // GWEN_PluginDescription_GetFileName(pd);
+	const char *path; // GWEN_PluginDescription_GetPath(pd);
+	const char *author; // GWEN_PluginDescription_GetAuthor(pd);
+	const char *version; // GWEN_PluginDescription_GetVersion(pd);
+
+	QList<aqb_ieProfile*>* profiles;
+
+protected:
+	int loadProfiles();
+
+public:
+	const char *getName() const { return this->name; }
+	const char *getType() const { return this->type; }
+	const char *getDescShort() const { return this->desc_short; }
+	const char *getDescLong() const { return this->desc_long; }
+	const char *getFilename() const { return this->filename; }
+	const char *getPath() const { return this->path; }
+	const char *getAuthor() const { return this->author; }
+	const char *getVersion() const { return this->version; }
+
+	const GWEN_PLUGIN_DESCRIPTION *getPD() const { return this->pd; }
+
+	const QList<aqb_ieProfile*>* getProfiles() const { return this->profiles; }
+
+signals:
+
+public slots:
+
+};
+
+
+
+/** \brief ProfileDescription for im-/exporters
+ *
+ *
+ */
+class aqb_ieProfile: public QObject
+{
+	Q_OBJECT
+public:
+	explicit aqb_ieProfile(GWEN_DB_NODE *n, QObject *parent = 0);
+	~aqb_ieProfile();
+
+private:
+	GWEN_DB_NODE *dbnode;
+	QStringList* names;
+
+
+protected:
+
+
+public:
+	//! returns the value for \a name as a QString
+	QString getValue(const char *varname) const;
+	//! returns all supported names for values in this profile
+	const QStringList* getNames() const { return this->names; }
+	//! returns the origin type of the DB-Value of \a name
+	GWEN_DB_NODE_TYPE getType(const char *varname) const;
+signals:
+
+public slots:
+
+};
+
+
+
+#endif // AQB_IMEXPORTERS_H
