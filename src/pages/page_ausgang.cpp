@@ -34,6 +34,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTreeWidgetItem>
+#include <QTreeView>
+#include <QAbstractItemView>
 #include <QMenu>
 #include "../abt_conv.h"
 #include "../abt_settings.h"
@@ -134,6 +136,14 @@ void Page_Ausgang::setDefaultTreeWidgetHeader()
 	ui->treeWidget->setHeaderHidden(false);
 	ui->treeWidget->header()->setStretchLastSection(false);
 	ui->treeWidget->setHeaderLabels(header);
+    // start - added by heinz
+    ui->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    //ui->treeWidget->setDefaultDropAction(Qt::MoveAction);
+    //ui->treeWidget->setDragEnabled(true);
+    //ui->treeWidget->setAcceptDrops(true);
+    //ui->treeWidget->setDropIndicatorShown(true);
+    // end - added by heinz
+
 	this->setTreeWidgetColWidths();
 }
 
@@ -267,7 +277,7 @@ void Page_Ausgang::onActionDeleteTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
 	//repräsentiert auch gleichzeitig die Position in der jobqueliste
-	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
+    //int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
 
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);
@@ -280,9 +290,27 @@ void Page_Ausgang::onActionDeleteTriggered()
 
 	if (ret != QMessageBox::Yes) {
 		return; //Abbruch
-	}
+    } else {
 
-	emit this->removeJob(itemNr);
+        QList<QTreeWidgetItem *> items = this->ui->treeWidget->selectedItems();
+        //Die Adresse des abt_job_info Objects in der UserRole merken
+        QVariant v;
+        abt_jobInfo *j;
+
+       /*
+        foreach (const QTreeWidgetItem *item, items) {
+             j = item->data(0,Qt::UserRole).value<abt_jobInfo*>();
+             emit this->removeJob( j , false );
+        }
+       */
+
+        for( int i = 0; i < items.size() ; ++i ) {
+            v = items.at(i)->data(0, Qt::UserRole); //UserRole enthält die Adresse
+            j = v.value<abt_jobInfo*>(); //des abt_jobInfo
+
+            emit this->removeJob( j , false );
+        }
+    }
 }
 
 

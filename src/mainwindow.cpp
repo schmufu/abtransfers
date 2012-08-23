@@ -709,14 +709,15 @@ void MainWindow::createJobCtrlAndConnections()
 	connect(this->outbox, SIGNAL(editJob(int)),
 		this, SLOT(onEditJobFromOutbox(int)));
 
-	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
-		this, SLOT(onJobCtrlQueueListChanged()));
-	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
-		this->jobctrl, SLOT(moveJob(int,int)));
-	connect(this->outbox, SIGNAL(executeClicked()),
-		this->jobctrl, SLOT(execQueuedTransactions()));
-	connect(this->outbox, SIGNAL(removeJob(int)),
-		this->jobctrl, SLOT(deleteJob(int)));
+    connect( this->jobctrl, SIGNAL(jobQueueListChanged()             ),
+             this,          SLOT(onJobCtrlQueueListChanged())        );
+    connect( this->outbox,  SIGNAL(moveJobInList(int,int)            ),
+             this->jobctrl, SLOT(moveJob(int,int))                   );
+    connect( this->outbox,  SIGNAL(executeClicked()                  ),
+             this->jobctrl, SLOT(execQueuedTransactions())           );
+    connect( this->outbox,  SIGNAL(removeJob( abt_jobInfo *, bool )  ),
+             this->jobctrl, SLOT(  deleteJob( abt_jobInfo *, bool )) );
+
 
 	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 	connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
@@ -1945,7 +1946,7 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	const aqb_AccountInfo *acc = NULL;
 
 	//Die itemNr enthält die Position in der JobQueueList
-	const abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
+    abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
 	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
@@ -1965,7 +1966,7 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	transW->setValuesFromTransaction(job->getTransaction());
 
 	//den Job aus der JobQueueList entfernen
-	this->jobctrl->deleteJob(itemNr, true);
+    this->jobctrl->deleteJob( job , true );
 }
 
 //private slot
