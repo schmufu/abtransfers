@@ -73,6 +73,11 @@ public:
 	//! return the list of loaded imexporter Plugins
 	const QList<aqb_iePlugin*>* getPlugins() const { return this->plugins; }
 
+	//! convenient function to get the plugin by name
+	const aqb_iePlugin* getPluginByName(QString &name) const;
+	//! convenient function to get the plugin by filename
+	const aqb_iePlugin* getPluginByFilename(QString &filename) const;
+
 
 signals:
 
@@ -152,7 +157,7 @@ protected:
 
 public:
 	//! returns the value for \a name as a QString
-	QString getValue(const char *varname) const;
+	QVariant getValue(const char *varname, int idx = 0) const;
 	//! returns all supported names for values in this profile
 	const QStringList* getNames() const { return this->names; }
 	//! returns the origin type of the DB-Value of \a name

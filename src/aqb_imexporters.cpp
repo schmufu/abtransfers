@@ -91,15 +91,13 @@ aqb_imexporters::aqb_imexporters(QObject *parent) :
 
 aqb_imexporters::~aqb_imexporters()
 {
-	//delete all imexporter Descriptions and the "List2" itself
-	GWEN_PluginDescription_List2_freeAll(this->pdl);
-
 	while(!this->plugins->isEmpty()) {
 		delete this->plugins->takeFirst();
 	}
 	delete this->plugins;
 
-
+	//delete all imexporter Descriptions and the "List2" itself
+	GWEN_PluginDescription_List2_freeAll(this->pdl);
 }
 
 
@@ -109,7 +107,27 @@ int aqb_imexporters::getSize() const
 	return GWEN_PluginDescription_List2_GetSize(pdl);
 }
 
+const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
+{
+	for (int i=0; i<this->plugins->size(); ++i) {
+		if (this->plugins->at(i)->getName() == name) {
+			return this->plugins->at(i);
+		}
+	}
 
+	return NULL; //no plugin found
+}
+
+const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) const
+{
+	for (int i=0; i<this->plugins->size(); ++i) {
+		if (this->plugins->at(i)->getFilename() == filename) {
+			return this->plugins->at(i);
+		}
+	}
+
+	return NULL; //no plugin found
+}
 
 
 
@@ -121,7 +139,7 @@ int aqb_imexporters::getSize() const
 aqb_iePlugin::aqb_iePlugin(GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent) :
 	QObject(parent)
 {
-	this->pd = pd;
+	this->pd = GWEN_PluginDescription_dup(pd); //store a local copy
 
 	this->name = GWEN_PluginDescription_GetName(this->pd);
 	this->type = GWEN_PluginDescription_GetType(this->pd);
@@ -146,6 +164,8 @@ aqb_iePlugin::~aqb_iePlugin()
 	}
 
 	delete this->profiles;
+
+	GWEN_PluginDescription_free(this->pd);
 }
 
 int aqb_iePlugin::loadProfiles()
@@ -177,9 +197,9 @@ int aqb_iePlugin::loadProfiles()
 aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *n, QObject *parent) :
 	QObject(parent)
 {
-	Q_ASSERT_X(GWEN_DB_IsGroup(n), "ieProfile", "ieProfile must be called with a dbGroup");
+	Q_ASSERT_X(GWEN_DB_IsGroup(n), "aqb_ieProfile", "ieProfile must be called with a dbGroup");
 
-	this->dbnode = n;
+	this->dbnode = GWEN_DB_Group_dup(n); //store a local copy
 
 	const char *n_name = GWEN_DB_GetCharValue(n, "name", 0, "notSet");
 	const char *n_file = GWEN_DB_GetCharValue(n, "fileName", 0, "notSet");
@@ -203,30 +223,42 @@ aqb_ieProfile::~aqb_ieProfile()
 	delete this->names;
 
 	//! \todo must we free the DB_NODE when it is no longer used?
+	GWEN_DB_Group_free(this->dbnode);
 }
 
 /**
  *
  * returns the value of the variable \a varname, if the \a varname does not
  * exist in the profile or when the value is not set in the Profile, the
- * returned QString is empty.
+ * returned QVariant is invalid.
  *
  */
-QString aqb_ieProfile::getValue(const char *varname) const
+QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 {
-	QString value;
+	QVariant value = QVariant::Invalid;
+	if (!this->names->contains(varname)) {
+		qWarning() << Q_FUNC_INFO << this << "does not contain a var" << varname;
+		return value;
+	}
+
 	GWEN_DB_NODE_TYPE vartype = this->getType(varname);
 
 	switch(vartype) {
 	case GWEN_DB_NodeType_ValueChar:
-		value = GWEN_DB_GetCharValue(this->dbnode, varname, 0, "");
+		value = GWEN_DB_GetCharValue(this->dbnode, varname, idx, "");
 		break;
 	case GWEN_DB_NodeType_ValueInt:
-		//value = QString("%1").arg(GWEN_DB_GetIntValue(n, varname, 0, -9));
-		value = GWEN_DB_GetIntValue(this->dbnode, varname, 0, 0);
+		value = GWEN_DB_GetIntValue(this->dbnode, varname, idx, 0);
+		break;
+	case GWEN_DB_NodeType_ValuePtr:
+		value.setValue<void*>(GWEN_DB_GetPtrValue(this->dbnode, varname, idx, NULL));
+		break;
+	case GWEN_DB_NodeType_ValueBin:
+		unsigned int retValueSize;
+		value = GWEN_DB_GetBinValue(this->dbnode, varname, idx, NULL, 0, &retValueSize);
+		qDebug() << "read bin-Value with" << retValueSize << "in size";
 		break;
 	default:
-		value = "";
 		break;
 	}
 

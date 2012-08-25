@@ -207,26 +207,70 @@ void page_history::onActExportSelected()
 
 	qDebug() << Q_FUNC_INFO << "ImExporters loaded:" << iep->getSize();
 
-	for(int i=0; i<iep->getPlugins()->size(); ++i) {
-		qDebug() << Q_FUNC_INFO
-			 << "Profile:"
-			 << iep->getPlugins()->at(i)->getAuthor() << "-"
-			 << iep->getPlugins()->at(i)->getName() << "-"
-			 << iep->getPlugins()->at(i)->getType() << "-"
-			 << iep->getPlugins()->at(i)->getDescShort();
+	QMenu *exportConextMenu = new QMenu();
 
-		for(int j=0; j<iep->getPlugins()->at(i)->getProfiles()->size(); ++j) {
-			aqb_ieProfile *pro = iep->getPlugins()->at(i)->getProfiles()->at(j);
-			qDebug() << Q_FUNC_INFO
-				 << *pro->getNames()
-				 << "-- name:" << pro->getValue("name");
-//				 << "-- global:" << pro->getValue("isGlobal");
+	QMenu *exportPreferred = new QMenu(tr("bevorzugt"), exportConextMenu);
+	exportPreferred->setToolTip(tr("Änderbar in den Einstellungen"));
+
+	exportPreferred->addAction(tr("<b><i>Keine Einträge vorhanden</i></b>"));
+
+	exportConextMenu->addMenu(exportPreferred);
+	exportConextMenu->addSeparator();
+
+	for(int i=0; i<iep->getPlugins()->size(); ++i) {
+		//we create a submenü for every profile
+		QMenu *sub = new QMenu(exportConextMenu);
+		aqb_iePlugin *plugin = iep->getPlugins()->at(i);
+
+		sub->setTitle(plugin->getName());
+		sub->setToolTip(plugin->getDescShort());
+		//sub->setStatusTip(plugin->getDescShort());
+
+		for(int j=0; j<plugin->getProfiles()->size(); ++j) {
+			QAction *item = new QAction(sub);
+			aqb_ieProfile *profile = plugin->getProfiles()->at(j);
+
+			//we store the pointer to the plugin and profile in the
+			//actions user data, so we can use it later.
+			//(use of reinterpret_cast is 'dangerous', but it is used
+			// only in this context!)
+			item->setUserData(0, reinterpret_cast<QObjectUserData*>(plugin));
+			item->setUserData(1, reinterpret_cast<QObjectUserData*>(profile));
+
+			item->setText(profile->getValue("name").toString());
+			item->setToolTip(profile->getValue("shortDescr").toString());
+			//item->setStatusTip(profile->getValue("shortDescr").toString());
+
+			sub->addAction(item);
 
 		}
+
+		exportConextMenu->addMenu(sub);
+	}
+
+	QAction *sel = exportConextMenu->exec(QCursor::pos());
+
+	if (sel) {
+		//we stored the pointer to plugin and profile in the user-data,
+		//lets restore them
+		aqb_iePlugin *selPlugin = reinterpret_cast<aqb_iePlugin*>(sel->userData(0));
+		aqb_ieProfile *selProfile = reinterpret_cast<aqb_ieProfile*>(sel->userData(1));
+
+		if (selPlugin) {
+			qDebug() << Q_FUNC_INFO << "selected Plugin :" << selPlugin->getName();
+		}
+		if (selProfile) {
+			qDebug() << Q_FUNC_INFO << "selected Profile:" << selProfile->getValue("name");
+		}
+
 	}
 
 
-	delete iep;
+	qDebug() << "deleting exportContextMenu";
+	delete exportConextMenu; //Menu and all childs no longer needed
+
+	qDebug() << "deleting aqb_imexporters (iep)";
+	delete iep; //also deletes ALL childs objects from aqb_imexporters!
 
 
 #ifdef false
