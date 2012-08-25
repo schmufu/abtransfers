@@ -33,7 +33,10 @@
 #ifndef AQB_IMEXPORTERS_H
 #define AQB_IMEXPORTERS_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
+
+#include <aqbanking/banking.h>
 
 #include <gwenhywfar/plugindescr.h>
 #include <gwenhywfar/db.h>
@@ -61,7 +64,7 @@ class aqb_imexporters : public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_imexporters(QObject *parent = 0);
+	explicit aqb_imexporters(AB_BANKING *ab, QObject *parent = 0);
 	~aqb_imexporters();
 
 private:
@@ -104,7 +107,7 @@ class aqb_iePlugin: public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_iePlugin(GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent = 0);
+	explicit aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent = 0);
 	~aqb_iePlugin();
 
 private:
@@ -121,7 +124,7 @@ private:
 	QList<aqb_ieProfile*>* profiles;
 
 protected:
-	int loadProfiles();
+	int loadProfiles(AB_BANKING *ab);
 
 public:
 	const char *getName() const { return this->name; }

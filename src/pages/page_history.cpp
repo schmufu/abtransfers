@@ -203,7 +203,7 @@ void page_history::onActExportSelected()
 		QMessageBox::Ok);
 
 	//for testing
-	aqb_imexporters* iep = new aqb_imexporters();
+	aqb_imexporters* iep = new aqb_imexporters(banking->getAqBanking());
 
 	qDebug() << Q_FUNC_INFO << "ImExporters loaded:" << iep->getSize();
 

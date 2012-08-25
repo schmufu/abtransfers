@@ -32,7 +32,6 @@
 #include "aqb_imexporters.h"
 
 #include "QtCore/QDebug"
-#include "globalvars.h"
 
 #include <aqbanking/abgui.h>
 #include <aqbanking/dlg_importer.h>
@@ -40,7 +39,7 @@
 
 
 
-aqb_imexporters::aqb_imexporters(QObject *parent) :
+aqb_imexporters::aqb_imexporters(AB_BANKING* ab, QObject *parent) :
 	QObject(parent)
 {
 	//init of private members
@@ -49,7 +48,7 @@ aqb_imexporters::aqb_imexporters(QObject *parent) :
 
 	//get the list of available im/exporters
 	//(we must free this through GWEN_PluginDescription_List2_freeAll())
-	this->pdl = AB_Banking_GetImExporterDescrs(banking->getAqBanking());
+	this->pdl = AB_Banking_GetImExporterDescrs(ab);
 
 	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
 	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
@@ -59,7 +58,7 @@ aqb_imexporters::aqb_imexporters(QObject *parent) :
 	}
 
 	while (pd) {
-		aqb_iePlugin *aqbPlugin = new aqb_iePlugin(pd);
+		aqb_iePlugin *aqbPlugin = new aqb_iePlugin(ab, pd);
 		this->plugins->append(aqbPlugin);
 
 		pd = GWEN_PluginDescription_List2Iterator_Next(pdli); //next in list
@@ -95,7 +94,7 @@ int aqb_imexporters::getSize() const
  * aqb_iePlugin
  ******************************************************************************/
 
-aqb_iePlugin::aqb_iePlugin(GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent) :
+aqb_iePlugin::aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent) :
 	QObject(parent)
 {
 	this->pd = GWEN_PluginDescription_dup(pd); //store a local copy
@@ -111,7 +110,7 @@ aqb_iePlugin::aqb_iePlugin(GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent) :
 
 	this->profiles = new QList<aqb_ieProfile*>;
 
-	this->loadProfiles();
+	this->loadProfiles(ab);
 
 }
 
@@ -127,9 +126,9 @@ aqb_iePlugin::~aqb_iePlugin()
 	GWEN_PluginDescription_free(this->pd);
 }
 
-int aqb_iePlugin::loadProfiles()
+int aqb_iePlugin::loadProfiles(AB_BANKING* ab)
 {
-	GWEN_DB_NODE *dbProfiles = AB_Banking_GetImExporterProfiles(banking->getAqBanking(),
+	GWEN_DB_NODE *dbProfiles = AB_Banking_GetImExporterProfiles(ab,
 								    this->name);
 	GWEN_DB_NODE *n = GWEN_DB_GetFirstGroup(dbProfiles);
 	while (n) {
