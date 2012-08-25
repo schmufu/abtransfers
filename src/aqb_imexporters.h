@@ -45,11 +45,15 @@ class aqb_iePlugin; //forward declaration
 
 
 
-
-
-/** \brief Access to im-/exporters supported by AqBanking
+/**
+ * @brief Access to im-/exporters supported by AqBanking
  *
- * No general information written, yet.
+ * At instantiation this loads all im-/exporter information from AqBanking.
+ *
+ * In the constructor this class goes through all im-/exporters that are
+ * supported by AqBanking. Each im-/exporter-plugin-description is created
+ * as a seperate object (aqb_iePlugin) and linked in an internal list, which
+ * can be retrieved over @ref getPlugins().
  *
  */
 
@@ -68,16 +72,15 @@ protected:
 
 
 public:
-	//! returns the count of useable im-/exporters
+	//! @returns the count of useable im-/exporters
 	int getSize() const;
-	//! return the list of loaded imexporter Plugins
+	//! @returns the list of loaded imexporter plugins
 	const QList<aqb_iePlugin*>* getPlugins() const { return this->plugins; }
 
 	//! convenient function to get the plugin by name
 	const aqb_iePlugin* getPluginByName(QString &name) const;
 	//! convenient function to get the plugin by filename
 	const aqb_iePlugin* getPluginByFilename(QString &filename) const;
-
 
 signals:
 
@@ -87,8 +90,14 @@ public slots:
 
 
 
-/** \brief PluginDescription for im-/exporters
+/**
+ * @brief Plugin-Descriptions for im-/exporters from AqBanking
  *
+ * in the constructor all profiles from the supplied GWEN_PLUGIN_DESCRIPTION
+ * @a pd are created as seperate objects (aqb_ieProfile) and linked in an
+ * internal QList.
+ * All supported Profiles for this Plugin can be retrieved over
+ * @a getProfiles().
  *
  */
 class aqb_iePlugin: public QObject
@@ -135,32 +144,37 @@ public slots:
 };
 
 
-
-/** \brief ProfileDescription for im-/exporters
+/**
+ * @brief Profile-Description for im-/exporters from AqBanking
  *
+ * This class handles access to the Profile-Descriptions from an Plugin.
+ * The different values are stored in a GWEN_DB_NODE @a dbn and can be accessed
+ * through @ref getValue(varname, idx).
+ *
+ * All supported variable names are stored in a QStringList which can be
+ * retrieved by @ref getNames().
  *
  */
 class aqb_ieProfile: public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_ieProfile(GWEN_DB_NODE *n, QObject *parent = 0);
+	explicit aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent = 0);
 	~aqb_ieProfile();
 
 private:
 	GWEN_DB_NODE *dbnode;
 	QStringList* names;
 
-
 protected:
 
 
 public:
-	//! returns the value for \a name as a QString
+	//! @returns the value for \a name as a QVariant
 	QVariant getValue(const char *varname, int idx = 0) const;
-	//! returns all supported names for values in this profile
+	//! @returns all supported names for values in this profile
 	const QStringList* getNames() const { return this->names; }
-	//! returns the origin type of the DB-Value of \a name
+	//! @returns the original type for the GWEN_DB-Value of \a varname
 	GWEN_DB_NODE_TYPE getType(const char *varname) const;
 signals:
 

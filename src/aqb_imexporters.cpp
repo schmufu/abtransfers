@@ -29,33 +29,16 @@
  *
  ******************************************************************************/
 
-/** \todo Was darf während den funktionen wieder gelöscht werden und was
- *	  darf erst im destructor wieder freigegeben werden?
- *	  Momentan stürzt das Programm mit der Meldung "abtransfers: db.c:592:
- *	  GWEN_DB_FindVar: Assertion `n->children' failed." ab.
- */
-
-
 #include "aqb_imexporters.h"
 
 #include "QtCore/QDebug"
 #include "globalvars.h"
 
-
-//#include <aqbanking/banking.h>
-
-//#include <aqbanking/imexporter.h>
-
-//#include <aqbanking/banking_imex.h>
-
 #include <aqbanking/abgui.h>
 #include <aqbanking/dlg_importer.h>
 
-/** \brief At instantiation this loads all im-/exporter information from
- *	   AqBanking
- *
- *
- */
+
+
 
 aqb_imexporters::aqb_imexporters(QObject *parent) :
 	QObject(parent)
@@ -66,9 +49,7 @@ aqb_imexporters::aqb_imexporters(QObject *parent) :
 
 	//get the list of available im/exporters
 	//(we must free this through GWEN_PluginDescription_List2_freeAll())
-	pdl = AB_Banking_GetImExporterDescrs(banking->getAqBanking());
-
-	qDebug() << Q_FUNC_INFO << "available imexpoerters:" << this->getSize();
+	this->pdl = AB_Banking_GetImExporterDescrs(banking->getAqBanking());
 
 	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
 	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
@@ -105,28 +86,6 @@ int aqb_imexporters::getSize() const
 {
 	Q_ASSERT(this->pdl);
 	return GWEN_PluginDescription_List2_GetSize(pdl);
-}
-
-const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
-{
-	for (int i=0; i<this->plugins->size(); ++i) {
-		if (this->plugins->at(i)->getName() == name) {
-			return this->plugins->at(i);
-		}
-	}
-
-	return NULL; //no plugin found
-}
-
-const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) const
-{
-	for (int i=0; i<this->plugins->size(); ++i) {
-		if (this->plugins->at(i)->getFilename() == filename) {
-			return this->plugins->at(i);
-		}
-	}
-
-	return NULL; //no plugin found
 }
 
 
@@ -184,8 +143,27 @@ int aqb_iePlugin::loadProfiles()
 	return this->profiles->size();
 }
 
+const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
+{
+	foreach(const aqb_iePlugin *plugin, *this->plugins) {
+		if (plugin->getName() == name) {
+			return plugin;
+		}
+	}
 
+	return NULL; //no plugin found
+}
 
+const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) const
+{
+	foreach(const aqb_iePlugin *plugin, *this->plugins) {
+		if (plugin->getFilename() == filename) {
+			return plugin;
+		}
+	}
+
+	return NULL; //no plugin found
+}
 
 
 
@@ -194,17 +172,12 @@ int aqb_iePlugin::loadProfiles()
  * aqb_ieProfile
  ******************************************************************************/
 
-aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *n, QObject *parent) :
+aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent) :
 	QObject(parent)
 {
-	Q_ASSERT_X(GWEN_DB_IsGroup(n), "aqb_ieProfile", "ieProfile must be called with a dbGroup");
+	Q_ASSERT_X(GWEN_DB_IsGroup(dbn), "aqb_ieProfile", "ieProfile must be called with a dbGroup");
 
-	this->dbnode = GWEN_DB_Group_dup(n); //store a local copy
-
-	const char *n_name = GWEN_DB_GetCharValue(n, "name", 0, "notSet");
-	const char *n_file = GWEN_DB_GetCharValue(n, "fileName", 0, "notSet");
-	int n_global = GWEN_DB_GetIntValue(n, "isGlobal", 0, 2);
-	qDebug() << n_name << n_file << n_global;
+	this->dbnode = GWEN_DB_Group_dup(dbn); //store a local copy
 
 	this->names = new QStringList();
 	GWEN_DB_NODE *nvars = GWEN_DB_GetFirstVar(this->dbnode);
@@ -222,15 +195,16 @@ aqb_ieProfile::~aqb_ieProfile()
 	//we must free the created stringlist
 	delete this->names;
 
-	//! \todo must we free the DB_NODE when it is no longer used?
+	//we must free the DB_NODE when it is no longer used
+	//(duplicated in constructor)
 	GWEN_DB_Group_free(this->dbnode);
 }
 
 /**
  *
- * returns the value of the variable \a varname, if the \a varname does not
+ * returns the value of the variable @a varname, if the @a varname does not
  * exist in the profile or when the value is not set in the Profile, the
- * returned QVariant is invalid.
+ * returned QVariant is invalid (or empty).
  *
  */
 QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
@@ -251,13 +225,15 @@ QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 		value = GWEN_DB_GetIntValue(this->dbnode, varname, idx, 0);
 		break;
 	case GWEN_DB_NodeType_ValuePtr:
-		value.setValue<void*>(GWEN_DB_GetPtrValue(this->dbnode, varname, idx, NULL));
+		value.setValue<void*>(GWEN_DB_GetPtrValue(this->dbnode, varname,
+							  idx, NULL));
 		break;
-	case GWEN_DB_NodeType_ValueBin:
-		unsigned int retValueSize;
-		value = GWEN_DB_GetBinValue(this->dbnode, varname, idx, NULL, 0, &retValueSize);
-		qDebug() << "read bin-Value with" << retValueSize << "in size";
-		break;
+	//not used yet, how did we handle this if it must be used?
+	//case GWEN_DB_NodeType_ValueBin:
+	//	unsigned int retValueSize;
+	//	value = (GWEN_DB_GetBinValue(this->dbnode, varname, idx, NULL,
+	//				     0, &retValueSize));
+	//	break;
 	default:
 		break;
 	}
