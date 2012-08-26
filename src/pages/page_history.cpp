@@ -34,6 +34,7 @@
 
 #include <QMessageBox>
 #include <QtGui/QMenu>
+#include <QtGui/QFileDialog>
 #include <QtCore/QDebug>
 
 #include "../dialogs/abt_dialog.h"
@@ -152,6 +153,67 @@ void page_history::createActions()
 	this->ui->treeWidget->addAction(this->actDeleteSelected);
 }
 
+AB_IMEXPORTER_CONTEXT *page_history::getContextFromSelected() const
+{
+	if (this->ui->treeWidget->selectedItems().size() == 0)
+		return NULL; //Nothing selected
+
+	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
+
+
+	foreach(const QTreeWidgetItem *item, this->ui->treeWidget->selectedItems()) {
+		/**
+		 * @todo We store everything as a transaction, this should be
+		 *	 tunable at the settings.
+		 */
+
+		//the Qt::UserRole contains a QVariant with the adress of the
+		//abt_jobInfo object from the history.
+		const abt_jobInfo *job = item->data(0, Qt::UserRole).value<abt_jobInfo*>();
+
+		AB_TRANSACTION *t = NULL;
+
+		switch(job->getAbJobType()) {
+		case AB_Job_TypeCreateDatedTransfer:
+		case AB_Job_TypeModifyDatedTransfer:
+		case AB_Job_TypeDeleteDatedTransfer:
+			//append a dated transfer to the ctx
+			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			//AB_ImExporterContext_AddDatedTransfer(ctx, t);
+			AB_ImExporterContext_AddTransaction(ctx, t);
+			break;
+		case AB_Job_TypeCreateStandingOrder:
+		case AB_Job_TypeModifyStandingOrder:
+		case AB_Job_TypeDeleteStandingOrder:
+			//append a standing order to the ctx
+			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			//AB_ImExporterContext_AddStandingOrder(ctx, t);
+			AB_ImExporterContext_AddTransaction(ctx, t);
+			break;
+		case AB_Job_TypeTransfer:
+		case AB_Job_TypeEuTransfer:
+		case AB_Job_TypeInternalTransfer:
+		case AB_Job_TypeLoadCellPhone:
+		case AB_Job_TypeSepaDebitNote:
+		case AB_Job_TypeDebitNote:
+		case AB_Job_TypeSepaTransfer:
+			//appent a transfer to the ctx
+			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
+			//AB_ImExporterContext_AddTransfer(ctx, t);
+			AB_ImExporterContext_AddTransaction(ctx, t);
+			break;
+
+		default: //other JobTypes not possible, yet
+			break;
+		}
+
+	}
+
+	//now all selected history items are in the created context
+	return ctx;
+}
+
+
 //private slot
 void page_history::onActGenerateNewTransaction()
 {
@@ -194,15 +256,12 @@ void page_history::onActDeleteSelected()
 //private slot
 void page_history::onActExportSelected()
 {
-	QMessageBox::information(
-		this, tr("Export"),
-		tr("Exportieren von durchgeführten Aufträgen ist derzeit leider "
-		   "noch nicht möglich.<br /><br />"
-		   "Dies wird vorraussichtlich in der nächsten Version "
-		   "enthalten sein."),
-		QMessageBox::Ok);
+	/**
+	 * @todo This code should be splitted into some functions and cleaned
+	 *	 up for a release!
+	 *	 The usage of "goto" should be removed too.
+	 */
 
-	//for testing
 	aqb_imexporters* iep = new aqb_imexporters(banking->getAqBanking());
 
 	qDebug() << Q_FUNC_INFO << "ImExporters loaded:" << iep->getSize();
@@ -212,40 +271,49 @@ void page_history::onActExportSelected()
 	QMenu *exportPreferred = new QMenu(tr("bevorzugt"), exportConextMenu);
 	exportPreferred->setToolTip(tr("Änderbar in den Einstellungen"));
 
-	exportPreferred->addAction(tr("<b><i>Keine Einträge vorhanden</i></b>"));
+	exportPreferred->addAction(tr("Keine Einträge vorhanden"));
 
 	exportConextMenu->addMenu(exportPreferred);
 	exportConextMenu->addSeparator();
 
 	for(int i=0; i<iep->getPlugins()->size(); ++i) {
-		//we create a submenü for every profile
+		//we create a submenu for every plugin
 		QMenu *sub = new QMenu(exportConextMenu);
 		aqb_iePlugin *plugin = iep->getPlugins()->at(i);
 
 		sub->setTitle(plugin->getName());
 		sub->setToolTip(plugin->getDescShort());
-		//sub->setStatusTip(plugin->getDescShort());
 
 		for(int j=0; j<plugin->getProfiles()->size(); ++j) {
-			QAction *item = new QAction(sub);
+			//add every profile that belongs to the plugin
 			aqb_ieProfile *profile = plugin->getProfiles()->at(j);
 
+			//if this is not an export-profile, we cant use it.
+			//Therefore, export must exist and must be unequal 0
+			if (!profile->getNames()->contains("export") ||
+			    profile->getValue("export").toInt() == 0) {
+				continue; //next profile
+			}
+
+			QAction *item = new QAction(sub);
 			//we store the pointer to the plugin and profile in the
 			//actions user data, so we can use it later.
-			//(use of reinterpret_cast is 'dangerous', but it is used
-			// only in this context!)
 			item->setUserData(0, reinterpret_cast<QObjectUserData*>(plugin));
 			item->setUserData(1, reinterpret_cast<QObjectUserData*>(profile));
 
 			item->setText(profile->getValue("name").toString());
 			item->setToolTip(profile->getValue("shortDescr").toString());
-			//item->setStatusTip(profile->getValue("shortDescr").toString());
 
 			sub->addAction(item);
 
 		}
 
-		exportConextMenu->addMenu(sub);
+		if (sub->actions().size() == 0) {
+			//the submenu has no entrys, we dont need it.
+			delete sub;
+		} else {
+			exportConextMenu->addMenu(sub);
+		}
 	}
 
 	QAction *sel = exportConextMenu->exec(QCursor::pos());
@@ -256,15 +324,79 @@ void page_history::onActExportSelected()
 		aqb_iePlugin *selPlugin = reinterpret_cast<aqb_iePlugin*>(sel->userData(0));
 		aqb_ieProfile *selProfile = reinterpret_cast<aqb_ieProfile*>(sel->userData(1));
 
-		if (selPlugin) {
+		if (selPlugin && selProfile) {
 			qDebug() << Q_FUNC_INFO << "selected Plugin :" << selPlugin->getName();
-		}
-		if (selProfile) {
 			qDebug() << Q_FUNC_INFO << "selected Profile:" << selProfile->getValue("name");
+		} else {
+			qWarning() << Q_FUNC_INFO << "something went wrong!"
+				   << "could not restore the pointers to Plugin or Profile!";
+			goto ONACTEXPORTSELECTED_CLEANUP;
+		}
+
+		//Now we need to know where to store the data
+		QString dialogTitle = tr("(%1 / %2) Exportieren ...").arg(
+					      selPlugin->getName()).arg(
+					      selProfile->getValue("name").toString());
+
+		QFileDialog dialog(this);
+		dialog.setModal(true);
+		dialog.setWindowTitle(dialogTitle);
+		dialog.setFileMode(QFileDialog::AnyFile);
+		dialog.setNameFilter(tr("Alle Dateien (*.*)"));
+		dialog.setNameFilterDetailsVisible(true);
+		dialog.setViewMode(QFileDialog::Detail);
+		dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+		QString saveFilename = "";
+		if (dialog.exec()) {
+			saveFilename = dialog.selectedFiles().at(0);
+		} else {
+			goto ONACTEXPORTSELECTED_CLEANUP;
+		}
+
+		if (saveFilename.isEmpty()) {
+			QMessageBox::warning(this, tr("Export abgebrochen"),
+					     tr("Es wurde kein Dateiname angegeben "
+						"unter den die Exportierten Daten "
+						"gespeichert werden sollen!"),
+					     QMessageBox::Ok);
+		} else {
+			//create a ctx from the selected items in the history
+			//and save this data with the selected profile from the
+			//plugin.
+			//Saving is done by a function from AqBanking
+
+			//create a context for export from all selected items
+			AB_IMEXPORTER_CONTEXT *ctx = this->getContextFromSelected();
+
+
+			int err = AB_Banking_ExportToFile(banking->getAqBanking(),
+							  ctx,
+							  selPlugin->getName(),
+							  selProfile->getValue("name").toString().toStdString().c_str(),
+							  saveFilename.toStdString().c_str());
+
+			//we must free the ctx after using it
+			AB_ImExporterContext_free(ctx);
+
+			if (err != 0) {
+				QMessageBox::critical(this, tr("Export fehlerhaft"),
+						      tr("Beim export trat ein Fehler auf!</ br>"
+							 "Bitte kontrollieren Sie die exportierten "
+							 "Daten und wiederholen ggf. den Vorgang!"),
+						      QMessageBox::Ok);
+			} else {
+				QMessageBox::information(this, tr("Export erfolgreich"),
+							 tr("Die ausgewählten Einträge "
+							    "der Historie wurden unter "
+							    "%1 gespeichert.").arg(saveFilename),
+							 QMessageBox::Ok);
+			}
 		}
 
 	}
 
+	ONACTEXPORTSELECTED_CLEANUP:
 
 	qDebug() << "deleting exportContextMenu";
 	delete exportConextMenu; //Menu and all childs no longer needed

@@ -71,6 +71,9 @@ private:
 	void setDefaultTreeWidgetHeader();
 	void createActions();
 
+	//! creates a ctx from the supplied jobs. The caller must free AB_IMEXPORTER_CONTEXT!
+	AB_IMEXPORTER_CONTEXT *getContextFromSelected() const;
+
 signals:
 	void createNewFromHistory(const abt_jobInfo *jobInfo);
 	void deleteFromHistory(const QList<abt_jobInfo*> historyIndexes);
