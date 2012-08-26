@@ -277,7 +277,7 @@ void Page_Ausgang::onActionDeleteTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
 	//repräsentiert auch gleichzeitig die Position in der jobqueliste
-    //int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
+	//int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
 
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);
@@ -290,27 +290,29 @@ void Page_Ausgang::onActionDeleteTriggered()
 
 	if (ret != QMessageBox::Yes) {
 		return; //Abbruch
-    } else {
+	} else {
+		//Zuerst benötigen wir alle Adressen der zu löschenden abt_jobInfo
+		//Objekte. Wir können das signal removeJob() nicht senden
+		//während wir auf die selectedItems() zugreifen, da sich die
+		//Liste der selectedItems() nach dem senden von 'removeJob()'
+		//ändert und somit ein evt. beim Eintritt in diese Funktion
+		//vorhandenes Item nicht mehr existiert.
+		QList<abt_jobInfo*> jobsToDelete;
 
-        QList<QTreeWidgetItem *> items = this->ui->treeWidget->selectedItems();
-        //Die Adresse des abt_job_info Objects in der UserRole merken
-        QVariant v;
-        abt_jobInfo *j;
+		//Alle abt_jobInfo Pointer der ausgewählten Items merken
+		foreach(const QTreeWidgetItem *item, this->ui->treeWidget->selectedItems()) {
+			QVariant var = item->data(0, Qt::UserRole);
+			abt_jobInfo *j = var.value<abt_jobInfo*>();
+			jobsToDelete.append(j);
+		}
 
-       /*
-        foreach (const QTreeWidgetItem *item, items) {
-             j = item->data(0,Qt::UserRole).value<abt_jobInfo*>();
-             emit this->removeJob( j , false );
-        }
-       */
+		//alle zu löschenden Jobs durchgehen und senden das der Job
+		//gelöscht werden soll
+		while(!jobsToDelete.isEmpty()) {
+			emit this->removeJob(jobsToDelete.takeFirst());
+		}
 
-        for( int i = 0; i < items.size() ; ++i ) {
-            v = items.at(i)->data(0, Qt::UserRole); //UserRole enthält die Adresse
-            j = v.value<abt_jobInfo*>(); //des abt_jobInfo
-
-            emit this->removeJob( j , false );
-        }
-    }
+	}
 }
 
 

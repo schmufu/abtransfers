@@ -709,14 +709,14 @@ void MainWindow::createJobCtrlAndConnections()
 	connect(this->outbox, SIGNAL(editJob(int)),
 		this, SLOT(onEditJobFromOutbox(int)));
 
-    connect( this->jobctrl, SIGNAL(jobQueueListChanged()             ),
-             this,          SLOT(onJobCtrlQueueListChanged())        );
-    connect( this->outbox,  SIGNAL(moveJobInList(int,int)            ),
-             this->jobctrl, SLOT(moveJob(int,int))                   );
-    connect( this->outbox,  SIGNAL(executeClicked()                  ),
-             this->jobctrl, SLOT(execQueuedTransactions())           );
-    connect( this->outbox,  SIGNAL(removeJob( abt_jobInfo *, bool )  ),
-             this->jobctrl, SLOT(  deleteJob( abt_jobInfo *, bool )) );
+	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+		this, SLOT(onJobCtrlQueueListChanged()));
+	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
+		this->jobctrl, SLOT(moveJob(int,int)));
+	connect(this->outbox, SIGNAL(executeClicked()),
+		this->jobctrl, SLOT(execQueuedTransactions()));
+	connect(this->outbox, SIGNAL(removeJob(abt_jobInfo *)),
+		this->jobctrl, SLOT(deleteJob(abt_jobInfo *)));
 
 
 	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();

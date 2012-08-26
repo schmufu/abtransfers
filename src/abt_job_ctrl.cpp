@@ -1155,12 +1155,12 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			//übergeben wird, löscht dies den AB_JOB! Hiernach könnte
 			//dann auf den AB_JOB [j] nicht mehr zugegriffen werden!
 
-            abt_jobInfo *infojob;
+			abt_jobInfo *infojob;
 			for(int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
 					//JobPos, gefunden, diesen löschen
-                    infojob = this->jobqueue->at(i); //UserRole enthält die Adresse
-                    this->deleteJob( infojob , false);
+					infojob = this->jobqueue->at(i); //UserRole enthält die Adresse
+					this->deleteJob( infojob , false);
 					break; //kein weiterer Job möglich
 				}
 			}
@@ -1177,12 +1177,12 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			AB_Job_List2_Remove(jl, j);
 
 			//den Job erstmal aus dem jobqueue entfernen
-            abt_jobInfo *infojob;
+			abt_jobInfo *infojob;
 			for(int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
 					//JobPos, gefunden, diesen löschen
-                    infojob = this->jobqueue->at(i); //UserRole enthält die Adresse
-                    this->deleteJob( infojob , false);
+					infojob = this->jobqueue->at(i); //UserRole enthält die Adresse
+					this->deleteJob( infojob , false);
 					break; //kein weiterer Job möglich
 				}
 			}
@@ -1323,9 +1323,9 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
 //public slot
 void abt_job_ctrl::deleteJob( abt_jobInfo *jobinfo, bool free /*=true*/)
 {
-    this->jobqueue->removeAll( jobinfo ); //aus der Liste enfernen
+	this->jobqueue->removeAll( jobinfo ); //aus der Liste enfernen
 
-    if (free) {
+	if (free) {
 		AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
 	}
 
