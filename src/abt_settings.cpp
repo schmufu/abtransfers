@@ -386,6 +386,18 @@ void abt_settings::setAutoAddNewRecipients(bool value)
 	this->settings->setValue("General/autoAddNewRecipients", value);
 }
 
+bool abt_settings::isProfileFavorit(const QString &name) const
+{
+	QString key = QString("ImExportFavorites/").append(name);
+	return this->settings->value(key, false).toBool();
+}
+
+void abt_settings::setProfileFavorit(const QString &name, bool favorit)
+{
+	QString key = QString("ImExportFavorites/").append(name);
+	this->settings->setValue(key, favorit);
+}
+
 
 
 //static
@@ -398,10 +410,10 @@ void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 
 
 /**
- * @return -1: error (not handled \a type passed)
- *	   0: not supported
- *	   1: supported
- *	   2: not yet supported (maybe in future release)
+ * @returns -1: error (not handled \a type passed)
+ * @returns  0: not supported
+ * @returns  1: supported
+ * @returns  2: not yet supported (maybe in future release)
  *
  */
 //static public

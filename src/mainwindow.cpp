@@ -1001,7 +1001,7 @@ void MainWindow::on_actionHelp_triggered()
 //private SLOT
 void MainWindow::on_actionEinstellungen_triggered()
 {
-	DialogSettings DiaSettings(settings, this);
+	DialogSettings DiaSettings(settings, banking->getAqBanking(), this);
 
 	DiaSettings.exec();
 }

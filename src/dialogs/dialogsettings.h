@@ -32,8 +32,11 @@
 #ifndef DIALOGSETTINGS_H
 #define DIALOGSETTINGS_H
 
-#include <QDialog>
-#include <QAbstractButton>
+#include <QtGui/QDialog>
+#include <QtGui/QAbstractButton>
+#include <QtGui/QTableWidgetItem>
+
+#include "../aqb_imexporters.h"
 
 class abt_settings;
 
@@ -48,7 +51,7 @@ namespace Ui {
 class DialogSettings : public QDialog {
 	Q_OBJECT
 public:
-	DialogSettings(abt_settings *settings, QWidget *parent = 0);
+	DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *parent = 0);
 	~DialogSettings();
 
 protected:
@@ -57,10 +60,14 @@ protected:
 private:
 	Ui::DialogSettings *ui;
 	abt_settings *settings;
-
+	aqb_imexporters *imexp;
+	QHash<QString, bool> *imex_favorites;
 
 	void loadFromSettings();
 	void saveToSettings();
+
+	void refreshImExPluginWidget();
+	void refreshImExProfileTableWidget();
 
 
 private slots:
@@ -73,7 +80,8 @@ private slots:
 	void on_toolButton_selectAccountData_clicked();
 	void on_toolButton_selectDataDir_clicked();
 
-
+	void on_listWidget_plugins_currentRowChanged(int currentRow);
+	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
 };
 
 #endif // DIALOGSETTINGS_H

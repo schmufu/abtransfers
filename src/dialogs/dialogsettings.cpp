@@ -32,11 +32,13 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-#include <QFileDialog>
+#include <QtCore/QDebug>
+#include <QtGui/QFileDialog>
 
 #include "../abt_settings.h"
 
-DialogSettings::DialogSettings(abt_settings *settings, QWidget *parent) :
+
+DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::DialogSettings)
 {
@@ -44,6 +46,9 @@ DialogSettings::DialogSettings(abt_settings *settings, QWidget *parent) :
 	Q_ASSERT(settings);
 
 	this->settings = settings;
+	this->imexp = new aqb_imexporters(ab); //loads all im-/exporters from aqbanking
+	this->imex_favorites = new QHash<QString, bool>();
+
 
 	this->loadFromSettings();
 
@@ -62,6 +67,8 @@ DialogSettings::DialogSettings(abt_settings *settings, QWidget *parent) :
 
 DialogSettings::~DialogSettings()
 {
+	delete this->imex_favorites;
+	delete this->imexp;
 	delete ui;
 }
 
@@ -94,6 +101,8 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
 
 	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
+
+	this->refreshImExPluginWidget();
 }
 
 //private
@@ -113,6 +122,145 @@ void DialogSettings::saveToSettings()
 	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
 
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
+
+	//save all as favorit marked im-/export profiles
+	QHashIterator<QString, bool> i(*this->imex_favorites);
+	while (i.hasNext()) {
+		i.next();
+		this->settings->setProfileFavorit(i.key(), i.value());
+	}
+	this->imex_favorites->clear(); //all changes saves
+
+}
+
+void DialogSettings::refreshImExPluginWidget()
+{
+	Q_ASSERT(this->imexp);
+
+	//remember the selected item
+	int selected = this->ui->listWidget_plugins->currentRow();
+	if (selected == -1) {
+		selected = 0;
+	}
+
+	this->ui->listWidget_plugins->clear(); //remove all;
+
+	//add all supported im-/exporter plugins
+	foreach(const aqb_iePlugin *plugin, *this->imexp->getPlugins()) {
+		this->ui->listWidget_plugins->addItem(plugin->getName());
+	}
+
+	//restore selected item
+	if (this->ui->listWidget_plugins->count() > selected) {
+		this->ui->listWidget_plugins->setCurrentRow(selected);
+	}
+
+}
+
+//private
+void DialogSettings::refreshImExProfileTableWidget()
+{
+	const aqb_iePlugin *curPlugin;
+	int curRow = this->ui->listWidget_plugins->currentRow();
+	QString curSelectionName = this->ui->listWidget_plugins->item(curRow)->text();
+	curPlugin = this->imexp->getPluginByName(curSelectionName);
+
+	if (!curPlugin) {
+		qWarning() << Q_FUNC_INFO << "No im-/exporter-plugin for"
+			   << curSelectionName << "found. Aborting.";
+		return;
+	}
+
+	this->ui->tableWidget_profiles->clearContents();
+	this->ui->tableWidget_profiles->setRowCount(0);
+
+	//get all profiles for the selected plugin an add them to the tableWidget
+	foreach(const aqb_ieProfile *profile, *curPlugin->getProfiles()) {
+		QTableWidgetItem *item;
+		Qt::CheckState checkState;
+
+		//we need a new row
+		int row = this->ui->tableWidget_profiles->rowCount();
+		this->ui->tableWidget_profiles->setRowCount(row + 1);
+		//"row" is now the last row in the table
+
+		item = new QTableWidgetItem();
+		item->setText(profile->getValue("name").toString());
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		this->ui->tableWidget_profiles->setItem(row, 0, item);
+
+		item = new QTableWidgetItem();
+		item->setText(profile->getValue("shortDescr").toString());
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		this->ui->tableWidget_profiles->setItem(row, 1, item);
+
+		//import possible?
+		if (profile->getValue("import").isValid() &&
+		    profile->getValue("import").toBool()) {
+			checkState = Qt::Checked;
+		} else {
+			checkState = Qt::Unchecked;
+		}
+		item = new QTableWidgetItem();
+		item->setCheckState(checkState); //import state
+		item->setFlags(Qt::ItemIsSelectable);
+		this->ui->tableWidget_profiles->setItem(row, 2, item);
+
+		//export possible?
+		if (profile->getValue("export").isValid() &&
+		    profile->getValue("export").toBool()) {
+			checkState = Qt::Checked;
+		} else {
+			checkState = Qt::Unchecked;
+		}
+		item = new QTableWidgetItem();
+		item->setCheckState(checkState); //export state
+		item->setFlags(Qt::ItemIsSelectable);
+		this->ui->tableWidget_profiles->setItem(row, 3, item);
+
+		//global profile?
+		if (profile->getValue("isGlobal").isValid() &&
+		    profile->getValue("isGlobal").toBool()) {
+			checkState = Qt::Checked;
+		} else {
+			checkState = Qt::Unchecked;
+		}
+		item = new QTableWidgetItem();
+		item->setCheckState(checkState); //global state
+		item->setFlags(Qt::ItemIsSelectable);
+		this->ui->tableWidget_profiles->setItem(row, 4, item);
+
+		//Favorit is stored in the local settings object
+		QString key = QString(curPlugin->getName());
+		key.append("/");
+		key.append(profile->getValue("name").toString());
+		if (this->settings->isProfileFavorit(key) ||
+		    this->imex_favorites->value(key, false)) {
+			checkState = Qt::Checked;
+		} else {
+			checkState = Qt::Unchecked;
+		}
+		item = new QTableWidgetItem();
+		item->setCheckState(checkState);
+		this->ui->tableWidget_profiles->setItem(row, 5, item);
+
+		item = new QTableWidgetItem();
+		item->setText(profile->getValue("version").toString());
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		this->ui->tableWidget_profiles->setItem(row, 6, item);
+
+	}
+
+	//set optimal column withs
+	//this->ui->tableWidget_profiles->resizeColumnsToContents();
+	this->ui->tableWidget_profiles->setColumnWidth(0, 110); //name
+	this->ui->tableWidget_profiles->setColumnWidth(1, 216); //description
+	this->ui->tableWidget_profiles->setColumnWidth(2, 28); //import
+	this->ui->tableWidget_profiles->setColumnWidth(3, 28); //export
+	this->ui->tableWidget_profiles->setColumnWidth(4, 28); //global
+	this->ui->tableWidget_profiles->setColumnWidth(5, 34); //favorit
+	this->ui->tableWidget_profiles->setColumnWidth(6, 56); //Version
+
 }
 
 //private slot
@@ -217,4 +365,31 @@ void DialogSettings::onCheckBoxRefereshAtStartStateChanged(int /* state */)
 		this->ui->checkBox_executeAtStart->setEnabled(false);
 		this->ui->checkBox_executeAtStart->setChecked(false);
 	}
+}
+
+
+void DialogSettings::on_listWidget_plugins_currentRowChanged(int currentRow)
+{
+	qDebug() << Q_FUNC_INFO << "current row:" << currentRow;
+	this->refreshImExProfileTableWidget();
+}
+
+void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
+{
+	if (item->column() != 5) {
+		return; //Favorit not changed
+	}
+
+	//qDebug() << Q_FUNC_INFO << "item" << item << "changed! Selected:" << item->checkState();
+
+	//favorit changed, store the actual Value
+	bool checked = item->checkState() == Qt::Checked;
+
+	QString key;
+	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
+	key = this->ui->listWidget_plugins->item(listWidgetRow)->text(); //plugin-name
+	key.append("/");
+	key.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profile-name
+
+	this->imex_favorites->insert(key, checked);
 }

@@ -97,6 +97,9 @@ public:
 	bool autoAddNewRecipients() const;
 	void setAutoAddNewRecipients(bool value);
 
+	bool isProfileFavorit(const QString &name) const;
+	void setProfileFavorit(const QString &name, bool favorit);
+
 	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
