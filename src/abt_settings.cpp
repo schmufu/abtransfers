@@ -41,22 +41,21 @@ abt_settings::abt_settings(QObject *parent) :
 {
 	qDebug() << Q_FUNC_INFO << "created";
 
-	//Der Standard-Speicherordner ist .abtransfers im /home/USER Verzeichnis
-	//dort liegt auch IMMER die settings.ini
+	//the standard folder is .abtransfers in the home directory
+	//there is always the settings.ini
 
 	QString homePath = QDir::homePath();
 	QString iniFilename = homePath + "/.abtransfers/settings.ini";
-	//damit der Pfad auf allen Systemen genutzt werden kann.
+	//the path must be useable on all systems
 	iniFilename = QDir::toNativeSeparators(iniFilename);
-	//wenn der Ordner noch nicht existiert erstellen wir ihn
+	//if the folder does not exist, we create it
 	QDir dataStorage(QDir::toNativeSeparators(homePath + "/.abtransfers"));
 	if (!dataStorage.exists()) {
 		bool ret = dataStorage.mkpath(dataStorage.absolutePath());
 		if (!ret) {
 			qWarning() << Q_FUNC_INFO << "could not create default"
 				   << "folder:" << dataStorage.absolutePath();
-			//wir machen trotzdem weiter, die Default-Werte sind
-			//trotzdem nutzbar.
+			//we continue, the default values are useable
 		}
 	}
 
@@ -66,29 +65,28 @@ abt_settings::abt_settings(QObject *parent) :
 
 	this->m_recipientsList = new QList<abt_EmpfaengerInfo*>;
 
-	//Die anderen Daten können je nach Einstellung durch den Benutzer
-	//auch woanders gespeichert sein. Wir laden diese Daten, bzw. default
-	//Werte wenn sie nicht existieren.
+	//depending on the user-selection the data-files can be stored in other
+	//places. We load this values or the default ones if they not exists.
 	QString defValue;
 
-	//Standart-Speicherordner
+	//Standard folder to store data
 	defValue = homePath + "/.abtransfers/";
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_dataDir = this->settings->value("Main/DataDir", defValue).toString();
 
-	//Datei für Bekannte Empfänger
+	//file for known recipients
 	defValue = homePath + "/.abtransfers/recipients.txt";
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_recipientsFilename =
 		this->settings->value("Main/RecipientsFilename", defValue).toString();
 
-	//Datei für die Account-Daten (Balance, Daueraufträge, Terminüberweisungen)
+	//file for account data (balance, standing-/dated-transfers)
 	defValue = homePath + "/.abtransfers/accountdata.ctx";
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_accountdataFilename =
 		this->settings->value("Main/AccountDataFilename", defValue).toString();
 
-	//Datei für die History
+	//file for the history
 	defValue = homePath + "/.abtransfers/history.ctx";
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_historyFilename =
@@ -98,27 +96,27 @@ abt_settings::abt_settings(QObject *parent) :
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
 
-	//Sicherstellen das alle Dateiberechtigungen stimmen
+	//ensure that all file permissions are correct
 	this->setFilePermissions();
 }
 
 abt_settings::~abt_settings()
 {
-	//Alle Empfaenger aus der EmpängerListe speichern
+	//save all known recipients
 	this->saveKnownEmpfaenger();
-	//und dann die Objekte löschen
+	//and then free the object
 	while (this->m_recipientsList->size()) {
 		delete this->m_recipientsList->takeFirst();
 	}
-	//sowie die Liste an sich
+	//as well as the list itself
 	delete this->m_recipientsList;
 
 	delete this->m_textKeyDescr;
 
-	//das Settings Object wieder löschen
+	//delete the QSettings object
 	delete this->settings;
 
-	//Sicherstellen das alle Dateiberechtigungen stimmen
+	//ensure that all file permissions are correct
 	this->setFilePermissions();
 
 	qDebug() << Q_FUNC_INFO << "deleted";
@@ -134,7 +132,7 @@ void abt_settings::loadTextKeyDescriptions()
 	this->m_textKeyDescr->clear();
 
 	if (!this->settings->childGroups().contains("TextKeyDescriptions")) {
-		//TextKexDescriptions noch unbekannt, default werte setzen
+		//TextKexDescriptions doesnt exists, use default values
 		this->settings->beginGroup("TextKeyDescriptions");
 		this->settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
 		this->settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
@@ -149,7 +147,7 @@ void abt_settings::loadTextKeyDescriptions()
 	}
 	
 	this->settings->beginGroup("TextKeyDescriptions");
-	//Alle Schlüssel durchgehen und deren Werte in einem QHash Speichern
+	//go through all keys and store the values in a QHash
 	foreach (QString key, this->settings->allKeys()) {
 		QString text = this->settings->value(key, tr("Unbekannt")).toString();
 		this->m_textKeyDescr->insert(key.toInt(), text);
@@ -163,10 +161,10 @@ void abt_settings::setFilePermissions()
 {
 	QString homePath = QDir::homePath();
 	QString iniFilename = homePath + "/.abtransfers/settings.ini";
-	//damit der Pfad auf allen Systemen genutzt werden kann.
+	//the path must be useable on all systems
 	iniFilename = QDir::toNativeSeparators(iniFilename);
 
-	//Sicherstellen das die Dateiberechtigungen stimmen
+	//ensure file permissions are correct
 	bool ret = QFile::setPermissions(iniFilename,
 					 QFile::ReadOwner | QFile::ReadUser |
 					 QFile::WriteOwner | QFile::WriteUser);
@@ -191,7 +189,7 @@ void abt_settings::setFilePermissions()
 	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions  on"
 			     << this->getRecipientsFilename() << "failed";
 
-	//Auch die Berechtigungen für die Ornder sollten stimmen
+	//also the permissions fpr the folder should be correct
 	ret = QFile::setPermissions(QDir::toNativeSeparators(homePath + "/.abtransfers"),
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
 				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
@@ -267,13 +265,14 @@ void abt_settings::saveKnownEmpfaenger()
 }
 
 /**
-  Es wird überprüft ob der Empfänger bereits bekannt ist und wenn er nicht
-  bekannt ist wird er in der EmpfängerListe hinzugefügt.
-
-  Wenn der Empfänger bereits bekannt ist wird die Adresse des breits bekannten
-  EmpfaengerInfo-Objects in \a EmpfaengerInfo gespeichert und das übergebene
-  Object gelöscht.
-*/
+ * Checks if the @a recipientInfo is already known or not.
+ *
+ * If the recipient is already known, the supplied @a recipientInfo is deleted
+ * and the pointer is moved to the already known recipient object.
+ * Otherwise the new recipient is added to the known recipients and the signal
+ * @ref recipientsListChanged() is emitted.
+ *
+ */
 //public slot
 void abt_settings::addKnownRecipient(abt_EmpfaengerInfo *recipientInfo)
 {
