@@ -165,6 +165,8 @@ AB_IMEXPORTER_CONTEXT *page_history::getContextFromSelected() const
 		/**
 		 * @todo We store everything as a transaction, this should be
 		 *	 tunable at the settings.
+		 *	 We do this because not all export profiles are capable
+		 *	 of exporting datedTransfers or StandingOrders!
 		 */
 
 		//the Qt::UserRole contains a QVariant with the adress of the
@@ -348,25 +350,13 @@ void page_history::onActExportSelected()
 		}
 
 		//Now we need to know where to store the data
-		QString dialogTitle = tr("(%1 / %2) Exportieren ...").arg(
+		QString dialogTitle = tr("(%1 / %2) Export ...").arg(
 					      selPlugin->getName()).arg(
 					      selProfile->getValue("name").toString());
 
-		QFileDialog dialog(this);
-		dialog.setModal(true);
-		dialog.setWindowTitle(dialogTitle);
-		dialog.setFileMode(QFileDialog::AnyFile);
-		dialog.setNameFilter(tr("Alle Dateien (*.*)"));
-		dialog.setNameFilterDetailsVisible(true);
-		dialog.setViewMode(QFileDialog::Detail);
-		dialog.setAcceptMode(QFileDialog::AcceptSave);
-
 		QString saveFilename = "";
-		if (dialog.exec()) {
-			saveFilename = dialog.selectedFiles().at(0);
-		} else {
-			goto ONACTEXPORTSELECTED_CLEANUP;
-		}
+		saveFilename = QFileDialog::getSaveFileName(this, dialogTitle,
+							    settings->getDataDir());
 
 		if (saveFilename.isEmpty()) {
 			QMessageBox::warning(this, tr("Export abgebrochen"),
