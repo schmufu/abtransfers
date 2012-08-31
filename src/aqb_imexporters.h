@@ -68,8 +68,12 @@ public:
 	~aqb_imexporters();
 
 private:
+	AB_BANKING *m_ab;
 	GWEN_PLUGIN_DESCRIPTION_LIST2 *pdl;
 	QList<aqb_iePlugin*>* plugins;
+
+	void freeAll();
+	void loadAll();
 
 protected:
 
@@ -86,8 +90,10 @@ public:
 	const aqb_iePlugin* getPluginByFilename(QString &filename) const;
 
 signals:
+	void imexportersLoaded();
 
 public slots:
+	void reloadImExporterData();
 
 };
 
@@ -142,7 +148,7 @@ public:
 
 signals:
 
-public slots:
+public slots:	
 
 };
 

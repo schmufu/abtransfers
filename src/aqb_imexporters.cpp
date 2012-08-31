@@ -44,21 +44,52 @@ aqb_imexporters::aqb_imexporters(AB_BANKING* ab, QObject *parent) :
 {
 	//init of private members
 	this->pdl = NULL;
+	this->plugins = NULL;
+
+	this->m_ab = ab;
+
+	this->loadAll(); //creates the QList and loads all Plugins from AqBanking
+}
+
+aqb_imexporters::~aqb_imexporters()
+{
+	this->freeAll();
+}
+
+//private
+void aqb_imexporters::freeAll()
+{
+	while(!this->plugins->isEmpty()) {
+		delete this->plugins->takeFirst();
+	}
+	delete this->plugins;
+	this->plugins = NULL;
+
+	//delete all imexporter Descriptions and the "List2" itself
+	GWEN_PluginDescription_List2_freeAll(this->pdl);
+}
+
+void aqb_imexporters::loadAll()
+{
+	Q_ASSERT_X(this->plugins == NULL, "loadAll()",
+		   "plugins must be NULL before calling loadAll()");
+
+	//we create the plugin list
 	this->plugins = new QList<aqb_iePlugin*>;
 
 	//get the list of available im/exporters
 	//(we must free this through GWEN_PluginDescription_List2_freeAll())
-	this->pdl = AB_Banking_GetImExporterDescrs(ab);
+	this->pdl = AB_Banking_GetImExporterDescrs(this->m_ab);
 
 	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
 	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
-	pdli = GWEN_PluginDescription_List2_First(pdl);
+	pdli = GWEN_PluginDescription_List2_First(this->pdl);
 	if (pdli) {
 		pd = GWEN_PluginDescription_List2Iterator_Data(pdli);
 	}
 
 	while (pd) {
-		aqb_iePlugin *aqbPlugin = new aqb_iePlugin(ab, pd);
+		aqb_iePlugin *aqbPlugin = new aqb_iePlugin(this->m_ab, pd);
 		this->plugins->append(aqbPlugin);
 
 		pd = GWEN_PluginDescription_List2Iterator_Next(pdli); //next in list
@@ -67,17 +98,7 @@ aqb_imexporters::aqb_imexporters(AB_BANKING* ab, QObject *parent) :
 	//free ListIterator
 	GWEN_PluginDescription_List2Iterator_free(pdli);
 
-}
-
-aqb_imexporters::~aqb_imexporters()
-{
-	while(!this->plugins->isEmpty()) {
-		delete this->plugins->takeFirst();
-	}
-	delete this->plugins;
-
-	//delete all imexporter Descriptions and the "List2" itself
-	GWEN_PluginDescription_List2_freeAll(this->pdl);
+	emit imexportersLoaded();
 }
 
 
@@ -87,6 +108,13 @@ int aqb_imexporters::getSize() const
 	return GWEN_PluginDescription_List2_GetSize(pdl);
 }
 
+
+//public Slot
+void aqb_imexporters::reloadImExporterData()
+{
+	this->freeAll();
+	this->loadAll();
+}
 
 
 

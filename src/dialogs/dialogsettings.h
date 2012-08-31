@@ -82,6 +82,8 @@ private slots:
 
 	void on_listWidget_plugins_currentRowChanged(int currentRow);
 	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
+
+	void on_actionEditProfile_triggered();
 };
 
 #endif // DIALOGSETTINGS_H
