@@ -46,7 +46,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -513,7 +513,7 @@ nach dem starten zum Insititut übertragen.</string>
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <widget class="QLabel" name="label_6">
@@ -694,10 +694,23 @@ nach dem starten zum Insititut übertragen.</string>
   </layout>
   <action name="actionEditProfile">
    <property name="icon">
-    <iconset theme="document-edit"/>
+    <iconset theme="document-edit">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Ändern</string>
+   </property>
+  </action>
+  <action name="actionNewProfile">
+   <property name="icon">
+    <iconset theme="document-new"/>
+   </property>
+   <property name="text">
+    <string>Neu</string>
+   </property>
+   <property name="toolTip">
+    <string>Erstellt ein neues Profil</string>
    </property>
   </action>
  </widget>

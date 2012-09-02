@@ -34,6 +34,8 @@
 
 #include <QtCore/QDebug>
 #include <QtGui/QFileDialog>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
 
 #include "../abt_settings.h"
 
@@ -68,6 +70,7 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 
 
 	//widgets on the imexporter tab-widget page
+	this->ui->tableWidget_profiles->addAction(this->ui->actionNewProfile);
 	this->ui->tableWidget_profiles->addAction(this->ui->actionEditProfile);
 }
 
@@ -139,6 +142,7 @@ void DialogSettings::saveToSettings()
 
 }
 
+//private
 void DialogSettings::refreshImExPluginWidget()
 {
 	Q_ASSERT(this->imexp);
@@ -269,6 +273,62 @@ void DialogSettings::refreshImExProfileTableWidget()
 
 }
 
+//private
+bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
+						 const aqb_ieProfile **profile) const
+{
+	Q_ASSERT(plugin);
+	Q_ASSERT(profile);
+
+	const aqb_iePlugin *selPlugin = NULL;
+	const aqb_ieProfile *selProfile = NULL;
+
+	QString pluginName;
+	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
+	if (listWidgetRow >= 0) {
+		pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
+		selPlugin = this->imexp->getPluginByName(pluginName);
+	}
+
+	if (!selPlugin) {
+		//we did not found a plugin, we set the pointer to NULL
+		//and return false
+		*plugin = NULL;
+		*profile = NULL; //no plugin -> no profile
+		return false;
+	}
+
+	//we got a selected plugin and set the pointer in the supplied var
+	*plugin = selPlugin;
+
+
+	//we have the plugin now we need the corresponding selected profile
+	QString profileName;
+	int curRow = this->ui->tableWidget_profiles->currentRow();
+	if (curRow >= 0) {
+		//at col 0 is the name of the profile
+		profileName = this->ui->tableWidget_profiles->item(curRow, 0)->text();
+		foreach(const aqb_ieProfile *pro, *selPlugin->getProfiles()) {
+			if (pro->getValue("name").toString() == profileName) {
+				selProfile = pro;
+				break; //profile found, another cant match
+			}
+		} //foreach
+	} //curRow >= 0
+
+	if (!selProfile) {
+		//we did not found a profile
+		*profile = NULL;
+		return false;
+	}
+
+	//we got a selected profile and set the pointer in the supplied var
+	*profile = selProfile;
+
+	return (selPlugin != NULL && selProfile != NULL);
+
+}
+
 //private slot
 void DialogSettings::on_buttonBox_clicked(QAbstractButton* button)
 {
@@ -392,7 +452,8 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 
 	bool editorSupported = false;
 	editorSupported = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
-	//enable the profile-edit if an editor is supported by AqBanking
+	//enable the actions if an editor is supported by AqBanking
+	this->ui->actionNewProfile->setEnabled(editorSupported);
 	this->ui->actionEditProfile->setEnabled(editorSupported);
 
 	if (item->column() != 5) {
@@ -447,6 +508,8 @@ void DialogSettings::on_actionEditProfile_triggered()
 								  profileName.toStdString().c_str());
 	GWEN_DIALOG *pDlg = NULL;
 
+	qDebug() << Q_FUNC_INFO << "DB_NODE_NAME:" << GWEN_DB_GroupName(dbProfile);
+	qDebug() << Q_FUNC_INFO << "DB_Name_var: " << GWEN_DB_GetCharValue(dbProfile, "name", 0, "notSet");
 
 	//I have no idea why the conversion from QString to const char* must
 	//be done in the way following. If anyone can make this simpler, please
@@ -489,6 +552,104 @@ void DialogSettings::on_actionEditProfile_triggered()
 		//User did not cancel the dialog, save profile
 		ret2 = AB_Banking_SaveLocalImExporterProfile(banking->getAqBanking(),
 							     pluginName.toStdString().c_str(),
+							     dbProfile,
+							     filename_cstr);
+		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;
+	}
+
+
+}
+
+//private slot
+void DialogSettings::on_actionNewProfile_triggered()
+{
+	//at first we need a new name for the profile
+	QString newname;
+	bool inputOk = false;
+
+	newname = QInputDialog::getText(this, tr("Profil Name"),
+					tr("Bitte geben sie einen eindeutigen "
+					   "Namen für das neue Profil ein"),
+					QLineEdit::Normal, "", &inputOk);
+
+	if (!inputOk || newname.isEmpty()) {
+		//no name was given or cancel clicked
+		return;
+	}
+
+	//get the current plugin and check if it already contains a profile
+	//with the entered name
+	const aqb_iePlugin *selPlugin = NULL;
+	const aqb_ieProfile *selProfile = NULL;
+	bool profileExists = false;
+
+	this->getSelectedPluginAndProfile(&selPlugin, &selProfile);
+	//the selProfile is not necessary
+	if (!selPlugin) {
+		qWarning() << Q_FUNC_INFO << "cant get the pointer to the"
+			   << "current plugin, aborting.";
+		return;
+	}
+
+	foreach(const aqb_ieProfile *pro, *selPlugin->getProfiles()) {
+		if (pro->getValue("name").toString() == newname) {
+			profileExists = true;
+			break; //one profile found, another must not match
+		}
+	}
+
+	if (profileExists) {
+		QMessageBox::critical(this, tr("Profil Name"),
+				      tr("Ein Profil mit dem Namen %1 existiert "
+					 "bereits innerhalb des Plugins '%2'."
+					 "<br /><br />"
+					 "Ein neues Profil mit demselben Namen "
+					 "kann nicht erstellt werden!")
+				      .arg(newname).arg(selPlugin->getName()));
+		return;
+	}
+
+
+	//OK, we have a name wich does not exist so we can create the new
+	//profile.
+
+	GWEN_DIALOG *pDlg = NULL;
+	GWEN_DB_NODE *dbProfile = GWEN_DB_Group_new(newname.toStdString().c_str());
+	//we set the name of the new Profile
+	GWEN_DB_SetCharValue(dbProfile, GWEN_DB_FLAGS_DEFAULT, "name", newname.toStdString().c_str());
+
+	std::string filename = newname.toStdString();
+	filename.append(".conf");
+	const char *filename_cstr = filename.c_str();
+
+	//AqBanking remains the owner of 'ie', so we must not free it!
+	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
+						     selPlugin->getName());
+
+	int ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile,
+						     filename_cstr,
+						     &pDlg);
+	qDebug() << Q_FUNC_INFO << "return of AB_ImExporter_GetEditProfileDialog()"
+		 << "is:" << ret;
+
+	int ret2 = 0; //default aborted
+	if (pDlg) {
+		uint32_t guiid = GWEN_Dialog_GetGuiId(pDlg);
+		ret2 = GWEN_Gui_ExecDialog(pDlg, guiid);
+	} else {
+		qWarning() << Q_FUNC_INFO << "AB_ImExporter_GetEditProfileDialog()"
+			   << "could not get a pDlg for the profile" << newname;
+	}
+
+	//free the dialog after execution
+	GWEN_Dialog_free(pDlg);
+
+	qDebug() << Q_FUNC_INFO << "return of GWEN_Gui_ExecDialog():" << ret2;
+
+	if (ret2) {
+		//User did not cancel the dialog, save profile
+		ret2 = AB_Banking_SaveLocalImExporterProfile(banking->getAqBanking(),
+							     selPlugin->getName(),
 							     dbProfile,
 							     filename_cstr);
 		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;

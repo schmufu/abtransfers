@@ -69,6 +69,10 @@ private:
 	void refreshImExPluginWidget();
 	void refreshImExProfileTableWidget();
 
+	//! set @a plugin and @a profile to the selected values (or NULL)
+	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
+					 const aqb_ieProfile **profile = NULL) const;
+
 
 private slots:
 	void onCheckBoxRefereshAtStartStateChanged(int state);
@@ -84,6 +88,7 @@ private slots:
 	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
 
 	void on_actionEditProfile_triggered();
+	void on_actionNewProfile_triggered();
 };
 
 #endif // DIALOGSETTINGS_H
