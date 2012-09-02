@@ -38,6 +38,7 @@
 #include <QtGui/QMessageBox>
 
 #include "../abt_settings.h"
+#include "../dialogs/abt_dialog.h"
 
 #include "../globalvars.h"
 
@@ -72,6 +73,7 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	//widgets on the imexporter tab-widget page
 	this->ui->tableWidget_profiles->addAction(this->ui->actionNewProfile);
 	this->ui->tableWidget_profiles->addAction(this->ui->actionEditProfile);
+	this->ui->tableWidget_profiles->addAction(this->ui->actionDeleteProfile);
 }
 
 DialogSettings::~DialogSettings()
@@ -103,6 +105,7 @@ void DialogSettings::loadFromSettings()
 
 	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
 	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
+	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog("ProfileConfirmDelete"));
 
 	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
 	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
@@ -124,6 +127,7 @@ void DialogSettings::saveToSettings()
 
 	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
 	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
+	this->settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
 
 	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
 	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
@@ -450,11 +454,12 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
 						     pluginName.toStdString().c_str());
 
-	bool editorSupported = false;
-	editorSupported = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
+	bool supported = false;
+	supported = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
 	//enable the actions if an editor is supported by AqBanking
-	this->ui->actionNewProfile->setEnabled(editorSupported);
-	this->ui->actionEditProfile->setEnabled(editorSupported);
+	this->ui->actionNewProfile->setEnabled(supported);
+	this->ui->actionEditProfile->setEnabled(supported);
+	this->ui->actionDeleteProfile->setEnabled(supported);
 
 	if (item->column() != 5) {
 		return; //Favorit not changed
@@ -657,5 +662,78 @@ void DialogSettings::on_actionNewProfile_triggered()
 
 	//profile was saved, free the DB_NODE
 	GWEN_DB_Group_free(dbProfile);
+
+}
+
+void DialogSettings::on_actionDeleteProfile_triggered()
+{
+	//get the selected plugin and profile and check if the file could be
+	//deleted.
+	const aqb_iePlugin *selPlugin = NULL;
+	const aqb_ieProfile *selProfile = NULL;
+	bool ok = false;
+
+	ok = this->getSelectedPluginAndProfile(&selPlugin, &selProfile);
+
+	if (!ok) {
+		qWarning() << Q_FUNC_INFO << "something went wrong on getting"
+			   << "the selected profile (" << selProfile << ")"
+			   << "and plugin (" << selPlugin << ") - Aborting.";
+		return;
+	}
+
+	//we got the selected plugin and profile
+
+	//check if the profile is a global profile which should not be deleted
+	if (selProfile->getValue("isGlobal").isValid() &&
+	    selProfile->getValue("isGlobal").toBool()) {
+		qWarning() << Q_FUNC_INFO << "the selected profile"
+			   << selProfile->getValue("name").toString() << "is"
+			   << "global and could not be deleted!";
+		return;
+	}
+
+	//get the filename and directory
+	QDir lclImexpDir;
+	lclImexpDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks |
+			      QDir::NoDotAndDotDot);
+	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 255, 0, 0);
+	int ret = AB_Banking_GetUserDataDir(banking->getAqBanking(), buf);
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "AB_Banking_GetUserDataDir returned"
+			   << ret << " - Aborting.";
+		return;
+	}
+	QString path = QString::fromStdString(GWEN_Buffer_GetStart(buf));
+	GWEN_Buffer_free(buf);
+	path.append("/imexporters");
+	path.append("/").append(selPlugin->getName());
+	path.append("/profiles/");
+	lclImexpDir.setPath(path);
+
+	if (!lclImexpDir.exists()) {
+		qWarning() << Q_FUNC_INFO << "directory does not exists -"
+			   << lclImexpDir.path() << "- Aborting.";
+		return;
+	}
+
+	//check if the filename exists in the directory and delete it if the
+	//user want it.
+	QString profileFilename = selProfile->getValue("fileName").toString();
+	if (lclImexpDir.entryList().contains(profileFilename)) {
+		//abt_dialog, so the user can decide to not get asked again
+		abt_dialog delDia(this, tr("Profil löschen"),
+				  tr("Soll das Profil %1 wirklich gelöscht "
+				     "werden?").arg(selProfile->getValue("name").toString()),
+				  QDialogButtonBox::Yes | QDialogButtonBox::No,
+				  QDialogButtonBox::Yes, QMessageBox::Question,
+				  "ProfileConfirmDelete");
+		if (delDia.exec() == QDialogButtonBox::Yes) {
+			QString file = lclImexpDir.absolutePath();
+			file.append("/").append(profileFilename);
+			QFile::remove(file);
+			qDebug() << Q_FUNC_INFO << "file" << file << "deleted!";
+		}
+	}
 
 }

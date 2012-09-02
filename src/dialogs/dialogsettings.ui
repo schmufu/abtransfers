@@ -46,7 +46,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -358,6 +358,13 @@ Hinweis angezeigt.</string>
                 </property>
                 <property name="text">
                  <string>Auftrag zum Ausgang hinzugefügt</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_warnDeleteProfile">
+                <property name="text">
+                 <string>Abfrage beim Profil Löschen</string>
                 </property>
                </widget>
               </item>
@@ -711,6 +718,17 @@ nach dem starten zum Insititut übertragen.</string>
    </property>
    <property name="toolTip">
     <string>Erstellt ein neues Profil</string>
+   </property>
+  </action>
+  <action name="actionDeleteProfile">
+   <property name="icon">
+    <iconset theme="edit-delete"/>
+   </property>
+   <property name="text">
+    <string>Löschen</string>
+   </property>
+   <property name="toolTip">
+    <string>Löscht das ausgwählte Profil</string>
    </property>
   </action>
  </widget>

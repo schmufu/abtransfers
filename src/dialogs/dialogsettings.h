@@ -89,6 +89,7 @@ private slots:
 
 	void on_actionEditProfile_triggered();
 	void on_actionNewProfile_triggered();
+	void on_actionDeleteProfile_triggered();
 };
 
 #endif // DIALOGSETTINGS_H
