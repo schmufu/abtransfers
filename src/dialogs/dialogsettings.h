@@ -66,7 +66,11 @@ private:
 	void loadFromSettings();
 	void saveToSettings();
 
-	void refreshImExPluginWidget();
+	void loadFavoriteImExpFromSettings();
+	void saveFavoriteImExpToSettings();
+
+	void reloadImExporters();
+	void refreshImExPluginListWidget();
 	void refreshImExProfileTableWidget();
 
 	//! set @a plugin and @a profile to the selected values (or NULL)
@@ -75,6 +79,7 @@ private:
 
 
 private slots:
+	void updatedImExporters();
 	void onCheckBoxRefereshAtStartStateChanged(int state);
 
 	void on_buttonBox_clicked(QAbstractButton* button);
@@ -86,6 +91,7 @@ private slots:
 
 	void on_listWidget_plugins_currentRowChanged(int currentRow);
 	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
+	void on_tableWidget_profiles_itemSelectionChanged();
 
 	void on_actionEditProfile_triggered();
 	void on_actionNewProfile_triggered();

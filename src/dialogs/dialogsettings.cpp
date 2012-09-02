@@ -69,15 +69,23 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	connect(this->ui->checkBox_getStandingOrders, SIGNAL(stateChanged(int)),
 		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));
 
+	connect(this->imexp, SIGNAL(imexportersLoaded()),
+		this, SLOT(updatedImExporters()));
+
 
 	//widgets on the imexporter tab-widget page
 	this->ui->tableWidget_profiles->addAction(this->ui->actionNewProfile);
 	this->ui->tableWidget_profiles->addAction(this->ui->actionEditProfile);
 	this->ui->tableWidget_profiles->addAction(this->ui->actionDeleteProfile);
+
+	//at initialisation select the first item in the listwidget
+	if (this->ui->listWidget_plugins->count() > 0)
+		this->ui->listWidget_plugins->setCurrentRow(0);
 }
 
 DialogSettings::~DialogSettings()
 {
+	this->imex_favorites->clear();
 	delete this->imex_favorites;
 	delete this->imexp;
 	delete ui;
@@ -114,7 +122,9 @@ void DialogSettings::loadFromSettings()
 
 	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
 
-	this->refreshImExPluginWidget();
+	this->loadFavoriteImExpFromSettings();
+
+	this->refreshImExPluginListWidget();
 }
 
 //private
@@ -136,25 +146,54 @@ void DialogSettings::saveToSettings()
 
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 
+	this->saveFavoriteImExpToSettings();
+
+}
+
+void DialogSettings::loadFavoriteImExpFromSettings()
+{
+	//load all as favorite marked im-/exort profiles
+	this->imex_favorites->clear();
+
+	foreach(const QString key, this->settings->getAllProfileFavorites()) {
+		this->imex_favorites->insert(key, this->settings->isProfileFavorit(key));
+	}
+}
+
+
+void DialogSettings::saveFavoriteImExpToSettings()
+{
 	//save all as favorit marked im-/export profiles
 	QHashIterator<QString, bool> i(*this->imex_favorites);
 	while (i.hasNext()) {
 		i.next();
 		this->settings->setProfileFavorit(i.key(), i.value());
 	}
-	this->imex_favorites->clear(); //all changes saves
-
 }
 
+/**
+ * @brief reloads the supported Im-/Exporters from AqBanking
+ */
 //private
-void DialogSettings::refreshImExPluginWidget()
+void DialogSettings::reloadImExporters()
+{
+	//reload all data
+	//this calls the reload at aqb_imexporters which emits a signal when
+	//all data is loaded which calls our connected slot.
+	this->imexp->reloadImExporterData();
+}
+
+
+//private
+void DialogSettings::refreshImExPluginListWidget()
 {
 	Q_ASSERT(this->imexp);
 
 	//remember the selected item
+	QString pluginName = "";
 	int selected = this->ui->listWidget_plugins->currentRow();
-	if (selected == -1) {
-		selected = 0;
+	if (selected != -1) {
+		pluginName = this->ui->listWidget_plugins->item(selected)->text();
 	}
 
 	this->ui->listWidget_plugins->clear(); //remove all;
@@ -165,8 +204,11 @@ void DialogSettings::refreshImExPluginWidget()
 	}
 
 	//restore selected item
-	if (this->ui->listWidget_plugins->count() > selected) {
-		this->ui->listWidget_plugins->setCurrentRow(selected);
+	for (int i=0; i<this->ui->listWidget_plugins->count(); ++i) {
+		if (this->ui->listWidget_plugins->item(i)->text() == pluginName) {
+			this->ui->listWidget_plugins->setCurrentRow(selected);
+			break; //nothing else can match
+		}
 	}
 
 }
@@ -176,14 +218,21 @@ void DialogSettings::refreshImExProfileTableWidget()
 {
 	const aqb_iePlugin *curPlugin;
 	int curRow = this->ui->listWidget_plugins->currentRow();
-	QString curSelectionName = this->ui->listWidget_plugins->item(curRow)->text();
+	QString curSelectionName = "";
+	if (curRow >= 0)
+		curSelectionName = this->ui->listWidget_plugins->item(curRow)->text();
 	curPlugin = this->imexp->getPluginByName(curSelectionName);
-
 	if (!curPlugin) {
 		qWarning() << Q_FUNC_INFO << "No im-/exporter-plugin for"
 			   << curSelectionName << "found. Aborting.";
 		return;
 	}
+
+	//remember the current selection
+	QString profileName = "";
+	curRow = this->ui->tableWidget_profiles->currentRow();
+	if (curRow >= 0)
+		profileName = this->ui->tableWidget_profiles->item(curRow, 0)->text();
 
 	this->ui->tableWidget_profiles->clearContents();
 	this->ui->tableWidget_profiles->setRowCount(0);
@@ -202,6 +251,8 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item->setText(profile->getValue("name").toString());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		this->ui->tableWidget_profiles->setItem(row, 0, item);
+
+		bool selected = item->text() == profileName;
 
 		item = new QTableWidgetItem();
 		item->setText(profile->getValue("shortDescr").toString());
@@ -244,12 +295,11 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item->setFlags(Qt::ItemIsSelectable);
 		this->ui->tableWidget_profiles->setItem(row, 4, item);
 
-		//Favorit is stored in the local settings object
+		//if the profile is a favorite this is stored in the local QHash
 		QString key = QString(curPlugin->getName());
 		key.append("/");
 		key.append(profile->getValue("name").toString());
-		if (this->settings->isProfileFavorit(key) ||
-		    this->imex_favorites->value(key, false)) {
+		if (this->imex_favorites->value(key, false)) {
 			checkState = Qt::Checked;
 		} else {
 			checkState = Qt::Unchecked;
@@ -262,6 +312,11 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item->setText(profile->getValue("version").toString());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		this->ui->tableWidget_profiles->setItem(row, 6, item);
+
+		//restore selection
+		if (selected)
+			this->ui->tableWidget_profiles->selectRow(row);
+
 
 	}
 
@@ -331,6 +386,19 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 
 	return (selPlugin != NULL && selProfile != NULL);
 
+}
+
+//private slot
+/**
+* @brief this slot is called when the @ref aqb_imexporters emits @ref imexportersLoaded();
+*/
+void DialogSettings::updatedImExporters()
+{
+	//we refresh the ListWidget for the plugins
+	this->refreshImExPluginListWidget();
+
+	//the refresh also changes the currentRow and emits the signal
+	//"currentRowChanged" which refreshes the tableWidget_profiles
 }
 
 //private slot
@@ -446,21 +514,6 @@ void DialogSettings::on_listWidget_plugins_currentRowChanged(int currentRow)
 
 void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 {
-	QString pluginName;
-	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
-	pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
-
-	//AqBanking remains the owner of 'ie', so we must not free it!
-	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
-						     pluginName.toStdString().c_str());
-
-	bool supported = false;
-	supported = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
-	//enable the actions if an editor is supported by AqBanking
-	this->ui->actionNewProfile->setEnabled(supported);
-	this->ui->actionEditProfile->setEnabled(supported);
-	this->ui->actionDeleteProfile->setEnabled(supported);
-
 	if (item->column() != 5) {
 		return; //Favorit not changed
 	}
@@ -470,10 +523,41 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 	//favorit changed, store the actual Value
 	bool checked = item->checkState() == Qt::Checked;
 
+	//get the plugin name for the changed profile item
+	QString pluginName;
+	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
+	pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
+
 	pluginName.append("/");
 	pluginName.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profile-name
 
 	this->imex_favorites->insert(pluginName, checked);
+}
+
+void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
+{
+	QString pluginName;
+	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
+	pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
+
+	//AqBanking remains the owner of 'ie', so we must not free it!
+	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
+						     pluginName.toStdString().c_str());
+
+	bool enabled = false;
+	enabled = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
+	//enable the actions if an editor is supported by AqBanking
+	this->ui->actionNewProfile->setEnabled(enabled);
+	this->ui->actionEditProfile->setEnabled(enabled);
+
+	int row = this->ui->tableWidget_profiles->currentRow();
+	if (this->ui->tableWidget_profiles->item(row, 4) != NULL) {
+		//enabled if not checked (not a global profile)
+		enabled = this->ui->tableWidget_profiles->item(row, 4)->checkState() == Qt::Unchecked;
+	} else {
+		enabled = false;
+	}
+	this->ui->actionDeleteProfile->setEnabled(enabled);
 }
 
 
@@ -562,6 +646,8 @@ void DialogSettings::on_actionEditProfile_triggered()
 		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;
 	}
 
+	//im-/export profiles might be changed, reaload them
+	this->reloadImExporters();
 
 }
 
@@ -663,6 +749,9 @@ void DialogSettings::on_actionNewProfile_triggered()
 	//profile was saved, free the DB_NODE
 	GWEN_DB_Group_free(dbProfile);
 
+	//im-/export profiles might be changed, reaload them
+	this->reloadImExporters();
+
 }
 
 void DialogSettings::on_actionDeleteProfile_triggered()
@@ -735,5 +824,8 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 			qDebug() << Q_FUNC_INFO << "file" << file << "deleted!";
 		}
 	}
+
+	//im-/export profiles might be changed, reaload them
+	this->reloadImExporters();
 
 }

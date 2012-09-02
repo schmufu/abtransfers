@@ -97,6 +97,7 @@ public:
 	bool autoAddNewRecipients() const;
 	void setAutoAddNewRecipients(bool value);
 
+	QStringList getAllProfileFavorites() const;
 	bool isProfileFavorit(const QString &name) const;
 	void setProfileFavorit(const QString &name, bool favorit);
 

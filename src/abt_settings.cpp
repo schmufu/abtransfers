@@ -385,6 +385,34 @@ void abt_settings::setAutoAddNewRecipients(bool value)
 	this->settings->setValue("General/autoAddNewRecipients", value);
 }
 
+/**
+ * @brief reads all entrys for Im-/Exporter favorites from the settings
+ *
+ * This function goes trough all groups of "ImExportFavorites" (also the
+ * childgroups) and returns a QStringList which items could be passed to
+ * @ref isProfileFavorit() to determine if the profile should be handled
+ * as favorite or not.
+ *
+ */
+QStringList abt_settings::getAllProfileFavorites() const
+{
+	this->settings->beginGroup("ImExportFavorites");
+	QStringList retList;
+
+	foreach(const QString group, this->settings->childGroups()) {
+		this->settings->beginGroup(group);
+
+		foreach(const QString key, this->settings->childKeys()) {
+			retList.append(QString(group).append("/").append(key));
+		}
+
+		this->settings->endGroup();
+	}
+	this->settings->endGroup();
+
+	return retList;
+}
+
 bool abt_settings::isProfileFavorit(const QString &name) const
 {
 	QString key = QString("ImExportFavorites/").append(name);

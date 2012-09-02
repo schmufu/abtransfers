@@ -711,7 +711,9 @@ nach dem starten zum Insititut übertragen.</string>
   </action>
   <action name="actionNewProfile">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Neu</string>
@@ -722,7 +724,9 @@ nach dem starten zum Insititut übertragen.</string>
   </action>
   <action name="actionDeleteProfile">
    <property name="icon">
-    <iconset theme="edit-delete"/>
+    <iconset theme="edit-delete">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Löschen</string>
