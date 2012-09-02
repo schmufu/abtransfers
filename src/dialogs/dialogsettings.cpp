@@ -655,5 +655,7 @@ void DialogSettings::on_actionNewProfile_triggered()
 		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;
 	}
 
+	//profile was saved, free the DB_NODE
+	GWEN_DB_Group_free(dbProfile);
 
 }
