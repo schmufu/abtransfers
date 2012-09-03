@@ -778,10 +778,19 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 				  QDialogButtonBox::Yes, QMessageBox::Question,
 				  "ProfileConfirmDelete");
 		if (delDia.exec() == QDialogButtonBox::Yes) {
+			//remember the key for settings before deletion
+			QString key = selPlugin->getName();
+			key.append("/");
+			key.append(selProfile->getValue("name").toString());
+
 			QString file = lclImexpDir.absolutePath();
 			file.append("/").append(profileFilename);
 			QFile::remove(file);
 			qDebug() << Q_FUNC_INFO << "file" << file << "deleted!";
+
+			//also remove the favorite settings
+			this->imex_favorites->remove(key);
+			this->settings->deleteProfileFavorit(key);
 		}
 	}
 

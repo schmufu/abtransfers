@@ -100,6 +100,7 @@ public:
 	QStringList getAllProfileFavorites() const;
 	bool isProfileFavorit(const QString &name) const;
 	void setProfileFavorit(const QString &name, bool favorit);
+	void deleteProfileFavorit(const QString &name);
 
 	//! returns 1 if the supplied JobType \a type is supported by AB-Transfers
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);

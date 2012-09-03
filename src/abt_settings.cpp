@@ -425,6 +425,17 @@ void abt_settings::setProfileFavorit(const QString &name, bool favorit)
 	this->settings->setValue(key, favorit);
 }
 
+/**
+ * @brief removes the entry from the settings file
+ * @param name: the key of the profile (form: "plugin/name")
+ */
+void abt_settings::deleteProfileFavorit(const QString &name)
+{
+	this->settings->beginGroup("ImExportFavorites");
+	this->settings->remove(name);
+	this->settings->endGroup();
+}
+
 
 
 //static
