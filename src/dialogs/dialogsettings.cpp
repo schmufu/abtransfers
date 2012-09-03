@@ -527,6 +527,12 @@ void DialogSettings::onCheckBoxRefereshAtStartStateChanged(int /* state */)
 void DialogSettings::on_listWidget_plugins_currentRowChanged(int currentRow)
 {
 	qDebug() << Q_FUNC_INFO << "current row:" << currentRow;
+	//at first we disable the actions, they are aktivated depending
+	//on the selection in the tableWidget_profiles
+	this->ui->actionDeleteProfile->setEnabled(false);
+	this->ui->actionEditProfile->setEnabled(false);
+	this->ui->actionNewProfile->setEnabled(false);
+
 	this->refreshImExProfileTableWidget();
 }
 
