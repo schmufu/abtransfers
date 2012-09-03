@@ -700,6 +700,9 @@ nach dem starten zum Insititut übertragen.</string>
    </item>
   </layout>
   <action name="actionEditProfile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset theme="document-edit">
      <normaloff/>
@@ -710,6 +713,9 @@ nach dem starten zum Insititut übertragen.</string>
    </property>
   </action>
   <action name="actionNewProfile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset theme="document-new">
      <normaloff/>
@@ -723,6 +729,9 @@ nach dem starten zum Insititut übertragen.</string>
    </property>
   </action>
   <action name="actionDeleteProfile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset theme="edit-delete">
      <normaloff/>

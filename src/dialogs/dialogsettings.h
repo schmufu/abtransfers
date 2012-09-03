@@ -62,6 +62,7 @@ private:
 	abt_settings *settings;
 	aqb_imexporters *imexp;
 	QHash<QString, bool> *imex_favorites;
+	QHash<QString, QString> selection;
 
 	void loadFromSettings();
 	void saveToSettings();

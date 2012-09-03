@@ -77,9 +77,20 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	this->ui->tableWidget_profiles->addAction(this->ui->actionEditProfile);
 	this->ui->tableWidget_profiles->addAction(this->ui->actionDeleteProfile);
 
+	//set optimal column withs for the tableWidget
+	//this->ui->tableWidget_profiles->resizeColumnsToContents();
+	this->ui->tableWidget_profiles->setColumnWidth(0, 112); //name
+	this->ui->tableWidget_profiles->setColumnWidth(1, 296); //description
+	this->ui->tableWidget_profiles->setColumnWidth(2, 28); //import
+	this->ui->tableWidget_profiles->setColumnWidth(3, 28); //export
+	this->ui->tableWidget_profiles->setColumnWidth(4, 28); //global
+	this->ui->tableWidget_profiles->setColumnWidth(5, 34); //favorit
+	this->ui->tableWidget_profiles->setColumnWidth(6, 56); //Version
+
 	//at initialisation select the first item in the listwidget
 	if (this->ui->listWidget_plugins->count() > 0)
 		this->ui->listWidget_plugins->setCurrentRow(0);
+
 }
 
 DialogSettings::~DialogSettings()
@@ -183,7 +194,12 @@ void DialogSettings::reloadImExporters()
 	this->imexp->reloadImExporterData();
 }
 
-
+/**
+ * @brief refreshes all items in the listWidget for the Plugins
+ *
+ * The selection is remembered and retored after all items are removed and
+ * newly added to the list.
+ */
 //private
 void DialogSettings::refreshImExPluginListWidget()
 {
@@ -191,9 +207,9 @@ void DialogSettings::refreshImExPluginListWidget()
 
 	//remember the selected item
 	QString pluginName = "";
-	int selected = this->ui->listWidget_plugins->currentRow();
-	if (selected != -1) {
-		pluginName = this->ui->listWidget_plugins->item(selected)->text();
+	int row = this->ui->listWidget_plugins->currentRow();
+	if (row != -1) {
+		pluginName = this->ui->listWidget_plugins->item(row)->text();
 	}
 
 	this->ui->listWidget_plugins->clear(); //remove all;
@@ -206,7 +222,7 @@ void DialogSettings::refreshImExPluginListWidget()
 	//restore selected item
 	for (int i=0; i<this->ui->listWidget_plugins->count(); ++i) {
 		if (this->ui->listWidget_plugins->item(i)->text() == pluginName) {
-			this->ui->listWidget_plugins->setCurrentRow(selected);
+			this->ui->listWidget_plugins->setCurrentRow(i);
 			break; //nothing else can match
 		}
 	}
@@ -216,48 +232,52 @@ void DialogSettings::refreshImExPluginListWidget()
 //private
 void DialogSettings::refreshImExProfileTableWidget()
 {
-	const aqb_iePlugin *curPlugin;
-	int curRow = this->ui->listWidget_plugins->currentRow();
-	QString curSelectionName = "";
-	if (curRow >= 0)
-		curSelectionName = this->ui->listWidget_plugins->item(curRow)->text();
-	curPlugin = this->imexp->getPluginByName(curSelectionName);
-	if (!curPlugin) {
-		qWarning() << Q_FUNC_INFO << "No im-/exporter-plugin for"
-			   << curSelectionName << "found. Aborting.";
+	const aqb_iePlugin *plugin = NULL;
+	int row = this->ui->listWidget_plugins->currentRow();
+	QString pluginName = "";
+	if (row >= 0)
+		pluginName = this->ui->listWidget_plugins->item(row)->text();
+
+	plugin = this->imexp->getPluginByName(pluginName);
+	if (!plugin) { //no plugin exists, so no profiles available
+		this->ui->tableWidget_profiles->clearContents();
+		this->ui->tableWidget_profiles->setRowCount(0);
 		return;
 	}
 
-	//remember the current selection
+	//remember the current selection from the table for the list
+	//(this must be done because the "default" profile exists in more
+	// than one plugin and should not be always selected)
 	QString profileName = "";
-	curRow = this->ui->tableWidget_profiles->currentRow();
-	if (curRow >= 0)
-		profileName = this->ui->tableWidget_profiles->item(curRow, 0)->text();
+	if (this->ui->tableWidget_profiles->selectedItems().size() > 0) {
+		profileName = this->ui->tableWidget_profiles->selectedItems().at(0)->text();
+	}
 
 	this->ui->tableWidget_profiles->clearContents();
 	this->ui->tableWidget_profiles->setRowCount(0);
 
 	//get all profiles for the selected plugin an add them to the tableWidget
-	foreach(const aqb_ieProfile *profile, *curPlugin->getProfiles()) {
+	foreach(const aqb_ieProfile *profile, *plugin->getProfiles()) {
 		QTableWidgetItem *item;
 		Qt::CheckState checkState;
 
 		//we need a new row
-		int row = this->ui->tableWidget_profiles->rowCount();
-		this->ui->tableWidget_profiles->setRowCount(row + 1);
-		//"row" is now the last row in the table
+		int rowc = this->ui->tableWidget_profiles->rowCount();
+		this->ui->tableWidget_profiles->setRowCount(rowc + 1);
+		//"rowc" is now the last row in the table
 
 		item = new QTableWidgetItem();
 		item->setText(profile->getValue("name").toString());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		this->ui->tableWidget_profiles->setItem(row, 0, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 0, item);
 
-		bool selected = item->text() == profileName;
+		bool selected = this->selection.value(pluginName, "") == item->text();
+		//qDebug() << "ROW:" << rowc << "profile" << item->text() << selected;
 
 		item = new QTableWidgetItem();
 		item->setText(profile->getValue("shortDescr").toString());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		this->ui->tableWidget_profiles->setItem(row, 1, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 1, item);
 
 		//import possible?
 		if (profile->getValue("import").isValid() &&
@@ -269,7 +289,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item = new QTableWidgetItem();
 		item->setCheckState(checkState); //import state
 		item->setFlags(Qt::ItemIsSelectable);
-		this->ui->tableWidget_profiles->setItem(row, 2, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 2, item);
 
 		//export possible?
 		if (profile->getValue("export").isValid() &&
@@ -281,7 +301,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item = new QTableWidgetItem();
 		item->setCheckState(checkState); //export state
 		item->setFlags(Qt::ItemIsSelectable);
-		this->ui->tableWidget_profiles->setItem(row, 3, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 3, item);
 
 		//global profile?
 		if (profile->getValue("isGlobal").isValid() &&
@@ -293,10 +313,10 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item = new QTableWidgetItem();
 		item->setCheckState(checkState); //global state
 		item->setFlags(Qt::ItemIsSelectable);
-		this->ui->tableWidget_profiles->setItem(row, 4, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 4, item);
 
-		//if the profile is a favorite this is stored in the local QHash
-		QString key = QString(curPlugin->getName());
+		//if the profile is a favorite this is stored in the private QHash
+		QString key = pluginName;
 		key.append("/");
 		key.append(profile->getValue("name").toString());
 		if (this->imex_favorites->value(key, false)) {
@@ -306,29 +326,23 @@ void DialogSettings::refreshImExProfileTableWidget()
 		}
 		item = new QTableWidgetItem();
 		item->setCheckState(checkState);
-		this->ui->tableWidget_profiles->setItem(row, 5, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 5, item);
 
 		item = new QTableWidgetItem();
 		item->setText(profile->getValue("version").toString());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		this->ui->tableWidget_profiles->setItem(row, 6, item);
+		this->ui->tableWidget_profiles->setItem(rowc, 6, item);
 
 		//restore selection
 		if (selected)
-			this->ui->tableWidget_profiles->selectRow(row);
-
-
+			this->ui->tableWidget_profiles->selectRow(rowc);
 	}
 
-	//set optimal column withs
-	//this->ui->tableWidget_profiles->resizeColumnsToContents();
-	this->ui->tableWidget_profiles->setColumnWidth(0, 112); //name
-	this->ui->tableWidget_profiles->setColumnWidth(1, 296); //description
-	this->ui->tableWidget_profiles->setColumnWidth(2, 28); //import
-	this->ui->tableWidget_profiles->setColumnWidth(3, 28); //export
-	this->ui->tableWidget_profiles->setColumnWidth(4, 28); //global
-	this->ui->tableWidget_profiles->setColumnWidth(5, 34); //favorit
-	this->ui->tableWidget_profiles->setColumnWidth(6, 56); //Version
+	//if nothing is selected, we select the first row, if present
+	if (this->ui->tableWidget_profiles->selectedItems().size() == 0 &&
+	    this->ui->tableWidget_profiles->rowCount() > 0) {
+		this->ui->tableWidget_profiles->selectRow(0);
+	}
 
 }
 
@@ -528,40 +542,50 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 	bool checked = item->checkState() == Qt::Checked;
 
 	//get the plugin name for the changed profile item
-	QString pluginName;
+	QString key; // in the form of "pluginname/profilename"
 	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
-	pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
+	key = this->ui->listWidget_plugins->item(listWidgetRow)->text(); //pluginname
+	key.append("/");
+	key.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profilename
 
-	pluginName.append("/");
-	pluginName.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profile-name
-
-	this->imex_favorites->insert(pluginName, checked);
+	this->imex_favorites->insert(key, checked);
 }
 
 void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 {
+	QTableWidget *profilesWidget = this->ui->tableWidget_profiles;
+	if (profilesWidget->selectedItems().size() == 0) {
+		return; //nothing selected
+	}
+
 	QString pluginName;
-	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
-	pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
+	int row = this->ui->listWidget_plugins->currentRow();
+	pluginName = this->ui->listWidget_plugins->item(row)->text();
 
 	//AqBanking remains the owner of 'ie', so we must not free it!
 	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
 						     pluginName.toStdString().c_str());
 
-	bool enabled = false;
+	bool enabled;
 	enabled = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
 	//enable the actions if an editor is supported by AqBanking
 	this->ui->actionNewProfile->setEnabled(enabled);
 	this->ui->actionEditProfile->setEnabled(enabled);
 
-	int row = this->ui->tableWidget_profiles->currentRow();
-	if (this->ui->tableWidget_profiles->item(row, 4) != NULL) {
-		//enabled if not checked (not a global profile)
-		enabled = this->ui->tableWidget_profiles->item(row, 4)->checkState() == Qt::Unchecked;
+	row = profilesWidget->selectedItems().at(0)->row();
+	if (profilesWidget->item(row, 4) != NULL) {
+		//enabled if not a global profile
+		enabled = profilesWidget->item(row, 4)->checkState() == Qt::Unchecked;
 	} else {
 		enabled = false;
 	}
 	this->ui->actionDeleteProfile->setEnabled(enabled);
+
+	//remember the selection for refresh
+	if (profilesWidget->item(row, 0) != NULL) {
+		QString profileName = profilesWidget->item(row, 0)->text();
+		this->selection.insert(pluginName, profileName);
+	}
 }
 
 

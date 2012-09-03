@@ -172,6 +172,9 @@ int aqb_iePlugin::loadProfiles(AB_BANKING* ab)
 
 const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
 {
+	if (name.isEmpty() || name.isNull())
+		return NULL; //a plugin with no name cant be available
+
 	foreach(const aqb_iePlugin *plugin, *this->plugins) {
 		if (plugin->getName() == name) {
 			return plugin;
