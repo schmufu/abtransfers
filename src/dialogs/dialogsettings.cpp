@@ -610,6 +610,23 @@ void DialogSettings::on_actionEditProfile_triggered()
 
 	QString profileName = profile->getValue("name").toString();
 
+	if (profile->getValue("isGlobal").isValid() &&
+	    profile->getValue("isGlobal").toBool()) {
+		QString msg = tr("Sie möchten das Profil \"%1\" ändern, dieses "
+				 "Profil ist ein 'globales' Profil. Wenn von "
+				 "Ihnen der Name (\"%1\") nicht geändert wird, "
+				 "wird das dann als lokal gespeicherte Profil "
+				 "das globale <i>überdecken</i>!<br />"
+				 "Sie können dann also nur noch auf das geänderte "
+				 "Profil zugreifen und nicht mehr auf die "
+				 "ursprüngliche Version!<br />"
+				 "(<i>Nach dem löschen des lokalen Profils würde "
+				 "das globale wieder verwendet werden können)")
+			      .arg(profileName);
+
+		QMessageBox::information(this, tr("Globales Profil ändern"), msg);
+	}
+
 	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(banking->getAqBanking(),
 								  plugin->getName(),
 								  profileName.toStdString().c_str());
