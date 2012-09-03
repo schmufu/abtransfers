@@ -73,7 +73,7 @@ private:
 	void refreshImExPluginListWidget();
 	void refreshImExProfileTableWidget();
 
-	//! set @a plugin and @a profile to the selected values (or NULL)
+	/** @brief set @a plugin and @a profile to the selected values (or NULL) */
 	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
 					 const aqb_ieProfile **profile = NULL) const;
 

@@ -89,6 +89,10 @@ public:
 	//! convenient function to get the plugin by filename
 	const aqb_iePlugin* getPluginByFilename(QString &filename) const;
 
+	int editProfileWithAqbDialog(GWEN_DB_NODE *dbProfile,
+				     const char *pluginName,
+				     const char *filename) const;
+
 signals:
 	void imexportersLoaded();
 

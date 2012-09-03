@@ -192,6 +192,68 @@ const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) cons
 	return NULL; //no plugin found
 }
 
+/**
+ * @brief shows a edit dialog from AqBanking and saves the changes to the profile
+ *
+ * @param dbProfile: a pointer to the GWEN_DB_NODE which handles the profile
+ * @param pluginName: the name of the plugin the profile belongs to
+ * @param filename: the filename for storing the profile data
+ *
+ * @returns 0: success
+ * @returns 1: user clicked cancel at the dialog
+ * @returns -1: no EditProfileDialog could be retrieved from AqBanking
+ * @returns -2: something went wrong at the dialog execution
+ * @returns -3: error at saving the changed profile
+ */
+//public
+int aqb_imexporters::editProfileWithAqbDialog(GWEN_DB_NODE *dbProfile, const char *pluginName, const char *filename) const
+{
+	int ret; //used to store the return values of AB_xxx functions
+	GWEN_DIALOG *pDlg = NULL;
+
+	//AqBanking remains the owner of 'ie', so we must not free it!
+	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(this->m_ab,
+						     pluginName);
+
+	ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile, filename, &pDlg);
+	if (pDlg == NULL || ret != 0) {
+		qWarning() << Q_FUNC_INFO << "AB_ImExporter_GetEditProfileDialog()"
+			   << "returned" << ret;
+		return -1;
+	}
+
+
+	//get the dialog id and execute it
+	uint32_t guiid = GWEN_Dialog_GetGuiId(pDlg);
+	ret = GWEN_Gui_ExecDialog(pDlg, guiid);
+
+	GWEN_Dialog_free(pDlg); //free the dialog after execution
+
+	if (ret < 0) { //ret <0: error code, 0: aborted, 1: accepted
+		qDebug() << Q_FUNC_INFO << "return of GWEN_Gui_ExecDialog() is:" << ret;
+		return -2;
+	}
+
+	if (ret == 0) {
+		//user canceled the dialog
+		return 1;
+	}
+
+
+	//User did not cancel the dialog, save profile
+	ret = AB_Banking_SaveLocalImExporterProfile(this->m_ab,
+						    pluginName, dbProfile,
+						    filename);
+
+	if (ret != 0) {
+		qDebug() << Q_FUNC_INFO << "return of "
+			 << "AB_Banking_SaveLocalImExporterProfile() is:" << ret;
+		return -3;
+	}
+
+	return 0; //everything went fine
+}
+
 
 
 

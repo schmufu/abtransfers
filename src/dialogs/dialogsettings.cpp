@@ -57,8 +57,7 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 
 	this->loadFromSettings();
 
-	//sicherstellen das der Status der CheckBoxen "Aktualisieren beim Start"
-	//konsistent zueinander ist.
+	//ensure that the state of the checkboxes "refresh at start" are consistant
 	this->onCheckBoxRefereshAtStartStateChanged(0);
 
 
@@ -173,13 +172,14 @@ void DialogSettings::saveFavoriteImExpToSettings()
 
 /**
  * @brief reloads the supported Im-/Exporters from AqBanking
+ *
+ * This calls the reload at @ref aqb_imexporters which emits a signal when
+ * all data is loaded which calls our connected slot @ref updatedImExporters().
  */
 //private
 void DialogSettings::reloadImExporters()
 {
 	//reload all data
-	//this calls the reload at aqb_imexporters which emits a signal when
-	//all data is loaded which calls our connected slot.
 	this->imexp->reloadImExporterData();
 }
 
@@ -391,14 +391,14 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 //private slot
 /**
 * @brief this slot is called when the @ref aqb_imexporters emits @ref imexportersLoaded();
+*
+* The refresh also changes the currentRow and emits the signal
+* currentRowChanged() which refreshes the tableWidget_profiles
 */
 void DialogSettings::updatedImExporters()
 {
 	//we refresh the ListWidget for the plugins
 	this->refreshImExPluginListWidget();
-
-	//the refresh also changes the currentRow and emits the signal
-	//"currentRowChanged" which refreshes the tableWidget_profiles
 }
 
 //private slot
@@ -431,7 +431,7 @@ void DialogSettings::on_buttonBox_clicked(QAbstractButton* button)
 void DialogSettings::on_toolButton_selectDataDir_clicked()
 {
 	QString directory = QFileDialog::getExistingDirectory(this,
-							      tr("Standart-Ordner"),
+							      tr("Standard-Ordner"),
 							      this->ui->lineEdit_dataDir->text(),
 							      QFileDialog::ShowDirsOnly);
 
@@ -486,20 +486,24 @@ void DialogSettings::on_toolButton_selectRecipients_clicked()
 	}
 }
 
+/**
+ * @brief sets the states (enabled/disabled) of the refreshAtStart checkbox
+ *
+ * The checkbox refreshAtStart must only be selectable when one of the other
+ * checkboxes are checked. If no one is checked, the refreshAtStart checkbox
+ * is unchecked and disabled.
+ */
 //private slot
 void DialogSettings::onCheckBoxRefereshAtStartStateChanged(int /* state */)
 {
-	//Die checkbox executeAtStart darf nur auswählbar sein wenn auch
-	//mindestens eine andere ausgewählt ist
-
-	//wenn eine der drei Checkboxen ausgewählt ist
+	//is one ore more checkboxes checked
 	if (this->ui->checkBox_getBalance->isChecked() ||
 	    this->ui->checkBox_getDatedTransfers->isChecked() ||
 	    this->ui->checkBox_getStandingOrders->isChecked()) {
-		//executeAtStart aktivieren
+		//executeAtStart enabled
 		this->ui->checkBox_executeAtStart->setEnabled(true);
 	} else {
-		//ansonsten deaktivieren und ausschalten
+		//otherwise deaktivated and unchecked
 		this->ui->checkBox_executeAtStart->setEnabled(false);
 		this->ui->checkBox_executeAtStart->setChecked(false);
 	}
@@ -563,87 +567,38 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 
 void DialogSettings::on_actionEditProfile_triggered()
 {
-	qDebug() << Q_FUNC_INFO << "executing";
-
-	if (this->ui->tableWidget_profiles->currentRow() <= -1) {
-		//no item selected, we cant edit this
-		return;
-	}
-
-	QString pluginName = this->ui->listWidget_plugins->currentItem()->text();
-	const aqb_iePlugin *plugin = this->imexp->getPluginByName(pluginName);
-
-	int curRow = this->ui->tableWidget_profiles->currentRow();
-	QString profileName = this->ui->tableWidget_profiles->item(curRow, 0)->text();
+	const aqb_iePlugin *plugin = NULL;
 	const aqb_ieProfile *profile = NULL;
-	foreach(const aqb_ieProfile *pro, *plugin->getProfiles()) {
-		if (pro->getValue("name").toString() == profileName) {
-			profile = pro;
-			break; //profile found, another cant match
-		}
-	}
+	bool ok = false;
 
-	if (!profile) {
-		qWarning() << Q_FUNC_INFO << "no profile with the name"
-			   << profileName << "found. Aborting.";
+	ok = this->getSelectedPluginAndProfile(&plugin, &profile);
+
+	if (!ok) {
+		qWarning() << Q_FUNC_INFO << "no plugin or no profile found. Aborting.";
 		return;
 	}
 
-	//AqBanking remains the owner of 'ie', so we must not free it!
-	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
-						     pluginName.toStdString().c_str());
+	QString profileName = profile->getValue("name").toString();
+
 	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(banking->getAqBanking(),
-								  pluginName.toStdString().c_str(),
+								  plugin->getName(),
 								  profileName.toStdString().c_str());
-	GWEN_DIALOG *pDlg = NULL;
-
-	qDebug() << Q_FUNC_INFO << "DB_NODE_NAME:" << GWEN_DB_GroupName(dbProfile);
-	qDebug() << Q_FUNC_INFO << "DB_Name_var: " << GWEN_DB_GetCharValue(dbProfile, "name", 0, "notSet");
-
-	//I have no idea why the conversion from QString to const char* must
-	//be done in the way following. If anyone can make this simpler, please
-	//do this.
-	//The commented out codelines are for verification if the strings are
-	//converted in the expected way.
-
-	qDebug() << Q_FUNC_INFO << *profile->getNames();
 
 	std::string filename = profile->getValue("fileName").toString().toStdString();
-	//qDebug() << Q_FUNC_INFO << "Filename QString(" << filename.c_str() << ")";
-
 	const char *filename_cstr = filename.c_str();
-	//strcpy(filename_cstr, filename.c_str()); /* doesnt work */
 
-	//qDebug() << Q_FUNC_INFO << "filename_cstr =" << filename_cstr;
+	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
+							plugin->getName(),
+							filename_cstr);
 
-	int ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile,
-						     filename_cstr,
-						     &pDlg);
-	qDebug() << Q_FUNC_INFO << "return of AB_ImExporter_GetEditProfileDialog()"
-		 << "is:" << ret;
-	//free(filename_cstr); //free the copy
-
-	int ret2 = 0; //default aborted
-	if (pDlg) {
-		uint32_t guiid = GWEN_Dialog_GetGuiId(pDlg);
-		ret2 = GWEN_Gui_ExecDialog(pDlg, guiid);
-	} else {
-		qWarning() << Q_FUNC_INFO << "AB_ImExporter_GetEditProfileDialog()"
-			   << "could not get a pDlg for the profile" << profileName;
-	}
-
-	//free the dialog after execution
-	GWEN_Dialog_free(pDlg);
-
-	qDebug() << Q_FUNC_INFO << "return of GWEN_Gui_ExecDialog():" << ret2;
-
-	if (ret2) {
-		//User did not cancel the dialog, save profile
-		ret2 = AB_Banking_SaveLocalImExporterProfile(banking->getAqBanking(),
-							     pluginName.toStdString().c_str(),
-							     dbProfile,
-							     filename_cstr);
-		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;
+	if (ret < 0) {
+		//something went wrong
+		QMessageBox::critical(this, tr("Profil Ändern"),
+				      tr("Beim Ändern des Profils %1 ist ein "
+					 "unerwarteter Fehler aufgetreten.<br />"
+					 "In den Debug-Ausgaben können evt. "
+					 "weitere nützliche Informationen "
+					 "enthalten sein").arg(profileName));
 	}
 
 	//im-/export profiles might be changed, reaload them
@@ -659,8 +614,8 @@ void DialogSettings::on_actionNewProfile_triggered()
 	bool inputOk = false;
 
 	newname = QInputDialog::getText(this, tr("Profil Name"),
-					tr("Bitte geben sie einen eindeutigen "
-					   "Namen für das neue Profil ein"),
+					tr("Bitte geben sie einen Namen für "
+					   "das neue Profil ein"),
 					QLineEdit::Normal, "", &inputOk);
 
 	if (!inputOk || newname.isEmpty()) {
@@ -701,52 +656,33 @@ void DialogSettings::on_actionNewProfile_triggered()
 	}
 
 
-	//OK, we have a name wich does not exist so we can create the new
+	//OK, we have a name which does not exists so we can create the new
 	//profile.
 
-	GWEN_DIALOG *pDlg = NULL;
 	GWEN_DB_NODE *dbProfile = GWEN_DB_Group_new(newname.toStdString().c_str());
 	//we set the name of the new Profile
-	GWEN_DB_SetCharValue(dbProfile, GWEN_DB_FLAGS_DEFAULT, "name", newname.toStdString().c_str());
+	GWEN_DB_SetCharValue(dbProfile, GWEN_DB_FLAGS_DEFAULT, "name",
+			     newname.toStdString().c_str());
 
 	std::string filename = newname.toStdString();
 	filename.append(".conf");
 	const char *filename_cstr = filename.c_str();
 
-	//AqBanking remains the owner of 'ie', so we must not free it!
-	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
-						     selPlugin->getName());
+	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
+							selPlugin->getName(),
+							filename_cstr);
 
-	int ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile,
-						     filename_cstr,
-						     &pDlg);
-	qDebug() << Q_FUNC_INFO << "return of AB_ImExporter_GetEditProfileDialog()"
-		 << "is:" << ret;
-
-	int ret2 = 0; //default aborted
-	if (pDlg) {
-		uint32_t guiid = GWEN_Dialog_GetGuiId(pDlg);
-		ret2 = GWEN_Gui_ExecDialog(pDlg, guiid);
-	} else {
-		qWarning() << Q_FUNC_INFO << "AB_ImExporter_GetEditProfileDialog()"
-			   << "could not get a pDlg for the profile" << newname;
+	if (ret < 0) {
+		//something went wrong
+		QMessageBox::critical(this, tr("Profil Anlegen"),
+				      tr("Beim Anlegen des Profils %1 ist ein "
+					 "unerwarteter Fehler aufgetreten.<br />"
+					 "In den Debug-Ausgaben können evt. "
+					 "weitere nützliche Informationen "
+					 "enthalten sein").arg(newname));
 	}
 
-	//free the dialog after execution
-	GWEN_Dialog_free(pDlg);
-
-	qDebug() << Q_FUNC_INFO << "return of GWEN_Gui_ExecDialog():" << ret2;
-
-	if (ret2) {
-		//User did not cancel the dialog, save profile
-		ret2 = AB_Banking_SaveLocalImExporterProfile(banking->getAqBanking(),
-							     selPlugin->getName(),
-							     dbProfile,
-							     filename_cstr);
-		qDebug() << Q_FUNC_INFO << "SaveLocalImExporterProfile returned" << ret2;
-	}
-
-	//profile was saved, free the DB_NODE
+	//profile were saved, free the DB_NODE
 	GWEN_DB_Group_free(dbProfile);
 
 	//im-/export profiles might be changed, reaload them
