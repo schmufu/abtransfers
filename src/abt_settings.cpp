@@ -376,13 +376,13 @@ void abt_settings::setAppendJobToOutbox(const QString &jobname, bool get)
 //public
 bool abt_settings::autoAddNewRecipients() const
 {
-	return this->settings->value("General/autoAddNewRecipients", true).toBool();
+	return this->settings->value("Options/autoAddNewRecipients", true).toBool();
 }
 
 //public
 void abt_settings::setAutoAddNewRecipients(bool value)
 {
-	this->settings->setValue("General/autoAddNewRecipients", value);
+	this->settings->setValue("Options/autoAddNewRecipients", value);
 }
 
 /**
