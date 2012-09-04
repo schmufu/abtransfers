@@ -32,8 +32,11 @@
 #ifndef DIALOGSETTINGS_H
 #define DIALOGSETTINGS_H
 
-#include <QDialog>
-#include <QAbstractButton>
+#include <QtGui/QDialog>
+#include <QtGui/QAbstractButton>
+#include <QtGui/QTableWidgetItem>
+
+#include "../aqb_imexporters.h"
 
 class abt_settings;
 
@@ -48,7 +51,7 @@ namespace Ui {
 class DialogSettings : public QDialog {
 	Q_OBJECT
 public:
-	DialogSettings(abt_settings *settings, QWidget *parent = 0);
+	DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *parent = 0);
 	~DialogSettings();
 
 protected:
@@ -57,13 +60,27 @@ protected:
 private:
 	Ui::DialogSettings *ui;
 	abt_settings *settings;
-
+	aqb_imexporters *imexp;
+	QHash<QString, bool> *imex_favorites;
+	QHash<QString, QString> selection;
 
 	void loadFromSettings();
 	void saveToSettings();
 
+	void loadFavoriteImExpFromSettings();
+	void saveFavoriteImExpToSettings();
+
+	void reloadImExporters();
+	void refreshImExPluginListWidget();
+	void refreshImExProfileTableWidget();
+
+	/** @brief set @a plugin and @a profile to the selected values (or NULL) */
+	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
+					 const aqb_ieProfile **profile = NULL) const;
+
 
 private slots:
+	void updatedImExporters();
 	void onCheckBoxRefereshAtStartStateChanged(int state);
 
 	void on_buttonBox_clicked(QAbstractButton* button);
@@ -73,7 +90,13 @@ private slots:
 	void on_toolButton_selectAccountData_clicked();
 	void on_toolButton_selectDataDir_clicked();
 
+	void on_listWidget_plugins_currentRowChanged(int currentRow);
+	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
+	void on_tableWidget_profiles_itemSelectionChanged();
 
+	void on_actionEditProfile_triggered();
+	void on_actionNewProfile_triggered();
+	void on_actionDeleteProfile_triggered();
 };
 
 #endif // DIALOGSETTINGS_H

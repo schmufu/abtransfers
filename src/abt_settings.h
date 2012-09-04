@@ -42,7 +42,7 @@
 #include "abt_standingorderinfo.h"
 #include "abt_datedtransferinfo.h"
 
-/** \brief Speichert und liefert Einstellungen für das gesamte Programm */
+/** \brief saves and restores settings which can be modified by the user */
 
 class abt_settings : public QObject
 {
@@ -97,7 +97,12 @@ public:
 	bool autoAddNewRecipients() const;
 	void setAutoAddNewRecipients(bool value);
 
-	//! gibt zurück ob der JobType \a type von AB-Transfers unterstützt wird.
+	QStringList getAllProfileFavorites() const;
+	bool isProfileFavorit(const QString &name) const;
+	void setProfileFavorit(const QString &name, bool favorit);
+	void deleteProfileFavorit(const QString &name);
+
+	//! returns 1 if the supplied JobType \a type is supported by AB-Transfers
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
