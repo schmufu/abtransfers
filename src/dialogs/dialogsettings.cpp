@@ -402,6 +402,15 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 
 }
 
+void DialogSettings::setActiveTab(int tabId)
+{
+	if (this->ui->tabWidget->count() <= tabId) {
+		return; //tab does not exists, abort
+	}
+
+	this->ui->tabWidget->setCurrentIndex(tabId);
+}
+
 //private slot
 /**
 * @brief this slot is called when the @ref aqb_imexporters emits @ref imexportersLoaded();

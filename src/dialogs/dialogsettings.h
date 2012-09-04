@@ -78,6 +78,8 @@ private:
 	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
 					 const aqb_ieProfile **profile = NULL) const;
 
+public:
+	void setActiveTab(int tabId);
 
 private slots:
 	void updatedImExporters();

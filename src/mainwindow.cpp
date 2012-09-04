@@ -159,6 +159,8 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
 	connect(this->pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
 		this, SLOT(deleteHistoryItems(QList<abt_jobInfo*>)));
+	connect(this->pageHistory, SIGNAL(showSettingsForImExpFavorite()),
+		this, SLOT(on_actionEinstellungen_triggered()));
 
 
 	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
@@ -1002,6 +1004,12 @@ void MainWindow::on_actionHelp_triggered()
 void MainWindow::on_actionEinstellungen_triggered()
 {
 	DialogSettings DiaSettings(settings, banking->getAqBanking(), this);
+
+	QString classname = QObject::sender()->metaObject()->className();
+	if (classname == "page_history") {
+		//we were called from the history page
+		DiaSettings.setActiveTab(1); //set im-/export as active tab
+	}
 
 	DiaSettings.exec();
 }

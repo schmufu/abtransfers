@@ -38,6 +38,7 @@
 #include "../abt_jobinfo.h"
 
 class abt_history;
+class aqb_imexporters;
 
 namespace Ui {
 	class page_history;
@@ -71,13 +72,14 @@ private:
 	void setDefaultTreeWidgetHeader();
 	void createActions();
 
-	//! creates a ctx from the supplied jobs. The caller must free AB_IMEXPORTER_CONTEXT!
 	AB_IMEXPORTER_CONTEXT *getContextFromSelected() const;
+	QMenu *createExportContextMenu(QWidget *parent, const aqb_imexporters *iep) const;
 
 signals:
 	void createNewFromHistory(const abt_jobInfo *jobInfo);
 	void deleteFromHistory(const QList<abt_jobInfo*> historyIndexes);
 	void exportFromHistory(const QList<abt_jobInfo*> historyIndexes);
+	void showSettingsForImExpFavorite();
 
 private slots:
 	void onActGenerateNewTransaction();

@@ -153,6 +153,12 @@ void page_history::createActions()
 	this->ui->treeWidget->addAction(this->actDeleteSelected);
 }
 
+/**
+ * @brief creates a ctx from the all selected history items.
+ *
+ * @returns a AB_IMEXPORTER_CONTEXT which must be freed by the caller.
+ */
+//private
 AB_IMEXPORTER_CONTEXT *page_history::getContextFromSelected() const
 {
 	if (this->ui->treeWidget->selectedItems().size() == 0)
@@ -255,39 +261,32 @@ void page_history::onActDeleteSelected()
 	emit deleteFromHistory(jiList);
 }
 
-//private slot
-void page_history::onActExportSelected()
+/**
+ * @brief creates a context-menu where the user can select which profile
+ *	  should be used for export
+ *
+ * @param iep: pointer to aqb_imexporters who handles the plugins and profiles
+ * @returns a context-menu which can be used for user-selection
+ */
+//private
+QMenu *page_history::createExportContextMenu(QWidget *parent, const aqb_imexporters *iep) const
 {
-	/**
-	 * @todo This code should be splitted into some functions and cleaned
-	 *	 up for a release!
-	 *	 The usage of "goto" should be removed too.
-	 */
+	QMenu *menu = new QMenu(parent);
 
-	aqb_imexporters* iep = new aqb_imexporters(banking->getAqBanking());
+	QMenu *preferredMenu = new QMenu(tr("Favorit"), menu);
 
-	qDebug() << Q_FUNC_INFO << "ImExporters loaded:" << iep->getSize();
+	menu->addMenu(preferredMenu);
+	menu->addSeparator();
 
-	QMenu *exportConextMenu = new QMenu();
-
-	QMenu *exportPreferred = new QMenu(tr("bevorzugt"), exportConextMenu);
-	exportPreferred->setToolTip(tr("Änderbar in den Einstellungen"));
-
-	exportConextMenu->addMenu(exportPreferred);
-	exportConextMenu->addSeparator();
-
-	for (int i=0; i<iep->getPlugins()->size(); ++i) {
-		//we create a submenu for every plugin
-		QMenu *sub = new QMenu(exportConextMenu);
-		aqb_iePlugin *plugin = iep->getPlugins()->at(i);
+	//we create a submenu for every plugin
+	foreach (aqb_iePlugin *plugin, *iep->getPlugins()) {
+		QMenu *sub = new QMenu(menu);
 
 		sub->setTitle(plugin->getName());
 		sub->setToolTip(plugin->getDescShort());
 
-		for (int j=0; j<plugin->getProfiles()->size(); ++j) {
-			//add every profile that belongs to the plugin
-			aqb_ieProfile *profile = plugin->getProfiles()->at(j);
-
+		//add every profile that belongs to the plugin to the submenu
+		foreach (aqb_ieProfile *profile, *plugin->getProfiles()) {
 			//if this is not an export-profile, we cant use it.
 			//Therefore, export must exist and must be unequal 0
 			if (!profile->getNames()->contains("export") ||
@@ -310,14 +309,16 @@ void page_history::onActExportSelected()
 			key.append("/");
 			key.append(profile->getValue("name").toString());
 			if (settings->isProfileFavorit(key)) {
-				QAction *prefItem = new QAction(exportPreferred);
+				QAction *prefItem = new QAction(preferredMenu);
 				QString itemText = item->text();
 				itemText.prepend(" - ");
 				itemText.prepend(plugin->getName());
 				prefItem->setText(itemText);
-				prefItem->setUserData(0, reinterpret_cast<QObjectUserData*>(plugin));
-				prefItem->setUserData(1, reinterpret_cast<QObjectUserData*>(profile));
-				exportPreferred->addAction(prefItem);
+				prefItem->setUserData(0,
+					reinterpret_cast<QObjectUserData*>(plugin));
+				prefItem->setUserData(1,
+					reinterpret_cast<QObjectUserData*>(profile));
+				preferredMenu->addAction(prefItem);
 			}
 
 			sub->addAction(item);
@@ -325,89 +326,126 @@ void page_history::onActExportSelected()
 		}
 
 		if (sub->actions().size() == 0) {
-			//the submenu has no entrys, we dont need it.
-			delete sub;
+			delete sub; //the submenu has no entrys, we dont need it.
 		} else {
-			exportConextMenu->addMenu(sub);
+			menu->addMenu(sub);
 		}
 	}
+
+	if (preferredMenu->actions().size() == 0) {
+		//No preferred items, add a settings item
+		/*: String for the favorite settings item in the menu */
+		preferredMenu->addAction(tr("Einstellungen", "favorite"));
+	}
+
+	return menu;
+}
+
+
+/**
+ * @brief creates the export-context menu and exports the data according to
+ *	  the user selection
+ */
+//private slot
+void page_history::onActExportSelected()
+{
+	/* The usage of "goto" could be removed, but with it the code is
+	 * easier readable.
+	 */
+	int err = 0;
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+	aqb_iePlugin *plugin = NULL;
+	aqb_ieProfile *profile = NULL;
+	QString saveFilename = "";
+	QString dialogTitle = "";
+	QString tmpstr = "";
+
+	aqb_imexporters* iep = new aqb_imexporters(banking->getAqBanking());
+
+	QMenu *exportConextMenu = this->createExportContextMenu(this, iep);
+
 
 	QAction *sel = exportConextMenu->exec(QCursor::pos());
 
-	if (sel) {
-		//we stored the pointer to plugin and profile in the user-data,
-		//lets restore them
-		aqb_iePlugin *selPlugin = reinterpret_cast<aqb_iePlugin*>(sel->userData(0));
-		aqb_ieProfile *selProfile = reinterpret_cast<aqb_ieProfile*>(sel->userData(1));
-
-		if (selPlugin && selProfile) {
-			qDebug() << Q_FUNC_INFO << "selected Plugin :" << selPlugin->getName();
-			qDebug() << Q_FUNC_INFO << "selected Profile:" << selProfile->getValue("name");
-		} else {
-			qWarning() << Q_FUNC_INFO << "something went wrong!"
-				   << "could not restore the pointers to Plugin or Profile!";
-			goto ONACTEXPORTSELECTED_CLEANUP;
-		}
-
-		//Now we need to know where to store the data
-		QString dialogTitle = tr("(%1 / %2) Export ...").arg(
-					      selPlugin->getName()).arg(
-					      selProfile->getValue("name").toString());
-
-		QString saveFilename = "";
-		saveFilename = QFileDialog::getSaveFileName(this, dialogTitle,
-							    settings->getDataDir());
-
-		if (saveFilename.isEmpty()) {
-			QMessageBox::warning(this, tr("Export abgebrochen"),
-					     tr("Es wurde kein Dateiname angegeben "
-						"unter den die Exportierten Daten "
-						"gespeichert werden sollen!"),
-					     QMessageBox::Ok);
-		} else {
-			//create a ctx from the selected items in the history
-			//and save this data with the selected profile from the
-			//plugin.
-			//Saving is done by a function from AqBanking
-
-			//create a context for export from all selected items
-			AB_IMEXPORTER_CONTEXT *ctx = this->getContextFromSelected();
-
-
-			int err = AB_Banking_ExportToFile(banking->getAqBanking(),
-							  ctx,
-							  selPlugin->getName(),
-							  selProfile->getValue("name").toString().toStdString().c_str(),
-							  saveFilename.toStdString().c_str());
-
-			//we must free the ctx after using it
-			AB_ImExporterContext_free(ctx);
-
-			if (err != 0) {
-				QMessageBox::critical(this, tr("Export fehlerhaft"),
-						      tr("Beim export trat ein Fehler auf!</ br>"
-							 "Bitte kontrollieren Sie die exportierten "
-							 "Daten und wiederholen ggf. den Vorgang!"),
-						      QMessageBox::Ok);
-			} else {
-				QMessageBox::information(this, tr("Export erfolgreich"),
-							 tr("Die ausgewählten Einträge "
-							    "der Historie wurden unter "
-							    "%1 gespeichert.").arg(saveFilename),
-							 QMessageBox::Ok);
-			}
-		}
-
+	if (!sel) {
+		//no context menu item selected, abort
+		goto ONACTEXPORTSELECTED_CLEANUP;
 	}
 
-	ONACTEXPORTSELECTED_CLEANUP:
+	/*: must be the same string as for the favorite settings item in the menu */
+	tmpstr = tr("Einstellungen", "favorite");
+	if (sel->text() == tmpstr) {
+		//user wants the settings for im-/export
+		emit showSettingsForImExpFavorite();
+		goto ONACTEXPORTSELECTED_CLEANUP;
+	}
 
-	qDebug() << "deleting exportContextMenu";
-	delete exportConextMenu; //Menu and all childs no longer needed
 
-	qDebug() << "deleting aqb_imexporters (iep)";
+	//we stored the pointer to plugin and profile in the user-data of the
+	//action, lets restore them
+	plugin = reinterpret_cast<aqb_iePlugin*>(sel->userData(0));
+	profile = reinterpret_cast<aqb_ieProfile*>(sel->userData(1));
+
+	if (!plugin || !profile) {
+		qWarning() << Q_FUNC_INFO << "something went wrong!"
+			   << "could not restore the pointers to Plugin or Profile!";
+		goto ONACTEXPORTSELECTED_CLEANUP;
+	}
+
+	qDebug() << Q_FUNC_INFO << "selected Plugin :" << plugin->getName();
+	qDebug() << Q_FUNC_INFO << "selected Profile:" << profile->getValue("name").toString();
+
+	//Now we need to know where to store the data
+	dialogTitle = tr("(%1 / %2) Export ...")
+		      .arg(plugin->getName())
+		      .arg(profile->getValue("name").toString());
+	saveFilename = QFileDialog::getSaveFileName(this, dialogTitle,
+						    settings->getDataDir());
+
+	if (saveFilename.isEmpty()) {
+		QMessageBox::warning(this, tr("Export abgebrochen"),
+				     tr("Es wurde kein Dateiname angegeben "
+					"unter den die Exportierten Daten "
+					"gespeichert werden sollen!"),
+				     QMessageBox::Ok);
+		goto ONACTEXPORTSELECTED_CLEANUP;
+	}
+
+	//create a ctx from the selected items in the history and save this
+	//data with the selected profile from the plugin.
+	//Saving is done by a function from AqBanking.
+
+	//create a context for export from all selected items
+	ctx = this->getContextFromSelected();
+
+	err = AB_Banking_ExportToFile(banking->getAqBanking(),
+				      ctx, plugin->getName(),
+				      profile->getValue("name").toString().toStdString().c_str(),
+				      saveFilename.toStdString().c_str());
+
+	//we must free the ctx after using it
+	AB_ImExporterContext_free(ctx);
+
+	if (err != 0) {
+		QMessageBox::critical(this, tr("Export fehlerhaft"),
+				      tr("Beim Export trat ein Fehler auf!</ br>"
+					 "Bitte kontrollieren Sie die exportierten "
+					 "Daten und wiederholen ggf. den "
+					 "Vorgang!"),
+				      QMessageBox::Ok);
+	} else {
+		QMessageBox::information(this, tr("Export erfolgreich"),
+					 tr("Die ausgewählten Einträge der "
+					    "Historie wurden unter %1 "
+					    "gespeichert.").arg(saveFilename),
+					 QMessageBox::Ok);
+	}
+
+
+ONACTEXPORTSELECTED_CLEANUP:
+
+	delete exportConextMenu; //menu and all childs no longer needed
 	delete iep; //also deletes ALL childs objects from aqb_imexporters!
-
 }
 
 
