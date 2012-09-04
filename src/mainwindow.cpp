@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->history = new abt_history(this);
 	this->logw = new page_log();
-	this->outbox = new Page_Ausgang();
+	this->outbox = new Page_Ausgang(settings);
 	this->dock_KnownRecipient = NULL;
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;

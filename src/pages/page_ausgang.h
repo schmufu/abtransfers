@@ -33,7 +33,9 @@
 
 #include <QFrame>
 #include <QAction>
-#include "../abt_job_ctrl.h"
+#include "../abt_job_ctrl.h" //for abt_jobinfo and AB_xxx types
+
+class abt_settings;
 
 namespace Ui {
 	class Page_Ausgang;
@@ -53,6 +55,8 @@ private:
 	QAction *actUp;
 	QAction *actDown;
 
+	abt_settings *settings;
+
 	void setDefaultTreeWidgetHeader();
 	void setTreeWidgetColWidths();
 	void createAllActions();
@@ -61,7 +65,7 @@ private:
 	static bool isJobTypeEditable(const AB_JOB_TYPE type);
 
 public:
-	Page_Ausgang(QWidget *parent = 0);
+	Page_Ausgang(abt_settings *settings, QWidget *parent = 0);
 	~Page_Ausgang();
 
 protected:

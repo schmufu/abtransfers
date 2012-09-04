@@ -40,12 +40,13 @@
 #include "../abt_conv.h"
 #include "../abt_settings.h"
 
-Page_Ausgang::Page_Ausgang(QWidget *parent) :
+Page_Ausgang::Page_Ausgang(abt_settings *settings, QWidget *parent) :
 	QFrame(parent),
 	ui(new Ui::Page_Ausgang)
 {
 	ui->setupUi(this);
-	//this->jobctrl = jobctrl;
+	this->settings = settings;
+
 	this->createAllActions();
 
 	this->refreshTreeWidget(NULL); //erstellt "Keine Aufträge vorhanden"
@@ -232,14 +233,16 @@ void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 void Page_Ausgang::on_treeWidget_itemSelectionChanged()
 {
 	bool enabled = (this->ui->treeWidget->selectedItems().size() > 0);
+	bool one_selected = (this->ui->treeWidget->selectedItems().size() == 1);
+	bool adv_wanted = this->settings->isAdvancedOptionSet("ManualOutboxRearrange");
 
 	this->ui->pushButton_del->setEnabled(enabled);
-	this->ui->pushButton_up->setEnabled(enabled);
-	this->ui->pushButton_down->setEnabled(enabled);
+	this->ui->pushButton_up->setEnabled(one_selected && adv_wanted);
+	this->ui->pushButton_down->setEnabled(one_selected && adv_wanted);
 
-	this->actUp->setEnabled(enabled);
-	this->actDown->setEnabled(enabled);
-	this->actEdit->setEnabled(enabled);
+	this->actUp->setEnabled(one_selected && adv_wanted);
+	this->actDown->setEnabled(one_selected && adv_wanted);
+	this->actEdit->setEnabled(one_selected);
 	this->actDelete->setEnabled(enabled);
 }
 
@@ -356,14 +359,14 @@ bool Page_Ausgang::isJobTypeEditable(const AB_JOB_TYPE type)
 
 void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 {
-	//Context-Menu zum Ändern/Löschen/Rauf/runter anzeigen
+	//create and show context menu for up/down/edit/del
 	bool editable;
-	bool disabled = this->ui->treeWidget->selectedItems().size() == 0;
+	bool one_selected = this->ui->treeWidget->selectedItems().size() == 1;
 
-	if (disabled) { //keine Items ausgewählt oder keine vorhanden
+	if (!one_selected) { //no, or more than one item selected
 		editable = false;
-	} else { //Items ausgewählt, somit auch vorhanden!
-		//Die UserRole enthält die Adresse des Jobs
+	} else { //one item selected, edit might be possible
+		//the UserRole contains a pointer to the abt_jobInfo
 		const QVariant var = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole);
 		if (var.canConvert<abt_jobInfo*>()) {
 			const abt_jobInfo *job = var.value<abt_jobInfo*>();
@@ -375,9 +378,10 @@ void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 	}
 
 	this->actEdit->setEnabled(editable);
-	this->actDelete->setDisabled(disabled);
-	this->actUp->setDisabled(disabled);
-	this->actDown->setDisabled(disabled);
+	//these actions are en/disabled at on_treeWidget_itemSelectionChanged()
+	//this->actDelete->setDisabled(disabled);
+	//this->actUp->setDisabled(disabled);
+	//this->actDown->setDisabled(disabled);
 
 	QMenu *contextMenu = new QMenu();
 	contextMenu->addAction(this->actUp);
