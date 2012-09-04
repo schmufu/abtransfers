@@ -75,7 +75,7 @@ signals:
 	void executeClicked();
 	void editJob(int itemNr);
 	void moveJobInList(int itemNr, int updown);
-	void removeJob(int itemNr);
+	void removeJob(abt_jobInfo *jobinfo);
 
 public slots:
 	void refreshTreeWidget(const abt_job_ctrl *jobctrl);

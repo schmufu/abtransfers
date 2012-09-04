@@ -124,7 +124,7 @@ public slots:
 
 	void moveJob(int JobListPos, int updown);
 	/** \brief löscht den AB_JOB an der Listenposition \a JobListPos */
-	void deleteJob(int JobListPos, bool free=true);
+	void deleteJob(abt_jobInfo *jobinfo, bool free=true);
 
 };
 

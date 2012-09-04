@@ -34,6 +34,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTreeWidgetItem>
+#include <QTreeView>
+#include <QAbstractItemView>
 #include <QMenu>
 #include "../abt_conv.h"
 #include "../abt_settings.h"
@@ -134,6 +136,9 @@ void Page_Ausgang::setDefaultTreeWidgetHeader()
 	ui->treeWidget->setHeaderHidden(false);
 	ui->treeWidget->header()->setStretchLastSection(false);
 	ui->treeWidget->setHeaderLabels(header);
+
+	ui->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
 	this->setTreeWidgetColWidths();
 }
 
@@ -266,8 +271,6 @@ void Page_Ausgang::onActionDownTriggered()
 void Page_Ausgang::onActionDeleteTriggered()
 {
 	Q_ASSERT(this->ui->treeWidget->selectedItems().size() > 0);
-	//repräsentiert auch gleichzeitig die Position in der jobqueliste
-	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
 
 	QMessageBox msg;
 	msg.setIcon(QMessageBox::Question);
@@ -280,9 +283,29 @@ void Page_Ausgang::onActionDeleteTriggered()
 
 	if (ret != QMessageBox::Yes) {
 		return; //Abbruch
-	}
+	} else {
+		//Zuerst benötigen wir alle Adressen der zu löschenden abt_jobInfo
+		//Objekte. Wir können das signal removeJob() nicht senden
+		//während wir auf die selectedItems() zugreifen, da sich die
+		//Liste der selectedItems() nach dem senden von 'removeJob()'
+		//ändert und somit ein evt. beim Eintritt in diese Funktion
+		//vorhandenes Item nicht mehr existiert.
+		QList<abt_jobInfo*> jobsToDelete;
 
-	emit this->removeJob(itemNr);
+		//Alle abt_jobInfo Pointer der ausgewählten Items merken
+		foreach(const QTreeWidgetItem *item, this->ui->treeWidget->selectedItems()) {
+			QVariant var = item->data(0, Qt::UserRole);
+			abt_jobInfo *j = var.value<abt_jobInfo*>();
+			jobsToDelete.append(j);
+		}
+
+		//alle zu löschenden Jobs durchgehen und senden das der Job
+		//gelöscht werden soll
+		while(!jobsToDelete.isEmpty()) {
+			emit this->removeJob(jobsToDelete.takeFirst());
+		}
+
+	}
 }
 
 

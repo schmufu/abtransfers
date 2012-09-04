@@ -1155,10 +1155,12 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			//übergeben wird, löscht dies den AB_JOB! Hiernach könnte
 			//dann auf den AB_JOB [j] nicht mehr zugegriffen werden!
 
-			for(int i=0; i<this->jobqueue->size(); ++i) {
+			abt_jobInfo *infojob;
+			for (int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
 					//JobPos, gefunden, diesen löschen
-					this->deleteJob(i, false);
+					infojob = this->jobqueue->at(i);
+					this->deleteJob(infojob, false);
 					break; //kein weiterer Job möglich
 				}
 			}
@@ -1175,10 +1177,12 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			AB_Job_List2_Remove(jl, j);
 
 			//den Job erstmal aus dem jobqueue entfernen
-			for(int i=0; i<this->jobqueue->size(); ++i) {
+			abt_jobInfo *infojob;
+			for (int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
 					//JobPos, gefunden, diesen löschen
-					this->deleteJob(i, false);
+					infojob = this->jobqueue->at(i);
+					this->deleteJob(infojob, false);
 					break; //kein weiterer Job möglich
 				}
 			}
@@ -1317,23 +1321,14 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
   * \a free = false übergeben werden
   */
 //public slot
-void abt_job_ctrl::deleteJob(int JobListPos, bool free /*=true*/)
+void abt_job_ctrl::deleteJob(abt_jobInfo *jobinfo, bool free /*=true*/)
 {
-	if ((JobListPos >= this->jobqueue->size()) ||
-	    (JobListPos < 0)) {
-		qWarning().nospace() << Q_FUNC_INFO
-				     << " - JobListPos [" << JobListPos << "]"
-				     << " is greater than the jobqueue->size() "
-				     << "[" << this->jobqueue->size() << "] "
-				     << "(or less than zero)";
-		return; //cancel remove, job doesnt exist!
-	}
+	this->jobqueue->removeAll(jobinfo); //aus der Liste enfernen
 
-	abt_jobInfo *jobinfo;
-	jobinfo = this->jobqueue->takeAt(JobListPos); //aus der Liste enfernen
 	if (free) {
 		AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
 	}
+
 	delete jobinfo; // und jobinfo löschen
 
 	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
