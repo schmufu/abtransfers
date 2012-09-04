@@ -437,6 +437,26 @@ void abt_settings::deleteProfileFavorit(const QString &name)
 }
 
 
+bool abt_settings::isAdvancedOptionSet(const QString &option) const
+{
+	QString key = QString("Options/Advanced/").append(option);
+	return this->settings->value(key, false).toBool();
+}
+
+void abt_settings::setAdvancedOption(const QString &option, bool value)
+{
+	QString key = QString("Options/Advanced/").append(option);
+	this->settings->setValue(key, value);
+}
+
+void abt_settings::deleteAdvancedOption(const QString &option)
+{
+	this->settings->beginGroup("Options/Advanced/");
+	this->settings->remove(option);
+	this->settings->endGroup();
+}
+
+
 
 //static
 void abt_settings::resizeColToContentsFor(QTreeWidget *w)

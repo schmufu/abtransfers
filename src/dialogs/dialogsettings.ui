@@ -46,7 +46,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -311,7 +311,7 @@ hinzugefügt.</string>
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>8</height>
               </size>
              </property>
             </spacer>
@@ -364,7 +364,14 @@ Hinweis angezeigt.</string>
               <item>
                <widget class="QCheckBox" name="checkBox_warnDeleteProfile">
                 <property name="text">
-                 <string>Abfrage beim Profil Löschen</string>
+                 <string>Abfrage bei Im-/Export Profil löschen</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_warnDeleteHistory">
+                <property name="text">
+                 <string>Abfrage bei Historie-Eintrag löschen</string>
                 </property>
                </widget>
               </item>
@@ -496,7 +503,7 @@ nach dem starten zum Insititut übertragen.</string>
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>8</height>
               </size>
              </property>
             </spacer>
@@ -680,6 +687,60 @@ nach dem starten zum Insititut übertragen.</string>
           </column>
          </widget>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_advanced">
+      <attribute name="title">
+       <string>Erweitert</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_10">
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Diese Einstellungen ermöglichen die Einflussnahme auf das ansonsten vorgegebene Verhalten von AB-Transfers.&lt;br /&gt;Sie sollten diese Einstellungen nur aktivieren wenn Sie wissen was Sie tun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <property name="leftMargin">
+          <number>12</number>
+         </property>
+         <property name="topMargin">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="checkBox_adv_manualOutboxRearrange">
+           <property name="whatsThis">
+            <string>Wenn diese Option aktiviert ist können die Aufträge im Ausgang in der vorgegebenen Reihenfolge verändert werden.
+
+Je nachdem an welcher Position ein Auftrag zur Bank gesendet wird kann dies Auswirkungen auf die Antwort der Bank haben.
+
+Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stelle ein neuer Aufträge in den Ausgang eingereiht wird!</string>
+           </property>
+           <property name="text">
+            <string>Änderung der Reihenfolge im Ausgang ermöglichen (Hilfetext beachten)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

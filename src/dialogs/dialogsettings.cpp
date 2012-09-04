@@ -124,11 +124,15 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
 	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
 	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog("ProfileConfirmDelete"));
+	this->ui->checkBox_warnDeleteHistory->setChecked(this->settings->showDialog("HistoryConfirmDelete"));
 
 	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
 	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
 	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
 	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
+
+	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(
+			this->settings->isAdvancedOptionSet("ManualOutboxRearrange"));
 
 	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
 
@@ -148,11 +152,15 @@ void DialogSettings::saveToSettings()
 	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
 	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
 	this->settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
+	this->settings->setShowDialog("HistoryConfirmDelete", this->ui->checkBox_warnDeleteHistory->isChecked());
 
 	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
 	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
 	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
 	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
+
+	this->settings->setAdvancedOption("ManualOutboxRearrange",
+			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
 
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 
