@@ -43,15 +43,44 @@
 #include "abt_history.h"
 
 
-/** \brief Verwaltung von Aufträgen für die Bank
+/** @brief Administration of the jobs that are send to the bank
   *
-  * abt_job_ctrl dient der Verwaltung und der Abarbeitung von Aufträgen für
-  * die Bank.
+  * This could be descriped as the "heart" of AB-Transfers, because every
+  * action that AB-Transfers is executing or retrieving from the bank is done
+  * by this class.
   *
-  * Dieser Klasse können über die add... Funktionen neue Aufträge zugeteilt
-  * werden. Über execQueuedTransactions() können diese Aufträge dann zur Bank
-  * gesendet werden und die Anworten werden ausgewertet (friend class \ref
-  * abt_parser)
+  * The abt_job_ctrl is responsible for the @ref jobqueue and the execution
+  * of the jobs in the jobqueue.
+  *
+  * New jobs to execute can be added by the following public slots:
+  * @li @ref addNewSingleTransfer()
+  * @li @ref addNewSingleDebitNote()
+  * @li @ref addNewEuTransfer()
+  * @li @ref addNewInternalTransfer()
+  * @li @ref addNewSepaTransfer()
+  * @li @ref addCreateDatedTransfer()
+  * @li @ref addModifyDatedTransfer()
+  * @li @ref addDeleteDatedTransfer()
+  * @li @ref addGetDatedTransfers()
+  * @li @ref addCreateStandingOrder()
+  * @li @ref addModifyStandingOrder()
+  * @li @ref addDeleteStandingOrder()
+  * @li @ref addGetStandingOrders()
+  * @li @ref addGetBalance()
+  *
+  * Over the public slot @ref execQueuedTransactions() the previously added
+  * transactions can be executed and parsed (this is done by the class
+  * @ref abt_parser).
+  *
+  *
+  * @todo more detailed description should be added.
+  *       Especially the static functions and the sorting of the jobqueue
+  *	  should be described.
+  *
+  * @todo maybe the abt_job_ctrl could be splitted into more classes.
+  *       In particular the @ref jobqueue could be an own class wich handles
+  *	  all positions by its own. This would reduce the overhead in the
+  *	  abt_job_ctrl.
   *
   */
 
@@ -60,6 +89,7 @@ class abt_job_ctrl : public QObject
 Q_OBJECT
 
 private:
+	/** this is the main list where all jobs are queued for execution */
 	QList<abt_jobInfo*> *jobqueue;
 	aqb_Accounts *m_allAccounts;
 	abt_history *m_history;
@@ -72,26 +102,18 @@ private:
 
 	bool isJobTypeInQueue(const AB_JOB_TYPE type, const AB_ACCOUNT *acc) const;
 
-	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
-	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
-	//! Prüft die übergebene ausgeführte JobListe \a jl auf Fehler
 	bool parseExecutedJobs(AB_JOB_LIST2 *jl);
 
-	//! adds the recipient from the \a jobInfo to the known recipients
 	void addNewRecipient(const abt_jobInfo *jobInfo);
 
-	/** @brief returns the position of the first job for the account */
 	int getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const;
-	/** @brief returns the position of the last job for the account */
 	int getSupposedJobqueue_LastPos(int firstPos) const;
-
 	int getSupposedJobqueue_NextTransferPos(int firstTransferPos,
 						int lastPos) const;
 	int getSupposedJobqueue_NextStandingPos(int firstStandingPos,
 						int lastPos) const;
 	int getSupposedJobqueue_NextDatedPos(int firstDatedPos,
 					     int lastPos) const;
-
 	int getSupposedJobqueuePos(const abt_jobInfo *job) const;
 
 public:
@@ -102,11 +124,9 @@ public:
 	const QList<abt_jobInfo*> *jobqueueList() const { return this->jobqueue; }
 
 	static void createAvailableHashFor(AB_ACCOUNT *a, QHash<AB_JOB_TYPE, bool> *hash);
-	//! Static function for creating every TransactionLimit for an Account
 	static void createTransactionLimitsFor(AB_ACCOUNT *a,
 					       QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah);
 
-	//! zum Prüfen ob ein bestimmter SO oder DT schon in der jobListe vorhanden ist
 	bool isTransactionInQueue(const abt_transaction *t) const;
 
 signals:
@@ -137,7 +157,6 @@ public slots:
 	void execQueuedTransactions();
 
 	void moveJob(int JobListPos, int updown);
-	/** \brief removes the job @a jobinfo from the jobqueue */
 	void deleteJob(abt_jobInfo *jobinfo, bool free=true);
 
 };

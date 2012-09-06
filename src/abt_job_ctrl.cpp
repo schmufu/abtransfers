@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -92,8 +92,22 @@ abt_job_ctrl::~abt_job_ctrl()
 
 //static public
 /**
- * Speichert in dem Übergebenen QHash \a hash zu jeden AB_JOB_TYPE ob dieser
- * von der Bank unterstützt wird oder nicht.
+ * @brief stores the availability of every AB_JOB_TYPE in the QHash
+ *
+ * This static function retrieves the availability of each AB_JOB_TYPE and
+ * stores the result in the supplied QHash.
+ *
+ * Example usage of the information in the QHash:
+ * @code
+ *	if (hash->value(AB_Job_TypeTranfer)) {
+ *		//transfers are supported
+ *	} else {
+ *		//transfers are not supported
+ *	}
+ * @endcode
+ *
+ * @param a: account from AqBanking for which the hash is filled
+ * @param hash: pointer to the QHash that should be used
  */
 void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 					  QHash<AB_JOB_TYPE, bool> *hash)
@@ -171,12 +185,17 @@ void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 
 }
 
-
-/**
- * Erstellt alle TransactionLimits die für einen Account verfügbar sind und
- * speichert diese in dem übergebenen QHash \a ah
- */
 //static public
+/**
+ * @brief retrieves all Limits from AqBanking and stores it in the QHash
+ *
+ * This static function retrieves all TransactionLimits that are supplied by
+ * the bank as BPD (Bank Parameter Daten) and UPD (User Parameter Daten) and
+ * stores this as a @ref abt_transactionLimits in the QHash @a ah (AccountHash)
+ *
+ * @param a: account from AqBanking for which the hash is filled
+ * @param ah: pointer to the QHash that should be used
+ */
 void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 					      QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah)
 {
@@ -221,7 +240,7 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	}
 	AB_Job_free(j);
 
-	//AB_JobEuTransfer_GetFieldLimits existiert nicht!
+
 
 
 	j = AB_JobInternalTransfer_new(a);
@@ -319,7 +338,10 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	}
 	AB_Job_free(j);
 
-	/** \todo Wo bekommen wir die Limits für einen EU-Transfer her? */
+
+	/** @todo AB_JobEuTransder_GetFielsLimits does not exists!
+	 *	  Where can we get the FieldLimits for an EU-Transfer?
+	 */
 //	j = AB_JobEuTransfer_new(a);
 //	if (AB_Job_CheckAvailability(j)) {
 //		qDebug("Job EuTransfer not available");
@@ -356,6 +378,14 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 
 
 //private
+/**
+ * @brief prepares the supplied QString for a log-message
+ *
+ * The current time is prepended before the @a str and then the signal
+ * @ref log() is emitted with the modified @a str
+ *
+ * @param str: the message that should be logged
+ */
 void abt_job_ctrl::addlog(const QString &str)
 {
 	static QString time;
@@ -367,54 +397,70 @@ void abt_job_ctrl::addlog(const QString &str)
 }
 
 //private
+/**
+ * @brief gets the logs from a AB_JOB and returns them as a QStringList
+ *
+ * With AB_Job_GetLogs(AB_JOB) the logs from the AB_JOB @a j are retrieved
+ * and stored in a QStringList.
+ *
+ * The logs from the job are preprocessed and every "unknown" UTF8 character
+ * is replaced by the corresponding ASCII character.
+ *
+ * @param j: the AB_JOB which logs should be processed
+ * @returns a QStringList with the preprocessed logs
+ */
 QStringList abt_job_ctrl::getParsedJobLogs(const AB_JOB *j) const
 {
 	QStringList strList;
 	GWEN_STRINGLIST *gwenStrList;
 
 	gwenStrList = AB_Job_GetLogs(j);
-	if (gwenStrList) { //nur wenn auch ein log existiert
+	if (gwenStrList) { //only if logs are existent
 		strList = abt_conv::GwenStringListToQStringList(gwenStrList);
-		GWEN_StringList_free(gwenStrList); // \done macht jetzt abt_conv selbst oder?
-					    //NEIN! QStringlistToGwenStringList löscht sich selbst!
-					    //GwenToQ macht dies nicht! (und das aus guten Grund!)
+		//the GWEN_StringList is no longer needed
+		GWEN_StringList_free(gwenStrList);
 	}
 
-	//die logs von aqBanking ein wenig aufbereiten (UTF8 in ASCII)
-	// %22 durch " ersetzen
+	//preprocess the logs from AqBanking (UTF8 to ASCII)
+	//replace %22 by "
 	strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
-	// %28 durch ( ersetzen
+	//replace %28 by (
 	strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
-	// %29 durch ) ersetzen
+	//replace %29 by )
 	strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
-	// %3A durch : ersetzen
+	//replace %3A by :
 	strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
-	// %C3%A4 durch ä ersetzen
+	//replace %C3%A4 by ä
 	strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
-	// %C3%84 durch Ä ersetzen
+	//replace %C3%84 by Ä
 	strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
-	// %C3%BC durch ü ersetzen
+	//replace %C3%BC by ü
 	strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
-	// %C3%9C durch Ü ersetzen
+	//replace %C3%9C by Ü
 	strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
-	// %C3%B6 durch ö ersetzen
+	//replace %C3%B6 by ö
 	strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
-	// %C3%96 durch Ö ersetzen
+	//replace %C3%96 by Ö
 	strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
-	// %3D durch = ersetzen
+	//replace %3D by =
 	strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
 
-	//Aufbereitete Logs zurückgeben
 	return strList;
 }
 
+//private
 /**
+ * @brief returns the position of the first job for the account
  *
- * @param accNr: the account number
- * @param blz: the bank number (Bankleitzahl)
+ * This function iterates over the @ref jobqueue and returns the position
+ * of the first job in the jobqueue which belongs to the account @a acc.
+ *
+ * If no job for the account @a acc is in the queue the size auf the jobqueue
+ * is returned (could be used for inserting at the end of the list).
+ *
+ * @param acc: the AB_ACCOUNT for which the first job should be found.
  * @returns the position in the jobqueue of the first job for the account
  */
-//private
 int abt_job_ctrl::getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const
 {
 	int firstPos = this->jobqueue->size(); //default: last position
@@ -429,12 +475,16 @@ int abt_job_ctrl::getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const
 	return firstPos;
 }
 
+//private
 /**
+ * @brief returns the position of the last job for the account
+ *
+ * Iterates over the @ref jobqueue from @a firstPos on and stops if the job
+ * isn't for the account at the @a firstpos.
  *
  * @param start: the position of the first job in queue for the wanted account
  * @returns the position in the jobqueue of the last job for the account
  */
-//private
 int abt_job_ctrl::getSupposedJobqueue_LastPos(int firstPos) const
 {
 	if (this->jobqueue->size()-1 <= firstPos) {
@@ -464,11 +514,16 @@ int abt_job_ctrl::getSupposedJobqueue_LastPos(int firstPos) const
 	return lastPos;
 }
 
+//private
 /**
- * @brief
- * @param firstTransferPos: the position in the queue where the "transfers" start
- * @param lastPos: the position of the last job in queue that belongs to the same account
- * @returns the position where the next transfer should be inserted
+ * @brief determines the position in the jobqueue where the next transfer job
+ *	  should be inserted
+ *
+ * @param firstTransferPos: the position in the queue where the first transfer
+ *                          job is
+ * @param lastPos: the position of the last job in queue that belongs to the
+ *                 same account
+ * @returns the position where the next transfer should be inserteds
  */
 int abt_job_ctrl::getSupposedJobqueue_NextTransferPos(int firstTransferPos,
 						      int lastPos) const
@@ -510,13 +565,19 @@ int abt_job_ctrl::getSupposedJobqueue_NextTransferPos(int firstTransferPos,
 	return wantedPos;
 }
 
+//private
 /**
- * @brief
- * @param firstStandingPos: the position of the first standingOrder job (edit, del, modify)
- * @param lastPos: the position of the last job in queue that belongs to the same account
+ * @brief determines the position in the jobqueue where the next standing order
+ *	  job should be inserted
+ *
+ * @param firstStandingPos: the position of the first standingOrder job
+ *                          (edit, del, modify)
+ * @param lastPos: the position of the last job in queue that belongs to the
+ *                 same account
  * @returns the position where the next standingOrder job should be inserted
  */
-int abt_job_ctrl::getSupposedJobqueue_NextStandingPos(int firstStandingPos, int lastPos) const
+int abt_job_ctrl::getSupposedJobqueue_NextStandingPos(int firstStandingPos,
+						      int lastPos) const
 {
 	int wantedPos = -1;
 
@@ -544,13 +605,19 @@ int abt_job_ctrl::getSupposedJobqueue_NextStandingPos(int firstStandingPos, int 
 	return wantedPos;
 }
 
+//private
 /**
- * @brief
- * @param firstDatedPos: the position of the first datedTransfer job (edit, del, modify)
- * @param lastPos: the position of the last job in queue that belongs to the same account
+ * @brief determines the position in the jobqueue where the next dated transfer
+ *	  job should be inserted
+ *
+ * @param firstDatedPos: the position of the first datedTransfer job
+ *                       (edit, del, modify)
+ * @param lastPos: the position of the last job in queue that belongs to the
+ *                 same account
  * @returns the position where the next datedTransfer job should be inserted
  */
-int abt_job_ctrl::getSupposedJobqueue_NextDatedPos(int firstDatedPos, int lastPos) const
+int abt_job_ctrl::getSupposedJobqueue_NextDatedPos(int firstDatedPos,
+						   int lastPos) const
 {
 	int wantedPos = -1;
 
@@ -575,8 +642,14 @@ int abt_job_ctrl::getSupposedJobqueue_NextDatedPos(int firstDatedPos, int lastPo
 	return wantedPos;
 }
 
+//private
 /**
+ * @brief determines the position in the jobqueue for the supplied job
  *
+ * This function should be used to determine the position in the jobqueue
+ * where the supplied @a job should be inserted.
+ *
+ * The jobqueue is structured as follows for every account:
  *  @li transfers (internal, sepa, etc)
  *  @li standingOrders changes (edit, del, modify)
  *  @li getStandingOrders
@@ -584,19 +657,14 @@ int abt_job_ctrl::getSupposedJobqueue_NextDatedPos(int firstDatedPos, int lastPo
  *  @li getDatedTransfers
  *  @li getBalance
  *
- * @returns -1 on error
+ *
+ * If more than one transfer, standing order change or dated transfer change
+ * job is in the list, the supposed position is just after the existing ones.
+ *
  * @returns the supposed position in the jobqueue for the supplied @a job
  */
-//private
 int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 {
-//	if (this->jobqueue->isEmpty()) {
-//		//no jobs exists, the last position is ok ;)
-//		return this->jobqueue->size();
-//	}
-
-	//finding the wanted position for the supplied job
-
 	//the first occurrence of a job for the account in the jobqueue
 	int firstPos = this->getSupposedJobqueue_FirstPos(job->getAbAccount());
 	//the last occurrence of a job for the account in the jobqueue
@@ -604,8 +672,8 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 
 	int wantedPos = lastPos + 1; //default, after the last one
 
-	//we have the positions where our jobs for the account are in the queue
-	//depending on the type of the current job, we need an other position
+	//we have the positions where our jobs for the account are in the queue.
+	//Where the current job goes, depends on the type of the job
 	switch (job->getAbJobType()) {
 	case AB_Job_TypeTransfer:
 	case AB_Job_TypeInternalTransfer:
@@ -615,7 +683,8 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 	case AB_Job_TypeDebitNote:
 	case AB_Job_TypeLoadCellPhone: {
 		//these job types should be at "top"
-		wantedPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		wantedPos = this->getSupposedJobqueue_NextTransferPos(firstPos,
+								      lastPos);
 		break;
 	}
 	case AB_Job_TypeCreateStandingOrder:
@@ -685,8 +754,23 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 }
 
 
-//SLOT
-void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a new single transfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc,
+					const abt_transaction *t)
 {
 	int rv;
 
@@ -694,11 +778,12 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_tr
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
@@ -706,19 +791,32 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_tr
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a new single debit note to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc,
+					 const abt_transaction *t)
 {
 	int rv;
 
@@ -726,32 +824,45 @@ void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc, const abt_t
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeDebitNote);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
 	rv = AB_JobSingleDebitNote_SetTransaction(job, t->getAB_Transaction());
 
-	//Create Info for SingleDebitNote
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a new eu transfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc,
+				    const abt_transaction *t)
 {
 	int rv;
 
@@ -759,32 +870,45 @@ void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc, const abt_transa
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeEuTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
 	rv = AB_JobEuTransfer_SetTransaction(job, t->getAB_Transaction());
 
-	//Create Info for EuTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a new internal transfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -792,32 +916,45 @@ void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeInternalTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
 	rv = AB_JobInternalTransfer_SetTransaction(job, t->getAB_Transaction());
 
-	//Create Info for Internal Transfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a new sepa transfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc,
+				      const abt_transaction *t)
 {
 	int rv;
 
@@ -825,34 +962,49 @@ void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc, const abt_tran
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeSepaTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
 	rv = AB_JobSepaTransfer_SetTransaction(job, t->getAB_Transaction());
 
-	//Create Info for SingleTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
+
 /******* Dated Transfers ********/
 
-//SLOT
-void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+
+//public slot
+/**
+ * @brief adds a create dated transfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -860,26 +1012,25 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeCreateDatedTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobCreateDatedTransfer_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobCreateDatedTransfer_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info for NewDatedTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
@@ -899,8 +1050,23 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 
 }
 
-//SLOT
-void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a modify dated tranfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -908,38 +1074,53 @@ void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeModifyDatedTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobModifyDatedTransfer_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobModifyDatedTransfer_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji->getAbAccount())) {
-		//nach dem ändern muss eine Aktualisierung stattfinden.
+	//after a change, the dated transfers must be retrieved from the bank
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers,
+				    ji->getAbAccount())) {
 		this->addGetDatedTransfers(acc, true);
 	}
 
 }
 
-//SLOT
-void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a delete dated tranfer to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -947,87 +1128,110 @@ void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeDeleteDatedTransfer);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobDeleteDatedTransfer_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobDeleteDatedTransfer_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
+//public slot
+/**
+ * @brief adds a get dated transfers to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc,
+					bool withoutInfo /*=false*/)
 {
 	int rv;
 
-	if (acc == NULL) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job AB_Job_TypeGetDatedTransfers is not available (no valid account [NULL])";
+	if (acc == NULL) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job AB_Job_TypeGetDatedTransfers is not"
+			   << "available (no valid account [NULL])";
 		emit jobNotAvailable(AB_Job_TypeGetDatedTransfers);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//this jobtype should only be send once
-	if (this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, acc->get_AB_ACCOUNT())) {
-		//already in queue, nothing to do
-		return;
+	if (this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers,
+				   acc->get_AB_ACCOUNT())) {
+		return; //already in queue, nothing to do
 	}
 
 	AB_JOB *job = AB_JobGetDatedTransfers_new(acc->get_AB_ACCOUNT());
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeGetDatedTransfers);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
-	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+	if (!withoutInfo) { //only emit a jobAdded() signal if wanted
 		emit this->jobAdded(ji);
 	}
-	emit this->jobQueueListChanged();
 
-	//Das zuständige AccountInfo Object darüber informieren wenn wir
-	//mit dem parsen fertig sind (damit dies die DTs neu laden kann)
-	//--> wird jetzt direkt beim parsen erledigt!
-//	connect(this, SIGNAL(datedTransfersParsed()),
-//		acc, SLOT(loadKnownDatedTransfers()));
+	emit this->jobQueueListChanged();
 }
 
 
 /******* Standing Orders ********/
 
 
-//SLOT
-void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a create standing order to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -1035,26 +1239,25 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeCreateStandingOrder);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobCreateStandingOrder_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobCreateStandingOrder_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
@@ -1073,8 +1276,23 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 
 }
 
-//SLOT
-void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a modify standing order to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -1082,38 +1300,53 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeModifyStandingOrder);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobModifyStandingOrder_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobModifyStandingOrder_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji->getAbAccount())) {
-		//nach dem ändern muss eine Aktualisierung stattfinden.
+	//after a change, the standing orders must be retrieved from the bank
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders,
+				    ji->getAbAccount())) {
 		this->addGetStandingOrders(acc, true);
 	}
 
 }
 
-//SLOT
-void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t)
+//public slot
+/**
+ * @brief adds a delete standing order to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc,
+					  const abt_transaction *t)
 {
 	int rv;
 
@@ -1121,46 +1354,61 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeDeleteStandingOrder);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
 	//add transaction to the job
-	rv = AB_JobDeleteStandingOrder_SetTransaction(job, t->getAB_Transaction());
+	rv = AB_JobDeleteStandingOrder_SetTransaction(job,
+						      t->getAB_Transaction());
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
 
-//SLOT
-void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
+//public slot
+/**
+ * @brief adds a get standing orders to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc,
+					bool withoutInfo /*=false*/)
 {
 	int rv;
 
-	if (acc == NULL) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job AB_Job_TypeGetStandingOrders is not available (no valid account [NULL])";
+	if (acc == NULL) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job AB_Job_TypeGetStandingOrders is not"
+			   << "available (no valid account [NULL])";
 		emit jobNotAvailable(AB_Job_TypeGetStandingOrders);
-		return; //Abbruch
+		return; //abort
 	}
 
 	//this jobtype should only be send once
-	if (this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, acc->get_AB_ACCOUNT())) {
-		//already in queue, nothing to do
-		return;
+	if (this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders,
+				   acc->get_AB_ACCOUNT())) {
+		return; //already in queue, nothing to do
 	}
 
 
@@ -1168,26 +1416,25 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeGetStandingOrders);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
-	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+	if (!withoutInfo) { //only emit a jobAdded() signal if wanted
 		emit this->jobAdded(ji);
 	}
+
 	emit this->jobQueueListChanged();
 
 	//Das zuständige AccountInfo Object darüber informieren wenn wir
@@ -1199,22 +1446,39 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 }
 
 
-//SLOT
-void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*=false*/)
+
+//public slot
+/**
+ * @brief adds a get balance to the jobqueue
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc,
+				 bool withoutInfo /*=false*/)
 {
 	int rv;
 
-	if (acc == NULL) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job AB_Job_TypeGetBalance is not available (no valid account [NULL])";
+	if (acc == NULL) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job AB_Job_TypeGetBalance is not available"
+			   << "(no valid account [NULL])";
 		emit jobNotAvailable(AB_Job_TypeGetBalance);
-		return; //Abbruch
+		return; //cancel
 	}
 
 	//this jobtype should only be send once
-	if (this->isJobTypeInQueue(AB_Job_TypeGetBalance, acc->get_AB_ACCOUNT())) {
-		//already in queue, nothing to do
-		return;
+	if (this->isJobTypeInQueue(AB_Job_TypeGetBalance,
+				   acc->get_AB_ACCOUNT())) {
+		return; //already in queue, nothing to do
 	}
 
 
@@ -1222,36 +1486,39 @@ void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*
 
 	rv = AB_Job_CheckAvailability(job);
 
-	if (rv) {
-		//Job is not available!
-		qWarning() << Q_FUNC_INFO << "Job is not available (" << rv << ")";
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
 		emit jobNotAvailable(AB_Job_TypeGetBalance);
-		return; //Abbruch
+		return; //cancel adding
 	}
 
-	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
 	int pos = this->getSupposedJobqueuePos(ji);
-
 	this->jobqueue->insert(pos, ji);
 
-	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
-	//AB_JOB_LIST gebaut)
-//	this->jobqueue->append(ji);
-	if (!withoutInfo) { //Info nur verschicken wenn gewollt
+	if (!withoutInfo) { //only emit a jobAdded() signal if wanted
 		emit this->jobAdded(ji);
 	}
-	emit this->jobQueueListChanged();
 
+	emit this->jobQueueListChanged();
 }
 
 
 
-/******** Ausführung *******/
+/******** execution *******/
 
 
-//SLOT
+//public slot
+/**
+ * @brief executes all queued jobs and calls the functions for parsing the
+ *	  retrieved information
+ *
+ */
 void abt_job_ctrl::execQueuedTransactions()
 {
 	int rv;
@@ -1262,12 +1529,13 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	jl = AB_Job_List2_new();
 
-	//Alle jobs in der reihenfolge wie in dem jobqueue einreihen
+	//append all jobs from the jobqueue to the AB_JOB_LIST2
 	for (int i=0; i<this->jobqueue->size(); ++i) {
 		AB_Job_List2_PushBack(jl, this->jobqueue->at(i)->getJob());
 	}
 
-	this->addlog(tr("%1 Aufträge in die Jobliste übernommen").arg(this->jobqueue->count()));
+	this->addlog(tr("%1 Aufträge in die Jobliste übernommen")
+		     .arg(this->jobqueue->count()));
 
 
 	ctx = AB_ImExporterContext_new();
@@ -1276,52 +1544,72 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	rv = AB_Banking_ExecuteJobs(banking->getAqBanking(), jl, ctx);
 	if (rv) {
-		qWarning() << Q_FUNC_INFO << "Error on execQueuedTransactions ("
-				<< rv << ")";
-		//cleanup
-		this->addlog(tr("***********************************************"
-				"** E R R O R                                 **"
-				"** Fehler bei AB_Banking_ExecuteJobs().      **"
-				"** return value = %1                         **"
-				"**                                           **"
-				"** Es wird abgebrochen und keine weitere     **"
-				"** Bearbeitung/Auswertung durchgeführt!      **"
-				"***********************************************").arg(rv));
+		qWarning() << Q_FUNC_INFO
+			   << "AB_Banking_ExecuteJobs() returned" << rv;
 
-		/** \todo Hier müssen alle jobs des jobqueue gelöscht und neu
-		  *       erstellt wieder hinzugefügt werden!
-		  */
-		AB_Job_List2_FreeAll(jl); // <-- dies löscht auch ALLE Jobs!
+		this->addlog(tr("*********************************************"
+				"** E R R O R                               **"
+				"** Fehler bei AB_Banking_ExecuteJobs().    **"
+				"** return value = %1                       **"
+				"**                                         **"
+				"** Es wird abgebrochen und keine weitere   **"
+				"** Bearbeitung/Auswertung durchgeführt!    **"
+				"*********************************************")
+			     .arg(rv));
+
+		/** @todo cleanup is required, but not tested
+		 *
+		 * This case doesnt occur yet and therefore i dont know if
+		 * the following is working.
+		 * We must remove all abt_jobInfo objects from the jobqueue too!
+		 *
+		 * depending on what is wanted, all jobs must be recreated and
+		 * attached to the jobqueue?
+		 */
+
+		AB_Job_List2_FreeAll(jl); //this also deletes all AB_JOB's
 		AB_ImExporterContext_Clear(ctx);
 		AB_ImExporterContext_free(ctx);
+
+		while (!this->jobqueue->isEmpty()) {
+			abt_jobInfo *j = this->jobqueue->takeFirst();
+			//The job inside the jobInfo must not exist and is
+			//owned by AqBanking, so we dont free it!
+			delete j;
+		}
+
+		//the queuelist changed, tell everyone who wants to know
+		emit this->jobQueueListChanged();
+
 		return;
-
-		/** \todo Was machen wir mit den Jobs in dem jobqueue? */
-
 	}
 
 
 	bool successfull = this->parseExecutedJobs(jl);
 
-	//Die zurückgelieferten Informationen auswerten und in den
-	//entsprechenden Accounts setzen
+	//analyze the retrieved information and set it in the corresponding
+	//accounts
 	abt_parser::parse_ctx(ctx, this->m_allAccounts);
 
 	this->addlog(tr("Alle Jobs übertragen und Antworten ausgewertet"));
 
-	//wir geben die JobList wieder frei. Dies löscht auch ALLE AB_JOBs die
-	//darin noch enthalten sind!
-	//Die Objekte an denen ein AB_JOB übergeben wurde dürfen mit diesem
-	//nicht mehr arbeiten, sondern nur mit Kopien der Daten!
-	AB_Job_List2_FreeAll(jl); //löscht alle Jobs und die Liste
+	//we free the AB_JOB_LIST2. This also frees all AB_JOB objects in the
+	//list and all data that is stored there!
+	//All objects that took a AB_JOB as argument, must not work with this
+	//reference (normaly the make a copy of the data they need)
+	AB_Job_List2_FreeAll(jl); //this also deletes all AB_JOB's
 	AB_ImExporterContext_Clear(ctx);
 	AB_ImExporterContext_free(ctx);
 
-	//JobListe hat sich definitiv geändert, jeden informieren der es benötigt
+	//the queuelist definitive changed, we tell everyone who wants to know
 	emit this->jobQueueListChanged();
 
-	//Wenn die Ausführung einzelner Aufträge fehlerhaft war eine Warnung ausgeben.
+	//Tell the user if the execution was erroneous
 	if (!successfull) {
+		/** @todo the abt_job_ctrl should not use GUI elements
+		 *
+		 * This could be send as signal and handled by the mainwindow
+		 */
 		QMessageBox::critical(qobject_cast<QWidget*>(this->parent()),
 				      tr("Fehlerhafte Ausführung"),
 				      tr("<b>Die Aufträge wurden nicht erfolgreich "
@@ -1340,16 +1628,20 @@ void abt_job_ctrl::execQueuedTransactions()
 
 }
 
-/**
-  * überprüft den Status der ausgeführten Jobs und verschiebt diese, wenn
-  * erfolgreich, in die History-Liste.
-  * Wenn ein Fehler aufgetreten ist wird der fehlerhafte Job aus der übergebenen
-  * AB_JOB_LIST2 \a jl entfernt und ist somit weiterhin verwendbar.
-  *
-  * Wenn alle Jobs erfolgreich ausgeführt wurden wird true zurückgegeben,
-  * ansonsten false.
-  */
 //private
+/**
+ * @brief checks the executed AB_JOB_LIST2 @a jl for errors
+ *
+ * checks the status of the executed jobs and moves them, if faultless, to
+ * the history-list.
+ *
+ * If an error occured the job is removed from the AB_JOB_LIST2 @a jl and is
+ * therefore still useable.
+ *
+ * @param jl: the AB_JOB_LIST2 to check
+ * @return true: if all jobs executed without fault
+ * @return false: if one ore more jobs are faulty
+ */
 bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 {
 	AB_JOB *j = NULL;
@@ -1358,17 +1650,12 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 	QString strType;
 	QStringList strList;
 	qDebug() << Q_FUNC_INFO << "started";
-	bool ret = true; //default - Alles fehlerfrei
+	bool ret = true; //default - everything ok
 
-	//Die Jobs wurden zur Bank übertragen und evt. durch das Backend geändert
-	//jetzt alle Jobs durchgehen und entsprechend des Status parsen
-
-	/** \todo Die Verwendung der AB_JOB_LIST2_ITERATOR und deren Funktionen
-		  muss nochmal kontrolliert und nachgelesen werden!
-	*/
+	//The jobs were send to the bank and maybe changed by the backend.
+	//We go trough the jobs and parse them according to there state.
 
 	AB_JOB_LIST2_ITERATOR *jli;
-	//jli = AB_Job_List2Iterator_new(jl); //Wird das benötigt???
 	jli = AB_Job_List2_First(jl);
 	if (jli) {
 		j = AB_Job_List2Iterator_Data(jli);
@@ -1380,35 +1667,35 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 		if (jobState == AB_Job_StatusFinished ||
 		    jobState == AB_Job_StatusPending) {
-			//Job wurde erfolgreich ausgeführt oder von der Bank
-			//zur Ausführung entgegen genommen
+			//the job was executed without error or it is pending
 
-			// \todo Müssen wir hier eine Kopie des AB_JOB erstellen?
-			// -->	nicht mehr, da abt_jobInfo den Job nurnoch
-			//	verwaltet und benötigte Daten des Jobs kopiert.
-
-
-			/* \todo Status in der ausgeführten Transaction setzen.
-			 * Der Status sollte innherhalb der Transaction gespeichert
-			 * werden. Damit die History auch anzeigt wie der Status
-			 * des Auftrages war.
+			/* @todo must we create a copy of the AB_JOB?
 			 *
-			 * -->	Der Status wird jetzt in durch abt_history beim
-			 *	speichern in der Transaction gesetzt und durch
-			 *	den parser wieder in abt_jobInfo gesetzt.
-			 *	Details siehe abt_history::getContext()
+			 * -->	no longer, the abt_jobInfo only administered
+			 *	the job and copys all data thats needed
+			 */
+
+			/* @todo save the state in the transaction.
+			 *
+			 * The state should be save within the transaction so
+			 * that the history can display the state of the
+			 * executed job.
+			 *
+			 * -->	The state is now saved by abt_history in the
+			 *	transaction and recoverd by the parser for
+			 *	the abt_jobInfo.
+			 *	For details see abt_history::getContext()
 			 */
 			//AB_Transaction_SetType(t, AB_Transaction_TypeTransaction);
 			//AB_Transaction_SetSubType(t, AB_Transaction_SubTypeStandard);
 			//AB_Transaction_SetStatus(t, AB_Transaction_StatusRevoked);
 
-
 			abt_jobInfo *jobInfo = new abt_jobInfo(j);
 			this->m_history->add(jobInfo);
 
 			this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
-					"Der Auftrag wurde zur Historie hinzugefügt").arg(
-							abt_conv::JobTypeToQString(jobType)));
+					"Der Auftrag wurde zur Historie hinzugefügt")
+				     .arg(abt_conv::JobTypeToQString(jobType)));
 
 			//if wanted, we add a new known recipient
 			if (settings->autoAddNewRecipients()) {
@@ -1434,8 +1721,8 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			}
 
 
-			//Je nachdem was gemacht wurde müssen evt. noch die
-			//account-Objekte aktualisiert werden.
+			//depending on what jobs are executed we must update
+			//the account objects
 			AB_ACCOUNT *a = AB_Job_GetAccount(j);
 			aqb_AccountInfo *acc = this->m_allAccounts->getAccount(a);
 			const AB_TRANSACTION *t;
@@ -1444,8 +1731,8 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 			switch(jobType) {
 			case AB_Job_TypeCreateDatedTransfer:
-				//eine neue terminierte Überweisung wurde
-				//erstellt im ctx befinden sich die Daten
+				//a new dated transfer was created, the data
+				//is in the AB_IMEXPORTER_CONTEXT
 				break;
 
 			case AB_Job_TypeDeleteDatedTransfer:
@@ -1463,8 +1750,8 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeCreateStandingOrder:
-				//ein neuer Dauerauftrag wurde erstellt im
-				//ctx befinden sich die Daten
+				//a new standing order was created, the data
+				//is in the AB_IMEXPORTER_CONTEXT
 				break;
 
 			case AB_Job_TypeDeleteStandingOrder:
@@ -1482,69 +1769,74 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeGetDatedTransfers:
-				//Alle DatedTransfers wurden aktualisiert
+				//all dated transfers are updated, the data
+				//is in the AB_IMEXPORTER_CONTEXT and parsed
+				//by the abt_parser
 				acc->clearDatedTransfers();
 				break;
 
 			case AB_Job_TypeGetStandingOrders:
-				//Alle StandingOrders wurden aktualisiert
+				//all standing orders are updated, the data
+				//is in the AB_IMEXPORTER_CONTEXT and parsed
+				//by the abt_parser
 				acc->clearStandingOrders();
 				break;
 
 			default:
-				break; //nichts zu tun
+				break; //nothing to do
 			}
 
-			//Job auch aus dem jobqueue entfernen
+			//remove the job from the jobqueue
 
-			//ACHTUNG!
-			//Wenn bei deleteJob(job, free) free mit true [default]
-			//übergeben wird, löscht dies den AB_JOB! Hiernach könnte
-			//dann auf den AB_JOB [j] nicht mehr zugegriffen werden!
+			// C A U T I O N !
+			//If deleteJob(job, free) is called with free = true
+			//[default], this will delete the AB_JOB and therefore
+			//it would not be accessable anymore!
 
-			abt_jobInfo *infojob;
+			abt_jobInfo *ji;
 			for (int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
-					//JobPos, gefunden, diesen löschen
-					infojob = this->jobqueue->at(i);
-					this->deleteJob(infojob, false);
-					break; //kein weiterer Job möglich
+					//found the job, delete it
+					ji = this->jobqueue->at(i);
+					this->deleteJob(ji, false);
+					break; //no more jobs possible
 				}
 			}
 		} else {
-			//Es ist ein Fehler beim Ausführen des Jobs aufgetreten!
-			ret = false; //wir werden false zurückgeben
+			//there was an error at the execution of the job
+			ret = false; //we will return false (error)
 
-			this->addlog(tr("<b><font color=red>Ausführung von '%1' fehlerhaft.</font></b> "
-					"Der Auftrag bleibt im Ausgang erhalten").arg(
-							abt_conv::JobTypeToQString(jobType)));
+			this->addlog(tr("<b><font color=red>"
+					"Ausführung von '%1' fehlerhaft."
+					"</font></b> "
+					"Der Auftrag bleibt im Ausgang erhalten")
+				     .arg(abt_conv::JobTypeToQString(jobType)));
 
-			//Job aus der AB_JOB_LIST2 entfernen, damit er nicht
-			//durch das löschen der AB_JOB_LIST2 auch gelöscht wird.
+			//we remove the job from the AB_JOB_LIST2, therefore
+			//it wont be delete by the deletion of the AB_JOB_LIST2.
 			AB_Job_List2_Remove(jl, j);
 
-			//den Job erstmal aus dem jobqueue entfernen
+			//we remove it also from the jobqueue
 			abt_jobInfo *infojob;
 			for (int i=0; i<this->jobqueue->size(); ++i) {
 				if (this->jobqueue->at(i)->getJob() == j) {
-					//JobPos, gefunden, diesen löschen
+					//found the abt_jobInfo, delete it
 					infojob = this->jobqueue->at(i);
 					this->deleteJob(infojob, false);
-					break; //kein weiterer Job möglich
+					break; //no more jobs possible
 				}
 			}
 
-			//dann für den Job ein neues abt_jobInfo erstellen
-			//und dies dem jobqueue wieder hinzufügen
+			//then we create a new abt_jobInfo and add the new
+			//abt_jobInfo to the jobqueue
 			abt_jobInfo *ji = new abt_jobInfo(j);
 			int pos = this->getSupposedJobqueuePos(ji);
 			this->jobqueue->insert(pos, ji);
 		}
 
 
-		//Die Logs des Backends parsen
-		strList = this->getParsedJobLogs(j);
-		//Alle Strings der StringListe des jobLogs zu unserem Log hinzufügen
+		strList = this->getParsedJobLogs(j); //parse the job logs
+		//and add all lines to our log
 		foreach(QString line, strList) {
 			this->addlog(tr("JobLog: %1").arg(line));
 		}
@@ -1552,16 +1844,20 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 		j = AB_Job_List2Iterator_Next(jli); //next Job in list
 	} /* while (j) */
 
-	AB_Job_List2Iterator_free(jli); //Joblist iterator wieder freigeben
+	AB_Job_List2Iterator_free(jli); //free the Joblist iterator
 
 	return ret;
 }
 
+//private
 /**
+ * @brief adds the recipient from the \a jobInfo to the known recipients
+ *
  * If the recipient from the \a jobInfo is already known, nothing happen.
  * Otherwise the recipient is added to the list of known recipients.
+ *
+ * @param jobInfo: the job that maybe contain a new recipient
  */
-//private
 void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
 {
 	QString rcp_name = jobInfo->getTransaction()->getRemoteName().at(0);
@@ -1586,19 +1882,24 @@ void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
 	}
 }
 
-
-
-/** prüft ob ein job vom typ \a type in der queuelist vorhanden ist und ob
-  dieser Job auch für dasselbe Konto wie der Job \a ji ist.
-
-  Kann genutzt werden um zu überprüfen ob bereits ein Aktualisierungs-Job
-  in der queuelist vorhanden ist oder nicht.
- */
 //private
-bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const AB_ACCOUNT *acc) const
+/**
+ * @brief checks if an AB_JOB_TYPE is already in the queue or not
+ *
+ * Checks if the @a type is already in the @ref jobqueue and also the supplied
+ * account @a acc must match.
+ *
+ * This could be used to check if an update job is already in the queue and
+ * must not added twice.
+ *
+ * @param type: the AB_JOB_TYPE to check for
+ * @param acc: the AB_ACCOUNT to be checked
+ * @return true: if the AB_JOB_TYPE in alreade in queue for the AB_ACCOUNT
+ * @return false: if the AB_JOB_TYPE is not in queue for the AB_ACCOUNT
+ */
+bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type,
+				    const AB_ACCOUNT *acc) const
 {
-	//Kontrollieren ob ein AktualisierungsAuftrag bereits vorhanden ist
-
 	for(int i=0; i<this->jobqueue->size(); i++) {
 		//jiiq = JobInfoInQueue
 		const abt_jobInfo *jiiq = this->jobqueue->at(i);
@@ -1613,22 +1914,31 @@ bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const AB_ACCOUNT *ac
 	return false;
 }
 
+//public
 /**
-  * mit dieser Funktion kann vor der Bearbeitung eines Dauerauftrags bzw. einer
-  * Terminüberweisung überprüft werden ob diese bereits im Ausgang vorhanden
-  * ist. Wenn dies der Fall ist sollte die weitere Bearbeitung der Daten
-  * unterlassen werden!
-  */
+ * @brief checks if the supplied transaction @a t is in the queue or not
+ *
+ * This function can be used to check if a modification or deletion of a
+ * standing order or dated transfer is alreade in the queue for exucution
+ * or not.
+ *
+ * If a transaction for a standing order order dated transfer already exists
+ * in the queue a further editing should be prohibited.
+ *
+ * @param t: abt_transaction to check
+ * @return true: if the transaction @a t is already in the jobqueue
+ * @return false: if the transcation @a t is not in the jobqueue
+ */
 bool abt_job_ctrl::isTransactionInQueue(const abt_transaction *t) const
 {
-	//Alle Jobs im Queue durchgehen und sobald die FiId
+	//check all jobs in the jobqueue
 	for(int i=0; i<this->jobqueue->size(); i++) {
 		//jiiq = JobInfoInQueue
 		const abt_jobInfo *jiiq = this->jobqueue->at(i);
 
-		if (jiiq->getTransaction()) {
-			//Transaction im Job vorhanden
+		if (jiiq->getTransaction()) { //the job has a transaction
 			if (jiiq->getTransaction()->getFiId() == t->getFiId()) {
+				//the FiId matches! --> the transaction are equal
 				return true;
 			}
 		}
@@ -1637,8 +1947,19 @@ bool abt_job_ctrl::isTransactionInQueue(const abt_transaction *t) const
 	return false;
 }
 
-/** verschiebt den Job von \a jobListPos um \a updown nach oben oder unten */
 //public slot
+/**
+ * @brief moves the job from @a jobListPos @a updown steps up or down
+ *
+ * This function should be used with caution!
+ *
+ * The postions in the @ref jobqueue are there for faultfree execution and
+ * parsing of the jobs. If you change the position of a job it is not secured
+ * that the execution and parsing is as expected!
+ *
+ * @param JobListPos: the position of the job to move
+ * @param updown: positive for upwards, negative for downwards
+ */
 void abt_job_ctrl::moveJob(int JobListPos, int updown)
 {
 	if (JobListPos >= this->jobqueue->size()) {
@@ -1646,7 +1967,7 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
 				     << " - JobListPos [" << JobListPos << "]"
 				     << " is greater than the jobqueue->size() "
 				     << "[" << this->jobqueue->size() << "]";
-		return; //Abbruch
+		return; //abort
 	}
 
 	int newPos = JobListPos + updown;
@@ -1655,32 +1976,39 @@ void abt_job_ctrl::moveJob(int JobListPos, int updown)
 				     << " - new position [" << newPos << "]"
 				     << " is not reachable! size() "
 				     << "[" << this->jobqueue->size() << "]";
-		return; //Abbruch
+		return; //abort
 	}
 
 	this->jobqueue->move(JobListPos, newPos);
 
-	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
+	//inform all who wants to know about the change
 	emit this->jobQueueListChanged();
 }
 
-/**
-  * Wenn dieser Job bereits in der JobList von AqBanking (AB_JOB_LIST2)
-  * enthalten ist darf er NICHT freigegeben werden. Somit muss in diesem fall
-  * \a free = false übergeben werden
-  */
 //public slot
+/**
+ * @brief removes the job @a jobinfo from the jobqueue
+ *
+ * @attention If the underlying AB_JOB is already used in a AB_JOB_LIST2 this
+ * AB_JOB must not be freed! (@a free must be false! true is the default!)
+ *
+ * This removes the abt_jobInfo @a jobinfo from the jobqueue and depending of
+ * the @a free parameter also frees the underlying AB_JOB.
+ *
+ * @param jobinfo: the abt_jobInfo to be removed from the jobqueue
+ * @param free: defines if the underlying AB_JOB should also be freed or not
+ */
 void abt_job_ctrl::deleteJob(abt_jobInfo *jobinfo, bool free /*=true*/)
 {
-	this->jobqueue->removeAll(jobinfo); //aus der Liste enfernen
+	this->jobqueue->removeAll(jobinfo); //remove the jobinfo from the list
 
 	if (free) {
-		AB_Job_free(jobinfo->getJob()); //aq_banking Job löschen
+		AB_Job_free(jobinfo->getJob()); //delete the AqBanking AB_JOB
 	}
 
-	delete jobinfo; // und jobinfo löschen
+	delete jobinfo; //delete the abt_jobInfo
 
-	//Alle die es wollen darüber Informieren das sich die Liste geändert hat
+	//inform all who wants to know about the change
 	emit this->jobQueueListChanged();
 }
 
