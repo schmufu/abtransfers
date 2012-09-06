@@ -70,7 +70,7 @@ private:
 
 	bool parseImExporterContext(AB_IMEXPORTER_CONTEXT *ctx);
 
-	bool isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *ji) const;
+	bool isJobTypeInQueue(const AB_JOB_TYPE type, const AB_ACCOUNT *acc) const;
 
 	//! Prüft die Übergebene Ausgeführte JobListe auf Fehler und parst deren Context
 	bool parseExecutedJobListAndContext(AB_JOB_LIST2 *jobList, AB_IMEXPORTER_CONTEXT *ctx);
@@ -79,6 +79,20 @@ private:
 
 	//! adds the recipient from the \a jobInfo to the known recipients
 	void addNewRecipient(const abt_jobInfo *jobInfo);
+
+	/** @brief returns the position of the first job for the account */
+	int getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const;
+	/** @brief returns the position of the last job for the account */
+	int getSupposedJobqueue_LastPos(int firstPos) const;
+
+	int getSupposedJobqueue_NextTransferPos(int firstTransferPos,
+						int lastPos) const;
+	int getSupposedJobqueue_NextStandingPos(int firstStandingPos,
+						int lastPos) const;
+	int getSupposedJobqueue_NextDatedPos(int firstDatedPos,
+					     int lastPos) const;
+
+	int getSupposedJobqueuePos(const abt_jobInfo *job) const;
 
 public:
 	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
@@ -123,7 +137,7 @@ public slots:
 	void execQueuedTransactions();
 
 	void moveJob(int JobListPos, int updown);
-	/** \brief löscht den AB_JOB an der Listenposition \a JobListPos */
+	/** \brief removes the job @a jobinfo from the jobqueue */
 	void deleteJob(abt_jobInfo *jobinfo, bool free=true);
 
 };

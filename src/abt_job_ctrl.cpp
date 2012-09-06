@@ -408,6 +408,283 @@ QStringList abt_job_ctrl::getParsedJobLogs(const AB_JOB *j) const
 	return strList;
 }
 
+/**
+ *
+ * @param accNr: the account number
+ * @param blz: the bank number (Bankleitzahl)
+ * @returns the position in the jobqueue of the first job for the account
+ */
+//private
+int abt_job_ctrl::getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const
+{
+	int firstPos = this->jobqueue->size(); //default: last position
+
+	for(int pos=0; pos<this->jobqueue->size(); ++pos) {
+		if (this->jobqueue->at(pos)->getAbAccount() == acc) {
+			firstPos = pos;
+			break; //position found, cancel loop
+		}
+	}
+
+	return firstPos;
+}
+
+/**
+ *
+ * @param start: the position of the first job in queue for the wanted account
+ * @returns the position in the jobqueue of the last job for the account
+ */
+//private
+int abt_job_ctrl::getSupposedJobqueue_LastPos(int firstPos) const
+{
+	if (this->jobqueue->size()-1 <= firstPos) {
+		return firstPos;
+	}
+
+	const AB_ACCOUNT *acc = this->jobqueue->at(firstPos)->getAbAccount();
+
+	//default (that we can check for errors)
+	int lastPos = -1;
+
+	//omit the first one, we know its identical
+	for (int pos=firstPos+1; pos<this->jobqueue->size(); ++pos) {
+		if (this->jobqueue->at(pos)->getAbAccount() != acc) {
+			lastPos = pos - 1; //the previous position was the last
+			break; //position found, cancel loop
+		}
+	}
+
+	//maybe all jobs in the queue are for the same account, then
+	//lastPos is not set correctly. Check it.
+	if (lastPos == -1) {
+		lastPos = this->jobqueue->size()-1;
+	}
+
+	//the position of the last job in queue for this account
+	return lastPos;
+}
+
+/**
+ * @brief
+ * @param firstTransferPos: the position in the queue where the "transfers" start
+ * @param lastPos: the position of the last job in queue that belongs to the same account
+ * @returns the position where the next transfer should be inserted
+ */
+int abt_job_ctrl::getSupposedJobqueue_NextTransferPos(int firstTransferPos,
+						      int lastPos) const
+{
+	int wantedPos = -1;
+
+	//the transfer job types should be at "top"
+	for (int pos=firstTransferPos; pos<=lastPos; ++pos) {
+		if (this->jobqueue->size() <= pos) {
+			break; //nothing can match
+		}
+		AB_JOB_TYPE type = this->jobqueue->at(pos)->getAbJobType();
+		switch (type) {
+		case AB_Job_TypeTransfer:
+		case AB_Job_TypeInternalTransfer:
+		case AB_Job_TypeEuTransfer:
+		case AB_Job_TypeSepaTransfer:
+		case AB_Job_TypeSepaDebitNote:
+		case AB_Job_TypeDebitNote:
+		case AB_Job_TypeLoadCellPhone:
+			continue; //next position in queue
+			break;
+		default:
+			//pos is the position we are searching for
+			wantedPos = pos;
+			break;
+		}
+		if (wantedPos != -1) {
+			break; //position found, cancel loop
+		}
+	}
+
+	//if the for-loop does not set wantedPos (this could be if only transfers
+	//for the account are in the queue) we want to be after the last position
+	if (wantedPos == -1) {
+		wantedPos = lastPos + 1;
+	}
+
+	return wantedPos;
+}
+
+/**
+ * @brief
+ * @param firstStandingPos: the position of the first standingOrder job (edit, del, modify)
+ * @param lastPos: the position of the last job in queue that belongs to the same account
+ * @returns the position where the next standingOrder job should be inserted
+ */
+int abt_job_ctrl::getSupposedJobqueue_NextStandingPos(int firstStandingPos, int lastPos) const
+{
+	int wantedPos = -1;
+
+	//find the position of the last standingOrder job
+	for (int pos=firstStandingPos; pos<=lastPos; ++pos) {
+		AB_JOB_TYPE type = this->jobqueue->at(pos)->getAbJobType();
+		if ((type == AB_Job_TypeCreateStandingOrder) ||
+		    (type == AB_Job_TypeModifyStandingOrder) ||
+		    (type == AB_Job_TypeDeleteStandingOrder)) {
+			continue; //next position in queue
+		}
+		//pos is now the position of the job just after the above types
+		wantedPos = pos;
+		break;
+	}
+
+	//if the for-loop does not set wantedPos, which happen when the
+	//following jobs are all standingOrder change jobs OR no jobs are
+	//present after the firstStandingPos. Then we want to be after
+	//the last position.
+	if (wantedPos == -1) {
+		wantedPos = lastPos + 1;
+	}
+
+	return wantedPos;
+}
+
+/**
+ * @brief
+ * @param firstDatedPos: the position of the first datedTransfer job (edit, del, modify)
+ * @param lastPos: the position of the last job in queue that belongs to the same account
+ * @returns the position where the next datedTransfer job should be inserted
+ */
+int abt_job_ctrl::getSupposedJobqueue_NextDatedPos(int firstDatedPos, int lastPos) const
+{
+	int wantedPos = -1;
+
+	//find the position of the last datedTransfer job
+	for (int pos=firstDatedPos; pos<=lastPos; ++pos) {
+		AB_JOB_TYPE qtype = this->jobqueue->at(pos)->getAbJobType();
+		if ((qtype == AB_Job_TypeCreateDatedTransfer) ||
+		    (qtype == AB_Job_TypeModifyDatedTransfer) ||
+		    (qtype == AB_Job_TypeDeleteDatedTransfer)) {
+			continue; //next position in queue
+		}
+		//pos is now the job just after the above types
+		wantedPos = pos;
+		break;
+	}
+	//if the for-loop does not set wantedPos we want to be after the
+	//last position
+	if (wantedPos == -1) {
+		wantedPos = lastPos + 1;
+	}
+
+	return wantedPos;
+}
+
+/**
+ *
+ *  @li transfers (internal, sepa, etc)
+ *  @li standingOrders changes (edit, del, modify)
+ *  @li getStandingOrders
+ *  @li datedTransfer changes (edit, del, modify)
+ *  @li getDatedTransfers
+ *  @li getBalance
+ *
+ * @returns -1 on error
+ * @returns the supposed position in the jobqueue for the supplied @a job
+ */
+//private
+int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
+{
+//	if (this->jobqueue->isEmpty()) {
+//		//no jobs exists, the last position is ok ;)
+//		return this->jobqueue->size();
+//	}
+
+	//finding the wanted position for the supplied job
+
+	//the first occurrence of a job for the account in the jobqueue
+	int firstPos = this->getSupposedJobqueue_FirstPos(job->getAbAccount());
+	//the last occurrence of a job for the account in the jobqueue
+	int lastPos = this->getSupposedJobqueue_LastPos(firstPos);
+
+	int wantedPos = lastPos + 1; //default, after the last one
+
+	//we have the positions where our jobs for the account are in the queue
+	//depending on the type of the current job, we need an other position
+	switch (job->getAbJobType()) {
+	case AB_Job_TypeTransfer:
+	case AB_Job_TypeInternalTransfer:
+	case AB_Job_TypeEuTransfer:
+	case AB_Job_TypeSepaTransfer:
+	case AB_Job_TypeSepaDebitNote:
+	case AB_Job_TypeDebitNote:
+	case AB_Job_TypeLoadCellPhone: {
+		//these job types should be at "top"
+		wantedPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		break;
+	}
+	case AB_Job_TypeCreateStandingOrder:
+	case AB_Job_TypeModifyStandingOrder:
+	case AB_Job_TypeDeleteStandingOrder: {
+		//these job types should be after the transfer jobs
+		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		wantedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
+		break;
+	}
+	case AB_Job_TypeGetStandingOrders: {
+		//the update of standingOrders should be after the standingOrder changes
+		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		//the update of standingOrders should be direct after the last
+		//job that changes a standingOrder, so the position is equal to
+		//the position of the next standingOrder
+		wantedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
+		break;
+	}
+	case AB_Job_TypeCreateDatedTransfer:
+	case AB_Job_TypeModifyDatedTransfer:
+	case AB_Job_TypeDeleteDatedTransfer: {
+		//these job types should be after the standingOrder jobs
+		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		int firstDatedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
+		if (this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, job->getAbAccount())) {
+			//we have a update job for standingOrders, skip it
+			firstDatedPos++;
+		}
+		wantedPos = this->getSupposedJobqueue_NextDatedPos(firstDatedPos, lastPos);
+		break;
+	}
+	case AB_Job_TypeGetDatedTransfers: {
+		//the update of datedTransfers should be after the datedTransfer changes
+		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
+		int firstDatedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
+		if (this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, job->getAbAccount())) {
+			//we have a update job for standingOrders, skip it
+			firstDatedPos++;
+		}
+		//the update of datedTransfers should be direct after the last
+		//job that changes a datedTransfer, so the position is equal to
+		//the position of the next datedTransfer
+		wantedPos = this->getSupposedJobqueue_NextDatedPos(firstDatedPos, lastPos);
+		break;
+	}
+	case AB_Job_TypeGetBalance: {
+		//the update of the balance should always be the last job
+		wantedPos = lastPos + 1;
+	}
+	default:
+		wantedPos = lastPos + 1; //default, after the last one
+		break;
+	}
+
+	//security checks
+	if (wantedPos > this->jobqueue->size()) {
+		wantedPos = this->jobqueue->size(); //last possible position
+	}
+
+	if (wantedPos < 0) {
+		wantedPos = 0; //first possible position
+	}
+
+	return wantedPos;
+
+}
+
+
 //SLOT
 void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t)
 {
@@ -429,9 +706,13 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_tr
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -458,9 +739,13 @@ void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc, const abt_t
 	//Create Info for SingleDebitNote
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -487,10 +772,13 @@ void abt_job_ctrl::addNewEuTransfer(const aqb_AccountInfo *acc, const abt_transa
 	//Create Info for EuTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -517,10 +805,13 @@ void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc, const abt_
 	//Create Info for Internal Transfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -547,10 +838,13 @@ void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc, const abt_tran
 	//Create Info for SingleTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -579,10 +873,13 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	//Create Info for NewDatedTransfer
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
@@ -624,13 +921,17 @@ void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji)) {
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, ji->getAbAccount())) {
 		//nach dem ändern muss eine Aktualisierung stattfinden.
 		this->addGetDatedTransfers(acc, true);
 	}
@@ -659,10 +960,13 @@ void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc, const abt_
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -679,6 +983,12 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool without
 		return; //Abbruch
 	}
 
+	//this jobtype should only be send once
+	if (this->isJobTypeInQueue(AB_Job_TypeGetDatedTransfers, acc->get_AB_ACCOUNT())) {
+		//already in queue, nothing to do
+		return;
+	}
+
 	AB_JOB *job = AB_JobGetDatedTransfers_new(acc->get_AB_ACCOUNT());
 
 	rv = AB_Job_CheckAvailability(job);
@@ -693,10 +1003,13 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc, bool without
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
 
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	if (!withoutInfo) { //Info nur verschicken wenn gewollt
 		emit this->jobAdded(ji);
 	}
@@ -735,9 +1048,13 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc, const abt_
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
@@ -778,13 +1095,17 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 
-	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji->getAbAccount())) {
 		//nach dem ändern muss eine Aktualisierung stattfinden.
 		this->addGetStandingOrders(acc, true);
 	}
@@ -813,9 +1134,13 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	emit this->jobAdded(ji);
 	emit this->jobQueueListChanged();
 }
@@ -832,6 +1157,13 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 		return; //Abbruch
 	}
 
+	//this jobtype should only be send once
+	if (this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, acc->get_AB_ACCOUNT())) {
+		//already in queue, nothing to do
+		return;
+	}
+
+
 	AB_JOB *job = AB_JobGetStandingOrders_new(acc->get_AB_ACCOUNT());
 
 	rv = AB_Job_CheckAvailability(job);
@@ -846,9 +1178,13 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc, bool without
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	if (!withoutInfo) { //Info nur verschicken wenn gewollt
 		emit this->jobAdded(ji);
 	}
@@ -875,6 +1211,13 @@ void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*
 		return; //Abbruch
 	}
 
+	//this jobtype should only be send once
+	if (this->isJobTypeInQueue(AB_Job_TypeGetBalance, acc->get_AB_ACCOUNT())) {
+		//already in queue, nothing to do
+		return;
+	}
+
+
 	AB_JOB *job = AB_JobGetBalance_new(acc->get_AB_ACCOUNT());
 
 	rv = AB_Job_CheckAvailability(job);
@@ -889,9 +1232,13 @@ void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo /*
 	//Create Info
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
+	int pos = this->getSupposedJobqueuePos(ji);
+
+	this->jobqueue->insert(pos, ji);
+
 	//job in die Ausführung einreihen. (Beim Ausführen wird daraus die
 	//AB_JOB_LIST gebaut)
-	this->jobqueue->append(ji);
+//	this->jobqueue->append(ji);
 	if (!withoutInfo) { //Info nur verschicken wenn gewollt
 		emit this->jobAdded(ji);
 	}
@@ -1189,7 +1536,9 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 			//dann für den Job ein neues abt_jobInfo erstellen
 			//und dies dem jobqueue wieder hinzufügen
-			this->jobqueue->append(new abt_jobInfo(j));
+			abt_jobInfo *ji = new abt_jobInfo(j);
+			int pos = this->getSupposedJobqueuePos(ji);
+			this->jobqueue->insert(pos, ji);
 		}
 
 
@@ -1243,8 +1592,10 @@ void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
   dieser Job auch für dasselbe Konto wie der Job \a ji ist.
 
   Kann genutzt werden um zu überprüfen ob bereits ein Aktualisierungs-Job
-  in der queuelist vorhanden ist oder nicht. */
-bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *ji) const
+  in der queuelist vorhanden ist oder nicht.
+ */
+//private
+bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const AB_ACCOUNT *acc) const
 {
 	//Kontrollieren ob ein AktualisierungsAuftrag bereits vorhanden ist
 
@@ -1252,12 +1603,10 @@ bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type, const abt_jobInfo *j
 		//jiiq = JobInfoInQueue
 		const abt_jobInfo *jiiq = this->jobqueue->at(i);
 
-		if (jiiq->getAbJobType() == type) {
-			//job ist vorhanden, ist er auch für dasselbe Konto?
-			if ((jiiq->getKontoNr() == ji->getKontoNr()) &&
-			    (jiiq->getBLZ() == ji->getBLZ())) {
-				return true;
-			}
+		if ((jiiq->getAbJobType() == type) &&
+		    (jiiq->getAbAccount() == acc)) {
+			//jobtype exists and is for the same account
+			return true;
 		}
 	}
 
