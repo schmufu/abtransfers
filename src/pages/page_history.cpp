@@ -46,6 +46,7 @@
 #include <aqbanking/dlg_importer.h>
 
 #include "../aqb_imexporters.h"
+#include "../abt_conv.h"
 
 
 page_history::page_history(const abt_history *history, QWidget *parent) :
@@ -100,21 +101,23 @@ void page_history::setTreeWidgetColWidths()
 	if (ui->treeWidget->header()->stretchLastSection())
 		return; //do nothing! No items shown.
 
-	int currWidth = ui->treeWidget->width();
-	ui->treeWidget->setColumnWidth(0,40);
-	ui->treeWidget->setColumnWidth(2,100);
-	ui->treeWidget->setColumnWidth(1,currWidth-146);
+	ui->treeWidget->setColumnWidth(0, 200); //type
+	ui->treeWidget->setColumnWidth(1, 135); //recipient
+	ui->treeWidget->setColumnWidth(2, 195); //purpose
+	ui->treeWidget->setColumnWidth(3, 86); //value
+	ui->treeWidget->setColumnWidth(4, 100); //date
 }
 
 //private
 void page_history::setDefaultTreeWidgetHeader()
 {
 	QStringList header;
-	header  << tr("Nr.")
-		<< tr("Typ")
-		<< tr("Datum");
+	header 	<< tr("Typ")
+		<< tr("Empfänger")
+		<< tr("Verwendungszweck (erste Zeile)")
+		<< tr("Betrag")
+		<< tr("Ausgeführt");
 
-	ui->treeWidget->setColumnCount(3);
 	ui->treeWidget->setHeaderHidden(false);
 	ui->treeWidget->header()->setStretchLastSection(false);
 	ui->treeWidget->setHeaderLabels(header);
@@ -461,8 +464,6 @@ ONACTEXPORTSELECTED_CLEANUP:
 //public slot
 void page_history::refreshTreeWidget(const abt_history *hist)
 {
-	QTreeWidgetItem *topItem;
-
 	if ((hist == NULL) ||
 	    (hist->getHistoryList()->size() == 0)) {
 		this->ui->treeWidget->clear(); //delete all items
@@ -470,7 +471,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		this->ui->treeWidget->setHeaderHidden(true);
 		this->ui->treeWidget->header()->setStretchLastSection(true);
 
-		topItem = new QTreeWidgetItem();
+		QTreeWidgetItem *topItem = new QTreeWidgetItem();
 		topItem->setData(0, Qt::DisplayRole,
 				 tr("Keine Einträge in der Historie vorhanden"));
 		topItem->setFlags(Qt::NoItemFlags);
@@ -483,6 +484,8 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 	QList<const abt_jobInfo*> expanded;
 	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
 		if (this->ui->treeWidget->topLevelItem(i)->isExpanded()) {
+			//the Qt::UserRole at data(0) contains the address of
+			//the corresponding abt_jobInfo
 			QVariant tliVar = this->ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole);
 			expanded.append(tliVar.value<abt_jobInfo*>());
 		}
@@ -493,38 +496,62 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 
 	const QList<abt_jobInfo*> *jql = hist->getHistoryList();
 	for (int i=0; i<jql->size(); ++i) {
-		QTreeWidgetItem *item;
-		const QStringList *historyInfo;
+		const abt_transaction *trans = jql->at(i)->getTransaction();
 
-		topItem = new QTreeWidgetItem();
-		topItem->setData(0, Qt::DisplayRole, QString("")); // first col empty
-		topItem->setData(1, Qt::DisplayRole, jql->at(i)->getType());
+		QTreeWidgetItem *topItem = new QTreeWidgetItem();
+
+		topItem->setData(0, Qt::DisplayRole, jql->at(i)->getType());
+		topItem->setData(1, Qt::DisplayRole, trans->getRemoteName().at(0));
+		topItem->setData(2, Qt::DisplayRole, trans->getPurpose().at(0));
+
+		QString value = abt_conv::ABValueToString(trans->getValue(), true);
+		value.append(" EUR");
+		topItem->setData(3, Qt::DisplayRole, value);
+
 		//the idForApplication is the unix timestamp of the creation
-		quint32 ts = jql->at(i)->getTransaction()->getIdForApplication();
-		topItem->setData(2, Qt::DisplayRole, QDateTime::fromTime_t(ts));
+		quint32 ts = trans->getIdForApplication();
+		topItem->setData(4, Qt::DisplayRole, QDateTime::fromTime_t(ts));
 
-		//store the address of the abt_job_info Objects in the UserRoles
-		QVariant var;
-		var.setValue(jql->at(i));
+		//store the address of the abt_job_info Object in the UserRole
+		QVariant var = QVariant::fromValue(jql->at(i));
 		topItem->setData(0, Qt::UserRole, var);
 
-		historyInfo = jql->at(i)->getInfo();
+		//create a childItem for every string in the historyInfo
+		const QStringList *historyInfo = jql->at(i)->getInfo();
 		for (int j=0; j<historyInfo->size(); j++) {
-			item = new QTreeWidgetItem();
-			item->setData(0, Qt::DisplayRole, "");
-			item->setData(1, Qt::DisplayRole, historyInfo->at(j));
+			QTreeWidgetItem *item = new QTreeWidgetItem();
+			item->setData(0, Qt::DisplayRole, historyInfo->at(j));
 			item->setFlags(Qt::NoItemFlags);
+			//does not work here, see below the 'for' loop
+			//item->setFirstColumnSpanned(true);
 			topItem->addChild(item);
 		}
 
-		ui->treeWidget->addTopLevelItem(topItem);
+		this->ui->treeWidget->addTopLevelItem(topItem);
 
 		//recover the state of the item
 		if (expanded.contains(jql->at(i))) {
 			topItem->setExpanded(true);
 		}
 
+	} /* end for-loop jobQueueList */
+
+	/*
+	 * For what reason ever, we can not set the FirstColumnSpanned property
+	 * of an item at its creation (within the loop above, tested but
+	 * without the expected result).
+	 * So we iterate over all childitems for every topitem an set the
+	 * FirstColumnSpanned property to true (here this works as expected).
+	 * So every topLevelItem can display its information in colums and the
+	 * childs of the topItem can use the whole row to display their text.
+	 */
+	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
+		QTreeWidgetItem *topItem = this->ui->treeWidget->topLevelItem(i);
+		for (int k=0; k<topItem->childCount(); ++k) {
+			topItem->child(k)->setFirstColumnSpanned(true);
+		}
 	}
+
 }
 
 //private slot
@@ -540,8 +567,9 @@ void page_history::on_treeWidget_itemSelectionChanged()
 
 void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* column */)
 {
-	//if the clicked item isnt selectable, switch the selection of the parent
-	if (!(item->flags() & Qt::ItemIsSelectable)) {
+	//if the clicked item isnt selectable as has a parent, switch the
+	//selection of the parent
+	if (!(item->flags() & Qt::ItemIsSelectable) && item->parent()) {
 		QTreeWidgetItem *top = item->parent();
 		top->setSelected(!top->isSelected());
 	}
