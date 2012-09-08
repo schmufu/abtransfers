@@ -423,8 +423,8 @@ void page_history::onActExportSelected()
 
 	err = AB_Banking_ExportToFile(banking->getAqBanking(),
 				      ctx, plugin->getName(),
-				      profile->getValue("name").toString().toStdString().c_str(),
-				      saveFilename.toStdString().c_str());
+				      profile->getValue("name").toString().toUtf8(),
+				      saveFilename.toUtf8());
 
 	//we must free the ctx after using it
 	AB_ImExporterContext_free(ctx);

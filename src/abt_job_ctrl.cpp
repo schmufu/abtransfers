@@ -1557,13 +1557,11 @@ void abt_job_ctrl::execQueuedTransactions()
 				"*********************************************")
 			     .arg(rv));
 
-		/** @todo cleanup is required, but not tested
-		 *
+		/** @todo cleanup is required, but not tested.
 		 * This case doesnt occur yet and therefore i dont know if
 		 * the following is working.
 		 * We must remove all abt_jobInfo objects from the jobqueue too!
-		 *
-		 * depending on what is wanted, all jobs must be recreated and
+		 * Depending on what is wanted, all jobs must be recreated and
 		 * attached to the jobqueue?
 		 */
 
@@ -1606,8 +1604,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 	//Tell the user if the execution was erroneous
 	if (!successfull) {
-		/** @todo the abt_job_ctrl should not use GUI elements
-		 *
+		/** @todo the abt_job_ctrl should not use GUI elements.
 		 * This could be send as signal and handled by the mainwindow
 		 */
 		QMessageBox::critical(qobject_cast<QWidget*>(this->parent()),

@@ -593,7 +593,7 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 
 	//AqBanking remains the owner of 'ie', so we must not free it!
 	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(banking->getAqBanking(),
-						     pluginName.toStdString().c_str());
+						     pluginName.toUtf8());
 
 	bool enabled;
 	enabled = (AB_ImExporter_GetFlags(ie) & AB_IMEXPORTER_FLAGS_GETPROFILEEDITOR_SUPPORTED);
@@ -652,14 +652,13 @@ void DialogSettings::on_actionEditProfile_triggered()
 
 	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(banking->getAqBanking(),
 								  plugin->getName(),
-								  profileName.toStdString().c_str());
+								  profileName.toUtf8());
 
-	std::string filename = profile->getValue("fileName").toString().toStdString();
-	const char *filename_cstr = filename.c_str();
+	QString filename = profile->getValue("fileName").toString();
 
 	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
 							plugin->getName(),
-							filename_cstr);
+							filename.toUtf8());
 
 	if (ret < 0) {
 		//something went wrong
@@ -729,18 +728,17 @@ void DialogSettings::on_actionNewProfile_triggered()
 	//OK, we have a name which does not exists so we can create the new
 	//profile.
 
-	GWEN_DB_NODE *dbProfile = GWEN_DB_Group_new(newname.toStdString().c_str());
+	GWEN_DB_NODE *dbProfile = GWEN_DB_Group_new(newname.toUtf8());
 	//we set the name of the new Profile
 	GWEN_DB_SetCharValue(dbProfile, GWEN_DB_FLAGS_DEFAULT, "name",
-			     newname.toStdString().c_str());
+			     newname.toUtf8());
 
-	std::string filename = newname.toStdString();
+	QString filename = newname;
 	filename.append(".conf");
-	const char *filename_cstr = filename.c_str();
 
 	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
 							selPlugin->getName(),
-							filename_cstr);
+							filename.toUtf8());
 
 	if (ret < 0) {
 		//something went wrong
