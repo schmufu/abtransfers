@@ -249,23 +249,14 @@ void DialogSettings::refreshImExProfileTableWidget()
 	if (row >= 0)
 		pluginName = this->ui->listWidget_plugins->item(row)->text();
 
-	plugin = this->imexp->getPluginByName(pluginName);
-	if (!plugin) { //no plugin exists, so no profiles available
-		this->ui->tableWidget_profiles->clearContents();
-		this->ui->tableWidget_profiles->setRowCount(0);
-		return;
-	}
-
-	//remember the current selection from the table for the list
-	//(this must be done because the "default" profile exists in more
-	// than one plugin and should not be always selected)
-	QString profileName = "";
-	if (this->ui->tableWidget_profiles->selectedItems().size() > 0) {
-		profileName = this->ui->tableWidget_profiles->selectedItems().at(0)->text();
-	}
-
 	this->ui->tableWidget_profiles->clearContents();
 	this->ui->tableWidget_profiles->setRowCount(0);
+
+	plugin = this->imexp->getPluginByName(pluginName);
+	if (!plugin) {
+		return; //no plugin exists, so no profiles available
+	}
+
 
 	//get all profiles for the selected plugin an add them to the tableWidget
 	foreach(const aqb_ieProfile *profile, *plugin->getProfiles()) {
@@ -345,8 +336,10 @@ void DialogSettings::refreshImExProfileTableWidget()
 		this->ui->tableWidget_profiles->setItem(rowc, 6, item);
 
 		//restore selection
-		if (selected)
+		if (selected) {
 			this->ui->tableWidget_profiles->selectRow(rowc);
+		}
+
 	}
 
 	//if nothing is selected, we select the first row, if present
@@ -354,6 +347,15 @@ void DialogSettings::refreshImExProfileTableWidget()
 	    this->ui->tableWidget_profiles->rowCount() > 0) {
 		this->ui->tableWidget_profiles->selectRow(0);
 	}
+
+	//now we have a selected profile, if any profiles available
+	//scroll to the selected item
+	if (this->ui->tableWidget_profiles->selectedItems().size() != 0) {
+		QTableWidgetItem *item;
+		item = this->ui->tableWidget_profiles->selectedItems().at(0);
+		this->ui->tableWidget_profiles->scrollToItem(item);
+	}
+
 
 }
 
@@ -547,12 +549,13 @@ void DialogSettings::onCheckBoxRefereshAtStartStateChanged(int /* state */)
 void DialogSettings::on_listWidget_plugins_currentRowChanged(int currentRow)
 {
 	qDebug() << Q_FUNC_INFO << "current row:" << currentRow;
-	//at first we disable the actions, they are aktivated depending
+	//at first we disable the actions, they are activated depending
 	//on the selection in the tableWidget_profiles
 	this->ui->actionDeleteProfile->setEnabled(false);
 	this->ui->actionEditProfile->setEnabled(false);
 	this->ui->actionNewProfile->setEnabled(false);
 
+	//then we refresh all profiles for the current selected plugin
 	this->refreshImExProfileTableWidget();
 }
 
