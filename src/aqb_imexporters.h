@@ -35,6 +35,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#include <QtCore/QVariant>
 
 #include <aqbanking/banking.h>
 

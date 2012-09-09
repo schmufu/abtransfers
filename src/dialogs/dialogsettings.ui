@@ -46,7 +46,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -620,6 +620,15 @@ nach dem starten zum Insititut übertragen.</string>
           <attribute name="verticalHeaderDefaultSectionSize">
            <number>18</number>
           </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderDefaultSectionSize">
+           <number>18</number>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>70</number>
+          </attribute>
           <row/>
           <row/>
           <row/>
@@ -657,7 +666,7 @@ nach dem starten zum Insititut übertragen.</string>
           </column>
           <column>
            <property name="text">
-            <string>gl,</string>
+            <string>Gl.</string>
            </property>
            <property name="toolTip">
             <string>Globales Profil</string>
@@ -764,11 +773,6 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
    <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="icon">
-    <iconset theme="document-edit">
-     <normaloff/>
-    </iconset>
-   </property>
    <property name="text">
     <string>Ändern</string>
    </property>
@@ -776,11 +780,6 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
   <action name="actionNewProfile">
    <property name="enabled">
     <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="document-new">
-     <normaloff/>
-    </iconset>
    </property>
    <property name="text">
     <string>Neu</string>
@@ -792,11 +791,6 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
   <action name="actionDeleteProfile">
    <property name="enabled">
     <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="edit-delete">
-     <normaloff/>
-    </iconset>
    </property>
    <property name="text">
     <string>Löschen</string>

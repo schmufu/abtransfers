@@ -67,11 +67,6 @@
        <property name="text">
         <string>Neu von Vorlage</string>
        </property>
-       <property name="icon">
-        <iconset theme="document-new">
-         <normaloff/>
-        </iconset>
-       </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
@@ -104,11 +99,6 @@
        <property name="text">
         <string>Exportieren</string>
        </property>
-       <property name="icon">
-        <iconset theme="document-export">
-         <normaloff/>
-        </iconset>
-       </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
@@ -140,11 +130,6 @@
        </property>
        <property name="text">
         <string>Löschen</string>
-       </property>
-       <property name="icon">
-        <iconset theme="edit-delete">
-         <normaloff/>
-        </iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
