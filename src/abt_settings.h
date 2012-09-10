@@ -106,6 +106,9 @@ public:
 	void setAdvancedOption(const QString &option, bool value);
 	void deleteAdvancedOption(const QString &option);
 
+	void saveColWidth(const QString &name, int col, int width);
+	int getColWidth(const QString &name, int col, int def = 100);
+
 	//! returns 1 if the supplied JobType \a type is supported by AB-Transfers
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 

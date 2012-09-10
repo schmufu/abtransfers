@@ -71,6 +71,9 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	connect(this->history, SIGNAL(historyListChanged(const abt_history*)),
 		this, SLOT(refreshTreeWidget(const abt_history*)));
 
+	connect(ui->treeWidget->header(), SIGNAL(sectionResized(int,int,int)),
+		this, SLOT(onTreeWidgetColumnResized(int,int,int)));
+
 }
 
 page_history::~page_history()
@@ -102,14 +105,19 @@ void page_history::resizeEvent(QResizeEvent *event)
 //private
 void page_history::setTreeWidgetColWidths()
 {
-	if (ui->treeWidget->header()->stretchLastSection())
+	if (ui->treeWidget->isHeaderHidden())
 		return; //do nothing! No items shown.
 
-	ui->treeWidget->setColumnWidth(0, 200); //type
-	ui->treeWidget->setColumnWidth(1, 135); //recipient
-	ui->treeWidget->setColumnWidth(2, 195); //purpose
-	ui->treeWidget->setColumnWidth(3, 86); //value
-	ui->treeWidget->setColumnWidth(4, 100); //date
+	int width = settings->getColWidth("history", 0, 210);
+	ui->treeWidget->setColumnWidth(0, width); //type
+	width = settings->getColWidth("history", 1, 135);
+	ui->treeWidget->setColumnWidth(1, width); //recipient
+	width = settings->getColWidth("history", 2, 200);
+	ui->treeWidget->setColumnWidth(2, width); //purpose
+	width = settings->getColWidth("history", 3, 90);
+	ui->treeWidget->setColumnWidth(3, width); //value
+	width = settings->getColWidth("history", 4, 105);
+	ui->treeWidget->setColumnWidth(4, width); //date
 }
 
 //private
@@ -577,4 +585,14 @@ void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* colum
 		QTreeWidgetItem *top = item->parent();
 		top->setSelected(!top->isSelected());
 	}
+}
+
+//private slot
+/**
+  * @brief saves the @a newSize of the @a column in the settings
+  *
+  */
+void page_history::onTreeWidgetColumnResized(int column, int /* oldSize */, int newSize)
+{
+	settings->saveColWidth("history", column, newSize);
 }

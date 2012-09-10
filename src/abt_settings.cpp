@@ -457,6 +457,28 @@ void abt_settings::deleteAdvancedOption(const QString &option)
 }
 
 
+void abt_settings::saveColWidth(const QString &name, int col, int width)
+{
+	QString key = QString("Main/").append(name);
+	QString key2 = QString("/col%1").arg(col);
+	key.append(key2);
+	this->settings->setValue(key, width);
+}
+
+int abt_settings::getColWidth(const QString &name, int col, int def)
+{
+	QString key = QString("Main/").append(name);
+	QString key2 = QString("/col%1").arg(col);
+	key.append(key2);
+	bool convOK;
+	int ret = this->settings->value(key, def).toInt(&convOK);
+	if (convOK) {
+		return ret;
+	}
+
+	return def;
+}
+
 
 //static
 void abt_settings::resizeColToContentsFor(QTreeWidget *w)

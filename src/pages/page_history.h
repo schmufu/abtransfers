@@ -81,6 +81,8 @@ signals:
 	void showSettingsForImExpFavorite();
 
 private slots:
+	void onTreeWidgetColumnResized(int column, int oldSize, int newSize);
+
 	void onActGenerateNewTransaction();
 	void onActDeleteSelected();
 	void onActExportSelected();
