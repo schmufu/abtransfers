@@ -32,6 +32,9 @@
 
 #include "abt_history.h"
 
+#include <QtCore/QDebug>
+
+
 abt_history::abt_history(QObject *parent) :
 	QObject(parent)
 {
@@ -57,7 +60,9 @@ abt_history::~abt_history()
 //public
 void abt_history::add(abt_jobInfo *job)
 {
-	if (!job) return; //no NULL objects
+	if (!job) {
+		return; //no NULL objects
+	}
 
 	//only add job to history if wanted
 	switch (job->getAbJobType()) {
@@ -79,6 +84,8 @@ void abt_history::add(abt_jobInfo *job)
 		emit this->historyListChanged(this);
 		break;
 	default:
+		qDebug() << Q_FUNC_INFO << "not supported in the history."
+			 << "JobType:" << job->getType();
 		break;
 	}
 

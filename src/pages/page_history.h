@@ -77,8 +77,7 @@ private:
 
 signals:
 	void createNewFromHistory(const abt_jobInfo *jobInfo);
-	void deleteFromHistory(const QList<abt_jobInfo*> historyIndexes);
-	void exportFromHistory(const QList<abt_jobInfo*> historyIndexes);
+	void deleteFromHistory(QList<abt_jobInfo*>);
 	void showSettingsForImExpFavorite();
 
 private slots:

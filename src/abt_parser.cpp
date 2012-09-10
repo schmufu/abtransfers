@@ -49,13 +49,12 @@
 /**
  * When a AB_TRANSACTION is exported from the history by the AB_IMEXPORTER_CONTEXT,
  * that is created at abt_history::getContext(), the AB_JOB_TYPE and AB_JOB_STATUS
- * is stored in the category field of the AB_TRANSACTION.
+ * are stored in the category field of the AB_TRANSACTION (since svn rev310).
  *
  * This function searches the category fields for this values and sets the
- * \a jobType and \a jobStatus to the found values.
+ * @a jobType and @a jobStatus to the found values.
  *
- * If nothing is found, the \a jobType is set to AB_Job_TypeUnknown and the
- * \a jobStatus is set to AB_Job_StatusUnknown.
+ * If nothing is found, the @a jobType and @a jobStatus are not changed!
  *
  * The values will also be removed from the category field of the AB_TRANSACTION!
  *
@@ -63,24 +62,21 @@
 //private static
 void abt_parser::getJobStatesFromTransaction(AB_TRANSACTION *t, AB_JOB_TYPE &jobType, AB_JOB_STATUS &jobStatus)
 {
-	jobStatus = AB_Job_StatusUnknown; //default Value
-	jobType	= AB_Job_TypeUnknown; //default Value
-
 	const GWEN_STRINGLIST *gsl = AB_Transaction_GetCategory(t);
 	if (!gsl) return; //abort, no category exist
 
-	//we need a copy, so that we dont modify our stringlist while we
+	//we need a copy, so that we don not modify our stringlist while we
 	//iterating over it.
 	GWEN_STRINGLIST *sl = GWEN_StringList_dup(gsl);
 	if (!sl) return; //abort
 
 	for(unsigned int i=0; i<GWEN_StringList_Count(sl); i++) {
 		QString s = QString::fromUtf8(GWEN_StringList_StringAt(sl, i));
-		if (s.startsWith("JobType:")) {
+		if (s.startsWith("JobType: ")) {
 			jobType = AB_JOB_TYPE(s.right(s.length() - QString("JobType: ").length()).toInt());
 			AB_Transaction_RemoveCategory(t, s.toUtf8());
 		}
-		if (s.startsWith("JobStatus:")) {
+		if (s.startsWith("JobStatus: ")) {
 			jobStatus = AB_JOB_STATUS(s.right(s.length() - QString("JobStatus: ").length()).toInt());
 			AB_Transaction_RemoveCategory(t, s.toUtf8());
 		}
@@ -756,11 +752,12 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			}
 			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
-			AB_JOB_TYPE jtype;
-			AB_JOB_STATUS jstatus;
+			//default values for a dated transfer
+			AB_JOB_TYPE jtype = AB_Job_TypeCreateDatedTransfer;
+			AB_JOB_STATUS jstatus = AB_Job_StatusFinished;
 
 			//get the jobType and jobStatus from the category field
-			//if the saved transaction.
+			//of the saved transaction.
 			getJobStatesFromTransaction(t, jtype, jstatus);
 
 			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t, a);
@@ -815,11 +812,12 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			}
 			AB_ACCOUNT *a = acc->get_AB_ACCOUNT();
 
-			AB_JOB_TYPE jtype;
-			AB_JOB_STATUS jstatus;
+			//default values for a standing order
+			AB_JOB_TYPE jtype = AB_Job_TypeCreateStandingOrder;
+			AB_JOB_STATUS jstatus = AB_Job_StatusFinished;
 
 			//get the jobType and jobStatus from the category field
-			//if the saved transaction.
+			//of the saved transaction.
 			getJobStatesFromTransaction(t, jtype, jstatus);
 
 			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t, a);
@@ -874,10 +872,12 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 				continue;
 			}
 
-			AB_JOB_TYPE jtype;
-			AB_JOB_STATUS jstatus;
+			//default values for a transfer
+			AB_JOB_TYPE jtype = AB_Job_TypeTransfer;
+			AB_JOB_STATUS jstatus = AB_Job_StatusFinished;
+
 			//get the jobType and jobStatus from the category field
-			//if the saved transaction.
+			//of the saved transaction.
 			getJobStatesFromTransaction(t, jtype, jstatus);
 
 			abt_jobInfo *ji = new abt_jobInfo(jtype, jstatus, t,
