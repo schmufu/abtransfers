@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2012 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -164,4 +164,33 @@ bool aqb_banking::checkAccount(const QString &country, const QString &branchId,
 	}
 
 	return false;
+}
+
+/**
+  * @brief returns the path to the local user data dir
+  *
+  * This is normaly /home/USER/.aqbanking but could be any other directory
+  * depending on the platform and compile settings.
+  *
+  */
+QString aqb_banking::getUserDataDir() const
+{
+	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 255, 0, 0);
+	if (!buf) {
+		qWarning() << Q_FUNC_INFO << "could not get a GWEN_BUFFER!"
+			   << "GWEN_Buffer_new() returned NULL";
+		return QString();
+	}
+
+	int ret = AB_Banking_GetUserDataDir(this->ab, buf);
+	if (ret) {
+		qWarning() << Q_FUNC_INFO << "AB_Banking_GetUserDataDir returned"
+			   << ret << " - Aborting.";
+		GWEN_Buffer_free(buf);
+		return QString();
+	}
+	QString path = QString::fromUtf8(GWEN_Buffer_GetStart(buf));
+	GWEN_Buffer_free(buf);
+
+	return path;
 }

@@ -651,6 +651,38 @@ void DialogSettings::on_actionEditProfile_triggered()
 			      .arg(profileName);
 
 		QMessageBox::information(this, tr("Globales Profil ändern"), msg);
+
+		//the folder for the new local profile must exists, otherwise the
+		//profile could not be saved by aqbanking
+		QDir lclImexpDir;
+		lclImexpDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks |
+				      QDir::NoDotAndDotDot);
+
+		QString path = banking->getUserDataDir();
+
+		path.append("/imexporters");
+		path.append("/").append(plugin->getName());
+		path.append("/profiles/");
+		lclImexpDir.setPath(path);
+
+		if (!lclImexpDir.exists()) {
+			//the directory does not exist, we create it
+			bool dirOK;
+			dirOK = lclImexpDir.mkpath(QDir::toNativeSeparators(path));
+			if (!dirOK) {
+				//we only produce a warning, maybe the
+				//editProfileWithAqbDialog() could create it
+				qWarning() << Q_FUNC_INFO << "could not create"
+					   << "the directory for local profiles:"
+					   << QDir::toNativeSeparators(path);
+			}
+			lclImexpDir.setPath(path);
+			if (!lclImexpDir.exists()) {
+				qWarning() << Q_FUNC_INFO << "directory does not exists"
+					   << "after creation, something is wrong!";
+			}
+		}
+
 	}
 
 	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(banking->getAqBanking(),
@@ -739,6 +771,37 @@ void DialogSettings::on_actionNewProfile_triggered()
 	QString filename = newname;
 	filename.append(".conf");
 
+	//the folder for the new local profile must exists, otherwise the
+	//profile could not be saved by aqbanking
+	QDir lclImexpDir;
+	lclImexpDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks |
+			      QDir::NoDotAndDotDot);
+
+	QString path = banking->getUserDataDir();
+
+	path.append("/imexporters");
+	path.append("/").append(selPlugin->getName());
+	path.append("/profiles/");
+	lclImexpDir.setPath(path);
+
+	if (!lclImexpDir.exists()) {
+		//the directory does not exist, we create it
+		bool dirOK;
+		dirOK = lclImexpDir.mkpath(QDir::toNativeSeparators(path));
+		if (!dirOK) {
+			//we only produce a warning, maybe the
+			//editProfileWithAqbDialog() could create it
+			qWarning() << Q_FUNC_INFO << "could not create"
+				   << "the directory for local profiles:"
+				   << QDir::toNativeSeparators(path);
+		}
+		lclImexpDir.setPath(path);
+		if (!lclImexpDir.exists()) {
+			qWarning() << Q_FUNC_INFO << "directory does not exists"
+				   << "after creation, something is wrong!";
+		}
+	}
+
 	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
 							selPlugin->getName(),
 							filename.toUtf8());
@@ -793,15 +856,9 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 	QDir lclImexpDir;
 	lclImexpDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks |
 			      QDir::NoDotAndDotDot);
-	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 255, 0, 0);
-	int ret = AB_Banking_GetUserDataDir(banking->getAqBanking(), buf);
-	if (ret) {
-		qWarning() << Q_FUNC_INFO << "AB_Banking_GetUserDataDir returned"
-			   << ret << " - Aborting.";
-		return;
-	}
-	QString path = QString::fromStdString(GWEN_Buffer_GetStart(buf));
-	GWEN_Buffer_free(buf);
+
+	QString path = banking->getUserDataDir();
+
 	path.append("/imexporters");
 	path.append("/").append(selPlugin->getName());
 	path.append("/profiles/");
