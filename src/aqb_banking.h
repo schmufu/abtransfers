@@ -46,6 +46,8 @@ class aqb_banking
 private:
 	AB_BANKING *ab;
 	QT4_Gui *gui;
+	QString aqbanking_version;
+	int major, minor, patch, build;
 
 public:
 	aqb_banking();
@@ -55,7 +57,9 @@ public:
 
 	GWEN_GUI* getCInterface() const { return this->gui->getCInterface(); }
 
+	const QString &getAqBankingVersion() const { return this->aqbanking_version; }
 	QString getInstituteFromBLZ(const QString &BLZ) const;
+	QString getInstituteFromBIC(const QString &BIC) const;
 	/*! This function checks whether the given combination represents a valid account. */
 	bool checkAccount(const QString &country, const QString &branchId,
 			  const QString &bankId, const QString &accountId,

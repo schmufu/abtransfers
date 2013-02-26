@@ -56,10 +56,15 @@ public:
 	 * Wenn ein \a acc und ein \a allAccounts != NULL übergeben wird, wird
 	 * ein Widget erstellt indem der locale Account ausgewählt werden kann.
 	 * Ansonsten ein Widget mit der Eingabemöglichkeit für die Kontodaten.
+	 *
+	 * Wenn \a recipientInput mit true übergeben wird dient dieses Widget
+	 * der Eingabe/Änderung eines bekannten Empfängers.
 	 */
 	explicit widgetAccountData(QWidget *parent = 0,
 				   const aqb_AccountInfo *acc = NULL,
-				   const aqb_Accounts *allAccounts = NULL);
+				   const aqb_Accounts *allAccounts = NULL,
+				   bool sepaFields = false,
+				   bool recipientInput = false);
 	~widgetAccountData();
 
 private:
@@ -67,17 +72,22 @@ private:
 	widgetLineEditWithLabel *llAccountNumber;
 	widgetLineEditWithLabel *llBankCode;
 	widgetLineEditWithLabel *llBankName;
+	widgetLineEditWithLabel *llIBAN;
+	widgetLineEditWithLabel *llBIC;
 
 	QLabel *localOwner;
 	QLabel *localAccountNumber;
 	QLabel *localBankCode;
 	QLabel *localBankName;
+	QLabel *localIBAN;
+	QLabel *localBIC;
 	//! if comboBoxAccounts == NULL then we are a local account widget
 	widgetAccountComboBox *comboBoxAccounts;
 
 	bool allowDropAccount;
 	bool allowDropKnownRecipient;
 	bool readOnly;
+	bool sepaFields;
 
 	const aqb_AccountInfo *currAccount;
 	const aqb_Accounts *allAccounts;
@@ -87,7 +97,8 @@ private:
 	//! erstellt die Edits für local Account Auswahl.
 	void createLocalAccountWidget(const aqb_AccountInfo *acc, const aqb_Accounts *accounts);
 	//! erstellt die Edits für remote Account Eingabe.
-	void createRemoteAccountWidget();
+	void createRemoteAccountWidget(bool sepaFields = false,
+				       bool recipientInput = false);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
@@ -98,7 +109,9 @@ public:
 	const aqb_AccountInfo* getAccount() const;
 	QString getName() const;
 	QString getAccountNumber() const;
+	QString getIBAN() const;
 	QString getBankCode() const;
+	QString getBIC() const;
 	QString getBankName() const;
 	bool hasChanges() const;
 
@@ -118,11 +131,14 @@ public slots:
 	void setAccount(const aqb_AccountInfo* account);
 	void setName(const QString &text);
 	void setAccountNumber(const QString &text);
+	void setIBAN(const QString &text);
 	void setBankCode(const QString &text);
+	void setBIC(const QString &text);
 	void setBankName(const QString &text);
 
 	void setLimitMaxLenName(int maxLen);
 	void setLimitMaxLenAccountNumber(int maxLen);
+	void setLimitMaxLenIban(int maxLen);
 	void setLimitMaxLenBankCode(int maxLen);
 	void setLimitMaxLenBankName(int maxLen);
 	void setLimitAllowChangeName(int b);

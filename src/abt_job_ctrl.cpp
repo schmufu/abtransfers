@@ -1860,7 +1860,12 @@ void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
 	QString rcp_name = jobInfo->getTransaction()->getRemoteName().at(0);
 	QString rcp_kto = jobInfo->getTransaction()->getRemoteAccountNumber();
 	QString rcp_blz = jobInfo->getTransaction()->getRemoteBankCode();
-	abt_EmpfaengerInfo *ei = new abt_EmpfaengerInfo(rcp_name, rcp_kto, rcp_blz);
+	QString rcp_iban = jobInfo->getTransaction()->getRemoteIban();
+	QString rcp_bic = jobInfo->getTransaction()->getRemoteBic();
+	QString rcp_inst = jobInfo->getTransaction()->getRemoteBankName();
+
+	abt_EmpfaengerInfo *ei = new abt_EmpfaengerInfo(rcp_name, rcp_kto, rcp_blz,
+							rcp_iban, rcp_bic, rcp_inst);
 
 	bool recipientAlreadyKnown = false;
 	const QList<abt_EmpfaengerInfo*> *rcpList = settings->getKnownRecipients();
@@ -1891,7 +1896,7 @@ void abt_job_ctrl::addNewRecipient(const abt_jobInfo *jobInfo)
  *
  * @param type: the AB_JOB_TYPE to check for
  * @param acc: the AB_ACCOUNT to be checked
- * @return true: if the AB_JOB_TYPE in alreade in queue for the AB_ACCOUNT
+ * @return true: if the AB_JOB_TYPE in already in queue for the AB_ACCOUNT
  * @return false: if the AB_JOB_TYPE is not in queue for the AB_ACCOUNT
  */
 bool abt_job_ctrl::isJobTypeInQueue(const AB_JOB_TYPE type,

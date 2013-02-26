@@ -38,6 +38,7 @@
 #include <QtCore/QDebug>
 
 #include "../aqb_accountinfo.h"
+#include "../globalvars.h"	//for the global "banking" object
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 			       const aqb_AccountInfo *lclAccount,
@@ -70,7 +71,6 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 
 	//Die noch nicht implementierten Aufträge gesondert behandeln
 	switch(this->m_type) {
-	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeEuTransfer :
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
@@ -111,6 +111,9 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	switch (this->m_type) {
 	case AB_Job_TypeTransfer : // Normal Transfer
 		this->my_create_transfer_form(true);
+		break;
+	case AB_Job_TypeSepaTransfer : // SEPA Transfer
+		this->my_create_sepatransfer_form(true);
 		break;
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
@@ -230,6 +233,16 @@ void widgetTransfer::my_createNotAvailableJobText()
 			"beeinflusst werden.").arg(
 					abt_conv::JobTypeToQString(this->m_type),
 					BankName, KontoName));
+	if (this->m_type == AB_Job_TypeSepaTransfer) {
+		description->setText(description->text().append(
+			tr("<br /><br />"
+			   "Hinweis für SEPA Überweisungen:<br />"
+			   "SEPA Überweisungen werden durch AqBanking erst ab "
+			   "Version 5.0.27 unterstützt (aktuell verwendet wird "
+			   "Version %1)<br />"
+			   "Eventuell ist ein Update von AqBanking erforderlich!"
+			   ).arg(banking->getAqBankingVersion())));
+	}
 	description->setWordWrap(true);
 	description->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 	description->setMinimumWidth(350);
@@ -298,6 +311,22 @@ void widgetTransfer::my_create_transfer_form(bool newTransfer)
 	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
 }
 
+//private
+void widgetTransfer::my_create_sepatransfer_form(bool newTransfer)
+{
+	this->setWindowTitle(tr("SEPA Überweisung"));
+	this->my_create_local_remote_horizontal(newTransfer, true);
+	this->my_create_value_with_label_left();
+	this->my_create_purpose();
+//	this->my_create_textKey();
+
+	this->layoutMain->addLayout(this->layoutAccount);
+	this->layoutMain->addLayout(this->layoutValue);
+	this->layoutMain->addLayout(this->layoutPurpose);
+//	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
+}
+
+
 //pricate
 void widgetTransfer::my_create_dated_transfer_form(bool newTransfer)
 {
@@ -320,10 +349,10 @@ void widgetTransfer::my_create_dated_transfer_form(bool newTransfer)
 }
 
 //private
-void widgetTransfer::my_create_local_remote_horizontal(bool newTransfer)
+void widgetTransfer::my_create_local_remote_horizontal(bool newTransfer, bool sepaFields)
 {
 	this->my_create_localAccount_groupbox(newTransfer);
-	this->my_create_remoteAccount_groupbox(newTransfer);
+	this->my_create_remoteAccount_groupbox(newTransfer, false, true, sepaFields);
 
 	this->layoutAccount = new QHBoxLayout();
 	this->layoutAccount->addWidget(this->groupBoxLocal);
@@ -360,13 +389,14 @@ void widgetTransfer::my_create_localAccount_groupbox(bool /* newTransfer */,
 
 //private
 void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
-						      bool allowLocal,
-						      bool allowKnownRecipent)
+						      bool allowLocal /* = false */,
+						      bool allowKnownRecipient /* = true */,
+						      bool sepaFields /* = false */)
 {
 	if (allowLocal) {
-		//Wenn der RemoteAccount local drops akzeptiert ist die
-		//erstellung für ein UmbuchungsWidget und wir Zeigen die
-		//als remoteAccount auch eine LocalAccountAuswahl an
+		//if allowLocal is true, the "remote" account should be a
+		//local account and we use the same widget for the "remote"
+		//account input as for the local-account input.
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
 		this->remoteAccount = new widgetAccountData(this,
@@ -378,9 +408,9 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 		//Die RemoteKontoEingabe ermöglichen
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(this, NULL, NULL);
+		this->remoteAccount = new widgetAccountData(this, NULL, NULL, sepaFields);
 		this->remoteAccount->setAllowDropAccount(allowLocal);
-		this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipent);
+		this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipient);
 		gbrl->addWidget(this->remoteAccount);
 		this->groupBoxRemote->setLayout(gbrl);
 	}
@@ -471,8 +501,12 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 	if (this->recurrence) this->recurrence->setDisabled(dis);
 	if (this->datedDate) this->datedDate->setDisabled(dis);
 
-	if (dis) return; //Abbruch wenn keine Limits vorhanden sind
+	if (dis) {
+		qDebug() << Q_FUNC_INFO << "No Limits exists. Transaction not supported!";
+		return; //Abbruch wenn keine Limits vorhanden sind
+	}
 
+	limits->printAllAsDebug();
 
 	if (this->localAccount != NULL) {
 		this->localAccount->setLimitMaxLenAccountNumber(limits->MaxLenLocalAccountNumber);
@@ -488,6 +522,7 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->remoteAccount->setLimitMaxLenAccountNumber(limits->MaxLenRemoteAccountNumber);
 		this->remoteAccount->setLimitMaxLenBankCode(limits->MaxLenRemoteBankCode);
 		this->remoteAccount->setLimitMaxLenName(limits->MaxLenRemoteName);
+		this->remoteAccount->setLimitMaxLenIban(limits->MaxLenRemoteIban);
 	}
 
 	if (this->value != NULL) {
@@ -620,7 +655,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		errorMsg.append(tr("<b><br />"
 				   "Der Auftrag '%1'' ist bei dem in Absender "
 				   "gewählten Konto nicht verfügbar.<br />"
-				   "Bitte wählen Sie einen Absender bei dem der "
+				   "Bitte wählen Sie ein Konto bei dem der "
 				   "Auftrag auch ausgeführt werden kann.</b>"
 				   "<br />").arg(abt_conv::JobTypeToQString(this->m_type)));
 		//wir dürfen nicht weiter testen, da die weiteren Überprüfungen
@@ -650,11 +685,20 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			if (this->remoteAccount->getName().isEmpty()) {
 				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
 			}
-			if (this->remoteAccount->getAccountNumber().isEmpty()) {
-				errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben<br />"));
-			}
-			if (this->remoteAccount->getBankCode().isEmpty()) {
-				errorMsg.append(tr(" - Empfänger Bankleitzahl nicht eingegeben<br />"));
+			if (this->m_type == AB_Job_TypeSepaTransfer) {
+				if (this->remoteAccount->getIBAN().isEmpty()) {
+					errorMsg.append(tr(" - Empfänger IBAN nicht eingegeben<br />"));
+				}
+				if (this->remoteAccount->getBIC().isEmpty()) {
+					errorMsg.append(tr(" - Empfänger BIC nicht eingegeben<br />"));
+				}
+			} else {
+				if (this->remoteAccount->getAccountNumber().isEmpty()) {
+					errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben<br />"));
+				}
+				if (this->remoteAccount->getBankCode().isEmpty()) {
+					errorMsg.append(tr(" - Empfänger Bankleitzahl nicht eingegeben<br />"));
+				}
 			}
 			if (this->remoteAccount->getBankName().isEmpty()) {
 				errorMsg.append(tr(" - Empfänger Institut nicht eingegeben<br />"));
@@ -1055,6 +1099,10 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 			this->remoteAccount->setAccountNumber(t->getRemoteAccountNumber());
 			this->remoteAccount->setBankCode(t->getRemoteBankCode());
 			this->remoteAccount->setBankName(t->getRemoteBankName());
+			//we can simple set the iban and bic values, because
+			//the widget only sets values that are possible
+			this->remoteAccount->setIBAN(t->getRemoteIban());
+			this->remoteAccount->setBIC(t->getRemoteBic());
 		}
 	}
 

@@ -304,6 +304,18 @@ void abt_jobInfo::createJobInfoStringList_Append_From(QStringList *strList) cons
 	strList->append(info);
 }
 
+/** \brief Fügt den Absender der Stringliste \a strList hinzu (mit IBAN und BIC) */
+void abt_jobInfo::createJobInfoStringList_Append_From_Sepa(QStringList *strList) const
+{
+	if (!this->m_trans) return; //only if transaction available
+	QString info;
+
+	info = QObject::tr("Von: %1 (%2 - %3)").arg(this->m_trans->getLocalName(),
+						    this->m_trans->getLocalIban(),
+						    this->m_trans->getLocalBic());
+	strList->append(info);
+}
+
 /** \brief Fügt den Empfänger der Stringliste \a strList hinzu */
 void abt_jobInfo::createJobInfoStringList_Append_To(QStringList *strList) const
 {
@@ -313,6 +325,18 @@ void abt_jobInfo::createJobInfoStringList_Append_To(QStringList *strList) const
 	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
 						    this->m_trans->getRemoteAccountNumber(),
 						    this->m_trans->getRemoteBankCode());
+	strList->append(info);
+}
+
+/** \brief Fügt den Empfänger der Stringliste \a strList hinzu */
+void abt_jobInfo::createJobInfoStringList_Append_To_Sepa(QStringList *strList) const
+{
+	if (!this->m_trans) return; //only if transaction available
+	QString info;
+
+	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						    this->m_trans->getRemoteIban(),
+						    this->m_trans->getRemoteBic());
 	strList->append(info);
 }
 
@@ -527,7 +551,10 @@ void abt_jobInfo::createJobInfoStringList_SepaDebitNote(QStringList *strList) co
 
 void abt_jobInfo::createJobInfoStringList_SepaTransfer(QStringList *strList) const
 {
-	this->createJobInfoStringList_Standard_Text(strList);
+	this->createJobInfoStringList_Append_From_Sepa(strList);
+	this->createJobInfoStringList_Append_To_Sepa(strList);
+	this->createJobInfoStringList_Append_Purpose(strList);
+	this->createJobInfoStringList_Append_Value(strList);
 }
 
 void abt_jobInfo::createJobInfoStringList_Transfer(QStringList *strList) const

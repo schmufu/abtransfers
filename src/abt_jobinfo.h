@@ -83,7 +83,9 @@ private:
 
 	void createJobInfoStringList_Standard_Text(QStringList *strList) const;
 	void createJobInfoStringList_Append_From(QStringList *strList) const;
+	void createJobInfoStringList_Append_From_Sepa(QStringList *strList) const;
 	void createJobInfoStringList_Append_To(QStringList *strList) const;
+	void createJobInfoStringList_Append_To_Sepa(QStringList *strList) const;
 	void createJobInfoStringList_Append_Purpose(QStringList *strList) const;
 	void createJobInfoStringList_Append_Value(QStringList *strList) const;
 

@@ -59,7 +59,15 @@ aqb_banking::aqb_banking()
 		fprintf(stderr, "Error on init (%d)\n", rv);
 		return;
 	}
-	qDebug() << "AqBanking successfully initialized.";
+
+	AB_Banking_GetVersion(&this->major, &this->minor, &this->patch, &this->build);
+	this->aqbanking_version = QString("%1.%2.%3.%4")
+					.arg(this->major)
+					.arg(this->minor)
+					.arg(this->patch)
+					.arg(this->build);
+	qDebug() << "AqBanking successfully initialized."
+		 << "(Version:" << this->aqbanking_version << ")";
 
 	/* This function loads the settings file of AqBanking so the users and
 	 * accounts become available after this function successfully returns.
@@ -121,6 +129,24 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 	//wenn bankinfo == NULL bleibt Institute auf "NO INFORMATION"
 	return Institute;
 }
+
+//! @todo: implement getInstituteFromBIC - perhaps possible with libktoblzcheck.
+///*! \brief Gibt den Institut-Namen zur BIC zurück
+//  */
+//QString aqb_banking::getInstituteFromBIC(const QString &BIC) const
+//{
+//	AB_BANKINFO *bankinfo;
+//	QString Institute = "NO INFORMATION";
+//	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BIC.toUtf8());
+
+//	if (bankinfo) {
+//		Institute = QString::fromUtf8(AB_BankInfo_GetBankName(bankinfo));
+//		AB_BankInfo_free(bankinfo);
+//	}
+//	//wenn bankinfo == NULL bleibt Institute auf "NO INFORMATION"
+//	return Institute;
+//}
+
 
 /**
  *  It loads the appropriate bank checker module and lets it check the information.

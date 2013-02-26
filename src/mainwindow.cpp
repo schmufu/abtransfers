@@ -2154,31 +2154,30 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 
 //private
 /** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
-void MainWindow::createAndSendSepaTransfer(const widgetTransfer* /* not used yet: sender */)
+void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 {
-	qWarning() << "create SEPA Transfer not implemented yet!";
-	this->statusBar()->showMessage("create SEPA Transfer not implemented yet!");
-	return;
+	qWarning() << "create SEPA Transfer implemented, but not well tested!";
 
-//	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
-//	abt_transaction *t = new abt_transaction();
-//
-//	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
-//
-//	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-//	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-//	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-//	t->setRemoteBankName(sender->remoteAccount->getBankName());
-//
-//	t->setValue(sender->value->getValueABV());
-//
-//	t->setPurpose(sender->purpose->getPurpose());
-//
-//	t->setTextKey(sender->textKey->getTextKey());
-//
-//	this->jobctrl->addNewSepaTransfer(acc, t);
-//
-//	delete t;
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
+
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	t->setRemoteIban(sender->remoteAccount->getIBAN());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBic(sender->remoteAccount->getBIC());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	/** \todo could the textkey be set for sepa transfers? */
+	//t->setTextKey(sender->textKey->getTextKey());
+
+	this->jobctrl->addNewSepaTransfer(acc, t);
+
+	delete t;
 }
 
 //private

@@ -35,14 +35,20 @@ abt_EmpfaengerInfo::abt_EmpfaengerInfo()
 
 }
 
-abt_EmpfaengerInfo::abt_EmpfaengerInfo(QString &Name, QString &Kontonummer,
-					   QString &BLZ, QString Verw1,
-					   QString Verw2, QString Verw3,
-					   QString Verw4):
+abt_EmpfaengerInfo::abt_EmpfaengerInfo(const QString &Name,
+				       const QString &Kontonummer,
+				       const QString &BLZ,
+				       const QString &IBAN,
+				       const QString &BIC,
+				       const QString &Institut,
+				       const QString &Verw):
 	m_Name(Name),
 	m_Kontonummer(Kontonummer),
 	m_Bankleitzahl(BLZ),
-	m_Verw1(Verw1),	m_Verw2(Verw2), m_Verw3(Verw3), m_Verw4(Verw4)
+	m_IBAN(IBAN),
+	m_BIC(BIC),
+	m_Institut(Institut),
+	m_Verw(Verw)
 {
 
 }
@@ -54,10 +60,11 @@ abt_EmpfaengerInfo::~abt_EmpfaengerInfo()
 
 bool abt_EmpfaengerInfo::operator ==(const abt_EmpfaengerInfo& e) const
 {
-	//Ein Empfänger wird anhand der Kontonummer und BLZ identifiziert, wenn
-	//diese beiden gleich sind handelt es sich um ein und denselben
-	//Empfänger
-	return (this->getKontonummer() == e.getKontonummer()) &&
-		(this->getBLZ() == e.getBLZ());
-
+	//A recipient is identified by the account number and Bankcode or
+	//by the IBAN and BIC if one of this pairs are identical, the
+	//recipients are the same.
+	return (((this->getKontonummer() == e.getKontonummer()) &&
+		 (this->getBLZ() == e.getBLZ())) ||
+		((this->getIBAN() == e.getIBAN()) &&
+		 (this->getBIC() == e.getBIC())));
 }

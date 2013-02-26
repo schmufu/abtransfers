@@ -228,10 +228,10 @@ const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 		recipientInfo->setName(InfoStringList.at(0));
 		recipientInfo->setKontonummer(InfoStringList.at(1));
 		recipientInfo->setBLZ(InfoStringList.at(2));
-		recipientInfo->setVerw1(InfoStringList.at(3));
-		recipientInfo->setVerw2(InfoStringList.at(4));
-		recipientInfo->setVerw3(InfoStringList.at(5));
-		recipientInfo->setVerw4(InfoStringList.at(6));
+		recipientInfo->setIBAN(InfoStringList.at(3));
+		recipientInfo->setBIC(InfoStringList.at(4));
+		recipientInfo->setInstitut(InfoStringList.at(5));
+		recipientInfo->setVerw(InfoStringList.at(6));
 
 		this->m_recipientsList->append(recipientInfo);
 	}
@@ -255,10 +255,10 @@ void abt_settings::saveKnownEmpfaenger()
 		out << recipientInfo->getName() << "\t";
 		out << recipientInfo->getKontonummer() << "\t";
 		out << recipientInfo->getBLZ() << "\t";
-		out << recipientInfo->getVerw1() << "\t";
-		out << recipientInfo->getVerw2() << "\t";
-		out << recipientInfo->getVerw3() << "\t";
-		out << recipientInfo->getVerw4() << "\n";
+		out << recipientInfo->getIBAN() << "\t";
+		out << recipientInfo->getBIC() << "\t";
+		out << recipientInfo->getInstitut() << "\t";
+		out << recipientInfo->getVerw() << "\n";
 	}
 
 	file.close();
@@ -505,6 +505,7 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 
 	case AB_Job_TypeTransfer :
 	case AB_Job_TypeInternalTransfer :
+	case AB_Job_TypeSepaTransfer :
 
 	case AB_Job_TypeCreateDatedTransfer :
 	case AB_Job_TypeModifyDatedTransfer :
@@ -521,7 +522,6 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 		//not supported but should be implemented
 	case AB_Job_TypeEuTransfer :
 	case AB_Job_TypeDebitNote :
-	case AB_Job_TypeSepaTransfer :
 	case AB_Job_TypeSepaDebitNote :
 	case AB_Job_TypeLoadCellPhone :
 		return 2;

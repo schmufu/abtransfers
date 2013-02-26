@@ -45,39 +45,39 @@ private:
 	QString m_Name;
 	QString m_Kontonummer;
 	QString m_Bankleitzahl;
+	QString m_IBAN;
+	QString m_BIC;
 	QString m_Institut;
-	QString m_Verw1;
-	QString m_Verw2;
-	QString m_Verw3;
-	QString m_Verw4;
+	QString m_Verw;
 public:
 	abt_EmpfaengerInfo();
-	abt_EmpfaengerInfo(QString &Name, QString &Kontonummer, QString &BLZ,
-			     QString Verw1 = "", QString Verw2 = "",
-			     QString Verw3 = "", QString Verw4 = "");
+	abt_EmpfaengerInfo(const QString &Name, const QString &Kontonummer = "",
+			   const QString &BLZ = "", const QString &IBAN = "",
+			   const QString &BIC = "", const QString &Institut = "",
+			   const QString &Verw = "");
 	~abt_EmpfaengerInfo();
 
 	const QString &getName() const { return this->m_Name; }
 	const QString &getKontonummer() const { return this->m_Kontonummer; }
 	const QString &getBLZ() const { return this->m_Bankleitzahl; }
-	const QString &getVerw1() const { return this->m_Verw1; }
-	const QString &getVerw2() const { return this->m_Verw2; }
-	const QString &getVerw3() const { return this->m_Verw3; }
-	const QString &getVerw4() const { return this->m_Verw4; }
+	const QString &getIBAN() const { return this->m_IBAN; }
+	const QString &getBIC() const { return this->m_BIC; }
+	const QString &getInstitut() const { return this->m_Institut; }
+	const QString &getVerw() const { return this->m_Verw; }
 
 	void setName(const QString &Name) { this->m_Name = Name; }
 	void setKontonummer(const QString &Kto) { this->m_Kontonummer = Kto; }
 	void setBLZ(const QString &BLZ) { this->m_Bankleitzahl = BLZ ; }
-	void setVerw1(const QString &Verw) { this->m_Verw1 = Verw; }
-	void setVerw2(const QString &Verw) { this->m_Verw2 = Verw; }
-	void setVerw3(const QString &Verw) { this->m_Verw3 = Verw; }
-	void setVerw4(const QString &Verw) { this->m_Verw4 = Verw; }
+	void setIBAN(const QString &IBAN) { this->m_IBAN = IBAN; }
+	void setBIC(const QString &BIC) { this->m_BIC = BIC; }
+	void setInstitut(const QString &Institut) { this->m_Institut = Institut; }
+	void setVerw(const QString &Verw) { this->m_Verw = Verw; }
 
 	bool operator ==(const abt_EmpfaengerInfo& e) const;
 };
 
 //damit wir ein abt_EmpfaengerInfo im QVariant verwenden können
-Q_DECLARE_METATYPE(abt_EmpfaengerInfo);
-Q_DECLARE_METATYPE(abt_EmpfaengerInfo*);
+Q_DECLARE_METATYPE(abt_EmpfaengerInfo)
+Q_DECLARE_METATYPE(abt_EmpfaengerInfo*)
 
 #endif // ABT_EMPFAENGERINFO_H

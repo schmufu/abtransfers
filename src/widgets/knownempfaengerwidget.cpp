@@ -260,11 +260,11 @@ void KnownEmpfaengerWidget::onContextMenuRequest(const QPoint &pos)
 
 void KnownEmpfaengerWidget::onActionEditTriggered()
 {
-	abt_EmpfaengerInfo *origReceiver = NULL;
-	abt_EmpfaengerInfo *newReceiver = NULL;
+	abt_EmpfaengerInfo *origRecipient = NULL;
+	abt_EmpfaengerInfo *newRecipient = NULL;
 
 	//Pointer zum abt_EmpfaengerInfo wurde in der Qt::UserRole gespeichert
-	origReceiver = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
+	origRecipient = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
 
 	QDialog *d = new QDialog(this);
 
@@ -279,13 +279,15 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	widgetAccountData *acc = new widgetAccountData(d);
+	widgetAccountData *acc = new widgetAccountData(d, NULL, NULL, true, true);
 	acc->setAllowDropAccount(false);
 	acc->setAllowDropKnownRecipient(false);
-	acc->setName(origReceiver->getName());
-	acc->setAccountNumber(origReceiver->getKontonummer());
-	acc->setBankCode(origReceiver->getBLZ());
-	acc->setBankName("");
+	acc->setName(origRecipient->getName());
+	acc->setAccountNumber(origRecipient->getKontonummer());
+	acc->setBankCode(origRecipient->getBLZ());
+	acc->setIBAN(origRecipient->getIBAN());
+	acc->setBIC(origRecipient->getBIC());
+	acc->setBankName(origRecipient->getInstitut());
 
 	layout->addWidget(acc);
 
@@ -295,18 +297,19 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 
 
 	if (d->exec() == QDialog::Accepted) {
-		newReceiver = new abt_EmpfaengerInfo();
-		newReceiver->setName(acc->getName());
-		newReceiver->setKontonummer(acc->getAccountNumber());
-		newReceiver->setBLZ(acc->getBankCode());
-		int pos = this->EmpfaengerList->indexOf(origReceiver);
-		emit replaceKnownEmpfaenger(pos, newReceiver);
+		newRecipient = new abt_EmpfaengerInfo();
+		newRecipient->setName(acc->getName());
+		newRecipient->setKontonummer(acc->getAccountNumber());
+		newRecipient->setBLZ(acc->getBankCode());
+		newRecipient->setInstitut(acc->getBankName());
+		newRecipient->setIBAN(acc->getIBAN());
+		newRecipient->setBIC(acc->getBIC());
+		int pos = this->EmpfaengerList->indexOf(origRecipient);
+		emit replaceKnownEmpfaenger(pos, newRecipient);
 	}
 	// ansonsten Änderungen einfach verwerfen.
 
-
 	delete d;
-
 }
 
 void KnownEmpfaengerWidget::onActionDeleteTriggered()
@@ -321,7 +324,7 @@ void KnownEmpfaengerWidget::onActionDeleteTriggered()
 
 void KnownEmpfaengerWidget::onActionNewTriggered()
 {
-	abt_EmpfaengerInfo *newReceiver = NULL;
+	abt_EmpfaengerInfo *newRecipient = NULL;
 
 	QDialog *d = new QDialog(this);
 
@@ -336,7 +339,7 @@ void KnownEmpfaengerWidget::onActionNewTriggered()
 	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	widgetAccountData *acc = new widgetAccountData(d);
+	widgetAccountData *acc = new widgetAccountData(d, NULL, NULL, true, true);
 	acc->setAllowDropAccount(false);
 	acc->setAllowDropKnownRecipient(false);
 
@@ -348,12 +351,14 @@ void KnownEmpfaengerWidget::onActionNewTriggered()
 
 
 	if (d->exec() == QDialog::Accepted) {
-		newReceiver = new abt_EmpfaengerInfo();
-		newReceiver->setName(acc->getName());
-		newReceiver->setKontonummer(acc->getAccountNumber());
-		newReceiver->setBLZ(acc->getBankCode());
-
-		emit addNewKnownEmpfaenger(newReceiver);
+		newRecipient = new abt_EmpfaengerInfo();
+		newRecipient->setName(acc->getName());
+		newRecipient->setKontonummer(acc->getAccountNumber());
+		newRecipient->setBLZ(acc->getBankCode());
+		newRecipient->setInstitut(acc->getBankName());
+		newRecipient->setIBAN(acc->getIBAN());
+		newRecipient->setBIC(acc->getBIC());
+		emit addNewKnownEmpfaenger(newRecipient);
 	}
 	// ansonsten Änderungen einfach verwerfen.
 
