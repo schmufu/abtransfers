@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011-2012 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -60,10 +60,15 @@ public:
 	const QString &getAqBankingVersion() const { return this->aqbanking_version; }
 	QString getInstituteFromBLZ(const QString &BLZ) const;
 	QString getInstituteFromBIC(const QString &BIC) const;
-	/*! This function checks whether the given combination represents a valid account. */
+
+	/** @brief This function checks whether the given combination represents
+	 *         a valid account. */
 	bool checkAccount(const QString &country, const QString &branchId,
 			  const QString &bankId, const QString &accountId,
 			  QString &result) const;
+	/** @brief Checks if the check digit of an IBAN is correct or not */
+	bool checkIBAN(const QString &iban, QString &result) const;
+
 
 	QString getUserDataDir() const;
 };

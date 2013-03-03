@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -120,6 +120,7 @@ signals:
 
 private slots:
 	void lineEditBankCode_editingFinished();
+	void lineEditIBAN_editingFinished();
 	void comboBoxNewAccountSelected(const aqb_AccountInfo *newAccount);
 
 public slots:

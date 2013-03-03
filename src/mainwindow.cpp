@@ -1249,7 +1249,7 @@ void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 	if (transW->hasChanges()) {
 		msgret = QMessageBox::question(
 				 this, tr("Änderungen verwerfen?"),
-				 tr("Im Tab '%1' wurden Änderungenen "
+				 tr("Im Tab '%1' wurden Änderungen "
 				    "vorgenommen!\n\n"
 				    "Sollen diese Änderungen verworfen werden?")
 				 .arg(this->ui->tabWidget_UW->tabText(index)),

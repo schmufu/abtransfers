@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -111,7 +111,7 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 
 	validatorAccNr->setRegExp(QRegExp("\\d*", Qt::CaseSensitive));
 	validatorBLZ->setRegExp(QRegExp("\\d{3} ?\\d{3} ?\\d{2}", Qt::CaseSensitive));
-	validatorIBAN->setRegExp(QRegExp("[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}", Qt::CaseSensitive));
+	validatorIBAN->setRegExp(QRegExp("[a-zA-Z]{2}[0-9]{2} ?[a-zA-Z0-9]{4} ?[0-9]{4} ?[0-9]{3}([a-zA-Z0-9]?){0,1} ?([ a-zA-Z0-9]?){0,15}", Qt::CaseSensitive));
 	validatorBIC->setRegExp(QRegExp("([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)", Qt::CaseSensitive));
 
 	this->llName = new widgetLineEditWithLabel(tr("Name"), "", Qt::AlignTop, this);
@@ -158,6 +158,9 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 		hl_sepa->setStretch(0, 7);
 		hl_sepa->setStretch(1, 1);
 		hl_sepa->setStretch(2, 5);
+
+		connect(this->llIBAN->lineEdit, SIGNAL(editingFinished()),
+			this, SLOT(lineEditIBAN_editingFinished()));
 	}
 
 	hl_acc->setSpacing(0);
@@ -279,6 +282,15 @@ void widgetAccountData::lineEditBankCode_editingFinished()
 	//getBankCode() liefert die BLZ ohne Leerzeichen
 	Institut = banking->getInstituteFromBLZ(this->getBankCode());
 	this->setBankName(Institut);
+}
+
+//private slot
+void widgetAccountData::lineEditIBAN_editingFinished()
+{
+	QString result;
+	if (!banking->checkIBAN(this->getIBAN(), result)) {
+		qWarning() << Q_FUNC_INFO << "IBAN probably incorrect:" << result;
+	}
 }
 
 //public slot
@@ -585,7 +597,7 @@ QString widgetAccountData::getIBAN() const
 	}
 
 	if (this->llIBAN->isEnabled()) {
-		return this->llIBAN->lineEdit->text();
+		return this->llIBAN->lineEdit->text().replace(" ", "");
 	} else {
 		return QString("");
 	}

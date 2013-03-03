@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011-2012 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -149,11 +149,12 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 
 
 /**
- *  It loads the appropriate bank checker module and lets it check the information.
+ * It loads the appropriate bank checker module and lets it check the
+ * information.
  *
- * Wenn alles OK ist wird true zurückgegeben, ansonsten false. In result wird
- * immer ein entsprechender Text der dem aufgetretenen Fehler entspricht
- * gespeichert.
+ * If the @a accountId and @a bankId could exist true is returned otherwise
+ * false. The @a result string always contains a textual expression of the
+ * result.
  *
  * Parameters:
  * \param country: ISO country code ("de" for Germany, "at" for Austria etc)
@@ -190,6 +191,113 @@ bool aqb_banking::checkAccount(const QString &country, const QString &branchId,
 	}
 
 	return false;
+}
+
+
+/**
+ * see http://www.pruefziffernberechnung.de/I/IBAN.shtml for further details.
+ *
+ * @param iban the IBAN to check
+ * @param result descriptive msg of the result
+ * @returns false if the @a iban is not correct
+ * @returns true if the @a iban is correct
+ */
+bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
+{
+
+	//The first two chars must be characters
+	for(int i=0; i<2; i++) {
+		if ( ! iban.at(i).isLetter()) {
+			result = QObject::tr("Die ersten 2 Zeichen müssen "
+					     "Buchstaben sein. (Ländercode)");
+			return false;
+		}
+	}
+
+	QString resStr = "";
+	QString countryCode = iban.left(2);
+	QString pruefziffer = iban.mid(2,2);
+	QString blz = iban.mid(4,8);
+	QString ktonr = iban.mid(12);
+
+	if (countryCode.toUpper() == "DE") {
+		//the IBAN is for a german bank account, so we can also check
+		//the account-number and bankcode
+		if (!this->checkAccount("de", "", blz, ktonr, resStr)) {
+			result = QObject::tr("Überprüfung von Kontonummer und "
+					     "Bankleitzahl für Deutsches Konto "
+					     "fehlerhaft: %1").arg(resStr);
+			return false;
+		}
+	}
+
+	//convert the country code and the check digit for checksum calculation.
+	//These are the first 4 places of the iban.
+	QString pp_substitution;
+	for(int i=0; i<4; i++) {
+		if (iban.at(i).isLetter()) {
+			//A=10, B=11, C=12 etc.
+			int value = iban.at(i).toUpper().toAscii()-55;
+			pp_substitution.append(QString::number(value));
+		} else {
+			pp_substitution.append(iban.at(i));
+		}
+	}
+
+	//convert the rest of the iban to only digits
+	//(could also contain characters)
+	QString sIban;
+	for(int i=4; i<iban.size(); i++) {
+		if (iban.at(i).isLetter()) {
+			int value = iban.at(i).toUpper().toAscii()-55;
+			sIban.append(QString::number(value));
+		} else {
+			sIban.append(iban.at(i));
+		}
+	}
+
+	//append the substituted "check digit" to the end of the IBAN
+	sIban.append(pp_substitution);
+
+	//the number is too large to be calculated at once (~36 digits).
+	//so we calculate the checksum step by step (with max. 9 digits at
+	//a time, so that it fits into 32bit unsigned integers)
+	//[later this could be expanded to 18 for 64bit integers]
+	bool convOK = false;
+	int modulus = 0;
+	quint64 value = 0;
+	QString subIBAN;
+
+	while(!sIban.isEmpty()) {
+		if (modulus == 0) {
+			subIBAN = sIban.left(9);
+			sIban.remove(0,9);
+		} else {
+			QString mod = QString::number(modulus);
+			subIBAN = sIban.left(9 - mod.length());
+			subIBAN.prepend(mod);
+			sIban.remove(0, 9 - mod.length());
+		}
+		value = subIBAN.toULongLong(&convOK);
+		if (!convOK) {
+			qWarning() << Q_FUNC_INFO << "conversion failed! ("
+				   << subIBAN << ") - IBAN could not be checked.";
+			result = QObject::tr("Umwandlung fehlgeschlagen - "
+					     "Überprüfung konnte nicht "
+					     "durchgeführt werden");
+			return false;
+		}
+		modulus = value % 97;
+	}
+
+	if (modulus == 1) { //for a correct IBAN the modulus must be 1
+		result = QObject::tr("OK");
+		return true;
+	} else { //incorrect IBAN
+		result = QObject::tr("Prüfsumme fehlerhaft (Modulus = %1)")
+			 .arg(modulus);
+		return false;
+	}
 }
 
 /**
