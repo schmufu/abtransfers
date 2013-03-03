@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -44,7 +44,7 @@
 #undef DEFINEGLOBALSHERE
 
 
-/** a message handler to display the qDebug(), qWarning() etc. in the debug-Dialog */
+/** a message handler to display qDebug(), qWarning() etc. in the debug-Dialog */
 void myMessageHandler(QtMsgType type, const char *msg);
 
 int main(int argc, char *argv[])
@@ -57,11 +57,9 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
 
-	//qRegisterMetaType<const abt_transaction*>("const abt_transaction*");
-
-	//hier werden alle über qDebug(), qWarning() etc. ausgegebenen Infos angezeigt
+	//create the DebugDialogWidget, that displays all qDebug(), qWarning()
+	//etc. messages and install the MsgHandler that redirect the messages.
 	debugDialog = new DebugDialogWidget();
-	//damit die Ausgaben auch richtig umgeleitet werden benötigten wir den MsgHandler
 	qInstallMsgHandler(myMessageHandler);
 
 	#ifdef ABTRANSFER_VERSION
@@ -73,30 +71,29 @@ int main(int argc, char *argv[])
 	app.setOrganizationDomain("schmufu.dyndns.org");
 	app.setApplicationName("AB-Transfers");
 
-	//Das Programm soll nur ein mal gestartet werden!
-	//Als key nutzen wir den Programmnamen sowie die "Key-ID" von meinem
-	//PGP-Schlüssel (Patrick Wacker <schmufu.s@gmx.net>)
+	//The program should be started only once!
+	//Therefore we create a sharedMemory and check if it already exists.
+	//As key for the sharedMemory the program name and the "Key-ID" from
+	//my the PGP-Key is used (Patrick Wacker <schmufu.s@gmx.net>)
 	QString smKey = app.applicationName();
-	smKey.append("-49E8D03B0700F6C4"); //PGP Key-ID von Patrick Wacker
+	smKey.append("-49E8D03B0700F6C4"); //PGP-Key-ID from Patrick Wacker
 	QSharedMemory myMem(smKey);
 	if ( !myMem.create(sizeof(int)) ) {
-		//SharedMemory konnte nicht erstellt werden
 		qDebug() << Q_FUNC_INFO << "SharedMemoryError:" << myMem.errorString();
 		if (myMem.error() == QSharedMemory::AlreadyExists) {
-			//Das Programm läuft bereits, oder die letzte Instanz
-			//ist abgestürzt und konnte den Speicher nicht wieder
-			//freigeben!
-			//Existiert noch ein anderer AB-Transfers Prozess?
-			//--> Hier wird zu viel zwischen Linux und Windows
-			//    unterschiedlich! Wir fragen einfach den user!
-			// Windows: beim Crash wird der sharedMemory wieder freigeben
-			// Linux: sharedMemory bleibt erhalten und muss durch
-			//        die Anwendung wieder freigegeben werden.
+			//The program is already running or the last instance
+			//was aborted and couldnt free the SharedMemory.
+			//We could check if another AB-Transfers process is
+			//running, but this differs to much between Linux and
+			//Windows. (Windows: SM is freed after crash, Linux:
+			//SM is not freed).
+			//We simple ask the user.
 			int msgRet = QMessageBox::critical(
 					NULL,
-					QObject::tr("%1 bereits gestartet").arg(app.applicationName()),
-					QObject::tr("Es sieht so aus als würde %1 "
-					   "bereits gestartet sein!<br />"
+					QObject::tr("%1 bereits gestartet")
+					     .arg(app.applicationName()),
+					QObject::tr("Es sieht so aus als würde "
+					   "%1 bereits gestartet sein!<br />"
 					   "%1 sollte auf keinen Fall mehrmals "
 					   "gestartet werden, dies könnte zu "
 					   "nicht vorhersagbaren Fehlern "
@@ -105,21 +102,21 @@ int main(int argc, char *argv[])
 					   "abgestürzt ist, ist es sicher diese "
 					   "Abfrage mit \"Ja\" zu quittieren.</i>"
 					   "<br /><br />"
-					   "Soll %1 wirklich gestartet werden?").arg(app.applicationName()),
+					   "Soll %1 wirklich gestartet werden?")
+					     .arg(app.applicationName()),
 					QMessageBox::Yes | QMessageBox::No,
 					QMessageBox::No);
 
 			if (msgRet != QMessageBox::Yes) {
-				//Aufräumen
+				//cleanup and cancel execution
 				qInstallMsgHandler(NULL);
 				delete debugDialog;
-				return 9; //Abbruch
+				return 9;
 			}
-			//Programm soll trotzdem gestartet werden!
+			//else: the program should be started anyway
 		}
 
-		//wir übernehmen den SharedMemory, damit er beim beenden wieder
-		//freigegeben wird und der nächste Start fehlerfrei sein kann.
+		//we take over the sharedMemory, so that it is freed at the end
 		if (!myMem.attach()) {
 			qWarning() << "could not attach SharedMemory!"
 				   << "Error:" << myMem.errorString();
@@ -127,13 +124,12 @@ int main(int argc, char *argv[])
 	}
 
 
-	//globale Objecte erzeugen
-	settings = new abt_settings(); //für Programmweite Einstellungen
-	banking = new aqb_banking(); //Initialisierung und Verwendung von AqBanking
+	//creation of global objects
+	settings = new abt_settings(); //for program wide settings
+	banking = new aqb_banking(); //Initialise and using of AqBanking
 
 	MainWindow w;
 
-	//Letzten Zustand wieder herstellen
 	qDebug("RESTORING LAST STATE");
 	QByteArray ba = settings->loadWindowGeometry();
 	if (!ba.isEmpty()) w.restoreGeometry(ba);
@@ -143,23 +139,21 @@ int main(int argc, char *argv[])
 	qDebug("BEFORE SHOW");
 	w.show();
 	qDebug("AFTER SHOW");
-	apprv = app.exec(); //Ausführung der Anwendung
+	apprv = app.exec(); //execute the application
 	qDebug("AFTER EXEC");
 
-	//Den Zustand des Forms beim Beenden speichern
+	//save the current state of the form
 	settings->saveWindowStateGeometry(w.saveState(1), w.saveGeometry());
 	qDebug("AFTER SAVING STATE");
-	delete banking; //AqBanking wird nicht mehr benötigt
-	delete settings; //und auch die Einstellungen nicht
+	delete banking; //AqBanking is no longer used
+	delete settings; //and the settings also.
 
-	//Alle erstellten GWEN_STRINGLIST und GWEN_TIME Objecte wieder löschen
+	//free all created GWEN_STRINGLIST and GWEN_TIME objects
 	abt_conv::freeAllGwenLists();
 
 
-	//den msgHandler wieder entfernen
-	qInstallMsgHandler(NULL);
-	 //sowie den Dialog wo u.a. qDebug() Nachrichten angezeigt werden
-	delete debugDialog;
+	qInstallMsgHandler(NULL); //uninstall the MsgHandler
+	delete debugDialog; //and the corresponding dialog
 
 	return apprv;
 }
@@ -170,7 +164,7 @@ void myMessageHandler(QtMsgType type, const char *msg)
 	fprintf(stderr, "%s\n", msg); //always show the messages at stderr
 
 	//only show the messages if wanted
-	//! \todo implement the option to deactivate debug messges
+	//! @todo implement the option to deactivate debug messges
 	//if (!settings->displayDebugMessages()) return;
 
 	switch(type) {

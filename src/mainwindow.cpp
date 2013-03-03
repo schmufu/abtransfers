@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -68,7 +68,7 @@
 #include "abt_parser.h"
 
 #ifdef TESTWIDGETACCESS
-	 //nur zum Testen!
+	 //only for test purposes
 #include "pages/pagewidgettests.h"
 #endif
 
@@ -87,11 +87,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->dock_KnownDatedTransfers = NULL;
 	this->dock_Accounts = NULL;
 
-	//Alle Accounts von AqBanking wurden erstellt (this->accounts), jetzt
-	//können die Daten mit dem parser geladen werden
-	this->loadAccountData();
-	//Auch die History-Daten müssen geladen werden
-	this->loadHistoryData();
+	//All accounts from AqBanking were created (this->accounts).
+	this->loadAccountData(); //Now the account data can be loaded
+	this->loadHistoryData(); //and also the history data
 
 	this->pageHistory = new page_history(this->history);
 
@@ -113,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->history->setLayout(historyLayout);
 	ui->history->layout()->addWidget(this->pageHistory);
 
-	//default DockOptions setzen
+	//set default DockOptions
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
 			     QMainWindow::AllowTabbedDocks);// |
 			     //QMainWindow::AnimatedDocks);
@@ -122,13 +120,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
 	this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-	//Alle DockWidgets erstellen
+	//create all DockWidgets
 	this->createDockKnownRecipients();
 	this->createDockBankAccountWidget();
 	this->createDockStandingOrders();
 	this->createDockDatedTransfers();
 
-	this->createJobCtrlAndConnections(); //zwingend nach createDock...
+	this->createJobCtrlAndConnections(); //must be called after createDock...
 
 	this->createActions();
 	this->createMenus();
@@ -136,8 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->createWidgetsInScrollArea();
 
-	//Den PushButtons im Übersichts-Widget die entsprechenden Actions
-	//zuordnen
+	//connect the signals and slots for the PushButtons of the summary widget
 	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
 		this->actTransferNational, SLOT(trigger()));
 	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
@@ -163,18 +160,17 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(on_actionEinstellungen_triggered()));
 
 
-	//Immer die Übersicht als Startseite anzeigen, egal was im .ui definiert
-	//ist und den default-Entry im ListWidget auf Überweisung setzen
+	//Always show the summary as start page, regardless of the .ui setting
+	//and also set the summary selected in listWidget
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 	this->ui->stackedWidget->setCurrentIndex(0);
 
 
-	//Wir starten hier einen Timer, dieser arbeitet zwar schon, der Slot
-	//wird aber erst aufgerufen wenn die EventLoop der Anwendung startet.
-	//Dies ist erst der Fall wenn app.exec() in main() ausgeführt wird.
-	//Somit kann in dem Slot TimerTimeOut() Code direkt nach der
-	//Initialisierung der Anwendung und wenn diese auch vollständig gestartet
-	//ist ausgeführt werden.
+	//we start a timer, this timer starts working, but the connected slot
+	//is not called until the eventLoop of the application is running.
+	//This is the case when app.exec() in main() is executed.
+	//So the code in the slot TimerTimeOut() is executed when the
+	//application is completely initialised and running.
 	this->timer = new QTimer(this);
 	this->timer->setSingleShot(true);
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
@@ -191,12 +187,13 @@ MainWindow::~MainWindow()
 	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	delete this->outbox;	//AusgangsWidget löschen
-	delete this->logw;	//LogWidget löschen
-	delete this->pageHistory; //HistoryWidget löschen
-	delete this->jobctrl;	//jobControl-Object löschen
-	delete this->history;	//history löschen
-	delete this->accounts;	//account-Object löschen
+	//cleanup all created widgets
+	delete this->outbox;
+	delete this->logw;
+	delete this->pageHistory;
+	delete this->jobctrl;
+	delete this->history;
+	delete this->accounts;
 	delete ui;
 
 	qDebug() << Q_FUNC_INFO << "deleted";
@@ -217,8 +214,8 @@ void MainWindow::changeEvent(QEvent *e)
 //protected
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	//Überprüfen ob noch Aufträge im Ausgang sind, wenn ja den Benutzer
-	//fragen ob wirklich beendet werden soll.
+	//check if jobs are in the outbox. If there are some ask the user
+	//if the application should realy quit.
 	if (this->jobctrl->jobqueueList()->size() != 0) {
 		int ret;
 		ret = QMessageBox::warning(this,
@@ -231,37 +228,27 @@ void MainWindow::closeEvent(QCloseEvent *e)
 					   QMessageBox::Yes | QMessageBox::No,
 					   QMessageBox::No);
 		if (ret == QMessageBox::No) {
-			//Es soll noch nicht beendet werden!
-			e->ignore();
+			e->ignore(); //do not quit the application
 			return;
 		}
 	}
 
-	/** \todo Überprüfung ob Speicherung notwendig
-	  *
-	  * Das speichern sollte in eine separate Funktion und in den
-	  * Einstellungen auch angebar sein dass z.B. nach einem erfolgreichen
-	  * Aktualisiseren automatisch gespeichert wird.
-	  */
-
-	//Alle Daten speichern
-	this->actSaveAllData->trigger();
-
-	//jetzt können wir geschlossen werden
-	e->accept();
+	this->actSaveAllData->trigger(); //save all data before quit
+	e->accept(); //now we can get closed
 }
 
 //private Slot
+/** @brief Execution after the Eventloop is running
+ *
+ * This slot is called wenn the event loop starts and the application is
+ * running. Therefore this code is executed when the MainWindow is displayed
+ * and then never again.
+ */
 void MainWindow::TimerTimeOut()
 {
-	//Der Timer läuft erst ab wenn die execLoop gestartet ist. Somit wird
-	//dieser Code erst ausgeführt wenn das MainWindow angezeigt und die
-	//EventLoop der Anwendung läuft. Danach dann nie wieder!
-
-	disconnect(this, SLOT(TimerTimeOut())); //connection entfernen
-	delete this->timer; //Der Timer wird nicht länger benötigt
+	disconnect(this, SLOT(TimerTimeOut())); //remove connection
+	delete this->timer; //the timer is no longer needed
 	this->timer = NULL;
-
 
 	abt_dialog dia(this,
 		       tr("eventuelle Kosten"),
@@ -281,8 +268,8 @@ void MainWindow::TimerTimeOut()
 		       "WarnCosts");
 	dia.exec();
 
-	//überprüfen ob Aufträge nach dem Start in den Ausgang gestellt werden
-	//sollen und ob diese auch gleich ausgeführt werden sollen.
+	//check if jobs should be put in the outbox and if the should be
+	//executed at start.
 	if (settings->appendJobToOutbox("getBalance")) {
 		this->appendGetBalanceToOutbox();
 	}
@@ -423,22 +410,22 @@ void MainWindow::createDockToolbar()
 //private
 void MainWindow::createWidgetsInScrollArea()
 {
-	//wir löschen alles in der ScrollArea, und erstellen dann alles neu
+	//delete everthing in the ScrollArea and recreate all.
 
-	//Vielliecht besitzen wir schon ein Layout
+	//perhaps we already have a layout
 	QVBoxLayout *layoutScrollArea = dynamic_cast<QVBoxLayout*>(this->ui->scrollAreaWidgetContents->layout());
-	if (layoutScrollArea) { //layout vorhanden somit sind auch QGroupBoxen
-		//vorhanden, alle childs löschen
+	if (layoutScrollArea) {
+		//layout exists, so the QGroupBoxes. Remove all childs.
 		QList<QGroupBox*> list = this->ui->scrollAreaWidgetContents->findChildren<QGroupBox*>();
 		while(!list.isEmpty()) {
 			delete list.takeFirst();
 		}
-	} else { //neues Layout erstellen
+	} else { //create new layout
 		layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
 	}
 
 	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
-		//Bekannte Daueraufträge
+		//known Standing Orders
 		QGroupBox *grpSO = new QGroupBox(this);
 		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
 		grpSO->setTitle(tr("Daueraufträge von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
@@ -456,7 +443,7 @@ void MainWindow::createWidgetsInScrollArea()
 		lSO->addWidget(standingOrders);
 		layoutScrollArea->addWidget(grpSO);
 
-		//Bekannte Terminüberweisungen
+		//known Dated Transfers
 		QGroupBox *grpDT = new QGroupBox(this);
 		QVBoxLayout *lDT = new QVBoxLayout(grpDT);
 		grpDT->setTitle(tr("Terminierte Überweisungen von \"%1\" (%2 - %3)").arg(acc->Name(), acc->Number(), acc->BankCode()));
@@ -476,22 +463,15 @@ void MainWindow::createWidgetsInScrollArea()
 	}
 }
 
-/** \brief Erstellt das "Online Konten" QDockWidget
-  *
-  * Es wird ein neues QDockWidget (Online Konten) erstellt.
-  * Diesem wird dann ein neues BankAccountsWidget zugewiesen.
-  * Und das neue DockWidget wird dann dem MainWindow zugeteilt.
-  *
-  * Außerdem wird das entsprechende Signal mit dem Slot zur Anzeige eines
-  * CustomContextMenu's verbunden.
-  */
 //private
+/** \brief Creates the "Online Konten" QDockWidget */
 void MainWindow::createDockBankAccountWidget()
 {
-	//DockWidget für Accounts erstellen
+	/** create a new QDockWidget ("Online Konten"). */
 	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
 	this->dock_Accounts->setObjectName("OnlineAccounts");
 	qDebug() << "creating bankAccountsWidget";
+	/** A new BankAccountsWidget is set as the new widget in der QDockWidget. */
 	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
 	this->dock_Accounts->setWidget(baw);
 	//this->dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -499,29 +479,28 @@ void MainWindow::createDockBankAccountWidget()
 	this->dock_Accounts->setFloating(false);
 	this->dock_Accounts->hide();
 	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
+	/** Add the DockWidget topDockWidgetArea of the MainWindow. */
 	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
+	/** Connection for the ContextMenu is established. */
 	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
 }
 
-/** \brief Erstellt das "Bekannte Empfänger" QDockWidget
-  *
-  * Es wird ein neues QDockWidget (Bekannte Empfänger) erstellt.
-  * Diesem wird dann ein neues KnwonEmfpaengerWidget zugewiesen.
-  * Und das neue DockWidget wird dann dem MainWindow zugeteilt.
-  *
-  * Außerdem werden die Signale des KnownEmfpängerWidget mit den entprechenden
-  * Slots des MainWindow verbunden.
-  */
 //private
+/** \brief Creates the "Bekannte Empfänger" QDockWidget
+ *
+ * A new QDockWidget ("Bekannte Empfänger") is created and a new
+ * KnownEmpfaengerWidget is set as the new Widget of the QDockWidget.
+ *
+ * Also all needed connections to the KnownEmpfaengerWidget are established.
+ */
 void MainWindow::createDockKnownRecipients()
 {
-	//DockWidget für KnownRecipients erstellen
 	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
 	this->dock_KnownRecipient->setObjectName("KnownRecipients");
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
-	//Änderungen der EmpfängerListe dem Widget bekanntgeben
+	//Changes of the known recipients must be send to the widget
 	connect(settings, SIGNAL(recipientsListChanged()),
 		kew, SLOT(onEmpfaengerListChanged()));
 	connect(kew, SIGNAL(replaceKnownEmpfaenger(int,abt_EmpfaengerInfo*)),
@@ -552,14 +531,16 @@ void MainWindow::createDockStandingOrders()
 	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
 	widgetKnownStandingOrders *StandingOrders;
-	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
-	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
-	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
+	//The widgetKnownStandingOrders must be created with the selected
+	//account in the widgetAccountComboBox. (If the widgetAccountComboBox
+	//is created with NULL the first account is selected).
+	//This is done after all creations and connections by
+	//dockStandingOrdersSetAccounts();
 	StandingOrders = new widgetKnownStandingOrders();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		StandingOrders, SLOT(setAccount(const aqb_AccountInfo*)));
-	//damit Änderungen der Auswahl auch in der settings.ini gespeichert werden
+	//Changes at the selection must also be saved in the settings.ini
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedStandingOrdersAccountChanged(const aqb_AccountInfo*)));
 
@@ -588,27 +569,27 @@ void MainWindow::createDockStandingOrders()
 	this->dockStandingOrdersSetAccounts();
 }
 
+//private
 void MainWindow::dockStandingOrdersSetAccounts()
 {
 	widgetAccountComboBox *accComboBox = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
 	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 
 	if ((accComboBox == NULL) || (standingOrders == NULL)) {
-		return; //ein widget fehlt, abbruch
+		return; //one widget missing, cancel
 	}
 
-	//den zuletzt gewählten Account herausfinden
+	//get the last selected account (from settings)
 	int selAccID = settings->loadSelAccountInWidget("StandingOrders");
 	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
 
-	//Alle bekannten Accounts in der ComboBox setzen
+	//set all known accounts in the ComboBox
 	accComboBox->setAllAccounts(this->accounts);
-	//und den zuletzt gewählten Anzeigen
+	//and select the last time selected one
 	accComboBox->setSelectedAccount(lastAcc);
 
-	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
-	//der account in standingOrders geändert!
-	//standingOrders->setAccount(lastAcc);
+	//by setting the selected account in the accComboBox, the account for
+	//the standingOrders Widget is changed automatically.
 }
 
 //private
@@ -624,15 +605,17 @@ void MainWindow::createDockDatedTransfers()
 	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
 
 	widgetKnownDatedTransfers *DatedTransfers;
-	//Das DockWidget muss mit dem in der comboBox gewählten Account erstellt
-	//werden, da wenn die ComboBox mit "NULL" erstellt wurde trotzdem das
-	//erste Konto gewählt ist! (somit Erstellung des Dock mit Account != NULL)
+	//The widgetKnownDatedTransfers must be created with the selected
+	//account in the widgetAccountComboBox. (If the widgetAccountComboBox
+	//is created with NULL the first account is selected).
+	//This is done after all creations and connections by
+	//dockDatedTransfersSetAccounts();
 	DatedTransfers = new widgetKnownDatedTransfers();
 
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		DatedTransfers, SLOT(setAccount(const aqb_AccountInfo*)));
 
-	//Änderungen der Account-Wahl in der settings.ini speichern
+	//Changes at the selection must also be saved in the settings.ini
 	connect(accComboBox, SIGNAL(selectedAccountChanged(const aqb_AccountInfo*)),
 		this, SLOT(selectedDatedTransfersAccountChanged(const aqb_AccountInfo*)));
 
@@ -668,46 +651,45 @@ void MainWindow::dockDatedTransfersSetAccounts()
 	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 
 	if ((accComboBox == NULL) || (datedTransfers == NULL)) {
-		return; //ein widget fehlt, abbruch
+		return; //one widget missing, cancel
 	}
 
-	//den zuletzt gewählten Account herausfinden
+	//get the last selected account (from settings)
 	int selAccID = settings->loadSelAccountInWidget("DatedTransfers");
 	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
 
-	//Alle bekannten Accounts in der ComboBox setzen
+	//set all known accounts in the ComboBox
 	accComboBox->setAllAccounts(this->accounts);
-	//und den zuletzt gewählten Anzeigen
+	//and select the last time selected one
 	accComboBox->setSelectedAccount(lastAcc);
 
-	//Über das ändern des selectedAccounts in der accComboBox wird automatisch
-	//der account in standingOrders geändert!
-	//standingOrders->setAccount(lastAcc);
+	//by setting the selected account in the accComboBox, the account for
+	//the datedTransfers Widget is changed automatically.
 }
 
 
 //private
 void MainWindow::createJobCtrlAndConnections()
 {
-	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
-	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	Q_ASSERT(this->history); //the history and
+	Q_ASSERT(this->accounts); //accounts must exist
 
 	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
 
-	/***** Signals und Slots der Objecte verbinden ******/
-	//Nicht mögliche Aufträge in der StatusBar anzeigen
+	/***** Signals and Slots ******/
+	//Display not possible jobs at the status bar
 	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
-	//über erfolgreich hinzugefügte jobs wollen wir informiert werden
+	//Connection for successfully added jobs
 	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
 		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
 
-	//Logs von abt_job_ctrl in der Log-Seite anzeigen
+	//log messges ob abt_job_ctrl should go to the log wiget
 	connect(this->jobctrl, SIGNAL(log(QString)),
 		this->logw, SLOT(appendLogText(QString)));
 
-	//Bearbeiten von im Ausgang befindlichen Jobs zulassen
+	//Allow ediging of jobs in the outbox
 	connect(this->outbox, SIGNAL(editJob(int)),
 		this, SLOT(onEditJobFromOutbox(int)));
 
@@ -731,74 +713,71 @@ void MainWindow::createJobCtrlAndConnections()
 
 }
 
-/** \brief Lädt alle Account Daten */
 //private
+/** @brief Loads all data for all accounts */
 void MainWindow::loadAccountData()
 {
-	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	Q_ASSERT(this->accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx;
 
-	//Account Daten aus der entsprechenden Datei laden
+	//get all account data from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
 					 "ctxfile", "default");
 	abt_parser::parse_ctx(ctx, this->accounts);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
+	AB_ImExporterContext_free(ctx); //ctx no longer needed, all loaded
 }
 
-/** \brief Speichert alle Account Daten */
 //private
+/** @brief Saves all data from all accounts */
 void MainWindow::saveAccountData()
 {
-	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	Q_ASSERT(this->accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
-	//erstellt einen AB_IMEXPORTER_CONTEXT für ALLE accounts
+	//create one AB_IMEXPORTER_CONTEXT for all accounts
 	ctx = abt_parser::create_ctx_from(this->accounts);
 
-	//wenn kein ctx vorhanden ist müssen wir auch nichts speichern
-	if (!ctx) return;
+	if (!ctx) return; //if no ctx created, we have nothing to save
 
 	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
 				   "ctxfile", "default");
-	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);
 }
 
-/** \brief Lädt alle History Daten */
 //private
+/** \brief loads all history data */
 void MainWindow::loadHistoryData()
 {
-	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
-	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
+	Q_ASSERT(this->history); //the history and
+	Q_ASSERT(this->accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx;
 
-	//wir laden die History neu, deswegen erstmal alle Einträge löschen
+	//clear all loaded history items, we relaod them all
 	this->history->clearAll();
 
-	//History-Daten aus der entsprechenden Datei laden
+	//load all history items from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
 					 "ctxfile", "default");
 	abt_parser::parse_ctx(ctx, this->accounts, this->history);
-	AB_ImExporterContext_free(ctx); //alle Daten geladen ctx wieder löschen.
-}
-
-/** \brief Speichert alle History Daten */
-//private
-void MainWindow::saveHistoryData()
-{
-	Q_ASSERT(this->history); //Das History Object muss vorhanden sein
-	Q_ASSERT(this->accounts); //Accounts müssen vorhanden sein!
-	AB_IMEXPORTER_CONTEXT *ctx = NULL;
-
-	//Die History in einer Separaten Datei speichern
-	ctx = this->history->getContext();
-	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
-				   "ctxfile", "default");
-	//ctx wieder freigeben!
 	AB_ImExporterContext_free(ctx);
 }
 
+//private
+/** \brief saves all history data */
+void MainWindow::saveHistoryData()
+{
+	Q_ASSERT(this->history); //the history and
+	Q_ASSERT(this->accounts); //accounts must exist
+	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
+	//get the AB_IMEXPORTER_CONTEXT for the history and save it to file
+	ctx = this->history->getContext();
+	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
+				   "ctxfile", "default");
+	AB_ImExporterContext_free(ctx);
+}
+
+//private
 void MainWindow::on_actionDebug_Info_triggered()
 {
 	if (debugDialog->isVisible()) {
@@ -808,9 +787,8 @@ void MainWindow::on_actionDebug_Info_triggered()
 	}
 }
 
-/*!
- * Slot is called when a job is added to the jobctrl
- */
+//private
+/** @brief Slot is called when a job is added to the jobctrl */
 void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 {
 	this->ui->statusBar->showMessage(tr("Auftrag \"%1\" zum Ausgang "
@@ -826,11 +804,13 @@ void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 	dia.exec();
 }
 
-/*!
- * Item des Listwidget hat sich geändert, die entsprechende Seite des
- * stackedWidget anzeigen.
+//private
+/** @brief item in ListWidget changed
+ *
+ * shows the corresponding page in the stackedWidget.
  */
-void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
+void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem* current,
+						  QListWidgetItem* previous)
 {
 	if (!current) {
 		current = previous;
@@ -849,7 +829,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QDialog *about = new QDialog(this);
 	about->setWindowTitle(tr("about %1").arg(qApp->applicationName()));
 
-	//Lizenz-Text auf Anforderung (Click) anzeigen
+	//show the license text on pushButton click
 	QDialog *licenseDialog = new QDialog(about);
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
@@ -876,7 +856,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 
 	//Horizontal Layout
 	QHBoxLayout *hbox = new QHBoxLayout();
-	//Icon-Image als Grafik oben links
+	//Icon-Image as graphic top left
 	QLabel *img = new QLabel(about);
 	QPixmap *iconpic = new QPixmap(":/icons/bank-icon");
 	img->setPixmap(*iconpic);
@@ -956,26 +936,26 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 }
 
 //private slot
+/** @brief Shows a help/FAQ dialog
+ *
+ * the underlying text is included as a resource and is read from
+ * helpText.html in the src directory.
+ */
 void MainWindow::on_actionHelp_triggered()
 {
-	//hier eine Hilfe über die Vorgehensweise in AB-Transfers anzeigen
-	//sowie oft gestellte Fragen beantworten.
-
 	QDialog *helpDialog = new QDialog(this);
 	helpDialog->setWindowTitle(tr("Hilfe / FAQ"));
 
-	//Horizontal Layout
 	QVBoxLayout *vbox = new QVBoxLayout(helpDialog);
 
-	//ScrollArea zur Anzeige des Textes
+	//ScrollArea for text display
 	QScrollArea *scroll = new QScrollArea();
 	scroll->setWidgetResizable(true);
 	scroll->setMinimumSize(520, 600);
 	scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	vbox->addWidget(scroll);
 
-	// Der eigentliche HilfeText ist als ressource eingebunden und stammt
-	// aus der Datei helpText.html im src Verzeichnis
+	//text from resource (helpText.html)
 	QLabel *text1 = new QLabel();
 	text1->setWordWrap(true);
 	text1->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -1001,7 +981,7 @@ void MainWindow::on_actionHelp_triggered()
 	delete helpDialog;
 }
 
-//private SLOT
+//private slot
 void MainWindow::on_actionEinstellungen_triggered()
 {
 	DialogSettings DiaSettings(settings, banking->getAqBanking(), this);
@@ -1015,7 +995,7 @@ void MainWindow::on_actionEinstellungen_triggered()
 	DiaSettings.exec();
 }
 
-//private SLOT
+//private slot
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 {
 	QString msg;
@@ -1028,8 +1008,8 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	//only show the menu when a account is selected
 	if (acc->getSelectedAccount() != NULL) {
-		//Menü nur anzeigen wenn auch ein Account ausgewählt ist
 		this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
 	}
 }
@@ -1037,14 +1017,14 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 //private slot
 void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
 {
-	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
+	if (acc == NULL) return; //cancel if no account is supplied
 	settings->saveSelAccountInWidget("StandingOrders", acc);
 }
 
 //private slot
 void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
 {
-	if (acc == NULL) return; //Abbruch wenn kein Account vorhanden
+	if (acc == NULL) return; //cancel if no account is supplied
 	settings->saveSelAccountInWidget("DatedTransfers", acc);
 }
 
@@ -1082,7 +1062,7 @@ void MainWindow::onActionDatedNewTriggered()
 void MainWindow::onActionDatedUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
+	if (!acc) return; //cancel if no BankAccountsWidget was found
 	this->jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
 }
 
@@ -1096,7 +1076,7 @@ void MainWindow::onActionStandingNewTriggered()
 void MainWindow::onActionStandingUpdateTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
+	if (!acc) return; //cancel if no BankAccountsWidget was found
 	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
 }
 
@@ -1116,24 +1096,23 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 void MainWindow::onActionUpdateBalanceTriggered()
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	if (!acc) return; //Abbruch wenn kein BankAccountsWidget gefunden wurde
+	if (!acc) return; //cancel if no BankAccountsWidget was found
 	this->jobctrl->addGetBalance(acc->getSelectedAccount());
 }
 
 //private slot
+/** @brief shows a list of all supported and available jobs */
 void MainWindow::onActionShowAvailableJobsTriggered()
 {
-	//Alle unterstützen bzw. nicht unterstützen Jobs für das gewählte
-	//Konto anzeigen
+	//show all supported and not supported jobs for the selected account
 	BankAccountsWidget *BAW = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	aqb_AccountInfo *acc = BAW->getSelectedAccount();
-	if (!acc) return; //kein Account gewählt -> abbruch
+	if (!acc) return; //no account selected, cancel
 
 	QDialog *dialog = new QDialog(this);
 	dialog->setWindowTitle(tr("Unterstützte Aufträge"));
 	QGridLayout *gl = new QGridLayout(dialog);
 
-	//Text als Einleitung
 	QLabel *text = new QLabel(tr("Anzeige der vom Institut unterstützten "
 				     "Aufträge für das Konto %1 (%2). "
 				     "Nicht alle Aufträge werden auch von "
@@ -1144,42 +1123,42 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	gl->addWidget(text, 0, 0, 1, -1); //use the text as a header
 	gl->setRowMinimumHeight(1, 12); //one row as seperator
 
-	//mögliche Icons erstellen
+	//prepare used icons
 	QIcon *icoSup = new QIcon(QIcon::fromTheme("dialog-ok-apply"));
 	QIcon *icoNotSup = new QIcon(QIcon::fromTheme("edit-delete"));
 	const QPixmap pixSup = icoSup->pixmap(16, QIcon::Normal); //supported
 	const QPixmap pixNotSup = icoNotSup->pixmap(16, QIcon::Normal); //not supported
 	const QPixmap pixLatSup = icoSup->pixmap(16, QIcon::Disabled); //later supported
 
-	//Spaltenüberschriften erstellen und anzeigen
+	//create and display column header
 	QLabel *text_bank = new QLabel(tr("Institut"));
 	QLabel *text_abtransfer = new QLabel(tr("%1").arg(qApp->applicationName()));
 	QLabel *text_description = new QLabel(tr("Auftrag"));
 	gl->addWidget(text_bank, 2, 0, Qt::AlignCenter);
 	gl->addWidget(text_abtransfer, 2, 1, Qt::AlignCenter);
 	gl->addWidget(text_description, 2, 2, Qt::AlignLeft | Qt::AlignVCenter);
-	gl->setRowMinimumHeight(3, 5); //kleine Unterteilung
+	gl->setRowMinimumHeight(3, 5); //small space
 
-	gl->setHorizontalSpacing(10); //Abstand zwischen den Feldern
+	gl->setHorizontalSpacing(10);
 
-	//Alle Aufträge von AqBanking durchgehen und entsprechend anzeigen
+	//go through all jobs from AqBanking and display them
 	QHashIterator<AB_JOB_TYPE, bool> it(*acc->availableJobsHash());
 	it.toFront();
-	int row = gl->rowCount(); //neue Widgets anfügen
+	int row = gl->rowCount(); //append new widgets
 	while (it.hasNext()) {
 		it.next();
 		QLabel *txt = new QLabel(abt_conv::JobTypeToQString(it.key()));
 		QLabel *IcoBank = new QLabel();
 		QLabel *IcoABT = new QLabel();
 
-		//Icons für vom Institut unterstützte Aufträge
+		//Icons for jobs supported by bank
 		if (it.value()) {
 			IcoBank->setPixmap(pixSup);
 		} else {
 			IcoBank->setPixmap(pixNotSup);
 		}
 
-		//Icons für von AB-Transfers unterstützte Aufträge
+		//Icons for jobs supported by AB-Transfers
 		switch (abt_settings::supportedByAbtransfers(it.key())) {
 		case 1: IcoABT->setPixmap(pixSup);;
 			break;
@@ -1190,16 +1169,16 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 			break;
 		}
 
-		//Icons und Text ausgeben
+		//display icons and text
 		gl->addWidget(IcoBank, row, 0, Qt::AlignCenter);
 		gl->addWidget(IcoABT, row, 1, Qt::AlignCenter);
 		gl->addWidget(txt, row, 2, Qt::AlignLeft | Qt::AlignVCenter);
 
-		row++; //nächste Zeile
+		row++; //next row
 	}
 
-	//Symbolbedeutungen erklären
-	gl->setRowMinimumHeight(row++, 12); //Abstand zur Liste
+	//descriptions for the meanings of symbols
+	gl->setRowMinimumHeight(row++, 12); //space to list
 	QLabel *labelTextDescription = new QLabel(tr("Symbolbedeutungen"));
 	gl->addWidget(labelTextDescription, row++, 0, 1, -1, Qt::AlignLeft | Qt::AlignBottom);
 
@@ -1237,7 +1216,7 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 //private slot (ONLY FOR TESTING!)
 void MainWindow::onActionTestWidgetAccessTriggered()
 {
-	//Nur zum Testen verwendet!
+	//Only used for test purposes!
 	QDialog *dialog = new QDialog(this);
 	QVBoxLayout *vb = new QVBoxLayout(dialog);
 	pageWidgetTests *page = new pageWidgetTests(this->accounts);
@@ -1250,32 +1229,35 @@ void MainWindow::onActionTestWidgetAccessTriggered()
 #endif
 
 //private slot
-/** Tab soll gelöscht werden
+/** @brief Tab should be closed
  *
- * Prüft ob nicht gespeicherte Änderungen vorhanden sind und wenn ja erfolgt
- * eine abfrage ob der Tab wirklich geschlossen werden soll.
- * Wenn der Tab entfernt werden soll wird dies über deleteTabWidgetAndTab()
- * erledigt.
+ * checks if a not saved change exist and asks the user if the tab should
+ * realy be closed or not.
+ *
+ * If the tab should realy be closed, this is delegated to
+ * deleteTabWidgetAndTab()
  */
 void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 {
+	int msgret;
+
 	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(index));
 	if (transW == NULL) {
-		//child widget nicht vorhanden!
-		return; //nichts machen
+		return; //child does not exist, do nothing
 	}
 
 	if (transW->hasChanges()) {
-		if (QMessageBox::question(this,
-					  tr("Änderungen verwerfen?"),
-					  tr("Im Tab '%1' wurden "
-					     "Änderungenen vorgenommen!\n\n"
-					     "Sollen diese Änderungen "
-					     "verworfen werden?").arg(
-							     this->ui->tabWidget_UW->tabText(index)),
-					  QMessageBox::Yes | QMessageBox::No,
-					  QMessageBox::Yes) != QMessageBox::Yes) {
-			return; //Abbruch, Tab nicht schließen
+		msgret = QMessageBox::question(
+				 this, tr("Änderungen verwerfen?"),
+				 tr("Im Tab '%1' wurden Änderungenen "
+				    "vorgenommen!\n\n"
+				    "Sollen diese Änderungen verworfen werden?")
+				 .arg(this->ui->tabWidget_UW->tabText(index)),
+				 QMessageBox::Yes | QMessageBox::No,
+				 QMessageBox::Yes);
+
+		if (msgret != QMessageBox::Yes) {
+			return; //user decided to not close the tab
 		}
 	}
 
@@ -1295,8 +1277,8 @@ void MainWindow::deleteTabWidgetAndTab(int tabIndex)
 void MainWindow::deleteTabWidgetAndTab(const widgetTransfer *w)
 {
 	int tabIdx = -2;
-	//Diese funktion sollte nur aufgerufen werden wenn das Tab welches
-	//gelöscht werden soll auch gerade das übergebene Widget anzeigt.
+	//This function should only be called when the supplied widgetTransfer
+	//is currently displayed in the current tab.
 	if (this->ui->tabWidget_UW->currentWidget() == w) {
 		tabIdx = this->ui->tabWidget_UW->currentIndex();
 	}
@@ -1307,6 +1289,12 @@ void MainWindow::deleteTabWidgetAndTab(const widgetTransfer *w)
 }
 
 //private
+/** @brief creates a new widgetTransfer and displays it in a new tab
+ *
+ * A new widgetTransfer for the supplied @a type and @a account is created.
+ * If no @a account is supplied, the account selected in the BankAccountsWidget
+ * is used.
+ */
 widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 							  const aqb_AccountInfo *account)
 {
@@ -1323,12 +1311,12 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 		this->ui->statusBar->showMessage(tr("Kein Konto vorhanden! "
 						    " -- Ist ein Konto in \"Online "
 						    "Konten\" gewählt?"), 8000);
-		return NULL; //Abbruch, ohne Account können wir nichts machen!
+		return NULL; //without a account we cant do anything
 	}
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
 
-	//Den neuen Tab auch gleich als aktuellen Tab setzen
+	//add the new tab and set it as current
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
@@ -1337,8 +1325,8 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 	connect(trans, SIGNAL(cancelClicked(widgetTransfer*)),
 		this, SLOT(onWidgetTransferCancelClicked(widgetTransfer*)));
 
-	//Sicherstellen das die Übersichts-Seite angezeigt wird (damit der neue
-	//Tab auch gleich sichtbar ist)
+	//make sure that the summary page is displayed, so that the new tab
+	//is visible
 	this->ui->listWidget->setCurrentRow(0, QItemSelectionModel::ClearAndSelect);
 
 	return trans;
@@ -1347,32 +1335,30 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 //private slot
 void MainWindow::onWidgetTransferCancelClicked(widgetTransfer *sender)
 {
-	//sender im TabWidget suchen und entfernen
+	//find the widgetTransfer (*sender) at the TabWidget and remove it
 	int tabIdx = this->ui->tabWidget_UW->indexOf(sender);
 	this->on_tabWidget_UW_tabCloseRequested(tabIdx);
 }
 
 //private slot
+/** @brief is called when a Transfer should be put to the outbox */
 void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer *sender)
 {
 	if (type == AB_Job_TypeCreateStandingOrder ||
 	    type == AB_Job_TypeModifyStandingOrder) {
-		//Testen ob die Eingaben von recurrence i.O. sind
+		//check if the inputs to recurrence are ok
 		QString errMsg;
 		bool inputOK = sender->isRecurrenceInputOk(errMsg);
 		if (!inputOK) {
 			bool accepted = this->correctRecurrenceDates(sender->recurrence);
 			if (!accepted) {
-				//User möchte die automatische Korrektur nicht
-				return;
+				return; //user dont want the correction
 			}
-
 		}
-
 	}
 
 
-	//erstmal prüfen ob die Eingaben in dem Widget so OK sind.
+	//first we control the input at the Widget
 	QString errMsg;
 	if (! sender->isGeneralInputOk(errMsg)) {
 		QMessageBox::critical(this,
@@ -1381,11 +1367,11 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 					 "%1<br />"
 					 "Bitte korrigieren Sie diese.").arg(errMsg),
 				      QMessageBox::Ok);
-		return; //Abbruch, Eingaben sind fehlerhaft.
+		return; //cancel, inputs are not ok
 	}
 
-	//entsprechende Transaction erstellen oder Ändern und dem abt_job_ctrl
-	//zur Ausführung übergeben, danach das Widget und den Tab entfernen.
+	//everthing seems fine. Create the corresponding transaction and
+	//delegate it to the abt_job_ctrl for execution.
 	switch (type) {
 	case AB_Job_TypeTransfer:
 		this->createAndSendTransfer(sender);
@@ -1432,21 +1418,19 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 		break;
 	}
 
-	//Der Transfer wurde in den Ausgangskorb übernommen, das Widget und den
-	//Tab löschen
+	//the transaction was put to the outbox, remove the widget and the tab
 	this->deleteTabWidgetAndTab(sender);
 }
 
-/**
-  * Wenn die Eingaben im widgetRecurrence fehlerhaft sind kann diese Funktion
-  * aufgerufen werden um die Daten automatisch zu korrigieren.
-  *
-  * Vor einer Korrektur wird der Benutzer gefragt ob dies so gemacht werden soll.
-  * Wenn er dem zustimmt wird true zurückgegeben und die Daten im
-  * widgetRecurrence geändert. Ansonsten false und die Daten so belassen wie
-  * sie sind.
-  */
 //private
+/**
+ * When the input in widgetRecurrence are incorrect this function can be
+ * called to correct the dates automatically.
+ *
+ * Before a correction the user is asked if he wants this. If he answered
+ * with 'Yes' the function returns true and changes the dates in the
+ * widgetRecurrence, otherwise it returns false and leaves the dates as is.
+ */
 bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 {
 	QDate correctFirstDate, correctLastDate, correctNextDate;
@@ -1457,7 +1441,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 
 	//QDate DateEins(2012, 1, 31);
 	//DateEins = DateEins.addMonths(2);
-	//wo landen wir?
+	//were are we?
 	//31.01.2012 + 1 Monat  = 29.02.2012
 	//29.02.2012 + 1 Monat  = 29.03.2012
 	//31.01.2012 + 2 Monate = 31.03.2012
@@ -1471,22 +1455,18 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 	//99 (Ultimo) / 98 (Ultimo-1) / 97 (Ultimo-2)
 	int execDay = recurrence->getExecutionDay();
 
-	//Wir gehen davon aus das der executionDay, die period und der cycle
-	//richtig gewählt wurden und stellen dementsprechend das first-, last-
-	//und nextDate ein.
+	//we assume that the executionDay, period and cycle are selected
+	//correct and calculate the first-, last- and nextDate.
 
-	//Erstmal die gewählten Werte übernehmen (da const)
+	//copy the selected dates (const)
 	correctFirstDate = firstDate;
 	correctLastDate = lastDate;
 	correctNextDate = nextDate;
 
 	switch(period) {
-	/** \todo Die einzelnen case-Abschnitte sollten der Übersichtshalber
-		  in einzelne Funktionen ausgelagert werden.
-	*/
+	/** @todo place the different cases into functions for clarity */
 	case AB_Transaction_PeriodWeekly: {
-		//zum firstDate werden solange Tage addiert bis der gewählte
-		//Wochentag dem Datum entspricht
+		//add days to firstDate until the weekday matches the selected
 		while (correctFirstDate.dayOfWeek() != execDay) {
 			correctFirstDate = correctFirstDate.addDays(1);
 		}
@@ -1494,117 +1474,110 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//nextDate must be the same as firstDate
 		correctNextDate = correctFirstDate;
 
-		//Wenn lastDate ungültig ist soll der Dauerauftrag "bis auf
-		//weiteres" durchgeführt werden (Kein Enddatum)
-		if (!lastDate.isValid()) break; //keine weitere Bearbeitung
+		//when lastDate is invalid, the standing order should
+		//execute until it is deleted or edited (no end date)
+		if (!lastDate.isValid()) break; //no further correction needed
 
-		//Ansonsten stellen wir das Enddatum auf den richtigen Wochentag
-		//In diesem Fall der erste Wochentag der VOR dem eingestelltem
-		//Datum mit dem gewählten Wochentag übereinstimmt
-
+		//Otherwise we adjust the end date to the right weekday.
+		//In this case, the first weekday that matches with the selected
+		//one before the selected end date.
 		int diffTage  = correctFirstDate.daysTo(correctLastDate);
 		if ( diffTage < (cycle * 7) ) {
-			// - firstDate und lastDate dürfen nicht gleich sein
-			// - lastDate darf nicht vor firstDate liegen
+			// - firstDate and lastDate must not be equal
+			// - lastDate must not before firstDate
 			correctLastDate = correctFirstDate.addDays(cycle * 7);
 		} else {
-			// - Der Zyklus muss stimmen
-			//Abweichung vom gewählten Wochentag (could be 0)
+			// - the cycle must match
+			//deviation from selected weekday (could be 0)
 			int remTage = diffTage % 7;
-			//Abweichung vom gewählten Zyklus (could be 0)
+			//difference from selected cycle (could be 0)
 			int diffWochen = ( diffTage - remTage ) % cycle;
-			//lastDate auf einen gültigen Tag, vor dem einstellten
-			//Tag, setzen.
+			//set lastDate to a valid day
 			correctLastDate = correctLastDate.addDays( -remTage -diffWochen*7 );
 		}
 	} //case AB_Transaction_PeriodWeekly:
 		break;
 	case AB_Transaction_PeriodMonthly: {
-		//Für 'Erstmalig' setzen wir den erstmöglichen Tag der nach dem
-		//eingestellten Datum liegt unter Berücksichtigung des
-		//eingestellten Ausführungstags.
-		//Für 'Letztmalig' setzen wir, wenn möglich, einen Tag der vor
-		//oder gleich dem eingestellten Datum ist.
+		//For firstDate we set the first day possible after the selected
+		//day, in consideration to the selected executionDay.
+		//For lastDate we set, if possible, a day before or equal to
+		//the selected date.
 
 		switch(execDay) {
 		case 99: /* Ultimo   */
 		case 98: /* Ultimo-1 */
 		case 97: /* Ultimo-2 */ {
-			//Die Ausführung soll jeweils am letzten Tag[-1/-2]
-			//des Monats erfolgen.
+			//The execution should be on the last day [-1/-2] of
+			//the month.
 
-			int daysToEnd = 99 - execDay; //Tage vor dem letzten des Monats
-			//bei Ultimo: 0 / Ultimo-1: 1 / Ultimo-2: 2
+			int daysToEnd = 99 - execDay; //days to last day of month
+			//at Ultimo: 0 / Ultimo-1: 1 / Ultimo-2: 2
 
 			if (firstDate.day() > (firstDate.daysInMonth() - daysToEnd)) {
-				//erste Ausführung in den nächsten Monat schieben
+				//move first execution to next month
 				correctFirstDate = firstDate.addMonths(1);
 			}
-			//Den "richtigen" Tag setzen
+			//set the "right" day
 			correctFirstDate.setDate(correctFirstDate.year(),
 						 correctFirstDate.month(),
 						 correctFirstDate.daysInMonth() - daysToEnd);
 
-			// --> correctFirstDate ist jetzt richtig!
+			// --> correctFirstDate now valid
 
-
-			//NextDate wird erstmal immer auf dasselbe Datum gesetzt
-			//wie firstDate
 			correctNextDate = correctFirstDate;
 
+			//when lastDate is invalid, the standing order should
+			//execute until it is deleted or edited (no end date)
+			if (!lastDate.isValid()) break; //no further correction
 
-			//Wenn lastDate ungültig ist soll der Dauerauftrag "bis auf
-			//weiteres" durchgeführt werden (Kein Enddatum)
-			if (!lastDate.isValid()) break; //keine weitere Bearbeitung
-
-			//Ansonsten stellen wir das Enddatum auf den richtigen Tag.
-			//Wir wählen ein Datum das möglichst vor dem eingestellten
-			//lastDate liegt und berücksichtigen den Ausführungstag
-			//sowie den Zyklus!
+			//Otherwise we adjust the lastDate to a valid day.
+			//We select a date which is before the selected lastDate
+			//if possible. In consideration of the executionDay and
+			//the cycle.
 
 			int monthDiff = ( ( lastDate.year() - correctFirstDate.year() ) * 12 +
 					  ( lastDate.month() - correctFirstDate.month() ) ) % cycle;
 
-			//monthDiff entspricht jetzt den Monaten die das lastDate
-			//vorgezogen werden muss (kann auch 0 sein).
+			//monthDiff is now equal to the months which the
+			//lastDate must be bring forward (could be 0).
 			correctLastDate = lastDate.addMonths( -monthDiff );
 
-			//im lastDate den "richtigen" Ausführungstag setzen
+			//set a valid executionDay in lastDate
 			correctLastDate.setDate(correctLastDate.year(),
 						correctLastDate.month(),
 						correctLastDate.daysInMonth() - daysToEnd);
 
-			// - firstDate und lastDate dürfen keinesfalls gleich sein
-			// - lastDate darf nicht vor firstDate liegen
+			// - firstDate and lastDate must not be equal
+			// - lastDate must not before firstDate
 			if (correctFirstDate >= correctLastDate) {
-				//in den nächsten Zyklus wechseln
-				/** \todo Kann es auch sein das wir 2 Zyklen
-					  weiter müssen? Nochmal durchrechnen!
-				*/
+				//move to the next cycle
+				/** @todo Could it happen that we must go ahead
+				 *	  2 cycles at once? Recalculate this!
+				 */
 				correctLastDate = correctFirstDate.addMonths(cycle);
-				//correctLastDate wurde geändert, deswegen setzen
-				//wir nochmal den "richtigen" Ausführungstag
+				//correctLastDate was changed, therfore we set
+				//the executionDay another time.
 				correctLastDate.setDate(correctLastDate.year(),
 							correctLastDate.month(),
 							correctLastDate.daysInMonth() - daysToEnd);
 			}
 
-			// --> correctLastDate ist jetzt richtig!
+			// --> correctLastDate is now valid
 		}
 			break;
-		default: //"Normaler" Tag
-			//"Erstmalig" richtig einstellen
+		default: //"Normal" Day
+			//set "firstDay" correct
 
 			//worst case:   31        30
 			if ( firstDate.day() > execDay ) {
-				//erste Ausführung in den nächsten Monat verschieben
+				//move execution to the next month
 				correctFirstDate = firstDate.addMonths(1);
-				//worst case: date.day() ist jetzt 30 (oder 28) !
+				//worst case: date.day() is now 30 (or 28) !
 			}
 
 			if ( correctFirstDate.daysInMonth() < execDay ) {
-				//In diesem Fall wird der letzte Tag ausgewählt.
-				//kommt nur sehr selten vor! Und sollte richtig sein.
+				//In this case we set the last day.
+				//occurs very seldom, and should be right.
 				correctFirstDate.setDate(correctFirstDate.year(),
 							 correctFirstDate.month(),
 							 correctFirstDate.daysInMonth());
@@ -1612,28 +1585,24 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 				correctFirstDate = correctFirstDate.addDays( execDay - correctFirstDate.day() );
 			}
 
-			// --> correctFirstDate ist jetzt richtig!
+			// --> correctFirstDate is now valid
 
-
-			//NextDate wird erstmal immer auf dasselbe Datum gesetzt
-			//wie firstDate
 			correctNextDate = correctFirstDate;
 
+			//when lastDate is invalid, the standing order should
+			//execute until it is deleted or edited (no end date)
+			if (!lastDate.isValid()) break; //no further correction
 
-			//Wenn lastDate ungültig ist soll der Dauerauftrag "bis auf
-			//weiteres" durchgeführt werden (Kein Enddatum)
-			if (!lastDate.isValid()) break; //keine weitere Bearbeitung
-
-			//Ansonsten stellen wir das Enddatum auf den richtigen Tag.
-			//Wir wählen ein Datum das möglichst vor dem eingestellten
-			//lastDate liegt und berücksichtigen den Ausführungstag
-			//sowie den Zyklus!
+			//Otherwise we adjust the lastDate to a valid day.
+			//We select a date which is before the selected lastDate
+			//if possible. In consideration of the executionDay and
+			//the cycle.
 
 			int monthDiff = ( ( lastDate.year() - correctFirstDate.year() ) * 12 +
 					  ( lastDate.month() - correctFirstDate.month() ) ) % cycle;
 
-			//monthDiff entspricht jetzt den Monaten die das lastDate
-			//vorgezogen werden muss um zum gewählten Zyklus zu passen.
+			//monthDiff is now equal to the months which the
+			//lastDate must be bring forward (could be 0).
 			correctLastDate = lastDate.addMonths( -monthDiff );
 
 			//wenn der Ausführungstag nach dem gewählten Enddatum
@@ -1649,10 +1618,10 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 				correctLastDate = correctLastDate.addMonths(-cycle);
 			}
 
-			//im lastDate den "richtigen" Ausführungstag setzen
+			//set a valid exection day in lastDate
 			if ( correctLastDate.daysInMonth() < execDay ) {
-				//In diesem Fall wird der letzte Tag ausgewählt.
-				//kommt nur sehr selten vor! Und sollte richtig sein.
+				//In this case we set the last day.
+				//occurs very seldom, and should be right.
 				correctLastDate.setDate(correctLastDate.year(),
 							correctLastDate.month(),
 							correctLastDate.daysInMonth());
@@ -1662,15 +1631,15 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 							execDay);
 			}
 
-			// - firstDate und lastDate dürfen keinesfalls gleich sein
-			// - lastDate darf nicht vor firstDate liegen
+			// - firstDate and lastDate must not be equal
+			// - lastDate must not before firstDate
 			if (correctFirstDate >= correctLastDate) {
 				correctLastDate = correctFirstDate.addMonths(cycle);
-				//lastDate wurde geändert, deswegen setzten wir
-				//nochmal den "richtigen" Ausführungstag
+				//correctLastDate was changed, therfore we set
+				//the executionDay another time.
 				if ( correctLastDate.daysInMonth() < execDay ) {
-					//In diesem Fall wird der letzte Tag ausgewählt.
-					//kommt nur sehr selten vor! Und sollte richtig sein.
+					//In this case we set the last day.
+					//occurs very seldom, and should be right.
 					correctLastDate.setDate(correctLastDate.year(),
 								correctLastDate.month(),
 								correctLastDate.daysInMonth());
@@ -1688,7 +1657,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 	} //case AB_Transaction_PeriodMonthly:
 		break;
 	default:
-		//sollte nicht vorkommen, wir kennen nur weekly und monthly
+		//should never happen, we only know weekly or monthly.
 		qWarning() << Q_FUNC_INFO << "neither weekly nor monthly! Dates not handled!";
 		break;
 	} //switch(period)
@@ -1726,57 +1695,57 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 }
 
 
-/** \brief Prüft und gibt eine Warnung aus wenn der Dauerauftrag bereits im
-  *        Ausgang ist.
-  *
-  * \returns true wenn der Dauerauftrag bereits im Ausgang ist
-  * \returns false wenn der Dauerauftrag nicht im Ausgang ist
-  */
 //private
+/** @brief checks if an standing order is already in the outbox and shows
+ *	   a warning if.
+ *
+ * @returns true if the standing order is alreade in the outbox
+ * @returns false if the standing order is not in the outbox
+ */
 bool MainWindow::isStandingOrderInOutbox(const abt_standingOrderInfo *soi)
 {
 	if (this->jobctrl->isTransactionInQueue(soi->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
-			tr("<b>Der Dauerauftrag befindet sich bereits im Ausgang!</b><br /><br />"
-			   "Er wurde entweder schon bearbeitet oder soll gelöscht werden. "
-			   "Solange sich zu diesem Dauerauftrag bereits eine Änderung "
-			   "im Ausgang befindet kann keine weitere Änderung stattfinden.<br />"
-			   "Bitte löschen oder Bearbeiten Sie den entsprechenden "
-			   "Auftrag im Ausgang."),
+			tr("<b>Der Dauerauftrag befindet sich bereits im "
+			   "Ausgang!</b><br /><br />"
+			   "Er wurde entweder schon bearbeitet oder soll "
+			   "gelöscht werden. Solange sich zu diesem "
+			   "Dauerauftrag bereits eine Änderung im Ausgang "
+			   "befindet kann keine weitere Änderung "
+			   "stattfinden.<br />"
+			   "Bitte löschen oder Bearbeiten Sie den "
+			   "entsprechenden Auftrag im Ausgang."),
 			QMessageBox::Ok, QMessageBox::Ok);
 		return true;
 	}
 	return false;
 }
 
-/** \brief Prüft ob die gespeicherten Daten veraltet sind und fragt wie fortgefahren
-  *        werden soll.
-  *
-  * Es wird geprüft ob das Datum der ersten Ausführung in der Zukunft liegt.
-  * Wenn dies nicht der Fall ist wird davon ausgegangen das die Daten veraltet
-  * sind und der Benutzer gefragt ob eine Aktualisierung stattfinden soll.
-  *
-  * Es existiert auch die Möglichkeit das der Benutzer diese Warnung ignorieren
-  * kann, in diesem Fall gibt diese Funktion denselben Rückgabewert zurück als
-  * wäre das Datum i.O.
-  *
-  * Wenn eine Aktualisierung durchgeführt werden soll wird automatisch der
-  * entsprechende Auftrag in den Ausgang gestellt und in den Ausgang gewechselt.
-  *
-  * \returns false
-  *	Wenn der Dauerauftrag bearbeitet werden kann (Daten nicht verhaltet) oder
-  *	bearbeitet werden soll (Benutzer will keine Aktualisierung)
-  *
-  * \returns true
-  *	wenn der Dauerauftrag nicht bearbeitet werden soll.
-  *
-  */
 //private
+/** @brief checks if the saved data are out-of-date and asks for further action
+ *
+ * It is checked if the first execution date is in the future. If this is not
+ * the case, then it is assumed that the data is out-of-date and the user
+ * is asked whether he will update the standing orders or not.
+ *
+ * The user could also ignore the warning, in this case this function would
+ * return the same value as when the standing order data is not out-of-date.
+ *
+ * If an update should be done, the corresponding job is placed in the outbox
+ * and it will be switched the outbox automatically.
+ *
+ * @returns false
+ *	If the standing order could be edited (not out-of-date) or the user
+ *	wants to edit it (ignores the update question).
+ *
+ * @returns true
+ *	If the standing order should not be edited.
+ */
 bool MainWindow::isStandingOrderOutdated(const aqb_AccountInfo *acc,
 					 const abt_standingOrderInfo *soi)
 {
 	if (QDate::currentDate() >= soi->getTransaction()->getFirstExecutionDate()) {
-		//Der gespeicherte Dauerauftrag, ist veraltet!
+		//the saved standing order is out-of-date!
 		int rv =
 		QMessageBox::warning(this, tr("Daten veraltet"),
 			tr("<b>Der gespeicherte Dauerauftrag ist veraltet!</b><br /><br />"
@@ -1789,16 +1758,16 @@ bool MainWindow::isStandingOrderOutdated(const aqb_AccountInfo *acc,
 			QMessageBox::Yes);
 
 		switch(rv) {
-		case QMessageBox::Ignore: break; //User will trotzdem editieren
+		case QMessageBox::Ignore: break; //User want to edit
 		case QMessageBox::Yes:
-			//Auftrag in den Ausgang einstellen
+			//update job to outbox
 			this->jobctrl->addGetStandingOrders(acc);
-			//Den Ausgang aktivieren
+			//activate the outbox
 			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
-			return true; //Edit soll abgebrochen werden
+			return true; //the standing order should not be edited
 			break;
-		default: //wie Abort behandeln
-			return true; //Abbrechen
+		default: //handled like abort
+			return true; //the standing order should not be edited
 			break;
 		}
 	}
@@ -1808,10 +1777,8 @@ bool MainWindow::isStandingOrderOutdated(const aqb_AccountInfo *acc,
 //private Slot
 void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
-	//Abbrechen wenn bereits im Ausgang
+	//cancel if standing order is already in outbox or is out-of-date
 	if (this->isStandingOrderInOutbox(da)) return;
-
-	//Abbrechen wenn Daten veraltet
 	if (this->isStandingOrderOutdated(acc, da)) return;
 
 	widgetTransfer *transW;
@@ -1823,23 +1790,21 @@ void MainWindow::onStandingOrderEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const abt_standingOrderInfo *da)
 {
-	//Abbruch wenn bereits im Ausgang
+	//cancel if standing order is already in outbox or is out-of-date
 	if (this->isStandingOrderInOutbox(da)) return;
-
-	//Abbrechen wenn Daten veraltet
 	if (this->isStandingOrderOutdated(acc, da)) return;
 
 	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }
 
 
-/** \brief Prüft und gibt eine Warnung aus wenn die terminierte Überweisung
-  *	   bereits im Ausgang ist.
-  *
-  * \returns true wenn die terminierte Überweisung bereits im Ausgang ist
-  * \returns false wenn die terminierte Überweisung nicht im Ausgang ist
-  */
 //private
+/** @brief checks and displays a warning if the dated transfer is already in
+ *	   the outbox
+ *
+ * @returns true if the dated transfer is already in the outbox
+ * @returns false if the dated transfer is not in the outbox
+ */
 bool MainWindow::isDatedTransferInOutbox(const abt_datedTransferInfo *dti)
 {
 	if (this->jobctrl->isTransactionInQueue(dti->getTransaction())) {
@@ -1856,34 +1821,31 @@ bool MainWindow::isDatedTransferInOutbox(const abt_datedTransferInfo *dti)
 	return false;
 }
 
-/** \brief Prüft ob die gespeicherten Daten veraltet sind und fragt wie fortgefahren
-  *        werden soll.
-  *
-  * Es wird geprüft ob das Datum der terminierten Überweisung in der Zukunft liegt.
-  * Wenn dies nicht der Fall ist wird davon ausgegangen das die Daten veraltet
-  * sind und der Benutzer gefragt ob eine Aktualisierung stattfinden soll.
-  *
-  * Es existiert auch die Möglichkeit das der Benutzer diese Warnung ignorieren
-  * kann, in diesem Fall gibt diese Funktion denselben Rückgabewert zurück als
-  * wäre das Datum i.O.
-  *
-  * Wenn eine Aktualisierung durchgeführt werden soll wird automatisch der
-  * entsprechende Auftrag in den Ausgang gestellt und in den Ausgang gewechselt.
-  *
-  * \returns false
-  *	Wenn der Dauerauftrag bearbeitet werden kann (Daten nicht verhaltet) oder
-  *	bearbeitet werden soll (Benutzer will keine Aktualisierung)
-  *
-  * \returns true
-  *	wenn der Dauerauftrag nicht bearbeitet werden soll.
-  *
-  */
 //private
+/** @brief checks if the saved data are out-of-date and asks for further action
+ *
+ * It is checked if the date of the dated transfer is in the future. If this is
+ * not the case, then it is assumed that the data is out-of-date and the user
+ * is asked whether he will update the dated transfers or not.
+ *
+ * The user could also ignore the warning, in this case this function would
+ * return the same value as when the dated transfer data is not out-of-date.
+ *
+ * If an update should be done, the corresponding job is placed in the outbox
+ * and it will be switched the outbox automatically.
+ *
+ * @returns false
+ *	If the dated transfer could be edited (not out-of-date) or the user
+ *	wants to edit it (ignores the update question).
+ *
+ * @returns true
+ *	If the dated transfer should not be edited.
+ */
 bool MainWindow::isDatedTransferOutdated(const aqb_AccountInfo *acc,
 					 const abt_datedTransferInfo *dti)
 {
 	if (QDate::currentDate() >= dti->getTransaction()->getDate()) {
-		//Die gespeicherte Terminüberweisung ist veraltet!
+		//the saved dated transfer is out-of-date!
 		int rv =
 		QMessageBox::warning(this, tr("Daten veraltet"),
 			tr("<b>Die gespeicherte terminierte Überweisung ist veraltet!</b><br /><br />"
@@ -1899,16 +1861,16 @@ bool MainWindow::isDatedTransferOutdated(const aqb_AccountInfo *acc,
 			QMessageBox::Yes);
 
 		switch(rv) {
-		case QMessageBox::Ignore: break; //User will trotzdem editieren
+		case QMessageBox::Ignore: break; //User want to edit
 		case QMessageBox::Yes:
-			//Auftrag in den Ausgang einstellen
+			//update job to outbox
 			this->jobctrl->addGetDatedTransfers(acc);
-			//Den Ausgang aktivieren
+			//activate the outbox
 			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
-			return true; //Edit soll abgebrochen werden
+			return true; //the dated transfer should not be edited
 			break;
-		default: //wie Abort behandeln
-			return true; //Abbrechen
+		default: //handled like abort
+			return true; //the dated transfer should not be edited
 			break;
 		}
 	}
@@ -1918,10 +1880,8 @@ bool MainWindow::isDatedTransferOutdated(const aqb_AccountInfo *acc,
 //private Slot
 void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
-	//Abbrechen wenn bereits im Ausgang
+	//cancel if dated transfer is already in outbox or is out-of-date
 	if (this->isDatedTransferInOutbox(di)) return;
-
-	//Abbrechen wenn Daten veraltet
 	if (this->isDatedTransferOutdated(acc, di)) return;
 
 	widgetTransfer *transW;
@@ -1933,10 +1893,8 @@ void MainWindow::onDatedTransferEditRequest(const aqb_AccountInfo *acc, const ab
 //private Slot
 void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const abt_datedTransferInfo *di)
 {
-	//Abbrechen wenn bereits im Ausgang
+	//cancel if dated transfer is already in outbox or is out-of-date
 	if (this->isDatedTransferInOutbox(di)) return;
-
-	//Abbrechen wenn Daten veraltet
 	if (this->isDatedTransferOutdated(acc, di)) return;
 
 	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
@@ -1945,15 +1903,15 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 //private Slot
 void MainWindow::onEditJobFromOutbox(int itemNr)
 {
-	/** \todo Der erstellte widgetTransfer enthält bereits Änderungen,
-		  dies sollte in diesem auch gesetzt werden, damit bei Klick
-		  auf Abbruch eine Warnung erscheint!
-	*/
+	/** @todo the newly created widgetTransfer already contains changes.
+	 *	  This should be set in the widget, so that a warning is
+	 *	  displayed when the user canceled the editing!
+	 */
 
 	widgetTransfer *transW;
 	const aqb_AccountInfo *acc = NULL;
 
-	//Die itemNr enthält die Position in der JobQueueList
+	//the itemNr is the position at the JobQueueList
 	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
@@ -1973,7 +1931,7 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 
 	transW->setValuesFromTransaction(job->getTransaction());
 
-	//den Job aus der JobQueueList entfernen
+	//remove the job from the JobQueueList
 	this->jobctrl->deleteJob(job);
 }
 
@@ -2026,7 +1984,7 @@ void MainWindow::onActionSaveAllDataTriggered()
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2055,7 +2013,7 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create EU Transfer not implemented yet!";
@@ -2066,6 +2024,10 @@ void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: 
 //	abt_transaction *t = new abt_transaction();
 //
 //	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+//
+//	//We use the unix timestamp as our ID, so we can display the
+//	//date and time of the creation of the transaction ;)
+//	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 //
 //	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 //	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
@@ -2084,7 +2046,7 @@ void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: 
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2115,7 +2077,7 @@ void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2153,7 +2115,7 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 {
 	qWarning() << "create SEPA Transfer implemented, but not well tested!";
@@ -2162,6 +2124,10 @@ void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
 	t->setRemoteIban(sender->remoteAccount->getIBAN());
 	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
@@ -2172,7 +2138,7 @@ void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 
 	t->setPurpose(sender->purpose->getPurpose());
 
-	/** \todo could the textkey be set for sepa transfers? */
+	/** @todo could the textkey be set for sepa transfers? */
 	//t->setTextKey(sender->textKey->getTextKey());
 
 	this->jobctrl->addNewSepaTransfer(acc, t);
@@ -2181,16 +2147,15 @@ void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
 
-	//kopie der original Transaction erstellen
+	//copy the original transaction (because of const)
 	abt_transaction *newT = new abt_transaction(*origT);
-
-	//und diese modifizieren
+	//and modify the copy instead
 	newT->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
 	//We use the unix timestamp as our ID, so we can display the
@@ -2216,16 +2181,15 @@ void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
 
-	//kopie der original Transaction erstellen
+	//copy the original transaction (because of const)
 	abt_transaction *newT = new abt_transaction(*origT);
-
-	//und diese modifizieren
+	//and modify the copy instead
 	newT->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 
 	//We use the unix timestamp as our ID, so we can display the
@@ -2256,7 +2220,7 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 {
 	qWarning() << "create Debit Note not implemented yet!";
@@ -2289,10 +2253,10 @@ void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 {
-	//Umbuchung zwichen 2 Konten bei derselben Bank
+	//internal transfer between 2 accounts at the same bank
 	const aqb_AccountInfo *fromAcc = sender->localAccount->getAccount();
 	const aqb_AccountInfo *toAcc = sender->remoteAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
@@ -2320,7 +2284,7 @@ void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 }
 
 //private
-/** darf nur aufgerufen werden wenn alle Eingaben OK sind! */
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create SEPA Debit Note not implemented yet!";
@@ -2331,6 +2295,10 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //	abt_transaction *t = new abt_transaction();
 //
 //	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+//
+//	//We use the unix timestamp as our ID, so we can display the
+//	//date and time of the creation of the transaction ;)
+//	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 //
 //	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
 //	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
@@ -2427,16 +2395,14 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	GWEN_DIALOG *dlg;
 	int rv;
 
-	/* Der Setup-Dialog darf nur ausgeführt werden wenn keine Jobs
-	 * im Ausgang vorhanden sind, bzw. keine Daten der Accounts
-	 * in anderen Objekten verwendet werden die nach dem ausführen
-	 * des Setup-Dialogs evt. nicht mehr gültig sind und somit nicht
-	 * mehr verwendet werden dürfen! (z.B. Pointer auf aqb_accountInfo
-	 * Objecte!)
+	/* The Setup dialog of AqBanking can only be executed if no jobs are
+	 * at the outbox, or rather no data from the accounts is used in other
+	 * objects that would be invalid after the execution of the setup
+	 * dialog (e.g. pointer to aqb_accountInfo objects!).
 	 */
 
 	int outboxCnt = this->jobctrl->jobqueueList()->size();
-	int editCnt = this->ui->tabWidget_UW->count() - 1; //Übersicht ist immer vorhanden
+	int editCnt = this->ui->tabWidget_UW->count() - 1; //summary is always present
 
 	if ((outboxCnt != 0) || (editCnt != 0)) {
 		QMessageBox::information(this,
@@ -2454,7 +2420,7 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 					    "vollständig ab und rufen erst dann "
 					    "\"AqBanking einrichten ...\" auf."),
 					 QMessageBox::Ok, QMessageBox::Ok);
-		return; //Abbruch
+		return; //cancel
 	}
 
 
@@ -2464,13 +2430,13 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 		return;
 	}
 
-	/* Hier müssen alle accounts gelöscht werden, damit sie, nach dem
-	 * AqBanking-Setup Dialog, wieder neu erstellt werden können.
-	 * Dabei werden dann einfach alle Daten neu geladen.
+	/* here we must delete all accounts. After the AqBanking-Setup dialog
+	 * was executed all data is read again and the objects are recreated
+	 * with possible new values.
 	 */
 
-	//Alle Verwendungen von accounts auf NULL setzen und somit in den
-	//einzelnen Widgets auf 'ungültig' setzen.
+	//all references to accounts are set to NULL, therefore they are
+	//invalid in the corresponding widgets!
 	BankAccountsWidget *baw = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	baw->setAccounts(NULL);
 
@@ -2484,38 +2450,38 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 	standingOrders->setAccount(NULL);
 
-	this->saveAccountData(); //Alle Account-Daten sichern
+	this->saveAccountData(); //save all account data
 
-	//Alle Accounts löschen
-	delete this->jobctrl; //löscht auch alle Connections
+	//delete all accounts
+	delete this->jobctrl; //also removes the connections!
 	delete this->accounts;
 
-	//AqBanking Setup Dialog ausführen
+	//execute the AqBanking-Setup dialog
 	rv = GWEN_Gui_ExecDialog(dlg, 0);
 	if (rv == 0) {
 		qDebug() << Q_FUNC_INFO << "AqBanking setup dialog aborted by user";
 	}
 
-	/* Der AqBanking Setup Dialog wurde beendet, jetzt müssen alle Account
-	 * Daten neu geladen werden.
-	 * Und auch alle Connections neu aufgebaut werden.
+	/* The AqBanking-Setup dialog was executed, now we must recreate all
+	 * account objects and reload the data.
+	 * Also the all connections must be reestablished.
 	 */
 
-	//Es könnten sich Accounts geändert haben, deswegen alle neu erstellen
+	//recreate all accounts
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 
-	//den JobController und dessen Connections wieder erstellen
+	//recreate the JobController and the corresponding connections
 	this->createJobCtrlAndConnections();
 
-	//Alle Account-Daten laden
+	//reload all account data
 	this->loadAccountData();
 
-	//Die Accounts in den Widgets wieder setzen
+	//set the new accounts in the widgets
 	this->dockDatedTransfersSetAccounts();
 	this->dockStandingOrdersSetAccounts();
-	baw->setAccounts(this->accounts); //baw wurde oben zugewiesen!
+	baw->setAccounts(this->accounts); //baw was assigned above
 
-	//Die Daten in der ScrollArea neu aufbauen
+	//recreate the data at the ScrollArea
 	this->createWidgetsInScrollArea();
 
 	GWEN_Dialog_free(dlg);

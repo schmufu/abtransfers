@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -54,10 +54,9 @@ namespace Ui {
 	class MainWindow;
 }
 
-/** \brief Das Hauptfenster von AB-Transfers
+/** @brief The main Window of AB-Transfers
  *
- * Alle aktivitäten werden hier koordiniert und von den entsprechenden anderen
- * Klassen durchgeführt.
+ * All activities are handled here and delegated to the other objects.
  *
  */
 
@@ -134,16 +133,16 @@ private:
 	void createAndSendInternalTransfer(const widgetTransfer *sender);
 	void createAndSendSepaDebitNote(const widgetTransfer *sender);
 
-	/** \brief fügt für alle Konten ein getBalance in den Ausgang ein */
+	/** @brief Puts a getBalance job for every account to the outbox */
 	void appendGetBalanceToOutbox() const;
-	/** \brief fügt für alle Konten ein getDatedTransders in den Ausgang ein */
+	/** @brief Puts a getDatedTransfers job for every account to the outbox */
 	void appendGetDatedTransfersToOutbox() const;
-	/** \brief fügt für alle Konten ein getStandingOrders in den Ausgang ein */
+	/** @brief Puts a getStandingOrders job for every account to the outbox */
 	void appendGetStandingOrdersToOutbox() const;
 
 	void checkReachedDatedTransfers();
 
-	/** \brief korrigiert automatisch die Datumseingaben beim Dauerauftrag */
+	/** @brief Automatically corrects the dates for standingOrders */
 	bool correctRecurrenceDates(widgetRecurrence *recurrence) const;
 
 	bool isStandingOrderInOutbox(const abt_standingOrderInfo *soi);
@@ -177,12 +176,12 @@ private slots:
 	void onJobAddedToJobCtrlList(const abt_jobInfo* ji) const;
 	void onAccountWidgetContextMenuRequest(QPoint p);
 
-	//! wird aufgerufen wenn sich der Account im dockWidget von Daueraufträge ändert
+	/** @brief Is called when the account in the dockWiget was changed */
 	void selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc);
-	//! wird aufgerufen wenn sich der Account im dockWidget von Terminüberweisungen ändert
+	/** @brief Is called when the account in the dockWiget was changed */
 	void selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc);
 
-	//Slots für die verschiedenen Actions
+	//Slots for the different Actions
 	void onActionTransferNationalTriggered();
 	void onActionTransferInternationalTriggered();
 	void onActionTransferSepaTriggered();
@@ -216,7 +215,6 @@ private slots:
 	void createTransferFromJob(const abt_jobInfo *ji);
 
 	void deleteHistoryItems(QList<abt_jobInfo*> jiList);
-
 
 };
 
