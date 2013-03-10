@@ -419,9 +419,11 @@ void abt_jobInfo::createJobInfoStringList_ForStandingOrders(QStringList *strList
 	QString strCycle;
 	if (cycle <= 1) {
 		if (period == AB_Transaction_PeriodMonthly) {
+			//: prepended for monthly (jeden Monat)
 			strCycle = QObject::tr("jeden");
 		} else {
-			strCycle = QObject::tr("jeden");
+			//: prepended for weekly (jede Woche)
+			strCycle = QObject::tr("jede");
 		}
 	} else {
 		strCycle = QObject::tr("alle %1").arg(cycle);

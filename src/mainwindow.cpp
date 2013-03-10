@@ -1239,22 +1239,20 @@ void MainWindow::onActionTestWidgetAccessTriggered()
  */
 void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 {
-	int msgret;
-
 	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(index));
 	if (transW == NULL) {
 		return; //child does not exist, do nothing
 	}
 
 	if (transW->hasChanges()) {
-		msgret = QMessageBox::question(
-				 this, tr("Änderungen verwerfen?"),
-				 tr("Im Tab '%1' wurden Änderungen "
-				    "vorgenommen!\n\n"
-				    "Sollen diese Änderungen verworfen werden?")
-				 .arg(this->ui->tabWidget_UW->tabText(index)),
-				 QMessageBox::Yes | QMessageBox::No,
-				 QMessageBox::Yes);
+		int msgret = QMessageBox::question(
+				     this, tr("Änderungen verwerfen?"),
+				     tr("Im Tab '%1' wurden Änderungen "
+					"vorgenommen!\n\n"
+					"Sollen diese Änderungen verworfen werden?")
+				     .arg(this->ui->tabWidget_UW->tabText(index)),
+				     QMessageBox::Yes | QMessageBox::No,
+				     QMessageBox::Yes);
 
 		if (msgret != QMessageBox::Yes) {
 			return; //user decided to not close the tab
