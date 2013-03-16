@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -238,16 +238,21 @@ void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
 	//Alle Spalten auf "perfekte" Breite anpassen
 	abt_settings::resizeColToContentsFor(this->ui->treeWidget);
 
-	//Erstes wählbares Item auswählen, wenn vorhanden
+	//if at least one item exist, we select this and calculate the
+	//minimum height of the treeWidget.
 	if (FirstItem) {
 		ui->treeWidget->setItemSelected(FirstItem, true);
+
+		int itemHeight = ui->treeWidget->visualItemRect(FirstItem).height();
+		int headerHeight = ui->treeWidget->header()->height();
+		int scrollbarHeight = 19; //were can we get this value
+
+		//the minimum heigth should be right do display all entrys.
+		//But we wont get larger than 150 pixel for the minimum.
+		int minHeight = (ItemCount * itemHeight) + headerHeight + scrollbarHeight;
+		if (minHeight > 150) minHeight = 150;
+		this->setMinimumHeight(minHeight);
 	}
-
-	int itemHeight = this->ui->treeWidget->fontMetrics().height()+4;
-
-	//ItemCount+2 = 1xHeader und 1x damit alle angezeigt werden auch wenn
-	//eine horizontale Scrollbar vorhanden ist.
-	this->setMinimumHeight(itemHeight*(ItemCount+2) + 8);
 
 	//eventFilter einsetzen damit wir Drag&Drop verwalten können
 	this->ui->treeWidget->viewport()->installEventFilter(this);
