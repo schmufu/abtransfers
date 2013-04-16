@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -39,21 +39,25 @@
 #include <gwenhywfar/stringlist.h>
 
 
-/*! \brief Konvertierungsfunktionen für GWEN* und AB* Typen zu Qt-Typen
+/*! \brief conversion functions for GWEN* and AB* types to Qt types
   */
 class abt_conv
 {
 protected:
-	/*! speichert alle erstellten GWEN_STRINGLIST listen, damit sie am
-	    Ende wieder gelöscht werden können. */
-	static QList<GWEN_STRINGLIST*> *gwen_lists;
-	/*! speichert alle erstellten GWEN_TIME Objecte, damit sie am
-	    Ende wieder gelöscht werden können. */
-	static QList<GWEN_TIME*> *gwen_timelist;
-	/*! speichert alle erstellten AB_VALUE Objecte, damit sie am
-	    Ende wieder gelöscht werden können. */
-	static QList<AB_VALUE*> *gwen_abvlist;
+	/*! stores all created GWEN_STRINGLIST lists, so that they can be
+	 *  deleted at the end
+	 */
+	static QList<GWEN_STRINGLIST*> *gwen_strlist;
 
+	/*! stores all created GWEN_TIME objects, so that they can be deleted
+	 *  at the end
+	 */
+	static QList<GWEN_TIME*> *gwen_timelist;
+
+	/*! stores all created AB_VALUE objects, so that they can be deleted
+	 *  at the end
+	 */
+	static QList<AB_VALUE*> *gwen_abvlist;
 
 public:
 	abt_conv();
@@ -65,15 +69,14 @@ public:
 
 
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
-	static GWEN_TIME* QDateToGwenTime(const QDate &date);
+	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
 
 	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
-	static const QString ABValueToString(const AB_VALUE *v, bool asDecimal=false);
+	static const QString ABValueToString(const AB_VALUE *value, bool asDecimal=false);
 	static AB_VALUE* ABValueFromString(const QString &str, const QString &currency = "EUR");
 
-	//! Muss am Ende Aufgerufen werden um ALLE Listen wieder zu löschen!
 	static void freeAllGwenLists();
 
 };

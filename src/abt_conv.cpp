@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -34,7 +34,7 @@
 #include <stdio.h>
 
 //initialize static member variables
-QList<GWEN_STRINGLIST*> *abt_conv::gwen_lists = new QList<GWEN_STRINGLIST*>;
+QList<GWEN_STRINGLIST*> *abt_conv::gwen_strlist = new QList<GWEN_STRINGLIST*>;
 QList<GWEN_TIME*> *abt_conv::gwen_timelist = new QList<GWEN_TIME*>;
 QList<AB_VALUE*> *abt_conv::gwen_abvlist = new QList<AB_VALUE*>;
 
@@ -112,6 +112,7 @@ const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
 		break;
 	}
 
+	//default if no type match
 	return QObject::tr("ab_transfers Typ unbekannt");
 }
 
@@ -156,11 +157,12 @@ const QString abt_conv::JobStatusToQString(AB_JOB_STATUS status)
 }
 
 //static
-/**
-  * Wandelt die in \a gwentime übergebene Zeit GWEN_TIME in ein QDate.
-  * Wenn \a gwentime NULL ist wird das zurückgegebene Datum auf ein ungültiges
-  * Datum gesetzt!
-  */
+/** @brief converts a GWEN_TIME to QDate
+ *
+ * Converts the time supplied at @a gwentime into a QDate.
+ *
+ * If the @a gwentime is NULL, the returned QDate is set to an invalid date.
+ */
 const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 {
 	QDate date;
@@ -174,19 +176,24 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 		GWEN_Buffer_free(gbuf);
 
 	} else {
-		date.setDate(2011,2,30); //invalid Date wenn gwentime==NULL
+		date.setDate(2011,2,30); //invalid date if gwentime == NULL
 	}
 
 	return date;
 }
 
-/**
-  * Gibt einen GWEN_TIME Object zurück dessen Datum dem übergebenen entspricht.
-  * Die enthaltene Uhrzeit wird auf 12:00:00 gesetzt! (in UTC!).
-  * Wenn \a date nicht gültig ist wird NULL zurückgegeben!
-  */
 //static
-GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
+/** @brief converts a QDate to a GWEN_TIME
+ *
+ * Returns a pointer to a GWEN_TIME object or NULL if the supplied @a date is
+ * invalid.
+ *
+ * The time of the returned GWEN_TIME is set to 12:00:00 (UTC!).
+ *
+ * The returned pointer must not be freed! It is freed automatically at the
+ * termination of the program by calling @ref freeAllGwenLists()
+ */
+const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 {
 	GWEN_TIME *gwt;
 	QString datestr;
@@ -224,92 +231,97 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
 	return ret;
 }
 
-/**
-  * Die hier erstellte GWEN_STRINGLIST wird später durch freeAllGwenStringLists()
-  * wieder freigegeben!
-  */
 //static
-const GWEN_STRINGLIST *abt_conv::QStringListToGwenStringList(const QStringList &l)
+/** @brief converts a QStringList to a GWEN_STRINGLIST
+ *
+ * The returned pointer must not be freed! It is freed automatically at the
+ * termination of the program by calling @ref freeAllGwenLists()
+  */
+const GWEN_STRINGLIST* abt_conv::QStringListToGwenStringList(const QStringList &l)
 {
+	Q_ASSERT(abt_conv::gwen_strlist);
+
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
 	for (int i=0; i<l.size(); ++i) {
 		QString s = l.at(i);
-		//wir reservieren Speicher für einen "normalen" C-String, damit
-		//GWEN_StringList_free diesen auch wieder freigeben kann.
+		//we allocate memory for a normal c string, so that
+		//GWEN_StringList_free() can free it
 		char *c = (char*)malloc(sizeof(char)*s.toStdString().length()+1);
-		//unseren String in den erstellten Speicherbereich kopieren
 		strcpy(c, s.toStdString().c_str());
-		//und der GWEN_Liste hinzufügen. Das Löschen der GWEN_Liste
-		//gibt später auch den C-String wieder frei.
+		//GWEN_StringList_free() will also free the allocated c string
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
 	}
-	//Die erstellte GWEN_Stringlist in unserer globalen Liste aufbewahren
-	Q_ASSERT(abt_conv::gwen_lists);
-	abt_conv::gwen_lists->append(gwl);
+	//remember the GWEN_STRINGLIST, so that freeAllGwenLists() can delete it
+	abt_conv::gwen_strlist->append(gwl);
 	return gwl;
 }
 
-/*! wird genutzt um die Werte als String in der ini-Datei zu speichern
- *
- * wenn der String als Decimal-Wert dargestellt werden soll muss \a asDecimal
- * = true übergeben werden.
- */
 //static
-const QString abt_conv::ABValueToString(const AB_VALUE *v, bool asDecimal)
+/** @brief Converts an AB_VALUE to a QString
+ *
+ * If @a asDecimal is true the returned string is formated as "xxx.yy",
+ * otherwise the string has the format "xxxxx/100".
+ *
+ * If the supplied @a value is NULL an empty QString is returned.
+ */
+const QString abt_conv::ABValueToString(const AB_VALUE *value, bool asDecimal)
 {
-	if (v == NULL) {
+	if (!value) {
 		return QString();
 	}
+
 	if (asDecimal) {
-		return QString("%L1").arg(AB_Value_GetValueAsDouble(v),0,'f',2);
+		return QString("%L1").arg(AB_Value_GetValueAsDouble(value),0,'f',2);
 	} else {
 		GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
-		AB_Value_toString(v, buf);
+		AB_Value_toString(value, buf);
 		std::string result(GWEN_Buffer_GetStart(buf));
 		GWEN_Buffer_free(buf);
 		return QString::fromStdString(result);
 	}
 }
 
-/*! wird genutzt um die als String gespeicherten Werte aus der ini-Datei zu lesen
+//static
+/** @brief converts a QString to an AB_VALUE
   *
   * This function reads a AB_VALUE from a string. Strings suitable as arguments
   * are those created by AB_Value_toString or simple floating point string (as
   * in "123.45" or "-123.45").
   *
-  * Die Währung kann in \a currency auch mit angegeben werden (default: "EUR")
+  * Returns NULL if the supplied @a str is empty!
   */
-//static
-AB_VALUE *abt_conv::ABValueFromString(const QString &str, const QString &currency)
+AB_VALUE* abt_conv::ABValueFromString(const QString &str, const QString &currency)
 {
+	Q_ASSERT(abt_conv::gwen_abvlist);
+
 	if (str.isEmpty()) {
 		return NULL;
 	}
+
 	std::string s = str.toStdString();
 	AB_VALUE *val;
 	val = AB_Value_fromString(s.c_str());
 	QString cur = currency.toUtf8();
 	std::string c = cur.toStdString();
 	AB_Value_SetCurrency(val, c.c_str());
-	//Das erstellte AB_VALUE object in unserer internen Liste aufbewahren
-	//damit es bei Programm-Ende wieder gelöscht werden kann
-	Q_ASSERT(abt_conv::gwen_abvlist);
+	//remember the AB_VALUE, so that freeAllGwenLists() can delete it
 	abt_conv::gwen_abvlist->append(val);
 	return val;
 }
 
-/*! löscht alle erstelten GWEN_STRINGLISTs und GWEN_TIMEs wieder aus dem speicher
+/** @brief must be called at the termination of the program so that ALL created
+ *  list are deleted.
  *
- * Dies darf erst am Ende des Programms erfolgen, ansonsten werden Speicherbereiche
- * gelöscht die noch in verwendung sind!
+ * This function must only be called at the termination of the program,
+ * otherwise references are deleted that still in use.
  */
 //static
 void abt_conv::freeAllGwenLists()
 {
 	qDebug() << Q_FUNC_INFO << "freeing GWEN_STRINGLIST list";
 	GWEN_STRINGLIST *list;
-	while (!abt_conv::gwen_lists->isEmpty()) {
-		list = abt_conv::gwen_lists->takeFirst();
+	while (!abt_conv::gwen_strlist->isEmpty()) {
+		list = abt_conv::gwen_strlist->takeFirst();
 		GWEN_StringList_free(list);
 	}
 
@@ -327,8 +339,8 @@ void abt_conv::freeAllGwenLists()
 		AB_Value_free(v);
 	}
 
-	//Globale Listen auch löschen
-	delete abt_conv::gwen_lists;
+	//free the 'global' lists too
+	delete abt_conv::gwen_strlist;
 	delete abt_conv::gwen_timelist;
 	delete abt_conv::gwen_abvlist;
 }
