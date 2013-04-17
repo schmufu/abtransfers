@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -48,8 +48,9 @@ abt_history::~abt_history()
 	delete this->m_historyList;
 }
 
+//public
 /**
- * the \a job is added to the history only if the kind of job is supported by
+ * the @a job is added to the history only if the kind of job is supported by
  * the history (all transfer types but no deletion or status updates).
  *
  * After adding the job to the list, the list is resorted in the descending
@@ -57,7 +58,6 @@ abt_history::~abt_history()
  *
  * At least the signal historyListChanged() is emitted.
  */
-//public
 void abt_history::add(abt_jobInfo *job)
 {
 	if (!job) {
@@ -69,8 +69,6 @@ void abt_history::add(abt_jobInfo *job)
 	case AB_Job_TypeCreateDatedTransfer:
 	case AB_Job_TypeCreateStandingOrder:
 	case AB_Job_TypeDebitNote:
-//	case AB_Job_TypeDeleteDatedTransfer:
-//	case AB_Job_TypeDeleteStandingOrder:
 	case AB_Job_TypeEuTransfer:
 	case AB_Job_TypeInternalTransfer:
 	case AB_Job_TypeLoadCellPhone:
@@ -93,19 +91,18 @@ void abt_history::add(abt_jobInfo *job)
 
 }
 
+//public
 /**
- * the \a job is removed from the list.
+ * the @a job is removed from the list.
  *
  * After a job is removed the list is sorted by the timestamp of execution
  * and the signal historyListChanged() is emitted.
  *
- * \returns true if the job was removed.
- * \returns false if the job could not be removed or isnt in the list.
+ * @returns true if the job was removed.
+ * @returns false if the job could not be removed or isnt in the list.
  */
-//public
 bool abt_history::remove(abt_jobInfo *job)
 {
-
 	if (this->m_historyList->removeOne(job)) {
 		//job removed, also delete it
 		delete job;
@@ -129,10 +126,10 @@ bool abt_history::remove(int pos)
 	return true;
 }
 
+//public
 /**
  * After the list is empty the signal historyListChanged() is emitted.
  */
-//public
 void abt_history::clearAll()
 {
 	//Alle Objecte löschen
@@ -143,6 +140,7 @@ void abt_history::clearAll()
 	emit this->historyListChanged(this);
 }
 
+//public
 /**
  * Creates a new AB_IMEXPORTER_CONTEXT which could be exported (saved) by the
  * corresponding aqbanking function.
@@ -152,12 +150,11 @@ void abt_history::clearAll()
  * At loading from the history-file this information is read from the category
  * and removed (see @ref abt_parser::parse_ctx() ).
  *
- * The returned AB_IMEXPORTER_CONTEXT \b must be deleted by the calling function!
+ * The returned AB_IMEXPORTER_CONTEXT @b must be deleted by the calling function!
  */
-//public
 AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 {
-	//wir erstellen unseren eigenen Account für die History
+	//we create our own account for the history
 	AB_IMEXPORTER_ACCOUNTINFO *iea = AB_ImExporterAccountInfo_new();
 
 	AB_ImExporterAccountInfo_SetAccountNumber(iea, "0000000000");
@@ -183,7 +180,7 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeCreateDatedTransfer:
 		case AB_Job_TypeModifyDatedTransfer:
 		case AB_Job_TypeDeleteDatedTransfer:
-			//DatedTransfer der History hinzufügen
+			//append a dated transfer to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
 			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
 			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
@@ -192,7 +189,7 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeCreateStandingOrder:
 		case AB_Job_TypeModifyStandingOrder:
 		case AB_Job_TypeDeleteStandingOrder:
-			//StandingOrder der History hinzufügen
+			//append a standing order to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
 			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
 			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
@@ -205,30 +202,30 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeSepaDebitNote:
 		case AB_Job_TypeDebitNote:
 		case AB_Job_TypeSepaTransfer:
-			//Transfer der History hinzufügen
+			//append a transfer to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
 			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
 			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddTransfer(iea, t);
 			break;
 
-		default: //andere Objecte vorerst nicht möglich
+		default: //other objects not possible, by now
 			break;
 		}
 	}
 
-	//Jetzt sind alle History-Objecte dem History Account zugeordnet
+	//now all history objects are related to the corresponding account
 	AB_IMEXPORTER_CONTEXT *iec = AB_ImExporterContext_new();
 	AB_ImExporterContext_AddAccountInfo(iec, iea);
 
 	return iec;
 }
 
+//private
 /**
  * In the IdForApplication the unix timestamp of the creation is saved.
  * This function sorts all items by this timestamp in an descending order (default)
  **/
-//private
 void abt_history::sortListByTimestamp(bool descending /* = true */)
 {
 	QList<abt_jobInfo*> *hl = this->m_historyList;	//history list

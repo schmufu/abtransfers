@@ -59,29 +59,29 @@ public:
 	~abt_history();
 
 private:
-//	//! \brief Liste aller Accounts
-//	const aqb_Accounts *m_allAccounts;
-	//! \brief the list in which the job-items are stored
+	/** @brief the list in which the job-items are stored */
 	QList<abt_jobInfo*> *m_historyList;
 
-	//! \brief Sorts the list of history items depending on their creation
+	/** @brief Sorts the list of history items depending on their creation */
 	void sortListByTimestamp(bool descending = true);
 
 public:
-	//! \brief adds the \a job to the history list
+	/** @brief adds the @a job to the history list */
 	void add(abt_jobInfo *job);
-	//! \brief deletes the \a job from the history list
+	/** @brief deletes the @a job from the history list */
 	bool remove(abt_jobInfo *job);
-	//! \overload
+	/** @overload */
 	bool remove(int pos);
-	//! \brief removes all jobs from the history list
+	/** @brief removes all jobs from the history list */
 	void clearAll();
 
 
-	//! \brief creates an AB_IMEXPORTER_CONTEXT that could be saved trough aqbanking
+	/** @brief creates an AB_IMEXPORTER_CONTEXT that could be saved
+	 *  trough aqbanking
+	 */
 	AB_IMEXPORTER_CONTEXT *getContext() const;
 
-	//! \brief returns the current history list as a const object
+	/** @brief returns the current history list as a const object */
 	const QList<abt_jobInfo*> *getHistoryList() const { return this->m_historyList; }
 
 private slots:

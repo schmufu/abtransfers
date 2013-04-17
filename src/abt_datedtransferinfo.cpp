@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -33,30 +33,28 @@
 
 #include <QDebug>
 
-/**
-  * Die übergebene abt_transaction \a transaction wird beim löschen dieses
-  * Objectes auch wieder gelöscht.
-  */
+/** @brief The supplied abt_transaction @a transaction will be deleted at
+ *         destruction of this object.
+ */
 abt_datedTransferInfo::abt_datedTransferInfo(abt_transaction *transaction)
 	: t(transaction)
 {
 
 }
 
-/** \overload
-  * Es wird eine Kopie der übergebenen AB_TRANSACTION \a transaction erstellt
-  * und diese Kopie verwendet.
-  */
+/** @brief a copy of the supplied @a transaction will be created and used.
+ *
+ * \overload
+ */
 abt_datedTransferInfo::abt_datedTransferInfo(const AB_TRANSACTION *transaction)
 {
-	//wenn wir eine AB_TRANSACTION erhalten erstellen wir davon eine
-	//Kopie und von dieser eine abt_transaction die im destructor wieder
-	//gelöscht wird.
+	//Create a copie of the supplied transaction, use the copie.
+	//This copie is deleted at the end of the object.
 	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
 	this->t = new abt_transaction(t, true);
 }
 
 abt_datedTransferInfo::~abt_datedTransferInfo()
 {
-	delete this->t;	//abt_Transaction Object löschen
+	delete this->t;
 }

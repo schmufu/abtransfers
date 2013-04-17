@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -35,13 +35,13 @@
 #include "abt_transaction_base.h"
 
 
-/*! \brief Daten von gespeicherten Terminierten Überweisungen
+/** @brief information about dated transfers
  *
- * Diese Klasse kapselt die Daten einer Terminüberweisung.
- * Diese werden in einer Liste zu jedem Account geladen und stehen somit über
- * den jeweiligen account zur Verfügung.
+ * This class includes all information about a dated transfer.
+ *
+ * This information are loaded for each account and therefore are reachable for
+ * each individuell account.
  */
-
 class abt_datedTransferInfo
 {
 public:
