@@ -46,6 +46,7 @@ abt_history::~abt_history()
 	//delete all objects and the list itself
 	this->clearAll();
 	delete this->m_historyList;
+        this->m_historyList = NULL;
 }
 
 /**
@@ -109,6 +110,7 @@ bool abt_history::remove(abt_jobInfo *job)
 	if (this->m_historyList->removeOne(job)) {
 		//job removed, also delete it
 		delete job;
+                job = NULL;
 		this->sortListByTimestamp();
 		emit this->historyListChanged(this);
 		return true;

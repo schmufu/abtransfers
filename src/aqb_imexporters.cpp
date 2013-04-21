@@ -43,8 +43,8 @@ aqb_imexporters::aqb_imexporters(AB_BANKING* ab, QObject *parent) :
 	QObject(parent)
 {
 	//init of private members
-	this->pdl = NULL;
-	this->plugins = NULL;
+        this->m_pdl = NULL;
+        this->m_plugins = NULL;
 
 	this->m_ab = ab;
 
@@ -59,38 +59,38 @@ aqb_imexporters::~aqb_imexporters()
 //private
 void aqb_imexporters::freeAll()
 {
-	while(!this->plugins->isEmpty()) {
-		delete this->plugins->takeFirst();
+        while(!this->m_plugins->isEmpty()) {
+                delete this->m_plugins->takeFirst();
 	}
-	delete this->plugins;
-	this->plugins = NULL;
+        delete this->m_plugins;
+        this->m_plugins = NULL;
 
 	//delete all imexporter Descriptions and the "List2" itself
-	GWEN_PluginDescription_List2_freeAll(this->pdl);
+        GWEN_PluginDescription_List2_freeAll(this->m_pdl);
 }
 
 void aqb_imexporters::loadAll()
 {
-	Q_ASSERT_X(this->plugins == NULL, "loadAll()",
+        Q_ASSERT_X(this->m_plugins == NULL, "loadAll()",
 		   "plugins must be NULL before calling loadAll()");
 
 	//we create the plugin list
-	this->plugins = new QList<aqb_iePlugin*>;
+        this->m_plugins = new QList<aqb_iePlugin*>;
 
 	//get the list of available im/exporters
 	//(we must free this through GWEN_PluginDescription_List2_freeAll())
-	this->pdl = AB_Banking_GetImExporterDescrs(this->m_ab);
+        this->m_pdl = AB_Banking_GetImExporterDescrs(this->m_ab);
 
 	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
 	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
-	pdli = GWEN_PluginDescription_List2_First(this->pdl);
+        pdli = GWEN_PluginDescription_List2_First(this->m_pdl);
 	if (pdli) {
 		pd = GWEN_PluginDescription_List2Iterator_Data(pdli);
 	}
 
 	while (pd) {
 		aqb_iePlugin *aqbPlugin = new aqb_iePlugin(this->m_ab, pd);
-		this->plugins->append(aqbPlugin);
+                this->m_plugins->append(aqbPlugin);
 
 		pd = GWEN_PluginDescription_List2Iterator_Next(pdli); //next in list
 	}
@@ -104,8 +104,8 @@ void aqb_imexporters::loadAll()
 
 int aqb_imexporters::getSize() const
 {
-	Q_ASSERT(this->pdl);
-	return GWEN_PluginDescription_List2_GetSize(pdl);
+        Q_ASSERT(this->m_pdl);
+        return GWEN_PluginDescription_List2_GetSize(m_pdl);
 }
 
 
@@ -125,18 +125,18 @@ void aqb_imexporters::reloadImExporterData()
 aqb_iePlugin::aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent) :
 	QObject(parent)
 {
-	this->pd = GWEN_PluginDescription_dup(pd); //store a local copy
+        this->m_pd = GWEN_PluginDescription_dup(pd); //store a local copy
 
-	this->name = GWEN_PluginDescription_GetName(this->pd);
-	this->type = GWEN_PluginDescription_GetType(this->pd);
-	this->desc_short = GWEN_PluginDescription_GetShortDescr(this->pd);
-	this->desc_long = GWEN_PluginDescription_GetLongDescr(this->pd);
-	this->filename = GWEN_PluginDescription_GetFileName(this->pd);
-	this->path = GWEN_PluginDescription_GetPath(this->pd);
-	this->author = GWEN_PluginDescription_GetAuthor(this->pd);
-	this->version = GWEN_PluginDescription_GetVersion(this->pd);
+        this->m_name = GWEN_PluginDescription_GetName(this->m_pd);
+        this->m_type = GWEN_PluginDescription_GetType(this->m_pd);
+        this->m_desc_short = GWEN_PluginDescription_GetShortDescr(this->m_pd);
+        this->m_desc_long = GWEN_PluginDescription_GetLongDescr(this->m_pd);
+        this->m_filename = GWEN_PluginDescription_GetFileName(this->m_pd);
+        this->m_path = GWEN_PluginDescription_GetPath(this->m_pd);
+        this->m_author = GWEN_PluginDescription_GetAuthor(this->m_pd);
+        this->m_version = GWEN_PluginDescription_GetVersion(this->m_pd);
 
-	this->profiles = new QList<aqb_ieProfile*>;
+        this->m_profiles = new QList<aqb_ieProfile*>;
 
 	this->loadProfiles(ab);
 
@@ -145,29 +145,30 @@ aqb_iePlugin::aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject 
 aqb_iePlugin::~aqb_iePlugin()
 {
 	//delete all profile descriptions and the list
-	while(!this->profiles->isEmpty()) {
-		delete this->profiles->takeFirst();
+        while(!this->m_profiles->isEmpty()) {
+                delete this->m_profiles->takeFirst();
 	}
 
-	delete this->profiles;
+        delete this->m_profiles;
+        this->m_profiles = NULL;
 
-	GWEN_PluginDescription_free(this->pd);
+        GWEN_PluginDescription_free(this->m_pd);
 }
 
 int aqb_iePlugin::loadProfiles(AB_BANKING* ab)
 {
 	GWEN_DB_NODE *dbProfiles = AB_Banking_GetImExporterProfiles(ab,
-								    this->name);
+                                                                    this->m_name);
 	GWEN_DB_NODE *n = GWEN_DB_GetFirstGroup(dbProfiles);
 	while (n) {
 		aqb_ieProfile *profile = new aqb_ieProfile(n);
-		this->profiles->append(profile);
+                this->m_profiles->append(profile);
 
 		n = GWEN_DB_GetNextGroup(n);
 	}
 	GWEN_DB_Group_free(dbProfiles);
 
-	return this->profiles->size();
+        return this->m_profiles->size();
 }
 
 const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
@@ -175,7 +176,7 @@ const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
 	if (name.isEmpty() || name.isNull())
 		return NULL; //a plugin with no name cant be available
 
-	foreach(const aqb_iePlugin *plugin, *this->plugins) {
+        foreach(const aqb_iePlugin *plugin, *this->m_plugins) {
 		if (plugin->getName() == name) {
 			return plugin;
 		}
@@ -186,7 +187,7 @@ const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
 
 const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) const
 {
-	foreach(const aqb_iePlugin *plugin, *this->plugins) {
+        foreach(const aqb_iePlugin *plugin, *this->m_plugins) {
 		if (plugin->getFilename() == filename) {
 			return plugin;
 		}
@@ -269,13 +270,13 @@ aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent) :
 {
 	Q_ASSERT_X(GWEN_DB_IsGroup(dbn), "aqb_ieProfile", "ieProfile must be called with a dbGroup");
 
-	this->dbnode = GWEN_DB_Group_dup(dbn); //store a local copy
+        this->m_dbnode = GWEN_DB_Group_dup(dbn); //store a local copy
 
-	this->names = new QStringList();
-	GWEN_DB_NODE *nvars = GWEN_DB_GetFirstVar(this->dbnode);
+        this->m_names = new QStringList();
+        GWEN_DB_NODE *nvars = GWEN_DB_GetFirstVar(this->m_dbnode);
 	while (nvars) {
 		const char *varname = GWEN_DB_VariableName(nvars);
-		this->names->append(varname);
+                this->m_names->append(varname);
 
 		nvars = GWEN_DB_GetNextVar(nvars);
 	}
@@ -285,11 +286,12 @@ aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent) :
 aqb_ieProfile::~aqb_ieProfile()
 {
 	//we must free the created stringlist
-	delete this->names;
+        delete this->m_names;
+        this->m_names = NULL;
 
 	//we must free the DB_NODE when it is no longer used
 	//(duplicated in constructor)
-	GWEN_DB_Group_free(this->dbnode);
+        GWEN_DB_Group_free(this->m_dbnode);
 }
 
 /**
@@ -302,7 +304,7 @@ aqb_ieProfile::~aqb_ieProfile()
 QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 {
 	QVariant value = QVariant::Invalid;
-	if (!this->names->contains(varname)) {
+        if (!this->m_names->contains(varname)) {
 		qWarning() << Q_FUNC_INFO << this << "does not contain a var" << varname;
 		return value;
 	}
@@ -311,13 +313,13 @@ QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 
 	switch(vartype) {
 	case GWEN_DB_NodeType_ValueChar:
-		value = GWEN_DB_GetCharValue(this->dbnode, varname, idx, "");
+                value = GWEN_DB_GetCharValue(this->m_dbnode, varname, idx, "");
 		break;
 	case GWEN_DB_NodeType_ValueInt:
-		value = GWEN_DB_GetIntValue(this->dbnode, varname, idx, 0);
+                value = GWEN_DB_GetIntValue(this->m_dbnode, varname, idx, 0);
 		break;
 	case GWEN_DB_NodeType_ValuePtr:
-		value.setValue<void*>(GWEN_DB_GetPtrValue(this->dbnode, varname,
+                value.setValue<void*>(GWEN_DB_GetPtrValue(this->m_dbnode, varname,
 							  idx, NULL));
 		break;
 	//not used yet, how did we handle this if it must be used?
@@ -335,7 +337,7 @@ QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 
 GWEN_DB_NODE_TYPE aqb_ieProfile::getType(const char *varname) const
 {
-	return GWEN_DB_GetVariableType(this->dbnode, varname);
+        return GWEN_DB_GetVariableType(this->m_dbnode, varname);
 }
 
 

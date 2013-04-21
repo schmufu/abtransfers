@@ -59,16 +59,16 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	this->ui->toolButton_export->setIcon(QIcon::fromTheme("document-export"));
 	this->ui->toolButton_delete->setIcon(QIcon::fromTheme("edit-delete"));
 
-	this->history = history;
+        this->m_history = history;
 	this->createActions();
 
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
-	this->refreshTreeWidget(this->history);
+        this->refreshTreeWidget(this->m_history);
 
 	//calling the itemSelectionChanged() slot enables/disables the actions
 	this->on_treeWidget_itemSelectionChanged();
 
-	connect(this->history, SIGNAL(historyListChanged(const abt_history*)),
+        connect(this->m_history, SIGNAL(historyListChanged(const abt_history*)),
 		this, SLOT(refreshTreeWidget(const abt_history*)));
 
 	connect(ui->treeWidget->header(), SIGNAL(sectionResized(int,int,int)),
@@ -79,9 +79,14 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 page_history::~page_history()
 {
 	delete ui;
-	delete this->actGenerateNewTransaction;
-	delete this->actExportSelected;
-	delete this->actDeleteSelected;
+        delete this->m_actGenerateNewTransaction;
+        delete this->m_actExportSelected;
+        delete this->m_actDeleteSelected;
+
+        ui = NULL;
+        this->m_actGenerateNewTransaction = NULL;
+        this->m_actExportSelected = NULL;
+        this->m_actDeleteSelected = NULL;
 }
 
 void page_history::changeEvent(QEvent *e)
@@ -140,32 +145,32 @@ void page_history::setDefaultTreeWidgetHeader()
 void page_history::createActions()
 {
 	QIcon newIcon = this->ui->toolButton_new->icon();
-	this->actGenerateNewTransaction = new QAction(newIcon, tr("Neu von Vorlage"), this);
-	this->actGenerateNewTransaction->setToolTip(tr("Neuen Auftrag, mit den Daten "
+        this->m_actGenerateNewTransaction = new QAction(newIcon, tr("Neu von Vorlage"), this);
+        this->m_actGenerateNewTransaction->setToolTip(tr("Neuen Auftrag, mit den Daten "
 						       "des gewählten Eintrags als "
 						       "Vorlage, erstellen."));
-	connect(this->actGenerateNewTransaction, SIGNAL(triggered()),
+        connect(this->m_actGenerateNewTransaction, SIGNAL(triggered()),
 		this, SLOT(onActGenerateNewTransaction()));
-	this->ui->toolButton_new->setDefaultAction(this->actGenerateNewTransaction);
-	this->ui->treeWidget->addAction(this->actGenerateNewTransaction);
+        this->ui->toolButton_new->setDefaultAction(this->m_actGenerateNewTransaction);
+        this->ui->treeWidget->addAction(this->m_actGenerateNewTransaction);
 
 	QIcon exportIcon = this->ui->toolButton_export->icon();
-	this->actExportSelected = new QAction(exportIcon, tr("Exportieren"), this);
-	this->actExportSelected->setToolTip(tr("Exportiert die ausgewählten Einträge "
+        this->m_actExportSelected = new QAction(exportIcon, tr("Exportieren"), this);
+        this->m_actExportSelected->setToolTip(tr("Exportiert die ausgewählten Einträge "
 					       "für eine andere Anwendung."));
-	connect(this->actExportSelected, SIGNAL(triggered()),
+        connect(this->m_actExportSelected, SIGNAL(triggered()),
 		this, SLOT(onActExportSelected()));
-	this->ui->toolButton_export->setDefaultAction(this->actExportSelected);
-	this->ui->treeWidget->addAction(this->actExportSelected);
+        this->ui->toolButton_export->setDefaultAction(this->m_actExportSelected);
+        this->ui->treeWidget->addAction(this->m_actExportSelected);
 
 	QIcon deleteIcon = this->ui->toolButton_delete->icon();
-	this->actDeleteSelected = new QAction(deleteIcon, tr("Löschen"), this);
-	this->actDeleteSelected->setToolTip(tr("Löscht die ausgewählten Einträge "
+        this->m_actDeleteSelected = new QAction(deleteIcon, tr("Löschen"), this);
+        this->m_actDeleteSelected->setToolTip(tr("Löscht die ausgewählten Einträge "
 					       "aus der Historie."));
-	connect(this->actDeleteSelected, SIGNAL(triggered()),
+        connect(this->m_actDeleteSelected, SIGNAL(triggered()),
 		this, SLOT(onActDeleteSelected()));
-	this->ui->toolButton_delete->setDefaultAction(this->actDeleteSelected);
-	this->ui->treeWidget->addAction(this->actDeleteSelected);
+        this->ui->toolButton_delete->setDefaultAction(this->m_actDeleteSelected);
+        this->ui->treeWidget->addAction(this->m_actDeleteSelected);
 }
 
 /**
@@ -342,6 +347,7 @@ QMenu *page_history::createExportContextMenu(QWidget *parent, const aqb_imexport
 
 		if (sub->actions().size() == 0) {
 			delete sub; //the submenu has no entrys, we dont need it.
+                        sub = NULL;
 		} else {
 			menu->addMenu(sub);
 		}
@@ -460,7 +466,9 @@ void page_history::onActExportSelected()
 ONACTEXPORTSELECTED_CLEANUP:
 
 	delete exportConextMenu; //menu and all childs no longer needed
+        exportConextMenu = NULL;
 	delete iep; //also deletes ALL childs objects from aqb_imexporters!
+        iep = NULL;
 }
 
 
@@ -572,9 +580,9 @@ void page_history::on_treeWidget_itemSelectionChanged()
 	bool enabled = (this->ui->treeWidget->selectedItems().size() > 0);
 	bool oneSelected = (this->ui->treeWidget->selectedItems().size() == 1);
 
-	this->actGenerateNewTransaction->setEnabled(enabled && oneSelected);
-	this->actExportSelected->setEnabled(enabled);
-	this->actDeleteSelected->setEnabled(enabled);
+        this->m_actGenerateNewTransaction->setEnabled(enabled && oneSelected);
+        this->m_actExportSelected->setEnabled(enabled);
+        this->m_actDeleteSelected->setEnabled(enabled);
 }
 
 void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* column */)

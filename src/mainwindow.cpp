@@ -78,38 +78,38 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->history = new abt_history(this);
-	this->logw = new page_log();
-	this->outbox = new Page_Ausgang(settings);
-	this->dock_KnownRecipient = NULL;
-	this->dock_KnownStandingOrders = NULL;
-	this->dock_KnownDatedTransfers = NULL;
-	this->dock_Accounts = NULL;
+        this->m_accounts = new aqb_Accounts(banking->getAqBanking());
+        this->m_history = new abt_history(this);
+        this->m_logw = new page_log();
+        this->m_outbox = new Page_Ausgang(settings);
+        this->m_dock_KnownRecipient = NULL;
+        this->m_dock_KnownStandingOrders = NULL;
+        this->m_dock_KnownDatedTransfers = NULL;
+        this->m_dock_Accounts = NULL;
 
-	//All accounts from AqBanking were created (this->accounts).
+        //All accounts from AqBanking were created (this->m_accounts).
 	this->loadAccountData(); //Now the account data can be loaded
 	this->loadHistoryData(); //and also the history data
 
-	this->pageHistory = new page_history(this->history);
+        this->m_pageHistory = new page_history(this->m_history);
 
 	QVBoxLayout *logLayout = new QVBoxLayout(ui->Log);
 	logLayout->setMargin(0);
 	logLayout->setSpacing(2);
 	ui->Log->setLayout(logLayout);
-	ui->Log->layout()->addWidget(this->logw);
+        ui->Log->layout()->addWidget(this->m_logw);
 
 	QVBoxLayout *outLayout = new QVBoxLayout(ui->Ausgang);
 	outLayout->setMargin(0);
 	outLayout->setSpacing(2);
 	ui->Ausgang->setLayout(outLayout);
-	ui->Ausgang->layout()->addWidget(this->outbox);
+        ui->Ausgang->layout()->addWidget(this->m_outbox);
 
 	QVBoxLayout *historyLayout = new QVBoxLayout(ui->history);
 	historyLayout->setMargin(0);
 	historyLayout->setSpacing(2);
 	ui->history->setLayout(historyLayout);
-	ui->history->layout()->addWidget(this->pageHistory);
+        ui->history->layout()->addWidget(this->m_pageHistory);
 
 	//set default DockOptions
 	this->setDockOptions(QMainWindow::AllowNestedDocks |
@@ -136,27 +136,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//connect the signals and slots for the PushButtons of the summary widget
 	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
-		this->actTransferNational, SLOT(trigger()));
+                this->m_actTransferNational, SLOT(trigger()));
 	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
-		this->actTransferInternational, SLOT(trigger()));
+                this->m_actTransferInternational, SLOT(trigger()));
 	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
-		this->actTransferInternal, SLOT(trigger()));
+                this->m_actTransferInternal, SLOT(trigger()));
 	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
-		this->actTransferSepa, SLOT(trigger()));
+                this->m_actTransferSepa, SLOT(trigger()));
 	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
-		this->actStandingNew, SLOT(trigger()));
+                this->m_actStandingNew, SLOT(trigger()));
 	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
-		this->actStandingUpdate, SLOT(trigger()));
+                this->m_actStandingUpdate, SLOT(trigger()));
 	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
-		this->actDatedNew, SLOT(trigger()));
+                this->m_actDatedNew, SLOT(trigger()));
 	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
-		this->actDatedUpdate, SLOT(trigger()));
+                this->m_actDatedUpdate, SLOT(trigger()));
 
-	connect(this->pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
+        connect(this->m_pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
 		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
-	connect(this->pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
+        connect(this->m_pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
 		this, SLOT(deleteHistoryItems(QList<abt_jobInfo*>)));
-	connect(this->pageHistory, SIGNAL(showSettingsForImExpFavorite()),
+        connect(this->m_pageHistory, SIGNAL(showSettingsForImExpFavorite()),
 		this, SLOT(on_actionEinstellungen_triggered()));
 
 
@@ -171,10 +171,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	//This is the case when app.exec() in main() is executed.
 	//So the code in the slot TimerTimeOut() is executed when the
 	//application is completely initialised and running.
-	this->timer = new QTimer(this);
-	this->timer->setSingleShot(true);
-	connect(this->timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
-	this->timer->start(10);
+        this->m_timer = new QTimer(this);
+        this->m_timer->setSingleShot(true);
+        connect(this->m_timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
+        this->m_timer->start(10);
 
 #ifdef TESTWIDGETACCESS
 	this->ui->menuBar->addAction(this->actTestWidgetAccess);
@@ -184,17 +184,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-	disconnect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+        disconnect(this->m_jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		   this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
 	//cleanup all created widgets
-	delete this->outbox;
-	delete this->logw;
-	delete this->pageHistory;
-	delete this->jobctrl;
-	delete this->history;
-	delete this->accounts;
+        delete this->m_outbox;
+        delete this->m_logw;
+        delete this->m_pageHistory;
+        delete this->m_jobctrl;
+        delete this->m_history;
+        delete this->m_accounts;
 	delete ui;
+
+        this->m_outbox = NULL;
+        this->m_logw = NULL;
+        this->m_pageHistory = NULL;
+        this->m_jobctrl = NULL;
+        this->m_history = NULL;
+        this->m_accounts = NULL;
+        ui = NULL;
 
 	qDebug() << Q_FUNC_INFO << "deleted";
 }
@@ -216,7 +224,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
 	//check if jobs are in the outbox. If there are some ask the user
 	//if the application should realy quit.
-	if (this->jobctrl->jobqueueList()->size() != 0) {
+        if (this->m_jobctrl->jobqueueList()->size() != 0) {
 		int ret;
 		ret = QMessageBox::warning(this,
 					   tr("Aufträge im Ausgang"),
@@ -233,7 +241,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		}
 	}
 
-	this->actSaveAllData->trigger(); //save all data before quit
+        this->m_actSaveAllData->trigger(); //save all data before quit
 	e->accept(); //now we can get closed
 }
 
@@ -247,8 +255,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 void MainWindow::TimerTimeOut()
 {
 	disconnect(this, SLOT(TimerTimeOut())); //remove connection
-	delete this->timer; //the timer is no longer needed
-	this->timer = NULL;
+        delete this->m_timer; //the timer is no longer needed
+        this->m_timer = NULL;
 
 	abt_dialog dia(this,
 		       tr("eventuelle Kosten"),
@@ -283,7 +291,7 @@ void MainWindow::TimerTimeOut()
 	}
 
 	if (settings->appendJobToOutbox("executeAtStart")) {
-		this->jobctrl->execQueuedTransactions();
+                this->m_jobctrl->execQueuedTransactions();
 	}
 
 	//check if DatedTransfers exists which reached the date of execution.
@@ -293,70 +301,70 @@ void MainWindow::TimerTimeOut()
 //private
 void MainWindow::createActions()
 {
-	actTransferNational = new QAction(this);
-	actTransferNational->setText(tr("National"));
-	actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
+        m_actTransferNational = new QAction(this);
+        m_actTransferNational->setText(tr("National"));
+        m_actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
 
-	actTransferInternational = new QAction(this);
-	actTransferInternational->setText(tr("International"));
-	actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
+        m_actTransferInternational = new QAction(this);
+        m_actTransferInternational->setText(tr("International"));
+        m_actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
 
-	actTransferSepa = new QAction(this);
-	actTransferSepa->setText(tr("SEPA (EU weit)"));
-	actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
+        m_actTransferSepa = new QAction(this);
+        m_actTransferSepa->setText(tr("SEPA (EU weit)"));
+        m_actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
 
-	actTransferInternal = new QAction(this);
-	actTransferInternal->setText(tr("Umbuchung"));
-	actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
+        m_actTransferInternal = new QAction(this);
+        m_actTransferInternal->setText(tr("Umbuchung"));
+        m_actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
 
-	actDatedNew = new QAction(this);
-	actDatedNew->setText(tr("Anlegen"));
-	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
+        m_actDatedNew = new QAction(this);
+        m_actDatedNew->setText(tr("Anlegen"));
+        m_actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
 
-	actDatedUpdate = new QAction(this);
-	actDatedUpdate->setText(tr("Aktualisieren"));
-	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
+        m_actDatedUpdate = new QAction(this);
+        m_actDatedUpdate->setText(tr("Aktualisieren"));
+        m_actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
 
-	actStandingNew = new QAction(this);
-	actStandingNew->setText(tr("Anlegen"));
-	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
+        m_actStandingNew = new QAction(this);
+        m_actStandingNew->setText(tr("Anlegen"));
+        m_actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
 
-	actStandingUpdate = new QAction(this);
-	actStandingUpdate->setText(tr("Aktualisieren"));
-	actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
+        m_actStandingUpdate = new QAction(this);
+        m_actStandingUpdate->setText(tr("Aktualisieren"));
+        m_actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
 
-	actDebitNote = new QAction(this);
-	actDebitNote->setText(tr("Lastschrift"));
-	actDebitNote->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDebitNote, SIGNAL(triggered()), this, SLOT(onActionDebitNoteTriggered()));
+        m_actDebitNote = new QAction(this);
+        m_actDebitNote->setText(tr("Lastschrift"));
+        m_actDebitNote->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actDebitNote, SIGNAL(triggered()), this, SLOT(onActionDebitNoteTriggered()));
 
-	actDebitNoteSepa = new QAction(this);
-	actDebitNoteSepa->setText(tr("SEPA-Lastschrift (EU weit)"));
-	actDebitNoteSepa->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDebitNoteSepa, SIGNAL(triggered()), this, SLOT(onActionDebitNoteSepaTriggered()));
+        m_actDebitNoteSepa = new QAction(this);
+        m_actDebitNoteSepa->setText(tr("SEPA-Lastschrift (EU weit)"));
+        m_actDebitNoteSepa->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actDebitNoteSepa, SIGNAL(triggered()), this, SLOT(onActionDebitNoteSepaTriggered()));
 
-	actUpdateBalance = new QAction(this);
-	actUpdateBalance->setText(tr("Kontostand aktualisieren"));
-	actUpdateBalance->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
+        m_actUpdateBalance = new QAction(this);
+        m_actUpdateBalance->setText(tr("Kontostand aktualisieren"));
+        m_actUpdateBalance->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
 
-	actShowAvailableJobs = new QAction(this);
-	actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
-	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
+        m_actShowAvailableJobs = new QAction(this);
+        m_actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
+        m_actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
+        connect(m_actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
 
-	actSaveAllData = new QAction(this);
-	actSaveAllData->setText(tr("Speichern"));
-	actSaveAllData->setIcon(QIcon::fromTheme("document-save"));
-	connect(actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
+        m_actSaveAllData = new QAction(this);
+        m_actSaveAllData->setText(tr("Speichern"));
+        m_actSaveAllData->setIcon(QIcon::fromTheme("document-save"));
+        connect(m_actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
 
 
 #ifdef TESTWIDGETACCESS
@@ -371,40 +379,40 @@ void MainWindow::createActions()
 //private
 void MainWindow::createMenus()
 {
-	this->accountContextMenu = new QMenu(this);
+        this->m_accountContextMenu = new QMenu(this);
 	QMenu *MenuTransfer = new QMenu(tr("Überweisung"), this);
-	MenuTransfer->addAction(this->actTransferNational);
-	MenuTransfer->addAction(this->actTransferInternational);
-	MenuTransfer->addAction(this->actTransferInternal);
-	MenuTransfer->addAction(this->actTransferSepa);
+        MenuTransfer->addAction(this->m_actTransferNational);
+        MenuTransfer->addAction(this->m_actTransferInternational);
+        MenuTransfer->addAction(this->m_actTransferInternal);
+        MenuTransfer->addAction(this->m_actTransferSepa);
 	QMenu *MenuStanding = new QMenu(tr("Daueraufträge"), this);
-	MenuStanding->addAction(this->actStandingNew);
-	MenuStanding->addAction(this->actStandingUpdate);
+        MenuStanding->addAction(this->m_actStandingNew);
+        MenuStanding->addAction(this->m_actStandingUpdate);
 	QMenu *MenuDated = new QMenu(tr("Terminüberweisungen"), this);
-	MenuDated->addAction(this->actDatedNew);
-	MenuDated->addAction(this->actDatedUpdate);
-	this->accountContextMenu->addMenu(MenuTransfer);
-	this->accountContextMenu->addMenu(MenuStanding);
-	this->accountContextMenu->addMenu(MenuDated);
-	this->accountContextMenu->addAction(this->actDebitNote);
-	this->accountContextMenu->addAction(this->actDebitNoteSepa);
-	this->accountContextMenu->addSeparator();
-	this->accountContextMenu->addAction(this->actUpdateBalance);
-	this->accountContextMenu->addAction(this->actShowAvailableJobs);
+        MenuDated->addAction(this->m_actDatedNew);
+        MenuDated->addAction(this->m_actDatedUpdate);
+        this->m_accountContextMenu->addMenu(MenuTransfer);
+        this->m_accountContextMenu->addMenu(MenuStanding);
+        this->m_accountContextMenu->addMenu(MenuDated);
+        this->m_accountContextMenu->addAction(this->m_actDebitNote);
+        this->m_accountContextMenu->addAction(this->m_actDebitNoteSepa);
+        this->m_accountContextMenu->addSeparator();
+        this->m_accountContextMenu->addAction(this->m_actUpdateBalance);
+        this->m_accountContextMenu->addAction(this->m_actShowAvailableJobs);
 }
 
 //private
 void MainWindow::createDockToolbar()
 {
-	this->dockToolbar = new QToolBar(tr("Dock Toolbar"),this);
-	this->dockToolbar->setObjectName("dockToolbar");
-	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownStandingOrders->toggleViewAction());
-	this->dockToolbar->addAction(this->dock_KnownDatedTransfers->toggleViewAction());
+        this->m_dockToolbar = new QToolBar(tr("Dock Toolbar"),this);
+        this->m_dockToolbar->setObjectName("dockToolbar");
+        this->m_dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        this->m_dockToolbar->addAction(this->m_dock_Accounts->toggleViewAction());
+        this->m_dockToolbar->addAction(this->m_dock_KnownRecipient->toggleViewAction());
+        this->m_dockToolbar->addAction(this->m_dock_KnownStandingOrders->toggleViewAction());
+        this->m_dockToolbar->addAction(this->m_dock_KnownDatedTransfers->toggleViewAction());
 
-	this->addToolBar(Qt::TopToolBarArea, this->dockToolbar);
+        this->addToolBar(Qt::TopToolBarArea, this->m_dockToolbar);
 }
 
 //private
@@ -424,7 +432,7 @@ void MainWindow::createWidgetsInScrollArea()
 		layoutScrollArea = new QVBoxLayout(this->ui->scrollAreaWidgetContents);
 	}
 
-	foreach(const aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+        foreach(const aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
 		//known Standing Orders
 		QGroupBox *grpSO = new QGroupBox(this);
 		QVBoxLayout *lSO = new QVBoxLayout(grpSO);
@@ -433,7 +441,7 @@ void MainWindow::createWidgetsInScrollArea()
 		standingOrders->setAccount(acc);;
 
 		connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
-			this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+                        this->m_jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
 		connect(standingOrders, SIGNAL(editStandingOrder(const aqb_AccountInfo*,const abt_standingOrderInfo*)),
 			this, SLOT(onStandingOrderEditRequest(const aqb_AccountInfo*,const abt_standingOrderInfo*)));
@@ -451,7 +459,7 @@ void MainWindow::createWidgetsInScrollArea()
 		datedTransfers->setAccount(acc);
 
 		connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
-			this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+                        this->m_jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
 		connect(datedTransfers, SIGNAL(editDatedTransfer(const aqb_AccountInfo*, const abt_datedTransferInfo*)),
 			this, SLOT(onDatedTransferEditRequest(const aqb_AccountInfo*, const abt_datedTransferInfo*)));
@@ -468,19 +476,19 @@ void MainWindow::createWidgetsInScrollArea()
 void MainWindow::createDockBankAccountWidget()
 {
 	/** create a new QDockWidget ("Online Konten"). */
-	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
-	this->dock_Accounts->setObjectName("OnlineAccounts");
+        this->m_dock_Accounts = new QDockWidget(tr("Online Konten"),this);
+        this->m_dock_Accounts->setObjectName("OnlineAccounts");
 	qDebug() << "creating bankAccountsWidget";
 	/** A new BankAccountsWidget is set as the new widget in der QDockWidget. */
-	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
-	this->dock_Accounts->setWidget(baw);
-	//this->dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-	this->dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_Accounts->setFloating(false);
-	this->dock_Accounts->hide();
-	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
+        BankAccountsWidget *baw = new BankAccountsWidget(this->m_accounts, this->m_dock_Accounts);
+        this->m_dock_Accounts->setWidget(baw);
+        //this->m_dock_Accounts->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+        this->m_dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
+        this->m_dock_Accounts->setFloating(false);
+        this->m_dock_Accounts->hide();
+        this->m_dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
 	/** Add the DockWidget topDockWidgetArea of the MainWindow. */
-	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
+        this->addDockWidget(Qt::TopDockWidgetArea, this->m_dock_Accounts);
 	/** Connection for the ContextMenu is established. */
 	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
@@ -496,10 +504,10 @@ void MainWindow::createDockBankAccountWidget()
  */
 void MainWindow::createDockKnownRecipients()
 {
-	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
-	this->dock_KnownRecipient->setObjectName("KnownRecipients");
+        this->m_dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
+        this->m_dock_KnownRecipient->setObjectName("KnownRecipients");
 	qDebug() << "creating knownEmpfaengerWidget";
-	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
+        KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->m_dock_KnownRecipient);
 	//Changes of the known recipients must be send to the widget
 	connect(settings, SIGNAL(recipientsListChanged()),
 		kew, SLOT(onEmpfaengerListChanged()));
@@ -509,13 +517,13 @@ void MainWindow::createDockKnownRecipients()
 		settings, SLOT(addKnownRecipient(abt_EmpfaengerInfo*)));
 	connect(kew, SIGNAL(deleteKnownEmpfaenger(abt_EmpfaengerInfo*)),
 		settings, SLOT(deleteKnownRecipient(abt_EmpfaengerInfo*)));
-	this->dock_KnownRecipient->setWidget(kew);
-	//this->dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
-	this->dock_KnownRecipient->setFloating(false);
-	this->dock_KnownRecipient->hide();
-	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
-	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
+        this->m_dock_KnownRecipient->setWidget(kew);
+        //this->m_dock_KnownRecipient->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        this->m_dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
+        this->m_dock_KnownRecipient->setFloating(false);
+        this->m_dock_KnownRecipient->hide();
+        this->m_dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+        this->addDockWidget(Qt::RightDockWidgetArea, this->m_dock_KnownRecipient);
 }
 
 //private
@@ -564,7 +572,7 @@ void MainWindow::createDockStandingOrders()
 	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
-	this->dock_KnownStandingOrders = dock;
+        this->m_dock_KnownStandingOrders = dock;
 
 	this->dockStandingOrdersSetAccounts();
 }
@@ -572,8 +580,8 @@ void MainWindow::createDockStandingOrders()
 //private
 void MainWindow::dockStandingOrdersSetAccounts()
 {
-	widgetAccountComboBox *accComboBox = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
-	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+        widgetAccountComboBox *accComboBox = this->m_dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+        widgetKnownStandingOrders *standingOrders = this->m_dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 
 	if ((accComboBox == NULL) || (standingOrders == NULL)) {
 		return; //one widget missing, cancel
@@ -581,10 +589,10 @@ void MainWindow::dockStandingOrdersSetAccounts()
 
 	//get the last selected account (from settings)
 	int selAccID = settings->loadSelAccountInWidget("StandingOrders");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+        const aqb_AccountInfo *lastAcc = this->m_accounts->getAccount(selAccID);
 
 	//set all known accounts in the ComboBox
-	accComboBox->setAllAccounts(this->accounts);
+        accComboBox->setAllAccounts(this->m_accounts);
 	//and select the last time selected one
 	accComboBox->setSelectedAccount(lastAcc);
 
@@ -639,7 +647,7 @@ void MainWindow::createDockDatedTransfers()
 	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
-	this->dock_KnownDatedTransfers = dock;
+        this->m_dock_KnownDatedTransfers = dock;
 
 	this->dockDatedTransfersSetAccounts();
 }
@@ -647,8 +655,8 @@ void MainWindow::createDockDatedTransfers()
 //private
 void MainWindow::dockDatedTransfersSetAccounts()
 {
-	widgetAccountComboBox *accComboBox = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
-	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+        widgetAccountComboBox *accComboBox = this->m_dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+        widgetKnownDatedTransfers *datedTransfers = this->m_dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 
 	if ((accComboBox == NULL) || (datedTransfers == NULL)) {
 		return; //one widget missing, cancel
@@ -656,10 +664,10 @@ void MainWindow::dockDatedTransfersSetAccounts()
 
 	//get the last selected account (from settings)
 	int selAccID = settings->loadSelAccountInWidget("DatedTransfers");
-	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
+        const aqb_AccountInfo *lastAcc = this->m_accounts->getAccount(selAccID);
 
 	//set all known accounts in the ComboBox
-	accComboBox->setAllAccounts(this->accounts);
+        accComboBox->setAllAccounts(this->m_accounts);
 	//and select the last time selected one
 	accComboBox->setSelectedAccount(lastAcc);
 
@@ -671,45 +679,45 @@ void MainWindow::dockDatedTransfersSetAccounts()
 //private
 void MainWindow::createJobCtrlAndConnections()
 {
-	Q_ASSERT(this->history); //the history and
-	Q_ASSERT(this->accounts); //accounts must exist
+        Q_ASSERT(this->m_history); //the history and
+        Q_ASSERT(this->m_accounts); //accounts must exist
 
-	this->jobctrl = new abt_job_ctrl(this->accounts, this->history, this);
+        this->m_jobctrl = new abt_job_ctrl(this->m_accounts, this->m_history, this);
 
 	/***** Signals and Slots ******/
 	//Display not possible jobs at the status bar
-	connect(this->jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
+        connect(this->m_jobctrl, SIGNAL(jobNotAvailable(AB_JOB_TYPE)),
 		this, SLOT(DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE)));
 
 	//Connection for successfully added jobs
-	connect(this->jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
+        connect(this->m_jobctrl, SIGNAL(jobAdded(const abt_jobInfo*)),
 		this, SLOT(onJobAddedToJobCtrlList(const abt_jobInfo*)));
 
 	//log messges ob abt_job_ctrl should go to the log wiget
-	connect(this->jobctrl, SIGNAL(log(QString)),
-		this->logw, SLOT(appendLogText(QString)));
+        connect(this->m_jobctrl, SIGNAL(log(QString)),
+                this->m_logw, SLOT(appendLogText(QString)));
 
 	//Allow ediging of jobs in the outbox
-	connect(this->outbox, SIGNAL(editJob(int)),
+        connect(this->m_outbox, SIGNAL(editJob(int)),
 		this, SLOT(onEditJobFromOutbox(int)));
 
-	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
+        connect(this->m_jobctrl, SIGNAL(jobQueueListChanged()),
 		this, SLOT(onJobCtrlQueueListChanged()));
-	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
-		this->jobctrl, SLOT(moveJob(int,int)));
-	connect(this->outbox, SIGNAL(executeClicked()),
-		this->jobctrl, SLOT(execQueuedTransactions()));
-	connect(this->outbox, SIGNAL(removeJob(abt_jobInfo *)),
-		this->jobctrl, SLOT(deleteJob(abt_jobInfo *)));
+        connect(this->m_outbox, SIGNAL(moveJobInList(int,int)),
+                this->m_jobctrl, SLOT(moveJob(int,int)));
+        connect(this->m_outbox, SIGNAL(executeClicked()),
+                this->m_jobctrl, SLOT(execQueuedTransactions()));
+        connect(this->m_outbox, SIGNAL(removeJob(abt_jobInfo *)),
+                this->m_jobctrl, SLOT(deleteJob(abt_jobInfo *)));
 
 
-	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+        widgetKnownDatedTransfers *datedTransfers = this->m_dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 	connect(datedTransfers, SIGNAL(updateDatedTransfers(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
+                this->m_jobctrl, SLOT(addGetDatedTransfers(const aqb_AccountInfo*)));
 
-	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+        widgetKnownStandingOrders *standingOrders = this->m_dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 	connect(standingOrders, SIGNAL(updateStandingOrders(const aqb_AccountInfo*)),
-		this->jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
+                this->m_jobctrl, SLOT(addGetStandingOrders(const aqb_AccountInfo*)));
 
 }
 
@@ -717,13 +725,13 @@ void MainWindow::createJobCtrlAndConnections()
 /** @brief Loads all data for all accounts */
 void MainWindow::loadAccountData()
 {
-	Q_ASSERT(this->accounts); //accounts must exist
+        Q_ASSERT(this->m_accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx;
 
 	//get all account data from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
 					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts);
+        abt_parser::parse_ctx(ctx, this->m_accounts);
 	AB_ImExporterContext_free(ctx); //ctx no longer needed, all loaded
 }
 
@@ -731,11 +739,11 @@ void MainWindow::loadAccountData()
 /** @brief Saves all data from all accounts */
 void MainWindow::saveAccountData()
 {
-	Q_ASSERT(this->accounts); //accounts must exist
+        Q_ASSERT(this->m_accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
 	//create one AB_IMEXPORTER_CONTEXT for all accounts
-	ctx = abt_parser::create_ctx_from(this->accounts);
+        ctx = abt_parser::create_ctx_from(this->m_accounts);
 
 	if (!ctx) return; //if no ctx created, we have nothing to save
 
@@ -748,17 +756,17 @@ void MainWindow::saveAccountData()
 /** \brief loads all history data */
 void MainWindow::loadHistoryData()
 {
-	Q_ASSERT(this->history); //the history and
-	Q_ASSERT(this->accounts); //accounts must exist
+        Q_ASSERT(this->m_history); //the history and
+        Q_ASSERT(this->m_accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx;
 
 	//clear all loaded history items, we relaod them all
-	this->history->clearAll();
+        this->m_history->clearAll();
 
 	//load all history items from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
 					 "ctxfile", "default");
-	abt_parser::parse_ctx(ctx, this->accounts, this->history);
+        abt_parser::parse_ctx(ctx, this->m_accounts, this->m_history);
 	AB_ImExporterContext_free(ctx);
 }
 
@@ -766,12 +774,12 @@ void MainWindow::loadHistoryData()
 /** \brief saves all history data */
 void MainWindow::saveHistoryData()
 {
-	Q_ASSERT(this->history); //the history and
-	Q_ASSERT(this->accounts); //accounts must exist
+        Q_ASSERT(this->m_history); //the history and
+        Q_ASSERT(this->m_accounts); //accounts must exist
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 
 	//get the AB_IMEXPORTER_CONTEXT for the history and save it to file
-	ctx = this->history->getContext();
+        ctx = this->m_history->getContext();
 	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
 				   "ctxfile", "default");
 	AB_ImExporterContext_free(ctx);
@@ -933,6 +941,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	about->exec();
 
 	delete about;
+        about = NULL;
 }
 
 //private slot
@@ -979,6 +988,7 @@ void MainWindow::on_actionHelp_triggered()
 	helpDialog->exec();
 
 	delete helpDialog;
+        helpDialog = NULL;
 }
 
 //private slot
@@ -1007,10 +1017,10 @@ void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 //private slot
 void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *acc = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	//only show the menu when a account is selected
 	if (acc->getSelectedAccount() != NULL) {
-		this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
+                this->m_accountContextMenu->exec(this->m_dock_Accounts->widget()->mapToGlobal(p));
 	}
 }
 
@@ -1061,9 +1071,9 @@ void MainWindow::onActionDatedNewTriggered()
 //private slot
 void MainWindow::onActionDatedUpdateTriggered()
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *acc = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	if (!acc) return; //cancel if no BankAccountsWidget was found
-	this->jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
+        this->m_jobctrl->addGetDatedTransfers(acc->getSelectedAccount());
 }
 
 //private slot
@@ -1075,9 +1085,9 @@ void MainWindow::onActionStandingNewTriggered()
 //private slot
 void MainWindow::onActionStandingUpdateTriggered()
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *acc = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	if (!acc) return; //cancel if no BankAccountsWidget was found
-	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
+        this->m_jobctrl->addGetStandingOrders(acc->getSelectedAccount());
 }
 
 //private slot
@@ -1095,9 +1105,9 @@ void MainWindow::onActionDebitNoteSepaTriggered()
 //private slot
 void MainWindow::onActionUpdateBalanceTriggered()
 {
-	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *acc = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	if (!acc) return; //cancel if no BankAccountsWidget was found
-	this->jobctrl->addGetBalance(acc->getSelectedAccount());
+        this->m_jobctrl->addGetBalance(acc->getSelectedAccount());
 }
 
 //private slot
@@ -1105,7 +1115,7 @@ void MainWindow::onActionUpdateBalanceTriggered()
 void MainWindow::onActionShowAvailableJobsTriggered()
 {
 	//show all supported and not supported jobs for the selected account
-	BankAccountsWidget *BAW = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *BAW = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	aqb_AccountInfo *acc = BAW->getSelectedAccount();
 	if (!acc) return; //no account selected, cancel
 
@@ -1210,6 +1220,7 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	dialog->exec();
 
 	delete dialog;
+        dialog = NULL;
 }
 
 #ifdef TESTWIDGETACCESS
@@ -1219,12 +1230,13 @@ void MainWindow::onActionTestWidgetAccessTriggered()
 	//Only used for test purposes!
 	QDialog *dialog = new QDialog(this);
 	QVBoxLayout *vb = new QVBoxLayout(dialog);
-	pageWidgetTests *page = new pageWidgetTests(this->accounts);
+        pageWidgetTests *page = new pageWidgetTests(this->m_accounts);
 	vb->addWidget(page);
 
 	dialog->exec();
 
 	delete dialog;
+        dialog = NULL;
 }
 #endif
 
@@ -1269,6 +1281,7 @@ void MainWindow::deleteTabWidgetAndTab(int tabIndex)
 
 	this->ui->tabWidget_UW->removeTab(tabIndex);
 	delete transW;
+        transW = NULL;
 }
 
 //private
@@ -1299,7 +1312,7 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 	BankAccountsWidget *bankAccW;
 	const aqb_AccountInfo *acc;
 	if (account == NULL) {
-		bankAccW = this->dock_Accounts->findChild<BankAccountsWidget*>();
+                bankAccW = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 		acc = bankAccW->getSelectedAccount();
 	} else {
 		acc = account;
@@ -1312,7 +1325,7 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 		return NULL; //without a account we cant do anything
 	}
 
-	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
+        widgetTransfer *trans = new widgetTransfer(type, acc, this->m_accounts, this);
 
 	//add the new tab and set it as current
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
@@ -1348,7 +1361,7 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 		QString errMsg;
 		bool inputOK = sender->isRecurrenceInputOk(errMsg);
 		if (!inputOK) {
-			bool accepted = this->correctRecurrenceDates(sender->recurrence);
+                        bool accepted = this->correctRecurrenceDates(sender->m_recurrence);
 			if (!accepted) {
 				return; //user dont want the correction
 			}
@@ -1702,7 +1715,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
  */
 bool MainWindow::isStandingOrderInOutbox(const abt_standingOrderInfo *soi)
 {
-	if (this->jobctrl->isTransactionInQueue(soi->getTransaction())) {
+        if (this->m_jobctrl->isTransactionInQueue(soi->getTransaction())) {
 		QMessageBox::critical(this, tr("Bereits im Ausgang"),
 			tr("<b>Der Dauerauftrag befindet sich bereits im "
 			   "Ausgang!</b><br /><br />"
@@ -1759,7 +1772,7 @@ bool MainWindow::isStandingOrderOutdated(const aqb_AccountInfo *acc,
 		case QMessageBox::Ignore: break; //User want to edit
 		case QMessageBox::Yes:
 			//update job to outbox
-			this->jobctrl->addGetStandingOrders(acc);
+                        this->m_jobctrl->addGetStandingOrders(acc);
 			//activate the outbox
 			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
 			return true; //the standing order should not be edited
@@ -1792,7 +1805,7 @@ void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const 
 	if (this->isStandingOrderInOutbox(da)) return;
 	if (this->isStandingOrderOutdated(acc, da)) return;
 
-	this->jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
+        this->m_jobctrl->addDeleteStandingOrder(acc, da->getTransaction());
 }
 
 
@@ -1805,7 +1818,7 @@ void MainWindow::onStandingOrderDeleteRequest(const aqb_AccountInfo *acc, const 
  */
 bool MainWindow::isDatedTransferInOutbox(const abt_datedTransferInfo *dti)
 {
-	if (this->jobctrl->isTransactionInQueue(dti->getTransaction())) {
+        if (this->m_jobctrl->isTransactionInQueue(dti->getTransaction())) {
 	      QMessageBox::critical(this, tr("Bereits im Ausgang"),
 		      tr("<b>Die terminierte Überweisung befindet sich bereits im Ausgang!</b><br /><br />"
 			 "Sie wurde entweder schon bearbeitet oder soll gelöscht werden. "
@@ -1862,7 +1875,7 @@ bool MainWindow::isDatedTransferOutdated(const aqb_AccountInfo *acc,
 		case QMessageBox::Ignore: break; //User want to edit
 		case QMessageBox::Yes:
 			//update job to outbox
-			this->jobctrl->addGetDatedTransfers(acc);
+                        this->m_jobctrl->addGetDatedTransfers(acc);
 			//activate the outbox
 			this->ui->listWidget->setCurrentRow(1, QItemSelectionModel::ClearAndSelect);
 			return true; //the dated transfer should not be edited
@@ -1895,7 +1908,7 @@ void MainWindow::onDatedTransferDeleteRequest(const aqb_AccountInfo *acc, const 
 	if (this->isDatedTransferInOutbox(di)) return;
 	if (this->isDatedTransferOutdated(acc, di)) return;
 
-	this->jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
+        this->m_jobctrl->addDeleteDatedTransfer(acc, di->getTransaction());
 }
 
 //private Slot
@@ -1910,14 +1923,14 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	const aqb_AccountInfo *acc = NULL;
 
 	//the itemNr is the position at the JobQueueList
-	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
+        abt_jobInfo *job = this->m_jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
 	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
 	jobAccNumber =AB_Account_GetAccountNumber(AB_Job_GetAccount(job->getJob()));
 
 	//get the account that matches the local transaction data
-	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
+        acc = this->m_accounts->getAccount(jobAccNumber, jobAccBankcode);
 
 	if (acc == NULL) {
 		//account not found
@@ -1930,13 +1943,13 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	transW->setValuesFromTransaction(job->getTransaction());
 
 	//remove the job from the JobQueueList
-	this->jobctrl->deleteJob(job);
+        this->m_jobctrl->deleteJob(job);
 }
 
 //private slot
 void MainWindow::onJobCtrlQueueListChanged()
 {
-	this->outbox->refreshTreeWidget(this->jobctrl);
+        this->m_outbox->refreshTreeWidget(this->m_jobctrl);
 }
 
 //private slot
@@ -1950,7 +1963,7 @@ void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
 	jobAccNumber = ji->getTransaction()->getLocalAccountNumber();
 
 	//get the account that matches the local transaction data
-	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
+        acc = this->m_accounts->getAccount(jobAccNumber, jobAccBankcode);
 
 	if (acc == NULL) { //no account found
 		QString msg;
@@ -1970,7 +1983,7 @@ void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
 void MainWindow::deleteHistoryItems(QList<abt_jobInfo *> jiList)
 {
 	foreach(abt_jobInfo* ji, jiList) {
-		this->history->remove(ji);
+                this->m_history->remove(ji);
 	}
 }
 
@@ -1985,7 +1998,7 @@ void MainWindow::onActionSaveAllDataTriggered()
 /** must only be called if all inputs are valid */
 void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 {
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
@@ -1994,20 +2007,21 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	t->setRemoteBankName(sender->remoteAccount->getBankName());
+        t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
-	t->setTextKey(sender->textKey->getTextKey());
+        t->setTextKey(sender->m_textKey->getTextKey());
 
-	this->jobctrl->addNewSingleTransfer(acc, t);
+        this->m_jobctrl->addNewSingleTransfer(acc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
@@ -2027,10 +2041,10 @@ void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: 
 //	//date and time of the creation of the transaction ;)
 //	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 //
-//	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-//	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-//	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-//	t->setRemoteBankName(sender->remoteAccount->getBankName());
+//	t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+//	t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+//	t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+//	t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 //
 //	t->setValue(sender->value->getValueABV());
 //
@@ -2038,7 +2052,7 @@ void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: 
 //
 //	t->setTextKey(sender->textKey->getTextKey());
 //
-//	this->jobctrl->addNewEuTransfer(acc, t);
+//	this->m_jobctrl->addNewEuTransfer(acc, t);
 //
 //	delete t;
 }
@@ -2047,7 +2061,7 @@ void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: 
 /** must only be called if all inputs are valid */
 void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 {
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
@@ -2056,29 +2070,30 @@ void MainWindow::createAndSendDatedTransfer(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	t->setRemoteBankName(sender->remoteAccount->getBankName());
+        t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
-	t->setTextKey(sender->textKey->getTextKey());
+        t->setTextKey(sender->m_textKey->getTextKey());
 
-	t->setDate(sender->datedDate->getDate());
+        t->setDate(sender->m_datedDate->getDate());
 
-	this->jobctrl->addCreateDatedTransfer(acc, t);
+        this->m_jobctrl->addCreateDatedTransfer(acc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
 /** must only be called if all inputs are valid */
 void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 {
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
@@ -2087,29 +2102,30 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	t->setRemoteBankName(sender->remoteAccount->getBankName());
+        t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
-	t->setTextKey(sender->textKey->getTextKey());
+        t->setTextKey(sender->m_textKey->getTextKey());
 
-	t->setCycle(sender->recurrence->getCycle());
-	t->setPeriod(sender->recurrence->getPeriod());
-	t->setExecutionDay(sender->recurrence->getExecutionDay());
+        t->setCycle(sender->m_recurrence->getCycle());
+        t->setPeriod(sender->m_recurrence->getPeriod());
+        t->setExecutionDay(sender->m_recurrence->getExecutionDay());
 	//t->setDate(sender->recurrence->getFirstExecutionDate());
 	//t->setValutaDate(sender->recurrence->getFirstExecutionDate());
-	t->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
-	t->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
-	t->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
+        t->setFirstExecutionDate(sender->m_recurrence->getFirstExecutionDate());
+        t->setLastExecutionDate(sender->m_recurrence->getLastExecutionDate());
+        t->setNextExecutionDate(sender->m_recurrence->getNextExecutionDate());
 
-	this->jobctrl->addCreateStandingOrder(acc, t);
+        this->m_jobctrl->addCreateStandingOrder(acc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
@@ -2118,7 +2134,7 @@ void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 {
 	qWarning() << "create SEPA Transfer implemented, but not well tested!";
 
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
@@ -2127,28 +2143,29 @@ void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 	//date and time of the creation of the transaction ;)
 	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	t->setRemoteIban(sender->remoteAccount->getIBAN());
-	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	t->setRemoteBic(sender->remoteAccount->getBIC());
-	t->setRemoteBankName(sender->remoteAccount->getBankName());
+        t->setRemoteIban(sender->m_remoteAccount->getIBAN());
+        t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        t->setRemoteBic(sender->m_remoteAccount->getBIC());
+        t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
 	/** @todo could the textkey be set for sepa transfers? */
 	//t->setTextKey(sender->textKey->getTextKey());
 
-	this->jobctrl->addNewSepaTransfer(acc, t);
+        this->m_jobctrl->addNewSepaTransfer(acc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
 /** must only be called if all inputs are valid */
 void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 {
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
 
 	//copy the original transaction (because of const)
@@ -2160,29 +2177,30 @@ void MainWindow::createAndSendModifyDatedTransfer(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	newT->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	newT->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	newT->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	newT->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	newT->setRemoteBankName(sender->remoteAccount->getBankName());
+        newT->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        newT->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        newT->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        newT->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	newT->setValue(sender->value->getValueABV());
+        newT->setValue(sender->m_value->getValueABV());
 
-	newT->setPurpose(sender->purpose->getPurpose());
+        newT->setPurpose(sender->m_purpose->getPurpose());
 
-	newT->setTextKey(sender->textKey->getTextKey());
+        newT->setTextKey(sender->m_textKey->getTextKey());
 
-	newT->setDate(sender->datedDate->getDate());
+        newT->setDate(sender->m_datedDate->getDate());
 
-	this->jobctrl->addModifyDatedTransfer(acc, newT);
+        this->m_jobctrl->addModifyDatedTransfer(acc, newT);
 
 	delete newT;
+        newT = NULL;
 }
 
 //private
 /** must only be called if all inputs are valid */
 void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 {
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	const abt_transaction *origT = sender->getOriginalTransaction();
 
 	//copy the original transaction (because of const)
@@ -2194,27 +2212,28 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	newT->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	newT->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	newT->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	newT->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	newT->setRemoteBankName(sender->remoteAccount->getBankName());
+        newT->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        newT->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        newT->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        newT->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	newT->setValue(sender->value->getValueABV());
+        newT->setValue(sender->m_value->getValueABV());
 
-	newT->setPurpose(sender->purpose->getPurpose());
+        newT->setPurpose(sender->m_purpose->getPurpose());
 
-	newT->setTextKey(sender->textKey->getTextKey());
+        newT->setTextKey(sender->m_textKey->getTextKey());
 
-	newT->setCycle(sender->recurrence->getCycle());
-	newT->setPeriod(sender->recurrence->getPeriod());
-	newT->setExecutionDay(sender->recurrence->getExecutionDay());
-	newT->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
-	newT->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
-	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
+        newT->setCycle(sender->m_recurrence->getCycle());
+        newT->setPeriod(sender->m_recurrence->getPeriod());
+        newT->setExecutionDay(sender->m_recurrence->getExecutionDay());
+        newT->setFirstExecutionDate(sender->m_recurrence->getFirstExecutionDate());
+        newT->setLastExecutionDate(sender->m_recurrence->getLastExecutionDate());
+        newT->setNextExecutionDate(sender->m_recurrence->getNextExecutionDate());
 
-	this->jobctrl->addModifyStandingOrder(acc, newT);
+        this->m_jobctrl->addModifyStandingOrder(acc, newT);
 
 	delete newT;
+        newT = NULL;
 }
 
 //private
@@ -2225,7 +2244,7 @@ void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 	this->statusBar()->showMessage("create Debit Note not implemented yet!");
 	return;
 
-	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+        const aqb_AccountInfo *acc = sender->m_localAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
@@ -2234,20 +2253,21 @@ void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 	//date and time of the creation of the transaction ;)
 	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 
-	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-	t->setRemoteBankName(sender->remoteAccount->getBankName());
+        t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+        t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+        t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+        t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
-	t->setTextKey(sender->textKey->getTextKey());
+        t->setTextKey(sender->m_textKey->getTextKey());
 
-	this->jobctrl->addNewSingleDebitNote(acc, t);
+        this->m_jobctrl->addNewSingleDebitNote(acc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
@@ -2255,8 +2275,8 @@ void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 {
 	//internal transfer between 2 accounts at the same bank
-	const aqb_AccountInfo *fromAcc = sender->localAccount->getAccount();
-	const aqb_AccountInfo *toAcc = sender->remoteAccount->getAccount();
+        const aqb_AccountInfo *fromAcc = sender->m_localAccount->getAccount();
+        const aqb_AccountInfo *toAcc = sender->m_remoteAccount->getAccount();
 	abt_transaction *t = new abt_transaction();
 
 	t->fillLocalFromAccount(fromAcc->get_AB_ACCOUNT());
@@ -2270,15 +2290,16 @@ void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 	t->setRemoteBankCode(toAcc->BankCode());
 	t->setRemoteBankName(toAcc->BankName());
 
-	t->setValue(sender->value->getValueABV());
+        t->setValue(sender->m_value->getValueABV());
 
-	t->setPurpose(sender->purpose->getPurpose());
+        t->setPurpose(sender->m_purpose->getPurpose());
 
-	t->setTextKey(sender->textKey->getTextKey());
+        t->setTextKey(sender->m_textKey->getTextKey());
 
-	this->jobctrl->addNewInternalTransfer(fromAcc, t);
+        this->m_jobctrl->addNewInternalTransfer(fromAcc, t);
 
 	delete t;
+        t = NULL;
 }
 
 //private
@@ -2298,10 +2319,10 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //	//date and time of the creation of the transaction ;)
 //	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
 //
-//	t->setRemoteAccountNumber(sender->remoteAccount->getAccountNumber());
-//	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
-//	t->setRemoteBankCode(sender->remoteAccount->getBankCode());
-//	t->setRemoteBankName(sender->remoteAccount->getBankName());
+//	t->setRemoteAccountNumber(sender->m_remoteAccount->getAccountNumber());
+//	t->setRemoteName(QStringList(sender->m_remoteAccount->getName()));
+//	t->setRemoteBankCode(sender->m_remoteAccount->getBankCode());
+//	t->setRemoteBankName(sender->m_remoteAccount->getBankName());
 //
 //	t->setValue(sender->value->getValueABV());
 //
@@ -2309,32 +2330,33 @@ void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used ye
 //
 //	t->setTextKey(sender->textKey->getTextKey());
 //
-//	this->jobctrl->addNewSingleTransfer(acc, t);
+//	this->m_jobctrl->addNewSingleTransfer(acc, t);
 //
 //	delete t;
+//      t = NULL;
 }
 
 
 //private
 void MainWindow::appendGetBalanceToOutbox() const
 {
-	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
-		this->jobctrl->addGetBalance(acc, true);
+        foreach(aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
+                this->m_jobctrl->addGetBalance(acc, true);
 	}
 }
 
 //private
 void MainWindow::appendGetDatedTransfersToOutbox() const
 {
-	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
-		this->jobctrl->addGetDatedTransfers(acc, true);
+        foreach(aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
+                this->m_jobctrl->addGetDatedTransfers(acc, true);
 	}
 }
 //private
 void MainWindow::appendGetStandingOrdersToOutbox() const
 {
-	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
-		this->jobctrl->addGetStandingOrders(acc, true);
+        foreach(aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
+                this->m_jobctrl->addGetStandingOrders(acc, true);
 	}
 }
 
@@ -2349,7 +2371,7 @@ void MainWindow::appendGetStandingOrdersToOutbox() const
 void MainWindow::checkReachedDatedTransfers()
 {
 	QString msgText = "";
-	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
+        foreach(aqb_AccountInfo *acc, this->m_accounts->getAccountHash().values()) {
 		//next account if this account does not have a datedTransfers-List
 		if (acc->getKnownDatedTransfers() == NULL) continue;
 		for(int i=0; i < acc->getKnownDatedTransfers()->size(); ++i) {
@@ -2382,7 +2404,7 @@ void MainWindow::checkReachedDatedTransfers()
 					       QMessageBox::No);
 		if (sel == QMessageBox::Yes) {
 			this->appendGetDatedTransfersToOutbox();
-			this->jobctrl->execQueuedTransactions();
+                        this->m_jobctrl->execQueuedTransactions();
 		}
 	}
 
@@ -2399,7 +2421,7 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	 * dialog (e.g. pointer to aqb_accountInfo objects!).
 	 */
 
-	int outboxCnt = this->jobctrl->jobqueueList()->size();
+        int outboxCnt = this->m_jobctrl->jobqueueList()->size();
 	int editCnt = this->ui->tabWidget_UW->count() - 1; //summary is always present
 
 	if ((outboxCnt != 0) || (editCnt != 0)) {
@@ -2435,24 +2457,26 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 
 	//all references to accounts are set to NULL, therefore they are
 	//invalid in the corresponding widgets!
-	BankAccountsWidget *baw = this->dock_Accounts->findChild<BankAccountsWidget*>();
+        BankAccountsWidget *baw = this->m_dock_Accounts->findChild<BankAccountsWidget*>();
 	baw->setAccounts(NULL);
 
-	widgetAccountComboBox *accBoxDated = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
+        widgetAccountComboBox *accBoxDated = this->m_dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
 	accBoxDated->setAllAccounts(NULL);
-	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
+        widgetKnownDatedTransfers *datedTransfers = this->m_dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 	datedTransfers->setAccount(NULL);
 
-	widgetAccountComboBox *accBoxStanding = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
+        widgetAccountComboBox *accBoxStanding = this->m_dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
 	accBoxStanding->setAllAccounts(NULL);
-	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
+        widgetKnownStandingOrders *standingOrders = this->m_dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 	standingOrders->setAccount(NULL);
 
 	this->saveAccountData(); //save all account data
 
 	//delete all accounts
-	delete this->jobctrl; //also removes the connections!
-	delete this->accounts;
+        delete this->m_jobctrl; //also removes the connections!
+        this->m_jobctrl = NULL;
+        delete this->m_accounts;
+        this->m_accounts = NULL;
 
 	//execute the AqBanking-Setup dialog
 	rv = GWEN_Gui_ExecDialog(dlg, 0);
@@ -2466,7 +2490,7 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	 */
 
 	//recreate all accounts
-	this->accounts = new aqb_Accounts(banking->getAqBanking());
+        this->m_accounts = new aqb_Accounts(banking->getAqBanking());
 
 	//recreate the JobController and the corresponding connections
 	this->createJobCtrlAndConnections();
@@ -2477,7 +2501,7 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	//set the new accounts in the widgets
 	this->dockDatedTransfersSetAccounts();
 	this->dockStandingOrdersSetAccounts();
-	baw->setAccounts(this->accounts); //baw was assigned above
+        baw->setAccounts(this->m_accounts); //baw was assigned above
 
 	//recreate the data at the ScrollArea
 	this->createWidgetsInScrollArea();

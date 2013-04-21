@@ -34,9 +34,9 @@
 #include <stdio.h>
 
 //initialize static member variables
-QList<GWEN_STRINGLIST*> *abt_conv::gwen_strlist = new QList<GWEN_STRINGLIST*>;
-QList<GWEN_TIME*> *abt_conv::gwen_timelist = new QList<GWEN_TIME*>;
-QList<AB_VALUE*> *abt_conv::gwen_abvlist = new QList<AB_VALUE*>;
+QList<GWEN_STRINGLIST*> *abt_conv::m_gwen_strlist = new QList<GWEN_STRINGLIST*>;
+QList<GWEN_TIME*> *abt_conv::m_gwen_timelist = new QList<GWEN_TIME*>;
+QList<AB_VALUE*> *abt_conv::m_gwen_abvlist = new QList<AB_VALUE*>;
 
 abt_conv::abt_conv()
 {
@@ -212,8 +212,8 @@ const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 	gwt = GWEN_Time_fromUtcString(datestr.toStdString().c_str(), "YYYYMMDD-hh:mm");
 	//gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 1);
 
-	Q_ASSERT(abt_conv::gwen_timelist);
-	abt_conv::gwen_timelist->append(gwt);
+        Q_ASSERT(abt_conv::m_gwen_timelist);
+        abt_conv::m_gwen_timelist->append(gwt);
 
 	return gwt;
 }
@@ -239,7 +239,7 @@ const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *g
   */
 const GWEN_STRINGLIST* abt_conv::QStringListToGwenStringList(const QStringList &l)
 {
-	Q_ASSERT(abt_conv::gwen_strlist);
+        Q_ASSERT(abt_conv::m_gwen_strlist);
 
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
 	for (int i=0; i<l.size(); ++i) {
@@ -252,7 +252,7 @@ const GWEN_STRINGLIST* abt_conv::QStringListToGwenStringList(const QStringList &
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
 	}
 	//remember the GWEN_STRINGLIST, so that freeAllGwenLists() can delete it
-	abt_conv::gwen_strlist->append(gwl);
+        abt_conv::m_gwen_strlist->append(gwl);
 	return gwl;
 }
 
@@ -292,7 +292,7 @@ const QString abt_conv::ABValueToString(const AB_VALUE *value, bool asDecimal)
   */
 AB_VALUE* abt_conv::ABValueFromString(const QString &str, const QString &currency)
 {
-	Q_ASSERT(abt_conv::gwen_abvlist);
+        Q_ASSERT(abt_conv::m_gwen_abvlist);
 
 	if (str.isEmpty()) {
 		return NULL;
@@ -305,7 +305,7 @@ AB_VALUE* abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	std::string c = cur.toStdString();
 	AB_Value_SetCurrency(val, c.c_str());
 	//remember the AB_VALUE, so that freeAllGwenLists() can delete it
-	abt_conv::gwen_abvlist->append(val);
+        abt_conv::m_gwen_abvlist->append(val);
 	return val;
 }
 
@@ -320,27 +320,31 @@ void abt_conv::freeAllGwenLists()
 {
 	qDebug() << Q_FUNC_INFO << "freeing GWEN_STRINGLIST list";
 	GWEN_STRINGLIST *list;
-	while (!abt_conv::gwen_strlist->isEmpty()) {
-		list = abt_conv::gwen_strlist->takeFirst();
+        while (!abt_conv::m_gwen_strlist->isEmpty()) {
+                list = abt_conv::m_gwen_strlist->takeFirst();
 		GWEN_StringList_free(list);
 	}
 
 	qDebug() << Q_FUNC_INFO << "freeing GWEN_TIME list";
 	GWEN_TIME *gwt;
-	while (!abt_conv::gwen_timelist->isEmpty()) {
-		gwt = abt_conv::gwen_timelist->takeFirst();
+        while (!abt_conv::m_gwen_timelist->isEmpty()) {
+                gwt = abt_conv::m_gwen_timelist->takeFirst();
 		GWEN_Time_free(gwt);
 	}
 
 	qDebug() << Q_FUNC_INFO << "freeing AB_VALUE list";
 	AB_VALUE *v;
-	while (!abt_conv::gwen_abvlist->isEmpty()) {
-		v = abt_conv::gwen_abvlist->takeFirst();
+        while (!abt_conv::m_gwen_abvlist->isEmpty()) {
+                v = abt_conv::m_gwen_abvlist->takeFirst();
 		AB_Value_free(v);
 	}
 
 	//free the 'global' lists too
-	delete abt_conv::gwen_strlist;
-	delete abt_conv::gwen_timelist;
-	delete abt_conv::gwen_abvlist;
+        delete abt_conv::m_gwen_strlist;
+        delete abt_conv::m_gwen_timelist;
+        delete abt_conv::m_gwen_abvlist;
+
+        abt_conv::m_gwen_strlist = NULL;
+        abt_conv::m_gwen_timelist = NULL;
+        abt_conv::m_gwen_abvlist = NULL;
 }

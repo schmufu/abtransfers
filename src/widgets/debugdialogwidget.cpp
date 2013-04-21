@@ -43,6 +43,7 @@ DebugDialogWidget::DebugDialogWidget(QWidget *parent) :
 DebugDialogWidget::~DebugDialogWidget()
 {
 	delete ui;
+        ui = NULL;
 	qDebug() << this << "deleted";
 }
 

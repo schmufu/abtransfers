@@ -45,19 +45,19 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 	QVBoxLayout *layoutMain = new QVBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
 
-	this->comboBox = new QComboBox(this);
-	this->comboBox->setMinimumHeight(25);
+        this->m_comboBox = new QComboBox(this);
+        this->m_comboBox->setMinimumHeight(25);
 
 	//Alle Accounts in der ComboBox darstellen, wenn vorhanden
 	this->fillComboBox();
 
-	layoutMain->addWidget(this->comboBox);
+        layoutMain->addWidget(this->m_comboBox);
 
 	this->setLayout(layoutMain);
 
 	this->setSelectedAccount(acc);
 
-	connect(this->comboBox, SIGNAL(currentIndexChanged(int)),
+        connect(this->m_comboBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(comboBoxNewAccountSelected(int)));
 
 }
@@ -65,27 +65,27 @@ widgetAccountComboBox::widgetAccountComboBox(const aqb_AccountInfo *acc,
 //private
 void widgetAccountComboBox::fillComboBox()
 {
-	this->comboBox->clear();
+        this->m_comboBox->clear();
 
 	if (this->m_allAccounts == NULL) {
 		//Es existieren keine Accounts
-		this->comboBox->setDisabled(true);
+                this->m_comboBox->setDisabled(true);
 		return; //nichts zu tun
 	}
 
-	this->comboBox->setDisabled(false); //es sind Accounts vorhanden
+        this->m_comboBox->setDisabled(false); //es sind Accounts vorhanden
 
 	foreach(const aqb_AccountInfo *account, this->m_allAccounts->getAccountHash().values()) {
 		QString cbText = QString("%1").arg(account->Name());
-		this->comboBox->addItem(cbText, QVariant::fromValue(account));
+                this->m_comboBox->addItem(cbText, QVariant::fromValue(account));
 	}
 }
 
 //public
 const aqb_AccountInfo* widgetAccountComboBox::getAccount() const
 {
-	int idx = this->comboBox->currentIndex();
-	return this->comboBox->itemData(idx, Qt::UserRole).value<const aqb_AccountInfo*>();
+        int idx = this->m_comboBox->currentIndex();
+        return this->m_comboBox->itemData(idx, Qt::UserRole).value<const aqb_AccountInfo*>();
 }
 
 //public
@@ -98,7 +98,7 @@ bool widgetAccountComboBox::hasChanges() const
 void widgetAccountComboBox::comboBoxNewAccountSelected(int idx)
 {
 	const aqb_AccountInfo* newSelAcc;
-	newSelAcc = this->comboBox->itemData(idx, Qt::UserRole).value<const aqb_AccountInfo*>();
+        newSelAcc = this->m_comboBox->itemData(idx, Qt::UserRole).value<const aqb_AccountInfo*>();
 	emit this->selectedAccountChanged(newSelAcc);
 }
 
@@ -106,13 +106,13 @@ void widgetAccountComboBox::comboBoxNewAccountSelected(int idx)
 void widgetAccountComboBox::setSelectedAccount(const aqb_AccountInfo *account)
 {
 	//den übergebenen Account auswählen (Wenn account == NULL wird 0 als Index gesetzt!)
-	int cbIdx = this->comboBox->findData(QVariant::fromValue(account));
+        int cbIdx = this->m_comboBox->findData(QVariant::fromValue(account));
 	if (cbIdx != -1) {
 		//qDebug("CBIDX != -1 IST TRUE");
-		this->comboBox->setCurrentIndex(cbIdx);
+                this->m_comboBox->setCurrentIndex(cbIdx);
 	} else { //ersten Eintrag als default wählen
 		qDebug("widgetAccountComboBox::setSelectedAccount: cbIDX == -1 - ES WIRD 0 ALS DEFAULT GESETZT");
-		this->comboBox->setCurrentIndex(0);
+                this->m_comboBox->setCurrentIndex(0);
 	}
 }
 

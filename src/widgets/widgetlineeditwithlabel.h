@@ -54,11 +54,11 @@ public:
 	~widgetLineEditWithLabel();
 
 public:
-	QLineEdit *lineEdit;
-	QLabel *label;
+        QLineEdit *m_lineEdit;
+        QLabel *m_label;
 
 private:
-	QLayout *mainLayout;
+        QLayout *m_mainLayout;
 
 
 	void alignEditAndLabel(Qt::Alignment align);

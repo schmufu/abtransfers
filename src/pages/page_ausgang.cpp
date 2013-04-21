@@ -56,22 +56,31 @@ Page_Ausgang::Page_Ausgang(abt_settings *settings, QWidget *parent) :
 	this->on_treeWidget_itemSelectionChanged(); //en-/disable actions and buttons
 
 	connect(this->ui->pushButton_del, SIGNAL(clicked()),
-		this->actDelete, SLOT(trigger()));
+                this->m_actDelete, SLOT(trigger()));
 	connect(this->ui->pushButton_up, SIGNAL(clicked()),
-		this->actUp, SLOT(trigger()));
+                this->m_actUp, SLOT(trigger()));
 	connect(this->ui->pushButton_down, SIGNAL(clicked()),
-		this->actDown, SLOT(trigger()));
+                this->m_actDown, SLOT(trigger()));
 
 }
 
 Page_Ausgang::~Page_Ausgang()
 {
-	delete ui;
+	delete ui;        
 
-	delete this->actDelete;
-	delete this->actEdit;
-	delete this->actDown;
-	delete this->actUp;
+        delete this->m_actDelete;
+        delete this->m_actEdit;
+        delete this->m_actDown;
+        delete this->m_actUp;
+
+        ui = NULL;
+
+        this->m_actDelete = NULL;
+        this->m_actEdit = NULL;
+        this->m_actDown = NULL;
+        this->m_actUp = NULL;
+
+
 }
 
 void Page_Ausgang::changeEvent(QEvent *e)
@@ -95,32 +104,32 @@ void Page_Ausgang::resizeEvent(QResizeEvent *event)
 //private
 void Page_Ausgang::createAllActions()
 {
-	this->actDelete = new QAction(this);
-	this->actDelete->setText(tr("Löschen"));
-	this->actDelete->setToolTip(tr("Ausgewählten Job löschen"));
-	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
-	connect(this->actDelete, SIGNAL(triggered()),
+        this->m_actDelete = new QAction(this);
+        this->m_actDelete->setText(tr("Löschen"));
+        this->m_actDelete->setToolTip(tr("Ausgewählten Job löschen"));
+        this->m_actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+        connect(this->m_actDelete, SIGNAL(triggered()),
 		this, SLOT(onActionDeleteTriggered()));
 
-	this->actEdit = new QAction(this);
-	this->actEdit->setText(tr("Bearbeiten"));
-	this->actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
-	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
-	connect(this->actEdit, SIGNAL(triggered()),
+        this->m_actEdit = new QAction(this);
+        this->m_actEdit->setText(tr("Bearbeiten"));
+        this->m_actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
+        this->m_actEdit->setIcon(QIcon::fromTheme("document-edit"));
+        connect(this->m_actEdit, SIGNAL(triggered()),
 		this, SLOT(onActionEditTriggered()));
 
-	this->actUp = new QAction(this);
-	this->actUp->setText(tr("Auf"));
-	this->actUp->setToolTip(tr("Ausgewählten Job nach oben verschieben"));
-	this->actUp->setIcon(QIcon(":/icons/up"));
-	connect(this->actUp, SIGNAL(triggered()),
+        this->m_actUp = new QAction(this);
+        this->m_actUp->setText(tr("Auf"));
+        this->m_actUp->setToolTip(tr("Ausgewählten Job nach oben verschieben"));
+        this->m_actUp->setIcon(QIcon(":/icons/up"));
+        connect(this->m_actUp, SIGNAL(triggered()),
 		this, SLOT(onActionUpTriggered()));
 
-	this->actDown = new QAction(this);
-	this->actDown->setText(tr("Ab"));
-	this->actDown->setToolTip(tr("Ausgewählten Job nach unten verschieben"));
-	this->actDown->setIcon(QIcon(":/icons/down"));
-	connect(this->actDown, SIGNAL(triggered()),
+        this->m_actDown = new QAction(this);
+        this->m_actDown->setText(tr("Ab"));
+        this->m_actDown->setToolTip(tr("Ausgewählten Job nach unten verschieben"));
+        this->m_actDown->setIcon(QIcon(":/icons/down"));
+        connect(this->m_actDown, SIGNAL(triggered()),
 		this, SLOT(onActionDownTriggered()));
 
 }
@@ -216,10 +225,10 @@ void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 			topItem->setExpanded(true);
 		}
 
-		if (this->selectedItem == i) {
+                if (this->m_selectedItem == i) {
 			//die vorherige Selection wieder herstellen
-			topItem->setSelected(true);
-			this->selectedItem = -1; //nur 1 Item auswählbar
+                        topItem->setSelected(true);
+                        this->m_selectedItem = -1; //nur 1 Item auswählbar
 		}
 
 	}
@@ -240,10 +249,10 @@ void Page_Ausgang::on_treeWidget_itemSelectionChanged()
 	this->ui->pushButton_up->setEnabled(one_selected && adv_wanted);
 	this->ui->pushButton_down->setEnabled(one_selected && adv_wanted);
 
-	this->actUp->setEnabled(one_selected && adv_wanted);
-	this->actDown->setEnabled(one_selected && adv_wanted);
-	this->actEdit->setEnabled(one_selected);
-	this->actDelete->setEnabled(enabled);
+        this->m_actUp->setEnabled(one_selected && adv_wanted);
+        this->m_actDown->setEnabled(one_selected && adv_wanted);
+        this->m_actEdit->setEnabled(one_selected);
+        this->m_actDelete->setEnabled(enabled);
 }
 
 /** Den aktuell ausgewählten Eintrag um 1 nach oben verschieben */
@@ -254,7 +263,7 @@ void Page_Ausgang::onActionUpTriggered()
 	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
 
 	 //damit in refreshTreeWidget() das Item wieder ausgewählt wird
-	this->selectedItem = itemNr-1;
+        this->m_selectedItem = itemNr-1;
 	emit this->moveJobInList(itemNr, -1);
 }
 
@@ -266,7 +275,7 @@ void Page_Ausgang::onActionDownTriggered()
 	int itemNr = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::DisplayRole).toInt()-1;
 
 	//damit in refreshTreeWidget() das Item wieder ausgewählt wird
-	this->selectedItem = itemNr+1;
+        this->m_selectedItem = itemNr+1;
 	emit this->moveJobInList(itemNr, 1);
 }
 
@@ -377,17 +386,17 @@ void Page_Ausgang::on_treeWidget_customContextMenuRequested(QPoint pos)
 		}
 	}
 
-	this->actEdit->setEnabled(editable);
+        this->m_actEdit->setEnabled(editable);
 	//these actions are en/disabled at on_treeWidget_itemSelectionChanged()
-	//this->actDelete->setDisabled(disabled);
-	//this->actUp->setDisabled(disabled);
-	//this->actDown->setDisabled(disabled);
+        //this->m_actDelete->setDisabled(disabled);
+        //this->m_actUp->setDisabled(disabled);
+        //this->m_actDown->setDisabled(disabled);
 
 	QMenu *contextMenu = new QMenu();
-	contextMenu->addAction(this->actUp);
-	contextMenu->addAction(this->actDown);
-	contextMenu->addAction(this->actEdit);
-	contextMenu->addAction(this->actDelete);
+        contextMenu->addAction(this->m_actUp);
+        contextMenu->addAction(this->m_actDown);
+        contextMenu->addAction(this->m_actEdit);
+        contextMenu->addAction(this->m_actDelete);
 	contextMenu->exec(this->ui->treeWidget->viewport()->mapToGlobal(pos));
 }
 

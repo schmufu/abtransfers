@@ -47,8 +47,8 @@ BankAccountsWidget::BankAccountsWidget(const aqb_Accounts *accounts,
 {
 	ui->setupUi(this);
 	this->m_accounts = accounts; //could be NULL!
-	this->dragStartPos = QPoint(0,0);
-	this->dragObj = NULL;
+        this->m_dragStartPos = QPoint(0,0);
+        this->m_dragObj = NULL;
 
 
 	QTreeWidgetItem *headerItem = new QTreeWidgetItem;
@@ -77,7 +77,8 @@ BankAccountsWidget::BankAccountsWidget(const aqb_Accounts *accounts,
 
 BankAccountsWidget::~BankAccountsWidget()
 {
-	delete ui;
+        delete ui;
+        ui = NULL;
 }
 
 void BankAccountsWidget::changeEvent(QEvent *e)
@@ -121,11 +122,11 @@ void BankAccountsWidget::twMousePressEvent(QMouseEvent *event)
 		QTreeWidgetItem *item = this->ui->treeWidget->itemAt(event->pos());
 		if (item) {
 			//Qt::UserRole+1 enthält einen Pointer zum aqb_AccountInfo
-			this->dragObj = item->data(0, Qt::UserRole+1).value<aqb_AccountInfo*>();
-			this->dragStartPos = event->pos();
+                        this->m_dragObj = item->data(0, Qt::UserRole+1).value<aqb_AccountInfo*>();
+                        this->m_dragStartPos = event->pos();
 		} else {
-			this->dragObj = NULL;
-			this->dragStartPos = QPoint(0,0);
+                        this->m_dragObj = NULL;
+                        this->m_dragStartPos = QPoint(0,0);
 		}
 	}
 }
@@ -136,10 +137,10 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	if (!(event->buttons() & Qt::LeftButton)) {
 		return;
 	}
-	if (this->dragObj == NULL) {
+        if (this->m_dragObj == NULL) {
 		return; //no object to Drag set!
 	}
-	if ((event->pos() - this->dragStartPos).manhattanLength()
+        if ((event->pos() - this->m_dragStartPos).manhattanLength()
 		< QApplication::startDragDistance()) {
 		return;
 	}
@@ -147,7 +148,7 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 
 	QDrag *drag = new QDrag(this);
 	QMimeData *mimeData = new QMimeData;
-	aqb_AccountInfo* info = this->dragObj;
+        aqb_AccountInfo* info = this->m_dragObj;
 
 	qulonglong a = (qulonglong)info;
 	qulonglong app = (qulonglong)qApp;

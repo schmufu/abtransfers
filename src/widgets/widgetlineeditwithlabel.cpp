@@ -40,10 +40,10 @@ widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
 						 QWidget *parent) :
     QWidget(parent)
 {
-	this->lineEdit = new QLineEdit(editText, this);
-	this->lineEdit->setMinimumHeight(25);
-	this->label = new QLabel(labelText, this);
-	this->label->setMinimumHeight(15);
+        this->m_lineEdit = new QLineEdit(editText, this);
+        this->m_lineEdit->setMinimumHeight(25);
+        this->m_label = new QLabel(labelText, this);
+        this->m_label->setMinimumHeight(15);
 	//layout anlegen und lineEdit sowie label ausrichten
 	this->alignEditAndLabel(labelAt);
 	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -52,9 +52,13 @@ widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
 
 widgetLineEditWithLabel::~widgetLineEditWithLabel()
 {
-	delete this->lineEdit;
-	delete this->label;
-	delete this->mainLayout;
+        delete this->m_lineEdit;
+        delete this->m_label;
+        delete this->m_mainLayout;
+
+        this->m_lineEdit = NULL;
+        this->m_label = NULL;
+        this->m_mainLayout = NULL;
 }
 
 /*! erstellt das mainLayout diese Widgets und ordnet das Label entsprechend
@@ -74,35 +78,29 @@ void widgetLineEditWithLabel::alignEditAndLabel(Qt::Alignment align)
 
 	if ((align & Qt::AlignTop) || (align & Qt::AlignBottom)) {
 		//Wir benötigen ein vertikales Layout
-		this->mainLayout = new QVBoxLayout();
+                this->m_mainLayout = new QVBoxLayout();
 		if (align & Qt::AlignTop) {
-			this->mainLayout->addWidget(this->label);
-			this->mainLayout->addWidget(this->lineEdit);
+                        this->m_mainLayout->addWidget(this->m_label);
+                        this->m_mainLayout->addWidget(this->m_lineEdit);
 		} else {
-			this->mainLayout->addWidget(this->lineEdit);
-			this->mainLayout->addWidget(this->label);
+                        this->m_mainLayout->addWidget(this->m_lineEdit);
+                        this->m_mainLayout->addWidget(this->m_label);
 		}
-		this->setLayout(this->mainLayout);
+                this->setLayout(this->m_mainLayout);
 		return;
 	}
 
 	if ((align & Qt::AlignLeft) || (align & Qt::AlignRight)) {
 		//Wir benötigen ein horizontales Layout
-		this->mainLayout = new QHBoxLayout();
+                this->m_mainLayout = new QHBoxLayout();
 		if (align & Qt::AlignLeft) {
-			this->mainLayout->addWidget(this->label);
-			this->mainLayout->addWidget(this->lineEdit);
+                        this->m_mainLayout->addWidget(this->m_label);
+                        this->m_mainLayout->addWidget(this->m_lineEdit);
 		} else {
-			this->mainLayout->addWidget(this->lineEdit);
-			this->mainLayout->addWidget(this->label);
+                        this->m_mainLayout->addWidget(this->m_lineEdit);
+                        this->m_mainLayout->addWidget(this->m_label);
 		}
-		this->setLayout(this->mainLayout);
+                this->setLayout(this->m_mainLayout);
 		return;
 	}
 }
-
-
-
-
-
-

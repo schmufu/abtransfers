@@ -45,13 +45,13 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 	QHBoxLayout *layoutMain = new QHBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
 
-	this->treeWidget = new QTreeWidget(this);
-	this->treeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	this->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(this->treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
+        this->m_treeWidget = new QTreeWidget(this);
+        this->m_treeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->m_treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(this->m_treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onContextMenuRequest(QPoint)));
 
-	layoutMain->addWidget(this->treeWidget);
+        layoutMain->addWidget(this->m_treeWidget);
 
 	this->setLayout(layoutMain);
 
@@ -66,23 +66,23 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 //private
 void widgetKnownDatedTransfers::createAllActions()
 {
-	actDelete = new QAction(this);
-	actDelete->setText(tr("Löschen"));
-	actDelete->setToolTip(tr("Ausgewählte terminierte Überweisung löschen"));
-	actDelete->setIcon(QIcon::fromTheme("edit-delete"));
-	connect(actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
+        m_actDelete = new QAction(this);
+        m_actDelete->setText(tr("Löschen"));
+        m_actDelete->setToolTip(tr("Ausgewählte terminierte Überweisung löschen"));
+        m_actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+        connect(m_actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
-	actEdit= new QAction(this);
-	actEdit->setText(tr("Ändern"));
-	actEdit->setToolTip(tr("Ausgewählte terminierte Überweisung bearbeiten"));
-	actEdit->setIcon(QIcon::fromTheme("document-edit"));
-	connect(actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
+        m_actEdit= new QAction(this);
+        m_actEdit->setText(tr("Ändern"));
+        m_actEdit->setToolTip(tr("Ausgewählte terminierte Überweisung bearbeiten"));
+        m_actEdit->setIcon(QIcon::fromTheme("document-edit"));
+        connect(m_actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 
-	actRefresh= new QAction(this);
-	actRefresh->setText(tr("Aktualisieren"));
-	actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten terminierten Überweisungen"));
-	actRefresh->setIcon(QIcon::fromTheme("edit-redo"));
-	connect(actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
+        m_actRefresh= new QAction(this);
+        m_actRefresh->setText(tr("Aktualisieren"));
+        m_actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten terminierten Überweisungen"));
+        m_actRefresh->setIcon(QIcon::fromTheme("edit-redo"));
+        connect(m_actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
 
 }
 
@@ -99,7 +99,7 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 	}
 
 	//Alle bekannten DAs des Accounts aus dem treeWidget entfernen
-	this->treeWidget->clear(); //löscht auch die Objecte!
+        this->m_treeWidget->clear(); //löscht auch die Objecte!
 
 	//Wenn kein aktueller Account existiert, existieren auch keine DatedTransfers
 	if (this->m_account == NULL) {
@@ -115,28 +115,28 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 
 		/* Anzeigen das keine DAs existieren */
 		//kein header und nur eine spalte anzeigen
-		this->treeWidget->setHeaderHidden(true);
-		this->treeWidget->setColumnCount(1);
+                this->m_treeWidget->setHeaderHidden(true);
+                this->m_treeWidget->setColumnCount(1);
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
 			      tr("keine terminierten Überweisungen für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
-		this->treeWidget->addTopLevelItem(Item);
+                this->m_treeWidget->addTopLevelItem(Item);
 
 		//Perfekte Breite der Spalten einstellen
-		abt_settings::resizeColToContentsFor(this->treeWidget);
+                abt_settings::resizeColToContentsFor(this->m_treeWidget);
 
 		//this->sizePolicy().setVerticalStretch(2);
 
 		return; // Nichts weiter zu tun ;)
 	}
 
-	this->treeWidget->setHeaderHidden(false);
-	this->treeWidget->setColumnCount(5);
+        this->m_treeWidget->setHeaderHidden(false);
+        this->m_treeWidget->setColumnCount(5);
 	QStringList header;
 	header << tr("Kto-Nr.") << tr("BLZ") << tr("Begünstigter") << tr("Betrag") << tr("Datum");
-	this->treeWidget->setHeaderLabels(header);
+        this->m_treeWidget->setHeaderLabels(header);
 
 	QTreeWidgetItem *Item;
 	const AB_VALUE *v;
@@ -156,11 +156,11 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 		if (v) Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 		Item->setData(3, Qt::DisplayRole, Betrag);
 		Item->setData(4, Qt::DisplayRole, trans->getDate().toString("dd.MM.yyyy"));
-		this->treeWidget->addTopLevelItem(Item);
+                this->m_treeWidget->addTopLevelItem(Item);
 	}
 
 	//Perfekte Breite der Spalten einstellen
-	abt_settings::resizeColToContentsFor(this->treeWidget);
+        abt_settings::resizeColToContentsFor(this->m_treeWidget);
 
 	//this->sizePolicy().setVerticalStretch(ItemCount+2);
 
@@ -189,9 +189,9 @@ void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 //private slot
 void widgetKnownDatedTransfers::onActionDeleteTriggered()
 {
-	if (this->treeWidget->selectedItems().size() == 0) return; //Abbruch
+        if (this->m_treeWidget->selectedItems().size() == 0) return; //Abbruch
 
-	int idx = this->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
+        int idx = this->m_treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
 	emit this->deleteDatedTransfer(this->m_account,
 				       this->m_DatedTransfers->at(idx));
 }
@@ -199,9 +199,9 @@ void widgetKnownDatedTransfers::onActionDeleteTriggered()
 //private slot
 void widgetKnownDatedTransfers::onActionEditTriggered()
 {
-	if (this->treeWidget->selectedItems().size() == 0) return; //Abbruch
+        if (this->m_treeWidget->selectedItems().size() == 0) return; //Abbruch
 
-	int idx = this->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
+        int idx = this->m_treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
 	emit this->editDatedTransfer(this->m_account,
 				     this->m_DatedTransfers->at(idx));
 }
@@ -216,13 +216,13 @@ void widgetKnownDatedTransfers::onActionRefreshTriggered()
 void widgetKnownDatedTransfers::onContextMenuRequest(const QPoint &pos)
 {
 	//Actions disablen wenn sie nicht sinnvoll sind
-	bool dis = this->treeWidget->selectedItems().size() == 0;
-	this->actEdit->setDisabled(dis);
-	this->actDelete->setDisabled(dis);
+        bool dis = this->m_treeWidget->selectedItems().size() == 0;
+        this->m_actEdit->setDisabled(dis);
+        this->m_actDelete->setDisabled(dis);
 
 	QMenu *contextMenu = new QMenu();
-	contextMenu->addAction(this->actEdit);
-	contextMenu->addAction(this->actDelete);
-	contextMenu->addAction(this->actRefresh);
-	contextMenu->exec(this->treeWidget->viewport()->mapToGlobal(pos));
+        contextMenu->addAction(this->m_actEdit);
+        contextMenu->addAction(this->m_actDelete);
+        contextMenu->addAction(this->m_actRefresh);
+        contextMenu->exec(this->m_treeWidget->viewport()->mapToGlobal(pos));
 }

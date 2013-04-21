@@ -49,10 +49,10 @@ public:
 	explicit widgetKnownStandingOrders(QWidget *parent = 0);
 
 private:
-	QTreeWidget *treeWidget;
-	QAction *actEdit;
-	QAction *actDelete;
-	QAction *actRefresh;
+        QTreeWidget *m_treeWidget;
+        QAction *m_actEdit;
+        QAction *m_actDelete;
+        QAction *m_actRefresh;
 
 	const aqb_AccountInfo *m_account;
 	const QList<abt_standingOrderInfo*> *m_StandingOrders;

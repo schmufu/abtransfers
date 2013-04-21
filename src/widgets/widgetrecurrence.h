@@ -67,31 +67,31 @@ public:
 	~widgetRecurrence();
 
 private:
-	QButtonGroup *radio_group;
-	QRadioButton *radio_weekly;
-	QRadioButton *radio_monthly;
-	QSpinBox *spinBox;
-	QLabel *label_week_month;
-	QComboBox *comboBox;
+        QButtonGroup *m_radio_group;
+        QRadioButton *m_radio_weekly;
+        QRadioButton *m_radio_monthly;
+        QSpinBox *m_spinBox;
+        QLabel *m_label_week_month;
+        QComboBox *m_comboBox;
 
-	widgetDate *dateFirst;
-	widgetDate *dateLast;
-	widgetDate *dateNext;
-	QCheckBox *checkBoxNoEnd;
+        widgetDate *m_dateFirst;
+        widgetDate *m_dateLast;
+        widgetDate *m_dateNext;
+        QCheckBox *m_checkBoxNoEnd;
 
-	QList<Qt::DayOfWeek> allowedExecutionWeekDays; //!< erlaubte Ausführungstage (ComboBox) in period weekly
-	QList<int> allowedExecutionDays; //!< erlaubte Ausführungstage (ComboBox) in period monthly
+        QList<Qt::DayOfWeek> m_allowedExecutionWeekDays; //!< erlaubte Ausführungstage (ComboBox) in period weekly
+        QList<int> m_allowedExecutionDays; //!< erlaubte Ausführungstage (ComboBox) in period monthly
 
-	QList<int> allowedCycleWeek; //!< werte fürs spinEdit in period weekly
-	QList<int> allowedCycleMonth; //!< werte fürs spinEdit in period monthly
+        QList<int> m_allowedCycleWeek; //!< werte fürs spinEdit in period weekly
+        QList<int> m_allowedCycleMonth; //!< werte fürs spinEdit in period monthly
 
-	Qt::DayOfWeek selectedWeekDay; //!< stores the currently selected weekday
-	int selectedDay; //!< stores the currently selected day
+        Qt::DayOfWeek m_selectedWeekDay; //!< stores the currently selected weekday
+        int m_selectedDay; //!< stores the currently selected day
 
-	int setedCycleMonth;
-	int setedCycleWeek;
+        int m_setedCycleMonth;
+        int m_setedCycleWeek;
 
-	int psbv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
+        int m_psbv; //!< vorheriger Wert der SpinBox (PreviousSpinBoxValue)
 
 	AB_TRANSACTION_PERIOD m_period;
 
@@ -116,8 +116,8 @@ private:
 	void updateComboBoxItems(int period);
 
 public:
-	AB_TRANSACTION_PERIOD getPeriod() const	{ return (AB_TRANSACTION_PERIOD)this->radio_group->checkedId(); };
-	int getCycle() const { return this->spinBox->value(); };
+        AB_TRANSACTION_PERIOD getPeriod() const	{ return (AB_TRANSACTION_PERIOD)this->m_radio_group->checkedId(); };
+        int getCycle() const { return this->m_spinBox->value(); };
 	int getExecutionDay() const;
 	const QDate getFirstExecutionDate() const;
 	const QDate getLastExecutionDate() const;
@@ -159,7 +159,6 @@ public slots:
 
 	void setCycleMonth(int monthCycle);
 	void setCycleWeek(int weekCycle);
-
 
 };
 

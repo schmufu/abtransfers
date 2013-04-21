@@ -45,17 +45,17 @@ widgetKnownStandingOrders::widgetKnownStandingOrders(QWidget *parent) :
 	QHBoxLayout *layoutMain = new QHBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
 
-	this->treeWidget = new QTreeWidget(this);
-	this->treeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	this->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(this->treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
+        this->m_treeWidget = new QTreeWidget(this);
+        this->m_treeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->m_treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(this->m_treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onContextMenuRequest(QPoint)));
 
-	layoutMain->addWidget(this->treeWidget);
+        layoutMain->addWidget(this->m_treeWidget);
 
 	this->setLayout(layoutMain);
 
-	this->createAllActions();
+        this->createAllActions();
 
 	//setzt den aktuellen account, stellt alle connections her und
 	//aktualisiert die Anzeige des treeWidgets
@@ -65,23 +65,23 @@ widgetKnownStandingOrders::widgetKnownStandingOrders(QWidget *parent) :
 //private
 void widgetKnownStandingOrders::createAllActions()
 {
-	actDelete = new QAction(this);
-	actDelete->setText(tr("Löschen"));
-	actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
-	actDelete->setIcon(QIcon::fromTheme("edit-delete"));
-	connect(actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
+        m_actDelete = new QAction(this);
+        m_actDelete->setText(tr("Löschen"));
+        m_actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
+        m_actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+        connect(m_actDelete, SIGNAL(triggered()), this, SLOT(onactionDeleteTriggered()));
 
-	actEdit= new QAction(this);
-	actEdit->setText(tr("Ändern"));
-	actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
-	actEdit->setIcon(QIcon::fromTheme("document-edit"));
-	connect(actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
+        m_actEdit= new QAction(this);
+        m_actEdit->setText(tr("Ändern"));
+        m_actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
+        m_actEdit->setIcon(QIcon::fromTheme("document-edit"));
+        connect(m_actEdit, SIGNAL(triggered()), this, SLOT(onactionEditTriggered()));
 
-	actRefresh= new QAction(this);
-	actRefresh->setText(tr("Aktualisieren"));
-	actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
-	actRefresh->setIcon(QIcon::fromTheme("edit-redo"));
-	connect(actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
+        m_actRefresh= new QAction(this);
+        m_actRefresh->setText(tr("Aktualisieren"));
+        m_actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
+        m_actRefresh->setIcon(QIcon::fromTheme("edit-redo"));
+        connect(m_actRefresh, SIGNAL(triggered()), this, SLOT(onactionRefreshTriggered()));
 
 }
 
@@ -98,7 +98,7 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 	}
 
 	//Alle bekannten DAs des Accounts aus dem treeWidget entfernen
-	this->treeWidget->clear(); //löscht auch die Objecte!
+        this->m_treeWidget->clear(); //löscht auch die Objecte!
 
 	//Wenn kein aktueller Account existiert, existieren auch keine StandingOrders
 	if (this->m_account == NULL) {
@@ -114,34 +114,34 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 
 		/* Anzeigen das keine DAs existieren */
 		//kein header und nur eine spalte anzeigen
-		this->treeWidget->setHeaderHidden(true);
-		this->treeWidget->setColumnCount(1);
+                this->m_treeWidget->setHeaderHidden(true);
+                this->m_treeWidget->setColumnCount(1);
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
 			      tr("keine bekannten Daueraufträge für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
-		this->treeWidget->addTopLevelItem(Item);
+                this->m_treeWidget->addTopLevelItem(Item);
 
 		//Perfekte Breite der Spalten einstellen
-		abt_settings::resizeColToContentsFor(this->treeWidget);
+                abt_settings::resizeColToContentsFor(this->m_treeWidget);
 
 		//this->sizePolicy().setVerticalStretch(2);
 
 		return; // Nichts weiter zu tun ;)
 	}
 
-	this->treeWidget->setHeaderHidden(false);
-	this->treeWidget->setColumnCount(4);
+        this->m_treeWidget->setHeaderHidden(false);
+        this->m_treeWidget->setColumnCount(4);
 	QStringList header;
 	header << tr("Kto-Nr.") << tr("BLZ") << tr("Begünstigter") << tr("Betrag");
-	this->treeWidget->setHeaderLabels(header);
+        this->m_treeWidget->setHeaderLabels(header);
 
 	QTreeWidgetItem *Item;
 	const AB_VALUE *v;
 	int ItemCount = 0;
 	for(int i=0; i<this->m_StandingOrders->size(); ++i) {
-		const abt_transaction *DAtrans = this->m_StandingOrders->at(i)->getTransaction();
+                const abt_transaction *DAtrans = this->m_StandingOrders->at(i)->getTransaction();
 		Item = new QTreeWidgetItem;
 		ItemCount++;
 		Item->setData(0, Qt::DisplayRole, DAtrans->getRemoteAccountNumber());
@@ -154,11 +154,11 @@ void widgetKnownStandingOrders::refreshKnownStandingOrders(const aqb_AccountInfo
 		QString Betrag = abt_conv::ABValueToString(v, true);
 		if (v) Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 		Item->setData(3, Qt::DisplayRole, Betrag);
-		this->treeWidget->addTopLevelItem(Item);
+                this->m_treeWidget->addTopLevelItem(Item);
 	}
 
 	//Perfekte Breite der Spalten einstellen
-	abt_settings::resizeColToContentsFor(this->treeWidget);
+        abt_settings::resizeColToContentsFor(this->m_treeWidget);
 
 	//this->sizePolicy().setVerticalStretch(ItemCount+2);
 
@@ -187,9 +187,9 @@ void widgetKnownStandingOrders::setAccount(const aqb_AccountInfo *account)
 //private slot
 void widgetKnownStandingOrders::onActionDeleteTriggered()
 {
-	if (this->treeWidget->selectedItems().size() == 0) return; //Abbruch
+        if (this->m_treeWidget->selectedItems().size() == 0) return; //Abbruch
 
-	int SOidx = this->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
+        int SOidx = this->m_treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
 	emit this->deleteStandingOrder(this->m_account,
 				       this->m_StandingOrders->at(SOidx));
 }
@@ -197,9 +197,9 @@ void widgetKnownStandingOrders::onActionDeleteTriggered()
 //private slot
 void widgetKnownStandingOrders::onActionEditTriggered()
 {
-	if (this->treeWidget->selectedItems().size() == 0) return; //Abbruch
+        if (this->m_treeWidget->selectedItems().size() == 0) return; //Abbruch
 
-	int SOidx = this->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
+        int SOidx = this->m_treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
 	emit this->editStandingOrder(this->m_account,
 				     this->m_StandingOrders->at(SOidx));
 }
@@ -213,14 +213,14 @@ void widgetKnownStandingOrders::onActionRefreshTriggered()
 //private slot
 void widgetKnownStandingOrders::onContextMenuRequest(const QPoint &pos)
 {
-	//Actions disablen wenn sie nicht sinnvoll sind
-	bool dis = this->treeWidget->selectedItems().size() == 0;
-	this->actEdit->setDisabled(dis);
-	this->actDelete->setDisabled(dis);
+        //m_actions disablen wenn sie nicht sinnvoll sind
+        bool dis = this->m_treeWidget->selectedItems().size() == 0;
+        this->m_actEdit->setDisabled(dis);
+        this->m_actDelete->setDisabled(dis);
 
 	QMenu *contextMenu = new QMenu();
-	contextMenu->addAction(this->actEdit);
-	contextMenu->addAction(this->actDelete);
-	contextMenu->addAction(this->actRefresh);
-	contextMenu->exec(this->treeWidget->viewport()->mapToGlobal(pos));
+        contextMenu->addAction(this->m_actEdit);
+        contextMenu->addAction(this->m_actDelete);
+        contextMenu->addAction(this->m_actRefresh);
+        contextMenu->exec(this->m_treeWidget->viewport()->mapToGlobal(pos));
 }

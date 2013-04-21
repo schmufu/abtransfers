@@ -38,7 +38,7 @@
   * Objectes auch wieder gelöscht.
   */
 abt_datedTransferInfo::abt_datedTransferInfo(abt_transaction *transaction)
-	: t(transaction)
+        : m_t(transaction)
 {
 
 }
@@ -53,10 +53,11 @@ abt_datedTransferInfo::abt_datedTransferInfo(const AB_TRANSACTION *transaction)
 	//Kopie und von dieser eine abt_transaction die im destructor wieder
 	//gelöscht wird.
 	AB_TRANSACTION *t = AB_Transaction_dup(transaction);
-	this->t = new abt_transaction(t, true);
+        this->m_t = new abt_transaction(t, true);
 }
 
 abt_datedTransferInfo::~abt_datedTransferInfo()
 {
-	delete this->t;	//abt_Transaction Object löschen
+        delete this->m_t;	//abt_Transaction Object löschen
+        this->m_t = NULL;
 }

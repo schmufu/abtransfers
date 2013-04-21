@@ -47,17 +47,17 @@ protected:
 	/*! stores all created GWEN_STRINGLIST lists, so that they can be
 	 *  deleted at the end
 	 */
-	static QList<GWEN_STRINGLIST*> *gwen_strlist;
+        static QList<GWEN_STRINGLIST*> *m_gwen_strlist;
 
 	/*! stores all created GWEN_TIME objects, so that they can be deleted
 	 *  at the end
 	 */
-	static QList<GWEN_TIME*> *gwen_timelist;
+        static QList<GWEN_TIME*> *m_gwen_timelist;
 
 	/*! stores all created AB_VALUE objects, so that they can be deleted
 	 *  at the end
 	 */
-	static QList<AB_VALUE*> *gwen_abvlist;
+        static QList<AB_VALUE*> *m_gwen_abvlist;
 
 public:
 	abt_conv();

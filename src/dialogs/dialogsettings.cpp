@@ -50,9 +50,9 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	ui->setupUi(this);
 	Q_ASSERT(settings);
 
-	this->settings = settings;
-	this->imexp = new aqb_imexporters(ab); //loads all im-/exporters from aqbanking
-	this->imex_favorites = new QHash<QString, bool>();
+        this->m_settings = settings;
+        this->m_imexp = new aqb_imexporters(ab); //loads all im-/exporters from aqbanking
+        this->m_imex_favorites = new QHash<QString, bool>();
 
 	//normaly we want the first tab active after start (everybody could use
 	// the following public function to set the active tab after creation)
@@ -74,7 +74,7 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	connect(this->ui->checkBox_getStandingOrders, SIGNAL(stateChanged(int)),
 		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));
 
-	connect(this->imexp, SIGNAL(imexportersLoaded()),
+        connect(this->m_imexp, SIGNAL(imexportersLoaded()),
 		this, SLOT(updatedImExporters()));
 
 
@@ -101,10 +101,14 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 
 DialogSettings::~DialogSettings()
 {
-	this->imex_favorites->clear();
-	delete this->imex_favorites;
-	delete this->imexp;
+        this->m_imex_favorites->clear();
+        delete this->m_imex_favorites;
+        delete this->m_imexp;
 	delete ui;
+
+        this->m_imex_favorites = NULL;
+        this->m_imexp = NULL;
+        ui = NULL;
 }
 
 void DialogSettings::changeEvent(QEvent *e)
@@ -122,25 +126,25 @@ void DialogSettings::changeEvent(QEvent *e)
 //private
 void DialogSettings::loadFromSettings()
 {
-	this->ui->lineEdit_dataDir->setText(this->settings->getDataDir());
-	this->ui->lineEdit_accountData->setText(this->settings->getAccountDataFilename());
-	this->ui->lineEdit_history->setText(this->settings->getHistoryFilename());
-	this->ui->lineEdit_recipients->setText(this->settings->getRecipientsFilename());
+        this->ui->lineEdit_dataDir->setText(this->m_settings->getDataDir());
+        this->ui->lineEdit_accountData->setText(this->m_settings->getAccountDataFilename());
+        this->ui->lineEdit_history->setText(this->m_settings->getHistoryFilename());
+        this->ui->lineEdit_recipients->setText(this->m_settings->getRecipientsFilename());
 
-	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
-	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
-	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog("ProfileConfirmDelete"));
-	this->ui->checkBox_warnDeleteHistory->setChecked(this->settings->showDialog("HistoryConfirmDelete"));
+        this->ui->checkBox_warnCosts->setChecked(this->m_settings->showDialog("WarnCosts"));
+        this->ui->checkBox_jobAddedToOutput->setChecked(this->m_settings->showDialog("JobAddOutput"));
+        this->ui->checkBox_warnDeleteProfile->setChecked(this->m_settings->showDialog("ProfileConfirmDelete"));
+        this->ui->checkBox_warnDeleteHistory->setChecked(this->m_settings->showDialog("HistoryConfirmDelete"));
 
-	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
-	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
-	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
-	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
+        this->ui->checkBox_getBalance->setChecked(this->m_settings->appendJobToOutbox("getBalance"));
+        this->ui->checkBox_getStandingOrders->setChecked(this->m_settings->appendJobToOutbox("getStandingOrders"));
+        this->ui->checkBox_getDatedTransfers->setChecked(this->m_settings->appendJobToOutbox("getDatedTransfers"));
+        this->ui->checkBox_executeAtStart->setChecked(this->m_settings->appendJobToOutbox("executeAtStart"));
 
 	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(
-			this->settings->isAdvancedOptionSet("ManualOutboxRearrange"));
+                        this->m_settings->isAdvancedOptionSet("ManualOutboxRearrange"));
 
-	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
+        this->ui->checkBox_autoAddNewRecipients->setChecked(this->m_settings->autoAddNewRecipients());
 
 	this->loadFavoriteImExpFromSettings();
 
@@ -150,25 +154,25 @@ void DialogSettings::loadFromSettings()
 //private
 void DialogSettings::saveToSettings()
 {
-	this->settings->setDataDir(this->ui->lineEdit_dataDir->text());
-	this->settings->setAccountDataFilename(this->ui->lineEdit_accountData->text());
-	this->settings->setHistoryFilename(this->ui->lineEdit_history->text());
-	this->settings->setRecipientsFilename(this->ui->lineEdit_recipients->text());
+        this->m_settings->setDataDir(this->ui->lineEdit_dataDir->text());
+        this->m_settings->setAccountDataFilename(this->ui->lineEdit_accountData->text());
+        this->m_settings->setHistoryFilename(this->ui->lineEdit_history->text());
+        this->m_settings->setRecipientsFilename(this->ui->lineEdit_recipients->text());
 
-	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
-	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
-	this->settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
-	this->settings->setShowDialog("HistoryConfirmDelete", this->ui->checkBox_warnDeleteHistory->isChecked());
+        this->m_settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
+        this->m_settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
+        this->m_settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
+        this->m_settings->setShowDialog("HistoryConfirmDelete", this->ui->checkBox_warnDeleteHistory->isChecked());
 
-	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
-	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
-	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
-	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
+        this->m_settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
+        this->m_settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
+        this->m_settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
+        this->m_settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
 
-	this->settings->setAdvancedOption("ManualOutboxRearrange",
+        this->m_settings->setAdvancedOption("ManualOutboxRearrange",
 			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
 
-	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
+        this->m_settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 
 	this->saveFavoriteImExpToSettings();
 
@@ -177,10 +181,10 @@ void DialogSettings::saveToSettings()
 void DialogSettings::loadFavoriteImExpFromSettings()
 {
 	//load all as favorite marked im-/exort profiles
-	this->imex_favorites->clear();
+        this->m_imex_favorites->clear();
 
-	foreach(const QString key, this->settings->getAllProfileFavorites()) {
-		this->imex_favorites->insert(key, this->settings->isProfileFavorit(key));
+        foreach(const QString key, this->m_settings->getAllProfileFavorites()) {
+                this->m_imex_favorites->insert(key, this->m_settings->isProfileFavorit(key));
 	}
 }
 
@@ -188,10 +192,10 @@ void DialogSettings::loadFavoriteImExpFromSettings()
 void DialogSettings::saveFavoriteImExpToSettings()
 {
 	//save all as favorit marked im-/export profiles
-	QHashIterator<QString, bool> i(*this->imex_favorites);
+        QHashIterator<QString, bool> i(*this->m_imex_favorites);
 	while (i.hasNext()) {
 		i.next();
-		this->settings->setProfileFavorit(i.key(), i.value());
+                this->m_settings->setProfileFavorit(i.key(), i.value());
 	}
 }
 
@@ -205,7 +209,7 @@ void DialogSettings::saveFavoriteImExpToSettings()
 void DialogSettings::reloadImExporters()
 {
 	//reload all data
-	this->imexp->reloadImExporterData();
+        this->m_imexp->reloadImExporterData();
 }
 
 /**
@@ -217,7 +221,7 @@ void DialogSettings::reloadImExporters()
 //private
 void DialogSettings::refreshImExPluginListWidget()
 {
-	Q_ASSERT(this->imexp);
+        Q_ASSERT(this->m_imexp);
 
 	//remember the selected item
 	QString pluginName = "";
@@ -229,7 +233,7 @@ void DialogSettings::refreshImExPluginListWidget()
 	this->ui->listWidget_plugins->clear(); //remove all;
 
 	//add all supported im-/exporter plugins
-	foreach(const aqb_iePlugin *plugin, *this->imexp->getPlugins()) {
+        foreach(const aqb_iePlugin *plugin, *this->m_imexp->getPlugins()) {
 		this->ui->listWidget_plugins->addItem(plugin->getName());
 	}
 
@@ -255,7 +259,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 	this->ui->tableWidget_profiles->clearContents();
 	this->ui->tableWidget_profiles->setRowCount(0);
 
-	plugin = this->imexp->getPluginByName(pluginName);
+        plugin = this->m_imexp->getPluginByName(pluginName);
 	if (!plugin) {
 		return; //no plugin exists, so no profiles available
 	}
@@ -276,7 +280,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		this->ui->tableWidget_profiles->setItem(rowc, 0, item);
 
-		bool selected = this->selection.value(pluginName, "") == item->text();
+                bool selected = this->m_selection.value(pluginName, "") == item->text();
 		//qDebug() << "ROW:" << rowc << "profile" << item->text() << selected;
 
 		item = new QTableWidgetItem();
@@ -324,7 +328,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		QString key = pluginName;
 		key.append("/");
 		key.append(profile->getValue("name").toString());
-		if (this->imex_favorites->value(key, false)) {
+                if (this->m_imex_favorites->value(key, false)) {
 			checkState = Qt::Checked;
 		} else {
 			checkState = Qt::Unchecked;
@@ -339,7 +343,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		this->ui->tableWidget_profiles->setItem(rowc, 6, item);
 
 		//restore selection
-		if (selected) {
+                if (selected) {
 			this->ui->tableWidget_profiles->selectRow(rowc);
 		}
 
@@ -376,7 +380,7 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
 	if (listWidgetRow >= 0) {
 		pluginName = this->ui->listWidget_plugins->item(listWidgetRow)->text();
-		selPlugin = this->imexp->getPluginByName(pluginName);
+                selPlugin = this->m_imexp->getPluginByName(pluginName);
 	}
 
 	if (!selPlugin) {
@@ -580,7 +584,7 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 	key.append("/");
 	key.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profilename
 
-	this->imex_favorites->insert(key, checked);
+        this->m_imex_favorites->insert(key, checked);
 }
 
 void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
@@ -616,7 +620,7 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 	//remember the selection for refresh
 	if (profilesWidget->item(row, 0) != NULL) {
 		QString profileName = profilesWidget->item(row, 0)->text();
-		this->selection.insert(pluginName, profileName);
+                this->m_selection.insert(pluginName, profileName);
 	}
 }
 
@@ -691,7 +695,7 @@ void DialogSettings::on_actionEditProfile_triggered()
 
 	QString filename = profile->getValue("fileName").toString();
 
-	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
+        int ret = this->m_imexp->editProfileWithAqbDialog(dbProfile,
 							plugin->getName(),
 							filename.toUtf8());
 
@@ -802,7 +806,7 @@ void DialogSettings::on_actionNewProfile_triggered()
 		}
 	}
 
-	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
+        int ret = this->m_imexp->editProfileWithAqbDialog(dbProfile,
 							selPlugin->getName(),
 							filename.toUtf8());
 
@@ -893,8 +897,8 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 			qDebug() << Q_FUNC_INFO << "file" << file << "deleted!";
 
 			//also remove the favorite settings
-			this->imex_favorites->remove(key);
-			this->settings->deleteProfileFavorit(key);
+                        this->m_imex_favorites->remove(key);
+                        this->m_settings->deleteProfileFavorit(key);
 		}
 	}
 

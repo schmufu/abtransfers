@@ -68,30 +68,29 @@ public:
 	~widgetAccountData();
 
 private:
-	widgetLineEditWithLabel *llName;
-	widgetLineEditWithLabel *llAccountNumber;
-	widgetLineEditWithLabel *llBankCode;
-	widgetLineEditWithLabel *llBankName;
-	widgetLineEditWithLabel *llIBAN;
-	widgetLineEditWithLabel *llBIC;
+        widgetLineEditWithLabel *m_llName;
+        widgetLineEditWithLabel *m_llAccountNumber;
+        widgetLineEditWithLabel *m_llBankCode;
+        widgetLineEditWithLabel *m_llBankName;
+        widgetLineEditWithLabel *m_llIBAN;
+        widgetLineEditWithLabel *m_llBIC;
 
-	QLabel *localOwner;
-	QLabel *localAccountNumber;
-	QLabel *localBankCode;
-	QLabel *localBankName;
-	QLabel *localIBAN;
-	QLabel *localBIC;
+        QLabel *m_localOwner;
+        QLabel *m_localAccountNumber;
+        QLabel *m_localBankCode;
+        QLabel *m_localBankName;
+        QLabel *m_localIBAN;
+        QLabel *m_localBIC;
 	//! if comboBoxAccounts == NULL then we are a local account widget
-	widgetAccountComboBox *comboBoxAccounts;
+        widgetAccountComboBox *m_comboBoxAccounts;
 
-	bool allowDropAccount;
-	bool allowDropKnownRecipient;
-	bool readOnly;
-	bool sepaFields;
+        bool m_allowDropAccount;
+        bool m_allowDropKnownRecipient;
+        bool m_readOnly;
+        bool m_sepaFields;
 
-	const aqb_AccountInfo *currAccount;
-	const aqb_Accounts *allAccounts;
-
+        const aqb_AccountInfo *m_currAccount;
+        const aqb_Accounts *m_allAccounts;
 
 	void setEditAllowed(bool yes);
 	//! erstellt die Edits für local Account Auswahl.
@@ -146,7 +145,6 @@ public slots:
 	void setLimitAllowChangeAccountNumber(int b);
 	void setLimitAllowChangeBankCode(int b);
 	void setLimitAllowChangeBankName(int b);
-
 
 };
 

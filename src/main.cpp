@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
 				//cleanup and cancel execution
 				qInstallMsgHandler(NULL);
 				delete debugDialog;
+                                debugDialog = NULL;
 				return 9;
 			}
 			//else: the program should be started anyway
@@ -146,7 +147,9 @@ int main(int argc, char *argv[])
 	settings->saveWindowStateGeometry(w.saveState(1), w.saveGeometry());
 	qDebug("AFTER SAVING STATE");
 	delete banking; //AqBanking is no longer used
+        banking = NULL;
 	delete settings; //and the settings also.
+        settings = NULL;
 
 	//free all created GWEN_STRINGLIST and GWEN_TIME objects
 	abt_conv::freeAllGwenLists();
@@ -154,6 +157,7 @@ int main(int argc, char *argv[])
 
 	qInstallMsgHandler(NULL); //uninstall the MsgHandler
 	delete debugDialog; //and the corresponding dialog
+        debugDialog = NULL;
 
 	return apprv;
 }

@@ -72,13 +72,13 @@ public:
 				QWidget *parent = 0);
 	~widgetTransfer();
 
-	widgetAccountData *localAccount;
-	widgetAccountData *remoteAccount;
-	widgetValue *value;
-	widgetPurpose *purpose;
-	widgetRecurrence *recurrence;
-	widgetTextKey *textKey;
-	widgetDate *datedDate;
+        widgetAccountData *m_localAccount;
+        widgetAccountData *m_remoteAccount;
+        widgetValue *m_value;
+        widgetPurpose *m_purpose;
+        widgetRecurrence *m_recurrence;
+        widgetTextKey *m_textKey;
+        widgetDate *m_datedDate;
 
 private:
 	const abt_transactionLimits *m_limits;
@@ -87,17 +87,17 @@ private:
 	AB_JOB_TYPE m_type;
 	const abt_transaction *m_origTransaction;
 
-	QGroupBox *groupBoxLocal;
-	QGroupBox *groupBoxRemote;
-	QGroupBox *groubBoxRecurrence;
-	QBoxLayout *layoutAccount;
-	QBoxLayout *layoutValue;
-	QBoxLayout *layoutPurpose;
-	QVBoxLayout *layoutMain;
-	QHBoxLayout *layoutButtons;
-	QPushButton *pushButtonOK;
-	QPushButton *pushButtonCancel;
-	QPushButton *pushButtonRevert;
+        QGroupBox *m_groupBoxLocal;
+        QGroupBox *m_groupBoxRemote;
+        QGroupBox *m_groubBoxRecurrence;
+        QBoxLayout *m_layoutAccount;
+        QBoxLayout *m_layoutValue;
+        QBoxLayout *m_layoutPurpose;
+        QVBoxLayout *m_layoutMain;
+        QHBoxLayout *m_layoutButtons;
+        QPushButton *m_pushButtonOK;
+        QPushButton *m_pushButtonCancel;
+        QPushButton *m_pushButtonRevert;
 
 	//private inline funktionen um die verschiedenen forms zu erstellen
 	void my_create_transfer_form(bool newTransfer);
@@ -148,7 +148,6 @@ public:
 	/*! Wenn über setValuesFromTransaction() eine Transaction gesetzt wurde
 	 *  kann diese hierrüber wieder gelesen werden. */
 	const abt_transaction* getOriginalTransaction() const { return this->m_origTransaction; }
-
 
 };
 

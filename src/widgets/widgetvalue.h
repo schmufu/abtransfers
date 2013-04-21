@@ -49,8 +49,8 @@ public:
 	~widgetValue();
 
 private:
-	QLineEdit *value;
-	QLineEdit *currency;
+        QLineEdit *m_value;
+        QLineEdit *m_currency;
 
 
 public:

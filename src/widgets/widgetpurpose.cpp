@@ -48,45 +48,50 @@
 widgetPurpose::widgetPurpose(QWidget *parent) :
 	QWidget(parent)
 {
-	this->textEdit = new QTextEdit(this);
-	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen übrig]"));
-	this->statusLabel = new QLabel(this);
-	QFont labelFont(this->statusLabel->font());
+        this->m_textEdit = new QTextEdit(this);
+        this->m_statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen übrig]"));
+        this->m_statusLabel = new QLabel(this);
+        QFont labelFont(this->m_statusLabel->font());
 	labelFont.setPointSize(7);
-	this->statusLabel->setFont(labelFont);
-	this->textEdit->setReadOnly(false);
-	this->textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->m_statusLabel->setFont(labelFont);
+        this->m_textEdit->setReadOnly(false);
+        this->m_textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	this->maxLength = 27;
-	this->maxLines = 4;
+        this->m_maxLength = 27;
+        this->m_maxLines = 4;
 	this->updateStatusLabel();
-	this->textEdit->setWordWrapMode(QTextOption::WordWrap);
-	this->textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
-	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
-	this->textEdit->setAcceptRichText(false);
-	this->textEdit->document()->defaultTextOption().setUseDesignMetrics(true);
-	this->textEdit->document()->defaultTextOption().setWrapMode(QTextOption::WordWrap);
+        this->m_textEdit->setWordWrapMode(QTextOption::WordWrap);
+        this->m_textEdit->setLineWrapMode(QTextEdit::FixedColumnWidth);
+        this->m_textEdit->setLineWrapColumnOrWidth(this->m_maxLength);
+        this->m_textEdit->setAcceptRichText(false);
+        this->m_textEdit->document()->defaultTextOption().setUseDesignMetrics(true);
+        this->m_textEdit->document()->defaultTextOption().setWrapMode(QTextOption::WordWrap);
 
-	this->textEdit->installEventFilter(this);
+        this->m_textEdit->installEventFilter(this);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(this->textEdit);
-	layout->addWidget(this->statusLabel);
+        layout->addWidget(this->m_textEdit);
+        layout->addWidget(this->m_statusLabel);
 	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(0);
 
 	this->setLayout(layout);
 	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	connect(this->textEdit, SIGNAL(textChanged()),
+        connect(this->m_textEdit, SIGNAL(textChanged()),
 		this, SLOT(plainTextEdit_TextChanged()));
 }
 
 widgetPurpose::~widgetPurpose()
 {
-	delete this->textEdit;
-	delete this->statusString;
-	delete this->statusLabel;
+        delete this->m_textEdit;
+        delete this->m_statusString;
+        delete this->m_statusLabel;
+
+        this->m_textEdit = NULL;
+        this->m_statusString = NULL;
+        this->m_statusLabel = NULL;
+
 	qDebug() << this << "deleted";
 }
 
@@ -96,7 +101,7 @@ widgetPurpose::~widgetPurpose()
 bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 {
 	//wir behandeln nur keyPress Events vom TextEdit
-	if (obj != this->textEdit) return false;
+        if (obj != this->m_textEdit) return false;
 	if (event->type() != QEvent::KeyPress) return false;
 
 	QKeyEvent *ev = dynamic_cast<QKeyEvent*>(event);
@@ -121,8 +126,8 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 	}
 
 	//Sind bereits die maximal erlaubten Zeichen (insgesamt) erreicht
-	const int charsTotal = this->textEdit->document()->characterCount();
-	if (charsTotal >= (this->maxLength * this->maxLines)) {
+        const int charsTotal = this->m_textEdit->document()->characterCount();
+        if (charsTotal >= (this->m_maxLength * this->m_maxLines)) {
 		//Maximale Anzahl an Zeichen erreicht -> keine weiteren erlaubt
 		ev->ignore(); //Eingabe unterbinden.
 		return true;
@@ -130,7 +135,7 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 
 	//Anzahl der Zeichen pro Zeile ermitteln
 	QList<int> charCntLine;
-	QTextDocument *doc = this->textEdit->document();
+        QTextDocument *doc = this->m_textEdit->document();
 	//qDebug() << "blockCnt:" << blockCnt;
 	for (int block=0; block<doc->blockCount(); ++block) {
 		const int lineCnt = doc->findBlockByNumber(block).layout()->lineCount();
@@ -139,17 +144,15 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 		}
 	}
 
-	QTextCursor cur = this->textEdit->cursorForPosition(this->textEdit->cursorRect().center());
+        QTextCursor cur = this->m_textEdit->cursorForPosition(this->m_textEdit->cursorRect().center());
 	const int curLinePos = cur.columnNumber();
 	const int curPos = cur.position();
 
-	int curLine;
 	int chars = 0;
 	for (int i=0; i<charCntLine.size(); ++i) {
 		chars += charCntLine.at(i);
 		qDebug() << "chars: " << chars << " -- curLinePos: " << curLinePos;
 		if (chars >= curPos) {
-			curLine = i;
 			break;
 		}
 	}
@@ -165,7 +168,7 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 //	qDebug() << "curPos    : " << curPos;
 //	qDebug() << "curLine   : " << curLine;
 
-//	int currLine = this->textEdit->document()->;
+//	int currLine = this->m_textEdit->document()->;
 
 	//Alle löschenden und den Cursor bewegenden Tasten wurden oben bereits
 	//zugelassen, hierher gelangen wir nur noch wenn eine Eingabe getätigt
@@ -219,20 +222,20 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 //private
 void widgetPurpose::updateStatusLabel()
 {
-	int remainingChars = (this->maxLines * this->maxLength) -
-			     this->textEdit->document()->characterCount();
+        int remainingChars = (this->m_maxLines * this->m_maxLength) -
+                             this->m_textEdit->document()->characterCount();
 
 	int linecnt = 0;
-	for (int block=0; block < this->textEdit->document()->blockCount(); ++block) {
-		linecnt += this->textEdit->document()->findBlockByNumber(block).layout()->lineCount();
+        for (int block=0; block < this->m_textEdit->document()->blockCount(); ++block) {
+                linecnt += this->m_textEdit->document()->findBlockByNumber(block).layout()->lineCount();
 	}
 
-	this->statusLabel->setText(
-			this->statusString
-				->arg(this->maxLines)
-				.arg(this->maxLength)
+        this->m_statusLabel->setText(
+                        this->m_statusString
+                                ->arg(this->m_maxLines)
+                                .arg(this->m_maxLength)
 				.arg(remainingChars)
-				.arg(this->maxLines - linecnt));
+                                .arg(this->m_maxLines - linecnt));
 
 }
 
@@ -247,19 +250,19 @@ QStringList widgetPurpose::getPurpose() const
 
 	QStringList purposeLines;
 
-	int blockCnt = this->textEdit->document()->blockCount();
+        int blockCnt = this->m_textEdit->document()->blockCount();
 	//qDebug() << "blockCnt:" << blockCnt;
 	for (int block=0; block<blockCnt; ++block) {
 		//qDebug() << "block:" << block;
 		//the following produces the compile error: taking address of temporary
-		//const QTextBlock *textBlock = &this->textEdit->document()->findBlockByNumber(block);
-		int lineCnt = this->textEdit->document()->findBlockByNumber(block).layout()->lineCount();
+                //const QTextBlock *textBlock = &this->m_textEdit->document()->findBlockByNumber(block);
+                int lineCnt = this->m_textEdit->document()->findBlockByNumber(block).layout()->lineCount();
 		//qDebug() << "lineCnt:" << lineCnt;
 		for (int line=0; line<lineCnt; ++line) {
-			int start = this->textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textStart();
-			int len = this->textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textLength();
+                        int start = this->m_textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textStart();
+                        int len = this->m_textEdit->document()->findBlockByNumber(block).layout()->lineAt(line).textLength();
 			//qDebug() << "line:" << line << "\t" << "start:" << start << " len:" << len;
-			purposeLines << this->textEdit->document()->findBlockByNumber(block).text().mid(start, len).trimmed();
+                        purposeLines << this->m_textEdit->document()->findBlockByNumber(block).text().mid(start, len).trimmed();
 		}
 	}
 
@@ -270,7 +273,7 @@ QStringList widgetPurpose::getPurpose() const
 //public
 bool widgetPurpose::hasChanges() const
 {
-	return this->textEdit->document()->isModified();
+        return this->m_textEdit->document()->isModified();
 }
 
 //private slot
@@ -278,19 +281,19 @@ void widgetPurpose::plainTextEdit_TextChanged()
 {
 	//Test um alles in UpperCase zu haben, der Cursor versetzt sich
 	//beim löschen von Zeichen aber immer wieder ans Ende
-//	this->textEdit->blockSignals(true);
+//	this->m_textEdit->blockSignals(true);
 //	//would be a recursive loop!
-//	QTextCursor oldpos = this->textEdit->textCursor();
-//	this->textEdit->setPlainText(this->textEdit->toPlainText().toUpper());
+//	QTextCursor oldpos = this->m_textEdit->textCursor();
+//	this->m_textEdit->setPlainText(this->m_textEdit->toPlainText().toUpper());
 	this->updateStatusLabel();
-//	this->textEdit->setTextCursor(oldpos);
-//	this->textEdit->blockSignals(false);
+//	this->m_textEdit->setTextCursor(oldpos);
+//	this->m_textEdit->blockSignals(false);
 }
 
 //public slot
 void widgetPurpose::setPurpose(const QString &text)
 {
-	this->textEdit->setPlainText(text);
+        this->m_textEdit->setPlainText(text);
 }
 
 //public slot
@@ -302,15 +305,15 @@ void widgetPurpose::setPurpose(const QStringList &text)
 //public slot
 void widgetPurpose::setLimitMaxLen(int maxLen)
 {
-	this->maxLength = maxLen;
-	this->textEdit->setLineWrapColumnOrWidth(this->maxLength);
+        this->m_maxLength = maxLen;
+        this->m_textEdit->setLineWrapColumnOrWidth(this->m_maxLength);
 	this->updateStatusLabel();
 }
 
 //public slot
 void widgetPurpose::setLimitMaxLines(int lines)
 {
-	this->maxLines = lines;
+        this->m_maxLines = lines;
 	this->updateStatusLabel();
 }
 
@@ -323,5 +326,5 @@ void widgetPurpose::setLimitAllowChange(int b)
 //public slot
 void widgetPurpose::clearAll()
 {
-	this->textEdit->clear();
+        this->m_textEdit->clear();
 }

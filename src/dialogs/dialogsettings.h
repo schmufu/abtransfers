@@ -59,10 +59,10 @@ protected:
 
 private:
 	Ui::DialogSettings *ui;
-	abt_settings *settings;
-	aqb_imexporters *imexp;
-	QHash<QString, bool> *imex_favorites;
-	QHash<QString, QString> selection;
+        abt_settings *m_settings;
+        aqb_imexporters *m_imexp;
+        QHash<QString, bool> *m_imex_favorites;
+        QHash<QString, QString> m_selection;
 
 	void loadFromSettings();
 	void saveToSettings();

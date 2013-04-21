@@ -86,6 +86,7 @@ abt_job_ctrl::~abt_job_ctrl()
 	}
 
 	delete this->jobqueue;
+        this->jobqueue = NULL;
 
 	qDebug() << Q_FUNC_INFO << "deleted";
 }
@@ -1737,6 +1738,7 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
+                                dt = NULL;
 				break;
 
 			case AB_Job_TypeModifyDatedTransfer:
@@ -1744,6 +1746,7 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
+                                dt = NULL;
 				break;
 
 			case AB_Job_TypeCreateStandingOrder:
@@ -1756,6 +1759,7 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;
+                                so = NULL;
 				break;
 
 			case AB_Job_TypeModifyStandingOrder:
@@ -1763,6 +1767,7 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;
+                                so = NULL;
 				break;
 
 			case AB_Job_TypeGetDatedTransfers:
@@ -2009,6 +2014,7 @@ void abt_job_ctrl::deleteJob(abt_jobInfo *jobinfo, bool free /*=true*/)
 	}
 
 	delete jobinfo; //delete the abt_jobInfo
+        jobinfo = NULL;
 
 	//inform all who wants to know about the change
 	emit this->jobQueueListChanged();

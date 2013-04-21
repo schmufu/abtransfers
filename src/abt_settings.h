@@ -52,7 +52,7 @@ private:
 	QString m_recipientsFilename;
 	QString m_accountdataFilename;
 	QString m_historyFilename;
-	QSettings *settings;
+        QSettings *m_settings;
 	QList<abt_EmpfaengerInfo*>* m_recipientsList;
 	QHash<int, QString> *m_textKeyDescr;
 

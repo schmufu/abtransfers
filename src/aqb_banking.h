@@ -44,20 +44,20 @@
 class aqb_banking
 {
 private:
-	AB_BANKING *ab;
-	QT4_Gui *gui;
-	QString aqbanking_version;
-	int major, minor, patch, build;
+        AB_BANKING *m_ab;
+        QT4_Gui *m_gui;
+        QString m_aqbanking_version;
+        int m_major, m_minor, m_patch, m_build;
 
 public:
 	aqb_banking();
 	~aqb_banking();
 
-	AB_BANKING* getAqBanking() const { return this->ab; }
+        AB_BANKING* getAqBanking() const { return this->m_ab; }
 
-	GWEN_GUI* getCInterface() const { return this->gui->getCInterface(); }
+        GWEN_GUI* getCInterface() const { return this->m_gui->getCInterface(); }
 
-	const QString &getAqBankingVersion() const { return this->aqbanking_version; }
+        const QString &getAqBankingVersion() const { return this->m_aqbanking_version; }
 	QString getInstituteFromBLZ(const QString &BLZ) const;
 	QString getInstituteFromBIC(const QString &BIC) const;
 

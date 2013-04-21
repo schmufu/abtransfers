@@ -47,16 +47,16 @@ public:
 	explicit widgetTextKey(const QList<int> *keys = NULL, QWidget *parent = 0);
 	~widgetTextKey();
 
-	int getTextKey() const;
-	bool hasChanges() const;
+        int getTextKey() const;
+        bool hasChanges() const;
 
 protected:
 //	void changeEvent(QEvent *e);
 
 private:
-	int settedKey;
-	QComboBox *comboBox;
-	QLabel *label;
+        int m_settedKey;
+        QComboBox *m_comboBox;
+        QLabel *m_label;
 
 signals:
 

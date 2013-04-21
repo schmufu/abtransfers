@@ -53,12 +53,12 @@ public:
 
 private:
 	//QPlainTextEdit *plainEdit;
-	QTextEdit *textEdit;
-	const QString *statusString;
-	QLabel *statusLabel;
+        QTextEdit *m_textEdit;
+        const QString *m_statusString;
+        QLabel *m_statusLabel;
 
-	int maxLines;
-	int maxLength;
+        int m_maxLines;
+        int m_maxLength;
 
 
 	void updateStatusLabel();

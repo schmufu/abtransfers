@@ -52,7 +52,7 @@ public:
 private:
 	const aqb_AccountInfo *m_startAccount;
 	const aqb_Accounts *m_allAccounts;
-	QComboBox *comboBox;
+        QComboBox *m_comboBox;
 
 	void fillComboBox();
 public:

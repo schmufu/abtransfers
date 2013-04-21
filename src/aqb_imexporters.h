@@ -70,8 +70,8 @@ public:
 
 private:
 	AB_BANKING *m_ab;
-	GWEN_PLUGIN_DESCRIPTION_LIST2 *pdl;
-	QList<aqb_iePlugin*>* plugins;
+        GWEN_PLUGIN_DESCRIPTION_LIST2 *m_pdl;
+        QList<aqb_iePlugin*> *m_plugins;
 
 	void freeAll();
 	void loadAll();
@@ -83,7 +83,7 @@ public:
 	//! @returns the count of useable im-/exporters
 	int getSize() const;
 	//! @returns the list of loaded imexporter plugins
-	const QList<aqb_iePlugin*>* getPlugins() const { return this->plugins; }
+        const QList<aqb_iePlugin*>* getPlugins() const { return this->m_plugins; }
 
 	//! convenient function to get the plugin by name
 	const aqb_iePlugin* getPluginByName(QString &name) const;
@@ -122,34 +122,34 @@ public:
 	~aqb_iePlugin();
 
 private:
-	GWEN_PLUGIN_DESCRIPTION *pd;
-	const char *name; // GWEN_PluginDescription_GetName(pd);
-	const char *type; // GWEN_PluginDescription_GetType(pd);
-	const char *desc_short; // GWEN_PluginDescription_GetShortDescr(pd);
-	const char *desc_long; // GWEN_PluginDescription_GetLongDescr(pd);
-	const char *filename; // GWEN_PluginDescription_GetFileName(pd);
-	const char *path; // GWEN_PluginDescription_GetPath(pd);
-	const char *author; // GWEN_PluginDescription_GetAuthor(pd);
-	const char *version; // GWEN_PluginDescription_GetVersion(pd);
+        GWEN_PLUGIN_DESCRIPTION *m_pd;
+        const char *m_name; // GWEN_PluginDescription_GetName(pd);
+        const char *m_type; // GWEN_PluginDescription_GetType(pd);
+        const char *m_desc_short; // GWEN_PluginDescription_GetShortDescr(pd);
+        const char *m_desc_long; // GWEN_PluginDescription_GetLongDescr(pd);
+        const char *m_filename; // GWEN_PluginDescription_GetFileName(pd);
+        const char *m_path; // GWEN_PluginDescription_GetPath(pd);
+        const char *m_author; // GWEN_PluginDescription_GetAuthor(pd);
+        const char *m_version; // GWEN_PluginDescription_GetVersion(pd);
 
-	QList<aqb_ieProfile*>* profiles;
+        QList<aqb_ieProfile*> *m_profiles;
 
 protected:
 	int loadProfiles(AB_BANKING *ab);
 
 public:
-	const char *getName() const { return this->name; }
-	const char *getType() const { return this->type; }
-	const char *getDescShort() const { return this->desc_short; }
-	const char *getDescLong() const { return this->desc_long; }
-	const char *getFilename() const { return this->filename; }
-	const char *getPath() const { return this->path; }
-	const char *getAuthor() const { return this->author; }
-	const char *getVersion() const { return this->version; }
+        const char *getName() const { return this->m_name; }
+        const char *getType() const { return this->m_type; }
+        const char *getDescShort() const { return this->m_desc_short; }
+        const char *getDescLong() const { return this->m_desc_long; }
+        const char *getFilename() const { return this->m_filename; }
+        const char *getPath() const { return this->m_path; }
+        const char *getAuthor() const { return this->m_author; }
+        const char *getVersion() const { return this->m_version; }
 
-	const GWEN_PLUGIN_DESCRIPTION *getPD() const { return this->pd; }
+        const GWEN_PLUGIN_DESCRIPTION *getPD() const { return this->m_pd; }
 
-	const QList<aqb_ieProfile*>* getProfiles() const { return this->profiles; }
+        const QList<aqb_ieProfile*> *getProfiles() const { return this->m_profiles; }
 
 signals:
 
@@ -177,8 +177,8 @@ public:
 	~aqb_ieProfile();
 
 private:
-	GWEN_DB_NODE *dbnode;
-	QStringList* names;
+        GWEN_DB_NODE *m_dbnode;
+        QStringList *m_names;
 
 protected:
 
@@ -187,7 +187,7 @@ public:
 	//! @returns the value for \a name as a QVariant
 	QVariant getValue(const char *varname, int idx = 0) const;
 	//! @returns all supported names for values in this profile
-	const QStringList* getNames() const { return this->names; }
+        const QStringList* getNames() const { return this->m_names; }
 	//! @returns the original type for the GWEN_DB-Value of \a varname
 	GWEN_DB_NODE_TYPE getType(const char *varname) const;
 signals:

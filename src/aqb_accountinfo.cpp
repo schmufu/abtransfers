@@ -48,7 +48,7 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	this->m_standingOrders = NULL;
 	this->m_datedTransfers = NULL;
 	this->m_availableJobs = NULL;
-	this->account_status = NULL;
+        this->m_account_status = NULL;
 	this->m_limits = NULL;
 
 	//account could be NULL, but this is handled by setAccount()
@@ -75,9 +75,9 @@ void aqb_AccountInfo::freeAllInternalData()
 	bool preBlocked = this->blockSignals(true);
 
 	//der account_status ist eine von uns angelegte Kopie, diese freigeben
-	if (this->account_status) {
-		AB_AccountStatus_free(this->account_status);
-		this->account_status = NULL;
+        if (this->m_account_status) {
+                AB_AccountStatus_free(this->m_account_status);
+                this->m_account_status = NULL;
 	}
 
 	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
@@ -229,11 +229,11 @@ const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
 {
 	//if we already have an account-status we must free this first
-	if (this->account_status)
-		AB_AccountStatus_free(this->account_status);
+        if (this->m_account_status)
+                AB_AccountStatus_free(this->m_account_status);
 
 	//we need to store a copy of the supplied status
-	this->account_status = AB_AccountStatus_dup(as);
+        this->m_account_status = AB_AccountStatus_dup(as);
 	emit this->accountStatusChanged(this);
 }
 
@@ -252,10 +252,10 @@ AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 	AB_IMEXPORTER_ACCOUNTINFO *iea = AB_ImExporterAccountInfo_new();
 	AB_ImExporterAccountInfo_FillFromAccount(iea, this->m_account);
 
-	if (this->account_status) { //Wenn wir einen AB_ACCOUNT_STATUS besitzen
+        if (this->m_account_status) { //Wenn wir einen AB_ACCOUNT_STATUS besitzen
 		//davon eine Kopie erstellen und diese dem AccountInfoContext
 		//hinzufügen (wird beim freigeben des ctx dann auch freigegeben)
-		AB_ACCOUNT_STATUS *status = AB_AccountStatus_dup(this->account_status);
+                AB_ACCOUNT_STATUS *status = AB_AccountStatus_dup(this->m_account_status);
 		AB_ImExporterAccountInfo_AddAccountStatus(iea, status);
 	}
 
@@ -379,12 +379,12 @@ bool aqb_AccountInfo::removeDatedTransfer(abt_datedTransferInfo *dt)
 //public
 QString aqb_AccountInfo::getBankLine() const
 {
-	if (!this->account_status) return QString();
+        if (!this->m_account_status) return QString();
 
 	const AB_VALUE *v;
 	QString value = ""; //empty string als default
 
-	v = AB_AccountStatus_GetBankLine(this->account_status);
+        v = AB_AccountStatus_GetBankLine(this->m_account_status);
 	if (v) {
 		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
@@ -395,13 +395,13 @@ QString aqb_AccountInfo::getBankLine() const
 //public
 QString aqb_AccountInfo::getNotedBalance() const
 {
-	if (!this->account_status) return QString();
+        if (!this->m_account_status) return QString();
 
 	const AB_VALUE *v;
 	const AB_BALANCE *b;
 	QString value = ""; //empty string als default
 
-	b = AB_AccountStatus_GetNotedBalance(this->account_status);
+        b = AB_AccountStatus_GetNotedBalance(this->m_account_status);
 	if (b) {
 		v = AB_Balance_GetValue(b);
 		if (v) {
@@ -415,13 +415,13 @@ QString aqb_AccountInfo::getNotedBalance() const
 //public
 QString aqb_AccountInfo::getBookedBalance() const
 {
-	if (!this->account_status) return QString();
+        if (!this->m_account_status) return QString();
 
 	const AB_VALUE *v;
 	const AB_BALANCE *b;
 	QString value = ""; //empty string als default
 
-	b = AB_AccountStatus_GetBookedBalance(this->account_status);
+        b = AB_AccountStatus_GetBookedBalance(this->m_account_status);
 	if (b) {
 		v = AB_Balance_GetValue(b);
 		if (v) {
@@ -435,12 +435,12 @@ QString aqb_AccountInfo::getBookedBalance() const
 //public
 QString aqb_AccountInfo::getDisposable() const
 {
-	if (!this->account_status) return QString();
+        if (!this->m_account_status) return QString();
 
 	const AB_VALUE *v;
 	QString value = ""; //empty string als default
 
-	v = AB_AccountStatus_GetDisposable(this->account_status);
+        v = AB_AccountStatus_GetDisposable(this->m_account_status);
 	if (v) {
 		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
@@ -451,12 +451,12 @@ QString aqb_AccountInfo::getDisposable() const
 //public
 QString aqb_AccountInfo::getDisposed() const
 {
-	if (!this->account_status) return QString();
+        if (!this->m_account_status) return QString();
 
 	const AB_VALUE *v;
 	QString value = ""; //empty string als default
 
-	v = AB_AccountStatus_GetDisposed(this->account_status);
+        v = AB_AccountStatus_GetDisposed(this->m_account_status);
 	if (v) {
 		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
@@ -467,9 +467,9 @@ QString aqb_AccountInfo::getDisposed() const
 //public
 QDate aqb_AccountInfo::getDate() const
 {
-	if (!this->account_status) return QDate();
+        if (!this->m_account_status) return QDate();
 
-	QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(this->account_status));
+        QDate date = abt_conv::GwenTimeToQDate(AB_AccountStatus_GetTime(this->m_account_status));
 
 	return date;
 }

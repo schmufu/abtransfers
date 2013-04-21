@@ -62,11 +62,11 @@ protected:
 
 private:
 	Ui::page_history *ui;
-	const abt_history *history;
+        const abt_history *m_history;
 
-	QAction *actGenerateNewTransaction;
-	QAction *actDeleteSelected;
-	QAction *actExportSelected;
+        QAction *m_actGenerateNewTransaction;
+        QAction *m_actDeleteSelected;
+        QAction *m_actExportSelected;
 
 	void setTreeWidgetColWidths();
 	void setDefaultTreeWidgetHeader();

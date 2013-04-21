@@ -49,9 +49,9 @@ public:
 	abt_standingOrderInfo(const AB_TRANSACTION *transaction);
 	~abt_standingOrderInfo();
 private:
-	abt_transaction *t;
+        abt_transaction *m_t;
 public:
-	abt_transaction* getTransaction() const { return this->t; }
+        abt_transaction* getTransaction() const { return this->m_t; }
 };
 
 #endif // ABT_STANDINGORDERINFO_H

@@ -75,33 +75,29 @@ public:
 	~pageWidgetTests();
 
 private:
-	QPushButton *button1;
-	QPushButton *button2;
-	QPushButton *button3;
-	QPushButton *button4;
-	QPushButton *button5;
-	QPushButton *button6;
-	QPushButton *button7;
-	QPushButton *button8;
-	QPlainTextEdit *textEdit;
+        QPushButton *m_button1;
+        QPushButton *m_button2;
+        QPushButton *m_button3;
+        QPushButton *m_button4;
+        QPushButton *m_button5;
+        QPushButton *m_button6;
+        QPushButton *m_button7;
+        QPushButton *m_button8;
+        QPlainTextEdit *m_textEdit;
 
-	aqb_Accounts *accounts;
+        aqb_Accounts *m_accounts;
 
+        AB_IMEXPORTER_CONTEXT *m_iec1;
+        AB_IMEXPORTER_CONTEXT *m_iec2;
+        AB_IMEXPORTER_CONTEXT *m_iec3;
 
-	AB_IMEXPORTER_CONTEXT *iec1;
-	AB_IMEXPORTER_CONTEXT *iec2;
-	AB_IMEXPORTER_CONTEXT *iec3;
+        AB_IMEXPORTER *m_ie1;
+        AB_IMEXPORTER *m_ie2;
+        AB_IMEXPORTER *m_ie3;
 
-	AB_IMEXPORTER *ie1;
-	AB_IMEXPORTER *ie2;
-	AB_IMEXPORTER *ie3;
-
-	AB_IMEXPORTER_ACCOUNTINFO *iea1;
-	AB_IMEXPORTER_ACCOUNTINFO *iea2;
-	AB_IMEXPORTER_ACCOUNTINFO *iea3;
-
-
-
+        AB_IMEXPORTER_ACCOUNTINFO *m_iea1;
+        AB_IMEXPORTER_ACCOUNTINFO *m_iea2;
+        AB_IMEXPORTER_ACCOUNTINFO *m_iea3;
 
 	void addlog(const QString &logMsg);
 	void parseContext(AB_IMEXPORTER_CONTEXT *ctx);

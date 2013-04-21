@@ -40,16 +40,16 @@
 widgetTextKey::widgetTextKey(const QList<int> *keys, QWidget *parent) :
     QWidget(parent)
 {
-	this->comboBox = new QComboBox(this);
-	this->label = new QLabel(tr("Textschlüssel"), this);
+        this->m_comboBox = new QComboBox(this);
+        this->m_label = new QLabel(tr("Textschlüssel"), this);
 
 	this->fillTextKeys(keys);
 
-	this->comboBox->setMaximumWidth(320);
+        this->m_comboBox->setMaximumWidth(320);
 
 	QHBoxLayout *layout = new QHBoxLayout();
-	layout->addWidget(this->label, 0, Qt::AlignRight);
-	layout->addWidget(this->comboBox);
+        layout->addWidget(this->m_label, 0, Qt::AlignRight);
+        layout->addWidget(this->m_comboBox);
 	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(2);
 
@@ -60,14 +60,17 @@ widgetTextKey::widgetTextKey(const QList<int> *keys, QWidget *parent) :
 widgetTextKey::~widgetTextKey()
 {
 	//qDebug() << "ComboBoxWidth =" << this->comboBox->width();
-	delete this->comboBox;
-	delete this->label;	
+        delete this->m_comboBox;
+        delete this->m_label;
+
+        this->m_comboBox = NULL;
+        this->m_label = NULL;
 }
 
 /** Setzt alle Textschlüssel der ComboBox */
 void widgetTextKey::fillTextKeys(const QList<int> *keys)
 {
-	QComboBox *cb = this->comboBox;
+        QComboBox *cb = this->m_comboBox;
 	cb->clear();
 	if (keys == NULL) {
 		return; //Abbruch, keine Keys setzen und ComboBox leer lassen
@@ -83,20 +86,20 @@ void widgetTextKey::fillTextKeys(const QList<int> *keys)
 		cb->addItem(desc, key);
 	}
 	cb->setCurrentIndex(0); //Erster Eintrag als Default
-	this->settedKey = this->getTextKey(); //gesetzten key merken
+        this->m_settedKey = this->getTextKey(); //gesetzten key merken
 }
 
 /** Den übergebenen Key setzen */
 void widgetTextKey::setTextKey(int key)
 {
-	QComboBox *cb = this->comboBox;
+        QComboBox *cb = this->m_comboBox;
 
 	//Alle Elemente durchgehen und wenn der "richtige" gefunden wurde
 	//diesen als aktuelles Item setzen
 	for (int i=0; i<cb->count(); ++i) {
 		if (cb->itemData(i, Qt::UserRole).toInt() == key) {
 			cb->setCurrentIndex(i);
-			this->settedKey = key;
+                        this->m_settedKey = key;
 			return; //Gefunden und gesetzt, wieder zurück
 		}
 	}
@@ -104,17 +107,17 @@ void widgetTextKey::setTextKey(int key)
 	//Wenn wir hierher kommen wurde ein nicht in der ComboBox vorhandener
 	//key übergeben, wir setzen einfach den ersten
 	cb->setCurrentIndex(0);
-	this->settedKey = this->getTextKey(); //gesetzten key merken
+        this->m_settedKey = this->getTextKey(); //gesetzten key merken
 }
 
 /** liefert den aktuell gewählten TextKey zurück */
 int widgetTextKey::getTextKey() const
 {
-	int idx = this->comboBox->currentIndex();
+        int idx = this->m_comboBox->currentIndex();
 	if (idx == -1) {
 		return idx; //Kein Eintrag gewählt, -1 wird als Fehler zurückgegeben
 	}
-	int ret = this->comboBox->itemData(idx, Qt::UserRole).toInt();
+        int ret = this->m_comboBox->itemData(idx, Qt::UserRole).toInt();
 	return ret;
 }
 
@@ -122,7 +125,7 @@ int widgetTextKey::getTextKey() const
 bool widgetTextKey::hasChanges() const
 {
 	int curr = this->getTextKey(); //aktueller TextKey
-	return this->settedKey != curr;
+        return (this->m_settedKey != curr);
 }
 
 //public slot

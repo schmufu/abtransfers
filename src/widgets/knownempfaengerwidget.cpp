@@ -48,11 +48,11 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 {
 	ui->setupUi(this);
 	this->CreateAllActions();
-	this->EmpfaengerList = list; //could be NULL!
+        this->m_EmpfaengerList = list; //could be NULL!
 	this->DisplayEmpfaenger();
 
-	this->dragStartPos = QPoint(0,0);
-	this->dragObj = NULL;
+        this->m_dragStartPos = QPoint(0,0);
+        this->m_dragObj = NULL;
 //	this->ui->treeWidget->setDragEnabled(true);
 	this->ui->treeWidget->viewport()->installEventFilter(this);
 	this->ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -64,6 +64,7 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 KnownEmpfaengerWidget::~KnownEmpfaengerWidget()
 {
 	delete ui;
+        ui = NULL;
 	qDebug() << this << "deleted";
 }
 
@@ -107,11 +108,11 @@ void KnownEmpfaengerWidget::twMousePressEvent(QMouseEvent *event)
 	if (event->button() == Qt::LeftButton) {
 		QTreeWidgetItem *item = this->ui->treeWidget->itemAt(event->pos());
 		if (item) {
-			this->dragObj = item->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
-			this->dragStartPos = event->pos();
+                        this->m_dragObj = item->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
+                        this->m_dragStartPos = event->pos();
 		} else {
-			this->dragObj = NULL;
-			this->dragStartPos = QPoint(0,0);
+                        this->m_dragObj = NULL;
+                        this->m_dragStartPos = QPoint(0,0);
 		}
 	}
 }
@@ -122,10 +123,10 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	if (!(event->buttons() & Qt::LeftButton)) {
 		return;
 	}
-	if (this->dragObj == NULL) {
+        if (this->m_dragObj == NULL) {
 		return; //no object to Drag set!
 	}
-	if ((event->pos() - this->dragStartPos).manhattanLength()
+        if ((event->pos() - this->m_dragStartPos).manhattanLength()
 		< QApplication::startDragDistance()) {
 		return;
 	}
@@ -133,7 +134,7 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 
 	QDrag *drag = new QDrag(this);
 	QMimeData *mimeData = new QMimeData;
-	abt_EmpfaengerInfo* info = this->dragObj;
+        abt_EmpfaengerInfo* info = this->m_dragObj;
 
 	qulonglong a = (qulonglong)info;
 	qulonglong app = (qulonglong)qApp; //unsere Instanz!
@@ -158,23 +159,23 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 //private
 void KnownEmpfaengerWidget::CreateAllActions()
 {
-	this->actNew = new QAction(this);
-	this->actNew->setText(tr("Neu"));
-	this->actNew->setToolTip(tr("Einen neuen Empfänger anlegen"));
-	this->actNew->setIcon(QIcon::fromTheme("document-new"));
-	connect(this->actNew, SIGNAL(triggered()), this, SLOT(onActionNewTriggered()));
+        this->m_actNew = new QAction(this);
+        this->m_actNew->setText(tr("Neu"));
+        this->m_actNew->setToolTip(tr("Einen neuen Empfänger anlegen"));
+        this->m_actNew->setIcon(QIcon::fromTheme("document-new"));
+        connect(this->m_actNew, SIGNAL(triggered()), this, SLOT(onActionNewTriggered()));
 
-	this->actDelete = new QAction(this);
-	this->actDelete->setText(tr("Löschen"));
-	this->actDelete->setToolTip(tr("Ausgewählten Empfänger löschen"));
-	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
-	connect(this->actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
+        this->m_actDelete = new QAction(this);
+        this->m_actDelete->setText(tr("Löschen"));
+        this->m_actDelete->setToolTip(tr("Ausgewählten Empfänger löschen"));
+        this->m_actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+        connect(this->m_actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
-	this->actEdit = new QAction(this);
-	this->actEdit->setText(tr("Ändern"));
-	this->actEdit->setToolTip(tr("Ausgewählten Empfänger bearbeiten"));
-	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
-	connect(this->actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
+        this->m_actEdit = new QAction(this);
+        this->m_actEdit->setText(tr("Ändern"));
+        this->m_actEdit->setToolTip(tr("Ausgewählten Empfänger bearbeiten"));
+        this->m_actEdit->setIcon(QIcon::fromTheme("document-edit"));
+        connect(this->m_actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 }
 
 void KnownEmpfaengerWidget::DisplayEmpfaenger()
@@ -186,7 +187,7 @@ void KnownEmpfaengerWidget::DisplayEmpfaenger()
 	//alle evt. vorhandenen Einträge löschen
 	this->ui->treeWidget->clear();
 
-	if (this->EmpfaengerList == NULL) {
+        if (this->m_EmpfaengerList == NULL) {
 		/* Anzeigen das keine bekannten Empfänger existieren */
 		//kein header und nur eine spalte anzeigen
 		ui->treeWidget->setHeaderHidden(true);
@@ -208,14 +209,14 @@ void KnownEmpfaengerWidget::DisplayEmpfaenger()
 
 
 	//Alle bekannten Empfänger durchgehen
-	for (int i=0; i<this->EmpfaengerList->size(); ++i) {
+        for (int i=0; i < this->m_EmpfaengerList->size(); ++i) {
 		Item = new QTreeWidgetItem;
 		ItemCount++;
-		Item->setData(0, Qt::DisplayRole, this->EmpfaengerList->at(i)->getName());
+                Item->setData(0, Qt::DisplayRole, this->m_EmpfaengerList->at(i)->getName());
 		//Pointer zum abt_EmpfaengerInfo in der Qt::UserRole speichern
-		Item->setData(0, Qt::UserRole, QVariant::fromValue(this->EmpfaengerList->at(i)));
-		Item->setData(1, Qt::DisplayRole, this->EmpfaengerList->at(i)->getKontonummer());
-		Item->setData(2, Qt::DisplayRole, this->EmpfaengerList->at(i)->getBLZ());
+                Item->setData(0, Qt::UserRole, QVariant::fromValue(this->m_EmpfaengerList->at(i)));
+                Item->setData(1, Qt::DisplayRole, this->m_EmpfaengerList->at(i)->getKontonummer());
+                Item->setData(2, Qt::DisplayRole, this->m_EmpfaengerList->at(i)->getBLZ());
 		this->ui->treeWidget->addTopLevelItem(Item);
 	}
 
@@ -247,13 +248,13 @@ void KnownEmpfaengerWidget::onContextMenuRequest(const QPoint &pos)
 {
 	//Actions disablen wenn sie nicht sinnvoll sind
 	bool dis = this->ui->treeWidget->selectedItems().size() == 0;
-	this->actEdit->setDisabled(dis);
-	this->actDelete->setDisabled(dis);
+        this->m_actEdit->setDisabled(dis);
+        this->m_actDelete->setDisabled(dis);
 
 	QMenu *contextMenu = new QMenu();
-	contextMenu->addAction(this->actNew);
-	contextMenu->addAction(this->actEdit);
-	contextMenu->addAction(this->actDelete);
+        contextMenu->addAction(this->m_actNew);
+        contextMenu->addAction(this->m_actEdit);
+        contextMenu->addAction(this->m_actDelete);
 
 	contextMenu->exec(this->ui->treeWidget->viewport()->mapToGlobal(pos));
 }
@@ -304,12 +305,13 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 		newRecipient->setInstitut(acc->getBankName());
 		newRecipient->setIBAN(acc->getIBAN());
 		newRecipient->setBIC(acc->getBIC());
-		int pos = this->EmpfaengerList->indexOf(origRecipient);
+                int pos = this->m_EmpfaengerList->indexOf(origRecipient);
 		emit replaceKnownEmpfaenger(pos, newRecipient);
 	}
 	// ansonsten Änderungen einfach verwerfen.
 
 	delete d;
+        d = NULL;
 }
 
 void KnownEmpfaengerWidget::onActionDeleteTriggered()
@@ -364,5 +366,6 @@ void KnownEmpfaengerWidget::onActionNewTriggered()
 
 
 	delete d;
+        d = NULL;
 
 }

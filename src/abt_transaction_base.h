@@ -52,11 +52,11 @@ class QSettings;
 class abt_transaction
 {
 private:
-	bool FreeTransactionOnDelete;
+        bool m_FreeTransactionOnDelete;
 
 protected:
-	AB_TRANSACTION* aqb_transaction;
-	const AB_TRANSACTION* aqb_transaction_C;
+        AB_TRANSACTION *m_aqb_transaction;
+        const AB_TRANSACTION *m_aqb_transaction_C;
 
 public:
 	abt_transaction(AB_TRANSACTION *t = NULL, bool freeOnDelete = false);
@@ -182,7 +182,7 @@ public:
 	const QString getOriginatorIdentifier() const;
 	void setOriginatorIdentifier(const QString &OriginatorIdentifier);
 
-	int getTransactionCode() const;
+        int getTransactionCode() const;
 	void setTransactionCode(int TransactionCode);
 
 	const QString getTransactionText() const;

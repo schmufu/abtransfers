@@ -235,7 +235,8 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 		logmsg2 = QString("Empfangsdatum:\t%1").arg(
 				abt_conv::GwenTimeToQDate(AB_Message_GetDateReceived(msg))
 				.toString(Qt::DefaultLocaleLongDate));
-		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
+                //qDebug(QString(logmsg + logmsg2).toLocal8Bit());
+                qDebug() << logmsg << logmsg2;
 		logmsg2 = QString("Betreff:\t%1").arg(AB_Message_GetSubject(msg));
 		qDebug(QString(logmsg + logmsg2).toLocal8Bit());
 		logmsg2 = QString("Text:\t%1").arg(AB_Message_GetText(msg));
@@ -404,6 +405,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				//zugeordnet, gelöschte erscheinen nur in der History
 				acc->removeDatedTransfer(dt);
 				delete dt; //dt wird nicht länger benötigt
+                                dt = NULL;
 			} else {
 				acc->addDatedTransfer(dt);
 				//dt wird durch den Account wieder gelöscht
@@ -499,6 +501,7 @@ void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts
 				//zugeordnet, gelöschte erscheinen nur in der History
 				acc->removeStandingOrder(so);
 				delete so; //so wird nicht länger benötigt
+                                so = NULL;
 			} else {
 				acc->addStandingOrder(so);
 				//so wird durch den Account wieder gelöscht

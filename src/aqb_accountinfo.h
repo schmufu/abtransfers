@@ -79,7 +79,7 @@ private:
 	QString m_AccountType;
 
 	//! \brief Kontostand des Accounts
-	AB_ACCOUNT_STATUS *account_status;
+        AB_ACCOUNT_STATUS *m_account_status;
 
 	QList<abt_standingOrderInfo*> *m_standingOrders;
 	QList<abt_datedTransferInfo*> *m_datedTransfers;
@@ -126,7 +126,7 @@ public:
 
 	void clearStandingOrders();
 	void clearDatedTransfers();
-	bool removeStandingOrder(abt_standingOrderInfo *so);
+        bool removeStandingOrder(abt_standingOrderInfo *so);
 	bool removeDatedTransfer(abt_datedTransferInfo *dt);
 
 

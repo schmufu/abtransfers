@@ -48,12 +48,12 @@ namespace Ui {
 class Page_Ausgang : public QFrame {
 	Q_OBJECT
 private:
-	int selectedItem; //!< temporaly var for the currently selected item
+        int m_selectedItem; //!< temporaly var for the currently selected item
 
-	QAction *actEdit;
-	QAction *actDelete;
-	QAction *actUp;
-	QAction *actDown;
+        QAction *m_actEdit;
+        QAction *m_actDelete;
+        QAction *m_actUp;
+        QAction *m_actDown;
 
 	abt_settings *settings;
 

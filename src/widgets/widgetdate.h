@@ -51,22 +51,22 @@ public:
 	~widgetDate();
 
 private:
-	QDateEdit *dateEdit;
-	QLabel *label;
+        QDateEdit *m_dateEdit;
+        QLabel *m_label;
 
 	/** if 0 then this limit is unknown, if -1 then the described element
 	 *  is not allowed to be set in the transaction. All other values
 	 *  represent the maximum length of the described field. */
-	int limitMinValueSetupTime;
+        int m_limitMinValueSetupTime;
 	/** if 0 then this limit is unknown, if -1 then the described element
 	 *  is not allowed to be set in the transaction. All other values
 	 *  represent the maximum length of the described field. */
-	int limitMaxValueSetupTime;
-	QList<Qt::DayOfWeek> allowedWeekDays;
-	QList<int> allowedDays;
+        int m_limitMaxValueSetupTime;
+        QList<Qt::DayOfWeek> m_allowedWeekDays;
+        QList<int> m_allowedDays;
 
-	bool useWeekDays;
-	bool useDays;
+        bool m_useWeekDays;
+        bool m_useDays;
 
 	void updateAllowedDates();
 

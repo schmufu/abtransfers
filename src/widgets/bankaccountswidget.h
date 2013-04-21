@@ -57,8 +57,8 @@ public:
 	aqb_AccountInfo *getSelectedAccount();
 
 protected:
-	QPoint dragStartPos;
-	aqb_AccountInfo *dragObj;
+        QPoint m_dragStartPos;
+        aqb_AccountInfo *m_dragObj;
 
 	void changeEvent(QEvent *e);
 	bool eventFilter(QObject *obj, QEvent *event);

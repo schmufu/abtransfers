@@ -41,6 +41,7 @@ page_log::page_log(QWidget *parent) :
 page_log::~page_log()
 {
 	delete ui;
+        ui = NULL;
 }
 
 void page_log::changeEvent(QEvent *e)

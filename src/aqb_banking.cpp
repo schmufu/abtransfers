@@ -40,13 +40,13 @@ aqb_banking::aqb_banking()
 	int rv;
 
 
-	this->ab = AB_Banking_new("abtransfers", NULL, 0);
+        this->m_ab = AB_Banking_new("abtransfers", NULL, 0);
 
 	//Das GUI muss bereits hier erstellt werden, da es anonsten zu
 	//einen Fehler kommen kann. (1x geschehen beim ersetzen der AqBanking
 	//Daten von einem anderen Rechner)
-	this->gui = new QT4_Gui();
-	GWEN_Gui_SetGui(this->gui->getCInterface());
+        this->m_gui = new QT4_Gui();
+        GWEN_Gui_SetGui(this->m_gui->getCInterface());
 
 	/* This is the basic init function. It only initializes the minimum (like
 	 * setting up plugin and data paths). After this function successfully
@@ -54,33 +54,33 @@ aqb_banking::aqb_banking()
 	 * banking functions (like getting the list of managed accounts, users
 	 * etc) you will have to call AB_Banking_OnlineInit().
 	 */
-	rv = AB_Banking_Init(this->ab);
+        rv = AB_Banking_Init(this->m_ab);
 	if (rv) {
 		fprintf(stderr, "Error on init (%d)\n", rv);
 		return;
 	}
 
-	AB_Banking_GetVersion(&this->major, &this->minor, &this->patch, &this->build);
-	this->aqbanking_version = QString("%1.%2.%3.%4")
-					.arg(this->major)
-					.arg(this->minor)
-					.arg(this->patch)
-					.arg(this->build);
+        AB_Banking_GetVersion(&this->m_major, &this->m_minor, &this->m_patch, &this->m_build);
+        this->m_aqbanking_version = QString("%1.%2.%3.%4")
+                                        .arg(this->m_major)
+                                        .arg(this->m_minor)
+                                        .arg(this->m_patch)
+                                        .arg(this->m_build);
 	qDebug() << "AqBanking successfully initialized."
-		 << "(Version:" << this->aqbanking_version << ")";
+                 << "(Version:" << this->m_aqbanking_version << ")";
 
 	/* This function loads the settings file of AqBanking so the users and
 	 * accounts become available after this function successfully returns.
 	 */
-	rv = AB_Banking_OnlineInit(this->ab);
+        rv = AB_Banking_OnlineInit(this->m_ab);
 	if (rv) {
 		fprintf(stderr, "Error on init of online modules (%d)\n", rv);
-		AB_Banking_Fini(this->ab);
+                AB_Banking_Fini(this->m_ab);
 		return;
 	}
 
 	//damit die gemachten Einstellungen des GWEN-Dialogs erhalten bleiben
-	AB_Gui_Extend(this->gui->getCInterface(), this->ab);
+        AB_Gui_Extend(this->m_gui->getCInterface(), this->m_ab);
 
 }
 
@@ -91,7 +91,7 @@ aqb_banking::~aqb_banking()
 	/* This function MUST be called in order to let AqBanking save the changes
 	 * to the users and accounts (like they occur after executing jobs).
 	 */
-	rv = AB_Banking_OnlineFini(this->ab);
+        rv = AB_Banking_OnlineFini(this->m_ab);
 	if (rv) {
 		fprintf(stderr, "ERROR: Error on deinit online modules (%d)\n", rv);
 		return;
@@ -101,16 +101,17 @@ aqb_banking::~aqb_banking()
 	 * AB_Banking_Init() and should be called before destroying an AB_BANKING
 	 * object.
 	 */
-	rv = AB_Banking_Fini(ab);
+        rv = AB_Banking_Fini(m_ab);
 	if (rv) {
 		fprintf(stderr, "ERROR: Error on deinit (%d)\n", rv);
 		return;
 	}
-	AB_Banking_free(ab);
+        AB_Banking_free(m_ab);
 
 	qDebug() << "AqBanking successfully deinitialized";
 
-	delete this->gui; //das erstellte GWEN_Qt4_GUI wieder löschen
+        delete this->m_gui; //das erstellte GWEN_Qt4_GUI wieder löschen
+        this->m_gui = NULL;
 
 }
 
@@ -120,7 +121,7 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 {
 	AB_BANKINFO *bankinfo;
 	QString Institute = "NO INFORMATION";
-	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BLZ.toUtf8());
+        bankinfo = AB_Banking_GetBankInfo(this->m_ab, "de", "", BLZ.toUtf8());
 
 	if (bankinfo) {
 		Institute = QString::fromUtf8(AB_BankInfo_GetBankName(bankinfo));
@@ -137,7 +138,7 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 //{
 //	AB_BANKINFO *bankinfo;
 //	QString Institute = "NO INFORMATION";
-//	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BIC.toUtf8());
+//	bankinfo = AB_Banking_GetBankInfo(this->m_ab, "de", "", BIC.toUtf8());
 
 //	if (bankinfo) {
 //		Institute = QString::fromUtf8(AB_BankInfo_GetBankName(bankinfo));
@@ -168,7 +169,7 @@ bool aqb_banking::checkAccount(const QString &country, const QString &branchId,
 			       QString &result) const
 {
 	AB_BANKINFO_CHECKRESULT res;
-	res = AB_Banking_CheckAccount(this->ab,
+        res = AB_Banking_CheckAccount(this->m_ab,
 				      country.toUtf8(), branchId.toUtf8(),
 				      bankId.toUtf8(), accountId.toUtf8());
 	switch (res) {
@@ -223,7 +224,7 @@ bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
 	if (countryCode.toUpper() == "DE") {
 		//the IBAN is for a german bank account, so we can also check
 		//the account-number and bankcode
-		if (!this->checkAccount("de", "", blz, ktonr, resStr)) {
+                if (!this->checkAccount("de", "", blz, ktonr, resStr)) {
 			result = QObject::tr("Überprüfung von Kontonummer und "
 					     "Bankleitzahl für Deutsches Konto "
 					     "fehlerhaft: %1").arg(resStr);
@@ -316,7 +317,7 @@ QString aqb_banking::getUserDataDir() const
 		return QString();
 	}
 
-	int ret = AB_Banking_GetUserDataDir(this->ab, buf);
+        int ret = AB_Banking_GetUserDataDir(this->m_ab, buf);
 	if (ret) {
 		qWarning() << Q_FUNC_INFO << "AB_Banking_GetUserDataDir returned"
 			   << ret << " - Aborting.";

@@ -55,19 +55,19 @@ class KnownEmpfaengerWidget : public QGroupBox {
 	Q_OBJECT
 private:
 	Ui::KnownEmpfaengerWidget *ui;
-	const QList<abt_EmpfaengerInfo*> *EmpfaengerList;
+        const QList<abt_EmpfaengerInfo*> *m_EmpfaengerList;
 
-	QAction *actNew;
-	QAction *actEdit;
-	QAction *actDelete;
+        QAction *m_actNew;
+        QAction *m_actEdit;
+        QAction *m_actDelete;
 
 public:
 	KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
 	~KnownEmpfaengerWidget();
 
 protected:
-	QPoint dragStartPos;
-	abt_EmpfaengerInfo *dragObj;
+        QPoint m_dragStartPos;
+        abt_EmpfaengerInfo *m_dragObj;
 
 	void changeEvent(QEvent *e);
 	bool eventFilter(QObject *obj, QEvent *event);
@@ -77,7 +77,6 @@ protected:
 private:
 	void CreateAllActions();
 	void DisplayEmpfaenger();
-
 
 signals:
 	void EmpfaengerSelected(const abt_EmpfaengerInfo *data);
@@ -91,7 +90,6 @@ private slots:
 	void onActionEditTriggered();
 	void onActionDeleteTriggered();
 	void onActionNewTriggered();
-
 
 public slots:
 	void onEmpfaengerListChanged();

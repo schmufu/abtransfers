@@ -38,40 +38,40 @@ pageWidgetTests::pageWidgetTests(aqb_Accounts *accs, QWidget *parent) :
 {
 	qDebug() << Q_FUNC_INFO << "constructor started";
 	QHBoxLayout *hb = new QHBoxLayout();
-	this->button1 = new QPushButton("Button 1");
-	this->button2 = new QPushButton("Button 2");
-	this->button3 = new QPushButton("Button 3");
-	this->button4 = new QPushButton("Button 4");
-	this->button5 = new QPushButton("Button 5");
-	this->button6 = new QPushButton("Button 6");
-	this->button7 = new QPushButton("Button 7");
-	this->button8 = new QPushButton("Button 8");
-	hb->addWidget(this->button1);
-	hb->addWidget(this->button2);
-	hb->addWidget(this->button3);
-	hb->addWidget(this->button4);
-	hb->addWidget(this->button5);
-	hb->addWidget(this->button6);
-	hb->addWidget(this->button7);
-	hb->addWidget(this->button8);
+        this->m_button1 = new QPushButton("Button 1");
+        this->m_button2 = new QPushButton("Button 2");
+        this->m_button3 = new QPushButton("Button 3");
+        this->m_button4 = new QPushButton("Button 4");
+        this->m_button5 = new QPushButton("Button 5");
+        this->m_button6 = new QPushButton("Button 6");
+        this->m_button7 = new QPushButton("Button 7");
+        this->m_button8 = new QPushButton("Button 8");
+        hb->addWidget(this->m_button1);
+        hb->addWidget(this->m_button2);
+        hb->addWidget(this->m_button3);
+        hb->addWidget(this->m_button4);
+        hb->addWidget(this->m_button5);
+        hb->addWidget(this->m_button6);
+        hb->addWidget(this->m_button7);
+        hb->addWidget(this->m_button8);
 
-	connect(this->button1, SIGNAL(clicked()), this, SLOT(onButton1Clicked()));
-	connect(this->button2, SIGNAL(clicked()), this, SLOT(onButton2Clicked()));
-	connect(this->button3, SIGNAL(clicked()), this, SLOT(onButton3Clicked()));
-	connect(this->button4, SIGNAL(clicked()), this, SLOT(onButton4Clicked()));
-	connect(this->button5, SIGNAL(clicked()), this, SLOT(onButton5Clicked()));
-	connect(this->button6, SIGNAL(clicked()), this, SLOT(onButton6Clicked()));
-	connect(this->button7, SIGNAL(clicked()), this, SLOT(onButton7Clicked()));
-	connect(this->button8, SIGNAL(clicked()), this, SLOT(onButton8Clicked()));
+        connect(this->m_button1, SIGNAL(clicked()), this, SLOT(onButton1Clicked()));
+        connect(this->m_button2, SIGNAL(clicked()), this, SLOT(onButton2Clicked()));
+        connect(this->m_button3, SIGNAL(clicked()), this, SLOT(onButton3Clicked()));
+        connect(this->m_button4, SIGNAL(clicked()), this, SLOT(onButton4Clicked()));
+        connect(this->m_button5, SIGNAL(clicked()), this, SLOT(onButton5Clicked()));
+        connect(this->m_button6, SIGNAL(clicked()), this, SLOT(onButton6Clicked()));
+        connect(this->m_button7, SIGNAL(clicked()), this, SLOT(onButton7Clicked()));
+        connect(this->m_button8, SIGNAL(clicked()), this, SLOT(onButton8Clicked()));
 
-	this->textEdit = new QPlainTextEdit();
+        this->m_textEdit = new QPlainTextEdit();
 	QVBoxLayout *vb = new QVBoxLayout();
 	vb->addLayout(hb);
-	vb->addWidget(this->textEdit);
+        vb->addWidget(this->m_textEdit);
 
 	this->setLayout(vb);
 
-	this->accounts = accs;
+        this->m_accounts = accs;
 
 	qDebug() << Q_FUNC_INFO << "constructor ended";
 }
@@ -87,13 +87,13 @@ pageWidgetTests::~pageWidgetTests()
 
 void pageWidgetTests::onButton1Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
-	aqb_AccountInfo *acc = this->accounts->getAccount(5);
+        aqb_AccountInfo *acc = this->m_accounts->getAccount(5);
 
 	if (acc == NULL) {
-		this->textEdit->appendPlainText("Account == NULL --> abort");
+                this->m_textEdit->appendPlainText("Account == NULL --> abort");
 		return;
 	}
 
@@ -108,21 +108,18 @@ void pageWidgetTests::onButton1Clicked()
 	t->setTextKey(51);
 
 
-	this->iec1 = AB_ImExporterContext_new();
+        this->m_iec1 = AB_ImExporterContext_new();
 	//AB_ImExporterContext_Add
-	this->iea1 = AB_ImExporterAccountInfo_new();
-	AB_ImExporterAccountInfo_FillFromAccount(this->iea1, acc->get_AB_ACCOUNT());
+        this->m_iea1 = AB_ImExporterAccountInfo_new();
+        AB_ImExporterAccountInfo_FillFromAccount(this->m_iea1, acc->get_AB_ACCOUNT());
 
 
-	AB_ImExporterContext_AddAccountInfo(this->iec1, this->iea1);
+        AB_ImExporterContext_AddAccountInfo(this->m_iec1, this->m_iea1);
 	const QList<abt_standingOrderInfo*> *stos;
 	stos = acc->getKnownStandingOrders();
 	for (int i=0; i<stos->size(); i++) {
-		AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
+                AB_ImExporterContext_AddStandingOrder(this->m_iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
 	}
-
-
-
 
 //	int 	AB_Banking_FillGapsInImExporterContext (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *iec)
 //	int 	AB_Banking_ExportToBuffer (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *ctx, const char *exporterName, const char *profileName, GWEN_BUFFER *buf)
@@ -133,101 +130,98 @@ void pageWidgetTests::onButton1Clicked()
 //	int 	AB_Banking_ImportFileWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, const char *inputFileName)
 //	int 	AB_Banking_ImportWithProfile (AB_BANKING *ab, const char *importerName, AB_IMEXPORTER_CONTEXT *ctx, const char *profileName, const char *profileFile, GWEN_SYNCIO *sio)
 
-	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->iec1, "ctxfile", "default", "/tmp/exporterFilename.ctx");
+        int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->m_iec1, "ctxfile", "default", "/tmp/exporterFilename.ctx");
 
-	this->textEdit->appendPlainText(QString("%1").arg(ret));
+        this->m_textEdit->appendPlainText(QString("%1").arg(ret));
 
 
 	delete t;
-	AB_ImExporterContext_free(this->iec1);
+        t = NULL;
+        AB_ImExporterContext_free(this->m_iec1);
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton2Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
-	this->iec2 = AB_ImExporterContext_new();
-	int ret = AB_Banking_ImportFileWithProfile(banking->getAqBanking(), "ctxfile", this->iec2, "default", NULL, "/tmp/exporterFilename.ctx");
+        this->m_iec2 = AB_ImExporterContext_new();
+        int ret = AB_Banking_ImportFileWithProfile(banking->getAqBanking(), "ctxfile", this->m_iec2, "default", NULL, "/tmp/exporterFilename.ctx");
 
-	this->textEdit->appendPlainText(QString("return value from import: %1").arg(ret));
+        this->m_textEdit->appendPlainText(QString("return value from import: %1").arg(ret));
 
 	//parse the incoming context
-	this->parseContext(this->iec2);
+        this->parseContext(this->m_iec2);
 
 
 
-	AB_ImExporterContext_free(this->iec2);
+        AB_ImExporterContext_free(this->m_iec2);
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton3Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton4Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton5Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton6Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton7Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
 void pageWidgetTests::onButton8Clicked()
 {
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
 
-	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
+        this->m_textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
-
-
-
-
 
 void pageWidgetTests::addlog(const QString &logMsg)
 {
-	this->textEdit->appendPlainText(QString("LOG: ").append(logMsg));
+        this->m_textEdit->appendPlainText(QString("LOG: ").append(logMsg));
 }
 
 

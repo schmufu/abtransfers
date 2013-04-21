@@ -103,9 +103,11 @@ abt_jobInfo::~abt_jobInfo()
 
 	//we created a copy of the jobs transaction
 	delete this->m_trans; //could be NULL, but it is safe to delete a NULL-Pointer
+        this->m_trans = NULL;
 
 	//we created the StringList, so we delete it.
 	delete this->m_jobInfo;
+        this->m_jobInfo = NULL;
 }
 
 /** \brief setzt den privaten pointer \a this->trans auf die Transaction des jobs */

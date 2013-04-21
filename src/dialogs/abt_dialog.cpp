@@ -129,6 +129,7 @@ abt_dialog::abt_dialog(QWidget *parent,
 abt_dialog::~abt_dialog()
 {
 	delete ui;
+        ui = NULL;
 }
 
 void abt_dialog::changeEvent(QEvent *e)

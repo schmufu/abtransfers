@@ -72,42 +72,42 @@ protected:
 
 private:
 	Ui::MainWindow *ui;
-	aqb_Accounts *accounts;
-	abt_job_ctrl *jobctrl;
-	abt_history *history;
-	page_log *logw;
-	Page_Ausgang *outbox;
-	page_history *pageHistory;
+        aqb_Accounts *m_accounts;
+        abt_job_ctrl *m_jobctrl;
+        abt_history *m_history;
+        page_log *m_logw;
+        Page_Ausgang *m_outbox;
+        page_history *m_pageHistory;
 
-	QAction *actTransferNational;
-	QAction *actTransferInternational;
-	QAction *actTransferSepa;
-	QAction *actTransferInternal;
-	QAction *actDatedNew;
-	QAction *actDatedUpdate;
-	QAction *actStandingNew;
-	QAction *actStandingUpdate;
-	QAction *actDebitNote;
-	QAction *actDebitNoteSepa;
-	QAction *actUpdateBalance;
-	QAction *actShowAvailableJobs;
-	QAction *actSaveAllData;
-//	QAction *act;
-//	QAction *act;
+        QAction *m_actTransferNational;
+        QAction *m_actTransferInternational;
+        QAction *m_actTransferSepa;
+        QAction *m_actTransferInternal;
+        QAction *m_actDatedNew;
+        QAction *m_actDatedUpdate;
+        QAction *m_actStandingNew;
+        QAction *m_actStandingUpdate;
+        QAction *m_actDebitNote;
+        QAction *m_actDebitNoteSepa;
+        QAction *m_actUpdateBalance;
+        QAction *m_actShowAvailableJobs;
+        QAction *m_actSaveAllData;
+//	QAction *m_act;
+//	QAction *m_act;
 
 #ifdef TESTWIDGETACCESS
-	QAction *actTestWidgetAccess;
+        QAction *m_actTestWidgetAccess;
 #endif
 
-	QMenu *accountContextMenu;
-	QToolBar *dockToolbar;
+        QMenu *m_accountContextMenu;
+        QToolBar *m_dockToolbar;
 
-	QDockWidget *dock_KnownRecipient;
-	QDockWidget *dock_Accounts;
-	QDockWidget *dock_KnownStandingOrders;
-	QDockWidget *dock_KnownDatedTransfers;
+        QDockWidget *m_dock_KnownRecipient;
+        QDockWidget *m_dock_Accounts;
+        QDockWidget *m_dock_KnownStandingOrders;
+        QDockWidget *m_dock_KnownDatedTransfers;
 
-	QTimer *timer;
+        QTimer *m_timer;
 
 	void createActions();
 	void createMenus();
@@ -118,7 +118,7 @@ private:
 	void createDockStandingOrders();
 	void createDockDatedTransfers();
 
-	widgetTransfer* createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = NULL);
+        widgetTransfer *createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = NULL);
 	void deleteTabWidgetAndTab(const widgetTransfer *w);
 	void deleteTabWidgetAndTab(int tabIndex);
 
