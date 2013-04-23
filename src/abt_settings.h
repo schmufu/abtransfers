@@ -42,19 +42,23 @@
 #include "abt_standingorderinfo.h"
 #include "abt_datedtransferinfo.h"
 
+class abt_settingsPrivate;
+
 /** \brief saves and restores settings which can be modified by the user */
 
 class abt_settings : public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 private:
-	QString m_dataDir;
-	QString m_recipientsFilename;
-	QString m_accountdataFilename;
-	QString m_historyFilename;
-	QSettings *settings;
-	QList<abt_EmpfaengerInfo*>* m_recipientsList;
-	QHash<int, QString> *m_textKeyDescr;
+	const QScopedPointer<abt_settingsPrivate> d;
+
+//	QString m_dataDir;
+//	QString m_recipientsFilename;
+//	QString m_accountdataFilename;
+//	QString m_historyFilename;
+//	QSettings *settings;
+//	QList<abt_EmpfaengerInfo*>* m_recipientsList;
+//	QHash<int, QString> *m_textKeyDescr;
 
 	void loadTextKeyDescriptions();
 	void setFilePermissions();
@@ -64,10 +68,10 @@ public:
 	~abt_settings();
 
 	//get und setter für die Dateinamen
-	const QString getRecipientsFilename() const { return this->m_recipientsFilename; }
-	const QString getAccountDataFilename() const { return this->m_accountdataFilename; }
-	const QString getHistoryFilename() const { return this->m_historyFilename; }
-	const QString getDataDir() const { return this->m_dataDir; }
+	const QString getRecipientsFilename() const;
+	const QString getAccountDataFilename() const;
+	const QString getHistoryFilename() const;
+	const QString getDataDir() const;
 
 	void setRecipientsFilename(const QString &filename);
 	void setAccountDataFilename(const QString &filename);
@@ -76,7 +80,7 @@ public:
 
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
-	const QList<abt_EmpfaengerInfo*>* getKnownRecipients() const { return this->m_recipientsList; }
+	const QList<abt_EmpfaengerInfo*> *getKnownRecipients() const;
 
 	const QHash<int, QString> *getTextKeyDescriptions() const;
 
@@ -121,6 +125,25 @@ public slots:
 	void onReplaceKnownRecipient(int position, abt_EmpfaengerInfo *newRecipient);
 	void addKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
 	void deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
+};
+
+
+class abt_settingsPrivate
+{
+protected:
+	friend class abt_settings;
+
+	QString dataDir;
+	QString recipientsFilename;
+	QString accountdataFilename;
+	QString historyFilename;
+	QSettings *settings;
+	QList<abt_EmpfaengerInfo*> *recipientsList;
+	QHash<int, QString> *textKeyDescriptions;
+
+public:
+	abt_settingsPrivate();
+	~abt_settingsPrivate();
 };
 
 #endif // TRANS_SETTINGS_H
