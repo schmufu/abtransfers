@@ -233,6 +233,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		}
 	}
 
+	if (debugDialog->isVisible()) {
+		//the application can not quit when the debugDialog
+		//is still visible
+		debugDialog->hide();
+	}
+
 	this->actSaveAllData->trigger(); //save all data before quit
 	e->accept(); //now we can get closed
 }

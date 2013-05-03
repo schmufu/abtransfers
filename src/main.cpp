@@ -128,23 +128,24 @@ int main(int argc, char *argv[])
 	settings = new abt_settings(); //for program wide settings
 	banking = new aqb_banking(); //Initialise and using of AqBanking
 
-	MainWindow w;
+	MainWindow *w = new MainWindow();
 
 	qDebug("RESTORING LAST STATE");
 	QByteArray ba = settings->loadWindowGeometry();
-	if (!ba.isEmpty()) w.restoreGeometry(ba);
+	if (!ba.isEmpty()) w->restoreGeometry(ba);
 	ba = settings->loadWindowState();
-	if (!ba.isEmpty()) w.restoreState(ba, 1);
+	if (!ba.isEmpty()) w->restoreState(ba, 1);
 
 	qDebug("BEFORE SHOW");
-	w.show();
+	w->show();
 	qDebug("AFTER SHOW");
 	apprv = app.exec(); //execute the application
 	qDebug("AFTER EXEC");
 
 	//save the current state of the form
-	settings->saveWindowStateGeometry(w.saveState(1), w.saveGeometry());
+	settings->saveWindowStateGeometry(w->saveState(1), w->saveGeometry());
 	qDebug("AFTER SAVING STATE");
+	delete w; //the MainWindow is no longer needed
 	delete banking; //AqBanking is no longer used
 	delete settings; //and the settings also.
 
