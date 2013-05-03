@@ -23,7 +23,7 @@
    <locale language="German" country="Germany"/>
   </property>
   <property name="title">
-   <string>Bekannte Empfänger</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -67,9 +67,6 @@
      <property name="columnCount">
       <number>3</number>
      </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>100</number>
-     </attribute>
      <attribute name="headerDefaultSectionSize">
       <number>100</number>
      </attribute>
