@@ -56,6 +56,7 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 //	this->ui->treeWidget->setDragEnabled(true);
 	this->ui->treeWidget->viewport()->installEventFilter(this);
 	this->ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	this->ui->treeWidget->sortByColumn(0, Qt::AscendingOrder);
 	connect(this->ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onContextMenuRequest(QPoint)));
 	qDebug() << this << "created";

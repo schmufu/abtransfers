@@ -64,6 +64,8 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 
 	this->setDefaultTreeWidgetHeader(); //also sets the col widths
 	this->refreshTreeWidget(this->history);
+	//default sorting by 'executed at' in descending order
+	this->ui->treeWidget->sortByColumn(4, Qt::DescendingOrder);
 
 	//calling the itemSelectionChanged() slot enables/disables the actions
 	this->on_treeWidget_itemSelectionChanged();
