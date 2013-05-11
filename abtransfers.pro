@@ -92,7 +92,7 @@ FORMS += src/mainwindow.ui \
     src/dialogs/dialogsettings.ui \
     src/dialogs/abt_dialog.ui \
     src/pages/page_history.ui
-OTHER_FILES += images/uerberweisungsformular.gif \
+OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html
