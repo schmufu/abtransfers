@@ -840,7 +840,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	licenseText->setText("Copyright (C) 2011-2012 Patrick Wacker<br /><br />"
+	licenseText->setText("Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
 			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
 			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
 			     "weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach<br />"
