@@ -1,0 +1,36 @@
+In this file the source of the icons and the corresponding license are stated.
+
+
+folder_clock_128x128.png from "Enhanced Labs Design Studio"
+http://findicons.com/icon/50642/folder_clock
+License is stated as "Gemeinfrei, nicht-kommerziell"
+
+bank-icon.png and cabinet-icon.png from "stock icons iconshock"
+http://findicons.com/icon/439796/bank
+http://findicons.com/icon/439793/cabinet
+License is stated as "Gemeinfrei, nicht-kommerziell"
+
+The following files are copied from the oxygen theme of kde
+delete-icon_16x16.png	Original: edit-delete.png
+down-icon_16x16.png	Original: go-down.png
+edit-undo.png
+left-icon_16x16.png	Original: go-previous.png
+ok-icon_16x16.png	Original: dialog-ok-apply.png
+right-icon_16x16.png	Original: go-next.png
+system-users.png
+up-icon_16x16.png	Original: go-up.png
+view-refresh.png
+http://www.oxygen-icons.org
+License http://creativecommons.org/licenses/by-sa/3.0/
+
+
+ueberweisung.png
+These icons can be used in personal as well as commercial projects.
+If used in any project, credit to the author will be appreciated.
+http://www.m-worx.net
+
+
+lastschrift.png
+ueberweisung_DA.png
+are created by me (Patrick Wacker) this are combinations of the
+above icons.
