@@ -71,6 +71,9 @@ int main(int argc, char *argv[])
 	app.setOrganizationDomain("schmufu.dyndns.org");
 	app.setApplicationName("AB-Transfers");
 
+	//On MacOS the QSharedMemory seems not to work as assumed.
+	//Therefore, as a fast workaround, we do not use the protection on MacOS.
+#if !defined(Q_OS_MAC)
 	//The program should be started only once!
 	//Therefore we create a sharedMemory and check if it already exists.
 	//As key for the sharedMemory the program name and the "Key-ID" from
@@ -122,6 +125,7 @@ int main(int argc, char *argv[])
 				   << "Error:" << myMem.errorString();
 		}
 	}
+#endif // !defined(Q_OS_MAC)
 
 
 	//creation of global objects
