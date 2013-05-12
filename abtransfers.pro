@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.3.0 # Version of AB-Transfers
+VERSION = 0.0.4.0 # Version of AB-Transfers
 TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
@@ -92,7 +92,7 @@ FORMS += src/mainwindow.ui \
     src/dialogs/dialogsettings.ui \
     src/dialogs/abt_dialog.ui \
     src/pages/page_history.ui
-OTHER_FILES += images/uerberweisungsformular.gif \
+OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html

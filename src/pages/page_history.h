@@ -90,6 +90,8 @@ private slots:
 	void on_treeWidget_itemSelectionChanged();
 	void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
+	void sortChildItemsAscending();
+
 public slots:
 	void refreshTreeWidget(const abt_history *hist);
 

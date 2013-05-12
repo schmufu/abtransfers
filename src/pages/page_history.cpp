@@ -76,6 +76,10 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	connect(ui->treeWidget->header(), SIGNAL(sectionResized(int,int,int)),
 		this, SLOT(onTreeWidgetColumnResized(int,int,int)));
 
+	//keep the sortOrder of childs, regardless of toplevel sortOrder
+	connect(ui->treeWidget->header(), SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
+		this, SLOT(sortChildItemsAscending()));
+
 }
 
 page_history::~page_history()
@@ -535,6 +539,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		for (int j=0; j<historyInfo->size(); j++) {
 			QTreeWidgetItem *item = new QTreeWidgetItem();
 			item->setData(0, Qt::DisplayRole, historyInfo->at(j));
+			item->setData(1, Qt::DisplayRole, j); //used for sorting
 			item->setFlags(Qt::NoItemFlags);
 			//does not work here, see below the 'for' loop
 			//item->setFirstColumnSpanned(true);
@@ -565,6 +570,8 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 			topItem->child(k)->setFirstColumnSpanned(true);
 		}
 	}
+
+	this->sortChildItemsAscending(); //keep sorting of childs permanent
 
 }
 
@@ -597,4 +604,18 @@ void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* colum
 void page_history::onTreeWidgetColumnResized(int column, int /* oldSize */, int newSize)
 {
 	settings->saveColWidth("history", column, newSize);
+}
+
+//private slot
+/** \brief sorts all childitems in ascending order
+ *
+ * Regardless of the sortorder for the topitems, all childs are always sorted
+ * in ascending order by column 1 (not visible, column 0 is set to span all)
+ */
+void page_history::sortChildItemsAscending()
+{
+	for (int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {
+		QTreeWidgetItem *topItem = this->ui->treeWidget->topLevelItem(i);
+		topItem->sortChildren(1, Qt::AscendingOrder);
+	}
 }

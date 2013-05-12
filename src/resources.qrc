@@ -1,7 +1,4 @@
 <RCC>
-    <qresource prefix="/images">
-        <file alias="ueberweisungsformular">../images/uerberweisungsformular.gif</file>
-    </qresource>
     <qresource prefix="/icons">
         <file alias="bank-icon">../images/bank-icon.png</file>
         <file alias="Log-Icon">../images/cabinet-icon.png</file>
