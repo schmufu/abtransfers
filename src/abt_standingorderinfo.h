@@ -54,4 +54,7 @@ public:
 	abt_transaction* getTransaction() const { return this->t; }
 };
 
+Q_DECLARE_METATYPE(abt_standingOrderInfo*)
+Q_DECLARE_METATYPE(const abt_standingOrderInfo*)
+
 #endif // ABT_STANDINGORDERINFO_H
