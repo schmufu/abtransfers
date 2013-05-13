@@ -1,0 +1,688 @@
+
+	Coding Style Content
+	====================
+
+	1.   Introduction
+	1.1.   Long made short
+	2.   Indentation
+	3.   Breaking long lines and strings
+	4.   Placing braces and spaces
+	4.1.   Spaces
+	5.   Naming
+	5.1.   Variables
+	5.2.   Classes
+	5.2.1.   Member functions (methods)
+	5.2.2.   Boolean getter functions
+	5.3.   Macros and enumerations
+	6.   Functions
+	6.1.   Centralized exiting of functions
+	7.   Commenting
+	8.   C++ Conventions
+	8.1.   Pointers or References?
+	8.2.   Private class member variables
+	9.   Qt relevant coding
+	9.1.   Forms and widgets
+	9.2.   Translations
+	9.3.   Signals and Slots
+	Appendix I: References
+
+
+
+1. Introduction
+===============
+
+Coding styles are always likely to end up in heated debates (a bit like
+the emacs versus vi arguments). One thing is certain however, a common style
+used by everyone working on a project leads to uniform and readable code.
+
+Coding style is very personal, and I won't force my views on anybody, but
+this is what goes for anything that I have to be able to maintain, and I'd
+prefer it for most other things too.
+
+As usual, rules are not set in stone. If you have a good reason to break
+one, do so. But first make sure that at least some other developers of the
+project agree with you.
+
+Please at least consider the points made here.
+
+Most parts of the descriptions made here are identical with the coding style
+of the linux kernel and for the C++ elements the Qt and KDE Project are
+referenced. So if you are familiar with these you could skip reading in detail.
+
+1.1. Long made short
+--------------------
+
+This is a short description of the main points made in this document.
+
+- Tabs are 8 characters, and thus indentations are also 8 characters.
+- Outside of comments and documentation, spaces are never used for 
+  indentation. (Exception: Alignment of manual broken lines).
+- Put opening brace last on the line, and put the closing brace first.
+- No so called 'Hungarian notation'.
+- Variables and function names:
+    - are written in so-called camelCase.
+    - start with a lowercase letter.
+- Use one space after each keyword.
+- No spaces around (inside) parenthesized expressions.
+- No space after a cast.
+- Local variable names should be short and to the point.
+- Global/Public variables and functions must have descriptive names.
+- Use set-, is- as prefix for functions (get- is allowed, but try to avoid it).
+- In rare cases the prefix 'm_' could be used for private members.
+- complex forms with a lot of widgets should be designed with the UI designer
+  (small ones should be only coded).
+
+
+2. Indentation
+==============
+
+Tabs are 8 characters, and thus indentations are also 8 characters.
+
+Rationale: The whole idea behind indentation is to clearly define where
+a block of control starts and ends. Especially when you've been looking
+at your screen for many hours, you'll find it a lot easier to see how 
+the indentation works if you have large indentations.
+
+Now, some people will claim that having 8-character indentations makes
+the code move too far to the right, and makes it hard to read on a
+80-character terminal screen.  The answer to that is that if you need
+more than 3 levels of indentation, you're screwed anyway, and should fix
+your program.
+
+In short, 8-char indents make things easier to read, and have the added
+benefit of warning you when you're nesting your functions too deep.
+
+The preferred way to ease multiple indentation levels in a switch statement
+is to align the "switch" and its subordinate "case" labels in the same 
+column instead of "double-indenting" the "case" labels.  E.g.:
+
+	switch (myEnum) {
+	case Value1:
+		doSomething();
+		break;
+	case Value2:
+		doSomethingElse();
+		/* fall through */
+	default:
+		defaultHandling();
+		break;
+	}
+
+
+Don't put multiple statements on a single line unless you have something
+to hide:
+
+	if (condition) do_this;
+	  do_something_everytime;
+
+Don't put multiple assignments on a single line either.
+Avoid tricky expressions.
+
+Outside of comments and documentation, spaces are never used for indentation,
+and the above example is deliberately broken.
+The only exception is, when breaking long lines and strings, see chapter 3.
+
+Get a decent editor and don't leave whitespace at the end of lines.
+
+
+3. Breaking long lines and strings
+==================================
+
+Try to keep lines shorter than 80 characters, insert line breaks as necessary.
+Long strings are as well broken into shorter strings.
+
+The exception to this is where exceeding 80 characters significantly increases
+the readability and does not hide information.
+
+	void functionName(QString argument1, QList argument2,
+			  QStringList argument3)
+	{
+		if (condition) {
+			qDebug("functionName: string broken into "
+			       "separate chunks");
+		}
+	}
+
+
+4. Placing braces and spaces
+============================
+
+As a base rule, the left curly brace goes in the same line as the start of
+the statement.
+
+	if (x == true) {
+		doSomething();
+	}
+
+Exception: Function implementations and class definitions.
+
+This applies to all non-function statement blocks (if, switch, for,
+while, do).  E.g.:
+
+	switch (action) {
+	case ADD:
+		return "add";
+	case REMOVE:
+		return "remove";
+	case CHANGE:
+		return "change";
+	default:
+		return NULL;
+	}
+
+However, there are two special cases, namely functions and classes: they have
+the opening brace at the beginning of the next line, thus:
+
+	int function(int x)
+	{
+		body of function
+	}
+
+	class myClass : public QObject
+	{
+		Q_OBJECT
+	private:
+		bool privateVariable;
+		void func(const QString *str);
+	public:
+		bool isPrivate() const;
+	}
+
+Note that the closing brace is empty on a line of its own, _except_ in
+the cases where it is followed by a continuation of the same statement,
+ie a "while" in a do-statement or an "else" in an if-statement, like
+this:
+
+	do {
+		body of do-loop
+	} while (condition);
+
+and
+
+	if (x == y) {
+		..
+	} else if (x > y) {
+		...
+	} else {
+		....
+	}
+
+Also, note that this brace-placement also minimizes the number of empty
+(or almost empty) lines, without any loss of readability. Thus, as the
+supply of new-lines on your screen is not a renewable resource, you have
+more empty lines to put comments on.
+
+Do not unnecessarily use braces where a single statement will do.
+
+	if (condition)
+		action();
+
+and
+
+	if (condition)
+		do_this();
+	else
+		do_that();
+
+This does not apply if only one branch of a conditional statement is a single
+statement, or if the single statement or the condition itself is broken into
+more than one line. In this cases use braces:
+
+	if (condition) {
+		do_this();
+		do_that();
+	} else {
+		otherwise();
+	}
+
+	if (condition) {
+		qDebug() << Q_FUNC_INFO
+			 << "The actual warning text";
+	}
+
+	if ((condition1 || condition2) &&
+	    condition3) {
+		do_something();
+	}
+
+
+4.1. Spaces
+-----------
+
+Coding style for use of spaces depends (mostly) on function-versus-keyword
+usage. Use a space after (most) keywords.
+The notable exceptions are sizeof, typeof and alignof, which look somewhat
+like functions (and are usually used with parentheses in Linux).
+
+So use a space after these keywords:
+	if, switch, case, for, do, while
+but not with sizeof, typeof or alignof. E.g.
+	s = sizeof(struct file);
+
+Do not add spaces around (inside) parenthesized expressions.
+This example is *bad*:
+
+	s = sizeof( struct file );
+
+When declaring pointer/reference data or a function that returns a pointer
+or a reference type, the preferred use of '*' and '&' is adjacent to the
+data name or function name and not adjacent to the type name.
+Examples:
+
+	char *banner;
+	unsigned long long memparse(char &ref, char **retptr);
+	char *match_strdup(substring_t *s);
+
+Use one space around (on each side of) most binary and ternary operators,
+such as any of these:
+
+	=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :
+
+but no space after unary operators:
+	&  *  +  -  ~  !  sizeof  typeof  alignof  defined
+
+no space before the postfix increment & decrement unary operators:
+	++  --
+
+no space after the prefix increment & decrement unary operators:
+	++  --
+
+and no space around the '.' and "->" structure member operators.
+
+Do not leave trailing whitespace at the ends of lines. Some editors with
+"smart" indentation will insert whitespace at the beginning of new lines as
+appropriate, so you can start typing the next line of code right away.
+However, some such editors do not remove the whitespace if you end up not
+putting a line of code there, such as if you leave a blank line. As a result,
+you end up with lines containing trailing whitespace.
+
+
+5. Naming
+=========
+
+The preferred naming of variable and function names are so-called camelCase,
+which should start with a lowercase letter and have a descriptive name.
+
+Commonly known acronyms that are normally all uppercase should not be
+written all uppercase. E.g:
+	parseURLContext() /* bad */
+	parseUrlContext() /* good */
+
+Encoding the type of a function into the name (so-called Hungarian
+notation) is brain damaged - the compiler knows the types anyway and can
+check those, and it only confuses the programmer. No wonder MicroSoft
+makes buggy programs.
+
+5.1. Variables
+--------------
+
+LOCAL variable names should be short, and to the point. If you have
+some random integer loop counter, it should probably be called "i".
+Calling it "loop_counter" is non-productive, if there is no chance of it
+being mis-understood. Similarly, "tmp" can be just about any type of
+variable that is used to hold a temporary value.
+
+GLOBAL variables (to be used only if you really need them) or member
+variables of classes need to have descriptive names, as do global functions.
+If you have a variable that represents the current number of active users,
+you should call that "activeUsers" or similar, you should _not_ call it
+"actUsrs". For variables that are only accessible by a class itself, the
+abbreviated names could be used, but the abbreviated name must be common
+practice or commented at definition.
+
+If you are afraid to mix up your local variable names, you have another
+problem, which is called the function-growth-hormone-imbalance syndrome.
+See chapter '6. Functions'.
+
+5.2. Classes
+------------
+
+Class names should start with a uppercase letter.
+Rationale: Identifies classes, constructors and destructors.
+
+If you have some associated classes they should have the same prefix.
+Like aqb_Banking and aqb_Accounts for the abstraction of the AqBanking C-API.
+The prefix must not start with a uppercase letter and could use a underline
+character to separate the prefix from the class name.
+Class names like AqbBanking and AqbAccounts are also OK, but be consistent
+within a program code and do not mix this naming schemes.
+
+5.2.1. Member functions (methods)
+---------------------------------
+
+Use the prefix 'set...' for class member functions which modify properties
+of the object, e.g. setHomeDir(QDir directory).
+
+For getting property values only the name of the property should be used,
+unless they are Boolean values (see chapter 5.2.2.).
+The prefix 'get...' could be used but should be avoided for functions
+returning the value.
+For functions that use only out-parameters the 'get...' prefix is preferred
+to indicate that the supplied parameters are set by the called function.
+
+Examples:
+	user->homeDir() /* is obvious, no need for user->getHomeDir() */
+	color.getHsv(&h, &s, &v); /* clarifies that h, s, v are modified */
+
+See chapter '8.2. Private class member variables' for dealing with naming
+conflicts between private variable and function names.
+
+5.2.2. Boolean getter functions
+-------------------------------
+
+In Qt 4, the following guidelines are used for naming boolean getter functions:
+
+ - Adjectives are prefixed with is-. Examples:
+	- isChecked()
+	- isDown()
+	- isEmpty()
+	- isMovingEnabled()
+ - However, adjectives applying to a plural noun have no prefix:
+	- scrollBarsEnabled(), not areScrollBarsEnabled()
+ - Verbs have no prefix and don't use the third person (-s):
+	- acceptDrops(), not acceptsDrops()
+	- allColumnsShowFocus()
+ - Nouns generally have no prefix:
+	- autoCompletion(), not isAutoCompletion()
+	- boundaryChecking()
+ - Sometimes, having no prefix is misleading, in which case we prefix with is-:
+	- isOpenGLAvailable(), not openGL()
+	- isDialog(), not dialog()
+
+Do NOT use "Not" in a boolean name, it only leads to confusion when doing
+logical tests. e.g. isNotOnLimit() is BAD.
+
+When the Qt library is used, it is useful to stay in the same naming
+convention, but also when Qt is not used, the described convention is useful.
+
+5.3. Macros and enumerations
+----------------------------
+
+Names of macros defining constants are capitalized.
+	#define CONSTANT 0x12345
+
+Macros that are used for computing values should be named like functions.
+(But should be avoided in C++, see chapter '8. C++ Conventions')
+
+Enumerates should be pre- or post-fixed by a common type name and start
+with a uppercase letter, e.g.
+	enum CaseSensitivity { CaseInsensitive, CaseSensitive };
+	enum Corner { TopLeftCorner, BottomRightCorner, ... };
+
+Rationale:
+It is easier to read and understand without the knowledge of the exact
+enumeration values, compare:
+	str.indexOf("$(QTDIR)", Insensitive);
+	str.indexOf("$(QTDIR)", CaseInsensitive);
+
+What does 'Insensitive' mean at the first line?
+At the second line it is obvious.
+
+
+6. Functions
+============
+
+Functions should be short and sweet, and do just one thing. They should
+fit on one or two screenfuls of text (the ISO/ANSI screen size is 80x24,
+as we all know), and do one thing and do that well.
+
+The maximum length of a function is inversely proportional to the
+complexity and indentation level of that function. So, if you have a
+conceptually simple function that is just one long (but simple)
+case-statement, where you have to do lots of small things for a lot of
+different cases, it's OK to have a longer function.
+
+However, if you have a complex function, and you suspect that a
+less-than-gifted first-year high-school student might not even
+understand what the function is all about, you should adhere to the
+maximum limits all the more closely. Use helper functions with
+descriptive names (you can ask the compiler to in-line them if you think
+it's performance-critical, and it will probably do a better job of it
+than you would have done).
+
+Another measure of the function is the number of local variables. They
+shouldn't exceed 5-10, or you're doing something wrong.  Re-think the
+function, and split it into smaller pieces. A human brain can generally
+easily keep track of about 7 different things, anything more and it gets
+confused. You know you're brilliant, but maybe you'd like to understand
+what you did 2 weeks from now.
+
+In function prototypes, include parameter names with their data types.
+Although this is not required by the C/C++ language, it is preferred
+because it is a simple way to add valuable information for the reader.
+
+6.1. Centralized exiting of functions
+-------------------------------------
+
+If a function returns with a failure immediately, it is much easier
+to understand.
+
+Think about:
+	int func(bool cond1, QString *name, int value, AuthInfo perms)
+	{
+		int ret=SUCCESS;
+		if (someCondition) {
+			if (name != null && name != "") {
+				if (value != 0) {
+					if (perms.allow(name)) {
+						// Do Something
+					} else {
+						ret=PERM_DENY;
+					}
+				} else {
+					ret=BAD_VALUE;
+				}
+			} else {
+				ret=BAD_NAME;
+			}
+		} else {
+			ret=BAD_COND;
+		}
+		return ret;
+	}
+
+and:
+	int func(bool cond1, QString *name, int value, AuthInfo perms)
+	{
+		if (!someCondition) {
+			return BAD_COND;
+		}
+
+		if (name == null || name == "") {
+			return BAD_NAME;
+		}
+
+		if (value == 0) {
+			return BAD_VALUE;
+		}
+
+		if (!perms.allow(name)) {
+			return PERM_DENY;
+		}
+
+		// Do Something
+
+		return SUCCESS;
+	}
+
+The rationale is:
+- unconditional statements are easier to understand and follow
+- nesting is reduced
+
+
+7. Commenting
+=============
+
+Comments are good, but there is also a danger of over-commenting. NEVER
+try to explain HOW your code works in a comment: it's much better to
+write the code so that the _working_ is obvious, and it's a waste of
+time to explain badly written code.
+
+Generally, you want your comments to tell WHAT your code does, not HOW.
+Also, try to avoid putting comments inside a function body: if the
+function is so complex that you need to separately comment parts of it,
+you should probably go back to chapter 6 for a while. You can make small
+comments to note or warn about something particularly clever (or ugly),
+but try to avoid excess. Instead, put the comments at the head of the
+function, telling people what it does, and possibly WHY it does it.
+
+When commenting functions, please use the doxygen format.
+(See http://www.doxygen.org for details)
+
+The preferred style for function description comments is
+
+	/** \brief Brief description for the function
+	 *
+	 * here goes the detailed description for this function, were
+	 * the people are told what the function does and possible why
+	 * it does it.
+	 */
+	void functionName(parameters)
+
+Also the C99 style "// ...." could be used for comments.
+
+It's also important to comment data, whether they are basic types or derived
+types. To this end, use just one data declaration per line (no commas for
+multiple data declarations). This leaves you room for a small comment on each
+item, explaining its use.
+
+
+8. C++ Conventions
+==================
+
+Methods (or function names) should follow the recommendations above and
+should not include the class name.
+Rationale: Maintains a common style across C and C++ sources.
+
+Excessive use of macros and defines should be avoided. Using simple methods
+or functions is preferred.
+
+Include statements for header files must be included at the top of a source
+file and not scattered throughout the body.
+
+8.1. Pointers or References?
+----------------------------
+
+Which is best for out-parameters, pointers or references?
+	void getHsv(int *h, int *s, int *v) const
+	void getHsv(int &h, int &s, int &v) const
+
+Most C++ books recommend references whenever possible, according to the
+general perception that references are "safer and nicer" than pointers.
+In contrast I tend to prefer pointers because they make the code more
+readable. Compare:
+	color.getHsv(&h, &s, &v);
+	color.getHsv(h, s, v);
+
+Only the first line makes it clear that there's a high probability that
+h, s, and v will be modified by the function call.
+
+8.2. Private class member variables
+-----------------------------------
+
+Even though no 'Hungarian Notation' should be used there is ONE exception for
+private class member variables. The prefix 'm_' could be used for private
+members, but only when there is a naming conflict between the private member
+variable and the accessing function name.
+At first try to avoid these naming conflicts by naming the variable somewhat
+different from the accessor, but descriptive as well.
+
+	class Example
+	{
+	private:
+		int userCount; // or even usrCnt;
+	public:
+		void increaseActiveUsers() { this->userCount++; }
+		int activeUsers() { return this->userCount; }
+	}
+
+Also a private d-pointer class could be used to resolve the naming conflicts.
+This resolves the naming conflict between the private class variables and
+their accessing functions and adds the benefit of hiding the private members
+from being shown by the code completion of modern editors.
+When using this approach the macros supplied by Qt should be used (see Qt
+documentation for Q_DECLARE_PRIVATE, Q_D, Q_Q etc, as well as the documentation
+about their usage).
+For a perhaps later created library this also involves a binary compatibly.
+So that no recompile is necessary for the applications using the library,
+if the private implementation changed.
+
+Do not use a d-pointer for members of a main window or something else that
+are at the top level code of an application. There should also be no naming
+conflict in these classes that require the usage of the 'm_' prefix.
+Rationale: These types of classes are only used once and there should be no
+need for accessors to private members.
+
+
+9. Qt relevant coding
+=====================
+
+9.1. Forms and widgets
+----------------------
+
+If you have a complex form that uses many widgets that are aligned with
+different layouts, please use the ui designer. This would reduce the
+implementation code size and make it easier to understand what happen
+within the implementation.
+
+If you have a ui that has only a few widgets feel free to not use the
+ui designer and create the used widgets by yourself within a class.
+The same applies to heavily dynamical created widgets.
+Even when you want to display a small dialog with some dynamical changing
+information, write it within the code. This would ease the understanding of
+what is being displayed at code creation level.
+
+9.2. Translations
+-----------------
+
+Even when no translation of the application is planned, use the QObject::tr()
+function for every text that is displayed to the user (except debug messages).
+
+Maybe someone else want to use the application within their native language
+and would like to spend the effort of translation.
+
+The usage of tr() only adds a small work to the programmer, but saves a lot
+of time if a translation should be done.
+
+9.3. Signals and Slots
+----------------------
+
+Use them appropriate. Keep in mind that even when a function is declared
+as a SLOT it could be used as a normal member function, without the connection
+from a signal to a slot.
+
+
+Appendix I: References
+======================
+
+Linux kernel CodingStyle
+http://www.kernel.org/doc/Documentation/CodingStyle
+
+The C Programming Language, Second Edition
+by Brian W. Kernighan and Dennis M. Ritchie.
+Prentice Hall, Inc., 1988.
+ISBN 0-13-110362-8 (paperback), 0-13-110370-9 (hardback).
+URL: http://cm.bell-labs.com/cm/cs/cbook/
+
+The Practice of Programming
+by Brian W. Kernighan and Rob Pike.
+Addison-Wesley, Inc., 1999.
+ISBN 0-201-61586-X.
+URL: http://cm.bell-labs.com/cm/cs/tpop/
+
+Designing Qt-Style C++ APIs
+http://doc.qt.digia.com/qq/qq13-apis.html
+
+Qt Creator Coding Rules
+http://doc.qt.digia.com/qtcreator-extending/coding-style.html
+
+KDE TechBase - Policies/Library Code Policy
+http://techbase.kde.org/Policies/Library_Code_Policy
+
+LinuxCNC code style guide
+http://www.linuxcnc.org/docs/2.4/html/code_Style_Guide.html
+
+
+
+
+Patrick Wacker, Bremen/Germany, 2013/05/03

@@ -1,0 +1,44 @@
+Subversion repository structure
+
+/trunk		the current development
+/branch		copys of trunk to develop BIG new features
+/tags		for the releases
+
+No more folders should exists in the main directory of the subversion 
+repositiory! Everything is done within the existing structure.
+
+
+Current development:
+The 'trunk' folder is for the current development. If a big change is
+planned, the 'trunk' should be copied to 'branch' with a meaningful name.
+All changes are done at the created 'branch' folder, so that 'trunk' stays
+relatively stable during the change. If everything works, the 'branch'
+should be merged back to 'trunk'.
+It is not required that 'trunk' is always in an error free state.
+
+
+Release cycle:
+For a new release the 'trunk' folder is copied to 'branch' as a release
+candidate (e.g. 0.3.0.0-rc1). All work for the release should be done in
+this folder and changes are merged back to 'trunk' occasionally.
+If everything is fine for a release, the 'branch' is copied to 'tags' with a
+meaningful name (e.g. the version number 0.3.0.0).
+
+It is prohibited to commit changes to the 'tags' folder! If a bugfix release
+is needed the release folder from 'tags' is copied to 'branch' (with a
+meaningfull name) and the changes are done there. When everything is done the
+'branch' is copied to a new 'tags' folder (e.g. 0.3.0.1).
+
+
+Files in the repository:
+In general no binary data should be commited, because with every change the
+whole file is replaced and not only the changes.
+A exception to this are icons and images.
+If ever possible all examples and documentation should be in text files, not
+in Office documents or PDF files. Unless the documentation does not change
+often and is easier to unterstand with a drawing or diagram.
+
+
+Further reading:
+A subversion book, licensed under the Creative Commons Attribution License,
+is available at http://svnbook.red-bean.com/
