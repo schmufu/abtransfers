@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -22,7 +22,8 @@
  * $Rev$
  *
  * description:
- *
+ *	This widget is used to display all known standing orders for one
+ *	account.
  *
  * changes not documented here, see svn
  *
@@ -32,16 +33,24 @@
 #define WIDGETKNOWNSTANDINGORDERS_H
 
 #include <QWidget>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QAction>
 
+class QTreeWidget;
+class QTreeWidgetItem;
+class QAction;
 class aqb_AccountInfo;
 class abt_standingOrderInfo;
+class abt_transaction;
 
-/** \brief Widget zur Anzeige aller bekannten Daueraufträge
+/** \brief widget for displaying all known standing orders for a account
+ *
+ * This widget displays all standing orders that belong to the account set
+ * through setAccount().
+ *
+ * Actions for edit, delete and refresh are supplied trough a custom context
+ * menu. And when a entry of the context menu is selected, the corresponding
+ * signal is emitted.
  *
  */
-
 class widgetKnownStandingOrders : public QWidget
 {
 	Q_OBJECT
@@ -49,23 +58,28 @@ public:
 	explicit widgetKnownStandingOrders(QWidget *parent = 0);
 
 private:
-	QTreeWidget *treeWidget;
-	QAction *actEdit;
-	QAction *actDelete;
-	QAction *actRefresh;
+	QTreeWidget *treeWidget; //!< main widget for display
+	QAction *actEdit; //!< QAction handling edit
+	QAction *actDelete; //!< QAction handling delete
+	QAction *actRefresh; //!< QAction handling refresh
 
-	const aqb_AccountInfo *m_account;
-	const QList<abt_standingOrderInfo*> *m_StandingOrders;
+	const aqb_AccountInfo *account; //!< the account for the standing orders
+	//! the standing orders of the account
+	const QList<abt_standingOrderInfo*> *standingOrders;
 
 	void createAllActions();
+	void setItemInformation(QTreeWidgetItem *item, const abt_standingOrderInfo *soi);
+	static void resizeColToContentsFor(QTreeWidget *wid);
 
 signals:
+	/** \brief is emitted when a deletion of the standing order is wanted */
 	void deleteStandingOrder(const aqb_AccountInfo *account,
 				 const abt_standingOrderInfo *standingOrder);
+	/** \brief is emitted when a modifcation of the standing order is wanted */
 	void editStandingOrder(const aqb_AccountInfo *account,
 			       const abt_standingOrderInfo *standingOrder);
+	/** \brief is emitted when the standing orders should be refreshed */
 	void updateStandingOrders(const aqb_AccountInfo *account);
-
 
 private slots:
 	void onActionEditTriggered();
@@ -74,7 +88,7 @@ private slots:
 	void onContextMenuRequest(const QPoint &pos);
 
 public slots:
-	void refreshKnownStandingOrders(const aqb_AccountInfo *account);
+	void refreshDisplayedItems(const aqb_AccountInfo *account);
 	void setAccount(const aqb_AccountInfo *account);
 
 };
