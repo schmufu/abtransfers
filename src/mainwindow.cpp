@@ -1213,6 +1213,7 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	//actual size of the GridLayout is the minimum
 	dialog->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	dialog->setMinimumSize(gl->sizeHint());
+	dialog->setFixedSize(dialog->width(), dialog->height());
 	dialog->exec();
 
 	delete dialog;
