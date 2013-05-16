@@ -1130,11 +1130,11 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	gl->setRowMinimumHeight(1, 12); //one row as seperator
 
 	//prepare used icons
-	QIcon *icoSup = new QIcon(QIcon::fromTheme("dialog-ok-apply"));
-	QIcon *icoNotSup = new QIcon(QIcon::fromTheme("edit-delete"));
-	const QPixmap pixSup = icoSup->pixmap(16, QIcon::Normal); //supported
-	const QPixmap pixNotSup = icoNotSup->pixmap(16, QIcon::Normal); //not supported
-	const QPixmap pixLatSup = icoSup->pixmap(16, QIcon::Disabled); //later supported
+	QIcon icoSup = QIcon::fromTheme("dialog-ok-apply", QIcon(":/icons/ok"));
+	QIcon icoNotSup = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+	const QPixmap pixSup = icoSup.pixmap(16, QIcon::Normal); //supported
+	const QPixmap pixNotSup = icoNotSup.pixmap(16, QIcon::Normal); //not supported
+	const QPixmap pixLatSup = icoSup.pixmap(16, QIcon::Disabled); //later supported
 
 	//create and display column header
 	QLabel *text_bank = new QLabel(tr("Institut"));
