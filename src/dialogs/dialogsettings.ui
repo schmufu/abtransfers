@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>730</width>
-    <height>430</height>
+    <width>800</width>
+    <height>460</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>730</width>
-    <height>430</height>
+    <width>800</width>
+    <height>460</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>730</width>
-    <height>430</height>
+    <width>800</width>
+    <height>460</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -31,6 +31,9 @@
   </property>
   <property name="locale">
    <locale language="German" country="Germany"/>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_8">
    <item>
@@ -619,15 +622,6 @@ nach dem starten zum Insititut übertragen.</string>
           </attribute>
           <attribute name="verticalHeaderDefaultSectionSize">
            <number>18</number>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderDefaultSectionSize">
-           <number>18</number>
-          </attribute>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>70</number>
           </attribute>
           <row/>
           <row/>
