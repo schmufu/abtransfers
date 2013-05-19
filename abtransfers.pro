@@ -97,8 +97,8 @@ OTHER_FILES += \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html
 RESOURCES += src/resources.qrc
-INCLUDEPATH += /usr/include/aqbanking5 \
-    /usr/include/gwenhywfar4
+INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
+    /opt/macports-test/include/gwenhywfar4
 LIBS += -laqbanking \
     -lgwenhywfar \
     -lgwengui-qt4
