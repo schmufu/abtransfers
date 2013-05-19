@@ -70,26 +70,34 @@ int main(int argc, char *argv[])
 	 * Qt text messages are also in german.
 	 */
 
+	QString systemLocale(QLocale::system().name());
+
 	qDebug() << "current system locale name:"
 		 << QLocale::system().name();
 	qDebug() << "search path for qt library translations:"
 		 << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 
 	QTranslator qtTranslator;
-	qDebug() << "setting default language for qt to: qt_de_DE "
-		 << "(regardless of the current system language)";
-	qtTranslator.load("qt_de_DE",
+	qtTranslator.load("qt_" + systemLocale,
 			  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 	app.installTranslator(&qtTranslator);
 
-	/* The following could be enabled when translations for the program
-	 * are done. The search path for the application specific translation
-	 * must be adjusted!
+	/*
+	 *The search path for the application specific translation must be adjusted for Linux!
 	 */
-//	QTranslator myappTranslator;
-//	myappTranslator.load("abtransfers_" + QLocale::system().name());
-//	app.installTranslator(&myappTranslator);
-
+	QTranslator myappTranslator;
+	if(systemLocale!="de_DE")
+	{
+#if defined(Q_OS_MAC)
+		QString qmFile(app.applicationDirPath() + "/../Resources/abtransfers." + systemLocale);
+#else
+		QString qmFile(app.applicationDirPath() + "/abtransfers." + systemLocale);
+#endif
+		if(myappTranslator.load(qmFile))
+			app.installTranslator(&myappTranslator);
+		else
+			qDebug() << "WARNING: Loading translation from '" << qmFile <<"' failed!";
+	}
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);

@@ -5,6 +5,9 @@ VERSION = 0.0.4.0 # Version of AB-Transfers
 TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
+
+TRANSLATIONS = abtransfers.en_GB.ts
+
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/widgets/bankaccountswidget.cpp \
@@ -95,7 +98,8 @@ FORMS += src/mainwindow.ui \
 OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
-    src/helpText.html
+    src/helpText.html \
+    abtransfers.en_GB.ts
 RESOURCES += src/resources.qrc
 INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
     /opt/macports-test/include/gwenhywfar4
