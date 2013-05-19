@@ -885,11 +885,11 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <name>Page_Ausgang</name>
     <message>
         <source>Ausgang</source>
-        <translation type="unfinished"></translation>
+        <translation>Outbox</translation>
     </message>
     <message utf8="true">
         <source>Aufträge die an die Bank gesendet werden sollen</source>
-        <translation type="unfinished"></translation>
+        <translation>Jobs to send to the bank</translation>
     </message>
     <message>
         <source>1</source>
@@ -913,47 +913,47 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Auf</source>
-        <translation type="unfinished"></translation>
+        <translation>Up</translation>
     </message>
     <message>
         <source>Ab</source>
-        <translation type="unfinished"></translation>
+        <translation>Down</translation>
     </message>
     <message>
         <source>LÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message utf8="true">
         <source>Ausführen</source>
-        <translation type="unfinished"></translation>
+        <translation>Execute</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Job lÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete selected job</translation>
     </message>
     <message>
         <source>Bearbeiten</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Job bearbeiten</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit selected job</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Job nach oben verschieben</source>
-        <translation type="unfinished"></translation>
+        <translation>Move selected job up in queue</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Job nach unten verschieben</source>
-        <translation type="unfinished"></translation>
+        <translation>Move selected job down in queue</translation>
     </message>
     <message>
         <source>Nr.</source>
-        <translation type="unfinished"></translation>
+        <translation>No.</translation>
     </message>
     <message>
         <source>Typ</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <source>Status</source>
@@ -961,7 +961,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Keine AuftrÃ¤ge zum AusfÃ¼hren vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>No jobs to execute</translation>
     </message>
     <message>
         <source>%1</source>
@@ -969,19 +969,19 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Aufrag entfernen</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove job</translation>
     </message>
     <message>
         <source>Soll der ausgewÃ¤hlte Auftrag wirklich gelÃ¶scht werden?</source>
-        <translation type="unfinished"></translation>
+        <translation>Really delete the selected job?</translation>
     </message>
     <message>
         <source>Aufrag Bearbeiten</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit job</translation>
     </message>
     <message>
         <source>Dies entfernt den ausgewÃ¤hlten Auftrag aus dem Ausgang und Ã¶ffnet ihn zum bearbeiten.&lt;br /&gt;Wenn der Auftrag beim bearbeiten nicht mit &quot;Senden&quot; beendet wird, wird dieser nicht zur Bank gesendet!&lt;br /&gt;&lt;br /&gt;Soll der Auftrag bearbeitet werden?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">This removes the selected job from the outbox and opens it for editing.&lt;br /&gt;If job editing is not finished by clicking &quot;Send&quot; it will not be send to the bank!&lt;br /&gt;&lt;br /&gt;Do you really want to edit the job?</translation>
     </message>
 </context>
 <context>
@@ -1376,35 +1376,35 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Neu von Vorlage</source>
-        <translation type="unfinished"></translation>
+        <translation>New from template</translation>
     </message>
     <message>
         <source>Exportieren</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <source>LÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>Typ</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <source>EmpfÃ¤nger</source>
-        <translation type="unfinished"></translation>
+        <translation>Addressee</translation>
     </message>
     <message>
         <source>Verwendungszweck (erste Zeile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Memo</translation>
     </message>
     <message>
         <source>Betrag</source>
-        <translation type="unfinished"></translation>
+        <translation>Amount</translation>
     </message>
     <message>
         <source>AusgefÃ¼hrt</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Executed at</translation>
     </message>
     <message>
         <source>Neuen Auftrag, mit den Daten des gewÃ¤hlten Eintrags als Vorlage, erstellen.</source>
@@ -1420,7 +1420,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Historie Eintrag lÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete history entry</translation>
     </message>
     <message>
         <source>Sollen die gewÃ¤hlten EintrÃ¤ge aus der Historie wirklich gelÃ¶scht werden?&lt;br /&gt;&lt;i&gt;(Dies kann nicht rÃ¼ckgÃ¤ngig gemacht werden)&lt;/i&gt;</source>
@@ -1433,7 +1433,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <source>Einstellungen</source>
         <comment>favorite</comment>
-        <translation type="unfinished"></translation>
+        <translation>Settings</translation>
     </message>
     <message>
         <source>(%1 / %2) Export ...</source>
@@ -1445,11 +1445,11 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Es wurde kein Dateiname angegeben unter den die Exportierten Daten gespeichert werden sollen!</source>
-        <translation type="unfinished"></translation>
+        <translation>Export cancelled</translation>
     </message>
     <message>
         <source>Export fehlerhaft</source>
-        <translation type="unfinished"></translation>
+        <translation>Export erroneous</translation>
     </message>
     <message>
         <source>Beim Export trat ein Fehler auf!&lt;/ br&gt;Bitte kontrollieren Sie die exportierten Daten und wiederholen ggf. den Vorgang!</source>
@@ -1457,15 +1457,15 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Export erfolgreich</source>
-        <translation type="unfinished"></translation>
+        <translation>Export successful</translation>
     </message>
     <message>
         <source>Die ausgewÃ¤hlten EintrÃ¤ge der Historie wurden unter %1 gespeichert.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Keine EintrÃ¤ge in der Historie vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>No history entries present</translation>
     </message>
 </context>
 <context>
