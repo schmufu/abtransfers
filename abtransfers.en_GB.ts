@@ -258,7 +258,7 @@ Daueraufträge in den Ausgang eingestellt.</source>
     </message>
     <message encoding="UTF-8">
         <source>Daueraufträge</source>
-        <translation type="unfinished"></translation>
+        <translation>Standing orders</translation>
     </message>
     <message encoding="UTF-8">
         <source>Wenn aktiviert wird automatisch beim starten des
@@ -268,7 +268,7 @@ terminierten Überweisungen in den Ausgang eingestellt.</source>
     </message>
     <message encoding="UTF-8">
         <source>terminierte Überweisungen</source>
-        <translation type="unfinished"></translation>
+        <translation>scheduled transfers</translation>
     </message>
     <message encoding="UTF-8">
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
@@ -294,7 +294,7 @@ nach dem starten zum Insititut übertragen.</source>
     </message>
     <message>
         <source>Beschreibung</source>
-        <translation type="unfinished"></translation>
+        <translation>Description</translation>
     </message>
     <message>
         <source>Im.</source>
@@ -548,7 +548,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message encoding="UTF-8">
         <source>Neue Überweisung</source>
-        <translation>New transfer</translation>
+        <translation>New entry</translation>
     </message>
     <message>
         <source>National</source>
@@ -564,39 +564,39 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Umbuchung</source>
-        <translation type="unfinished"></translation>
+        <translation>Transfer</translation>
     </message>
     <message>
         <source>Dauerauftr&#xc3;&#xa4;ge</source>
-        <translation type="unfinished"></translation>
+        <translation>Standing orders</translation>
     </message>
     <message>
         <source>Anlegen</source>
-        <translation type="unfinished"></translation>
+        <translation>Create</translation>
     </message>
     <message>
         <source>Aktualisieren</source>
-        <translation type="unfinished"></translation>
+        <translation>Download</translation>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisung</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheduled transfers</translation>
     </message>
     <message encoding="UTF-8">
         <source>Bekannte Aufträge</source>
-        <translation type="unfinished"></translation>
+        <translation>Known orders</translation>
     </message>
     <message>
         <source>Hilfe</source>
-        <translation type="unfinished"></translation>
+        <translation>Help</translation>
     </message>
     <message>
         <source>Einstellungen</source>
-        <translation type="unfinished"></translation>
+        <translation>Settings</translation>
     </message>
     <message>
         <source>Datei</source>
-        <translation type="unfinished"></translation>
+        <translation>File</translation>
     </message>
     <message>
         <source>Debug-Info</source>
@@ -624,19 +624,19 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Beenden</source>
-        <translation type="unfinished"></translation>
+        <translation>Exit</translation>
     </message>
     <message>
         <source>Hilfe / FAQ</source>
-        <translation type="unfinished"></translation>
+        <translation>Help / FAQ</translation>
     </message>
     <message>
         <source>AqBanking einrichten ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Configure AqBanking...</translation>
     </message>
     <message>
         <source>Auftr&#xc3;&#xa4;ge im Ausgang</source>
-        <translation type="unfinished"></translation>
+        <translation>Orders in outbox</translation>
     </message>
     <message>
         <source>Es befinden sich noch Auftr&#xc3;&#xa4;ge im Ausgang die noch nicht gesendet wurden!&lt;br /&gt;Beim Beenden des Programms werden die Auftr&#xc3;&#xa4;ge im Ausgang gel&#xc3;&#xb6;scht!&lt;br /&gt;&lt;br /&gt;Soll das Programm wirklich beendet werden?</source>
@@ -680,11 +680,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>&#xc3;&#x9c;berweisung</source>
-        <translation type="unfinished"></translation>
+        <translation>Payment</translation>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisungen</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheduled transfers</translation>
     </message>
     <message>
         <source>Dock Toolbar</source>
@@ -692,23 +692,23 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Dauerauftr&#xc3;&#xa4;ge von &quot;%1&quot; (%2 - %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standing orders of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
         <source>Terminierte &#xc3;&#x9c;berweisungen von &quot;%1&quot; (%2 - %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheduled transfers of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
         <source>Online Konten</source>
-        <translation type="unfinished"></translation>
+        <translation>Online accounts</translation>
     </message>
     <message>
         <source>Bekannte Empf&#xc3;&#xa4;nger</source>
-        <translation type="unfinished"></translation>
+        <translation>Known addressees</translation>
     </message>
     <message>
         <source>Konto</source>
-        <translation type="unfinished"></translation>
+        <translation>Account</translation>
     </message>
     <message>
         <source>Auftrag &quot;%1&quot; zum Ausgang hinzugef&#xc3;&#xbc;gt</source>
@@ -728,11 +728,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Lizenz</source>
-        <translation type="unfinished"></translation>
+        <translation>License</translation>
     </message>
     <message>
         <source>Schlie&#xc3;&#x9f;en</source>
-        <translation type="unfinished"></translation>
+        <translation>Close</translation>
     </message>
     <message>
         <source>Website: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
@@ -776,23 +776,23 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Auftrag</source>
-        <translation type="unfinished"></translation>
+        <translation>Order</translation>
     </message>
     <message>
         <source>Symbolbedeutungen</source>
-        <translation type="unfinished"></translation>
+        <translation>Legend</translation>
     </message>
     <message>
         <source>unterst&#xc3;&#xbc;tzt</source>
-        <translation type="unfinished"></translation>
+        <translation>supported</translation>
     </message>
     <message>
         <source>nicht unterst&#xc3;&#xbc;tzt</source>
-        <translation type="unfinished"></translation>
+        <translation>unsupported</translation>
     </message>
     <message>
         <source>in zuk&#xc3;&#xbc;nftiger Version geplant</source>
-        <translation type="unfinished"></translation>
+        <translation>planned in future version</translation>
     </message>
     <message>
         <source>&#xc3;&#x84;nderungen verwerfen?</source>
@@ -1068,11 +1068,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisung anlegen</source>
-        <translation type="unfinished"></translation>
+        <translation>Create scheduled transfer</translation>
     </message>
     <message>
         <source>Dauerauftrag anlegen</source>
-        <translation type="unfinished"></translation>
+        <translation>Create standing order</translation>
     </message>
     <message>
         <source>Lastschrift anlegen</source>
@@ -1080,11 +1080,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisung l&#xc3;&#xb6;schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete scheduled transfer</translation>
     </message>
     <message>
         <source>Dauerauftrag l&#xc3;&#xb6;schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete standing order</translation>
     </message>
     <message>
         <source>Internationale &#xc3;&#x9c;berweisung</source>
@@ -1092,23 +1092,23 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>Kontostand abfragen</source>
-        <translation type="unfinished"></translation>
+        <translation>Download balance</translation>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisungen abfragen</source>
-        <translation type="unfinished"></translation>
+        <translation>Download scheduled transfers</translation>
     </message>
     <message>
         <source>Dauerauftr&#xc3;&#xa4;ge abfragen</source>
-        <translation type="unfinished"></translation>
+        <translation>Download standing orders</translation>
     </message>
     <message>
         <source>Buchungen abfragen</source>
-        <translation type="unfinished"></translation>
+        <translation>Download transactions</translation>
     </message>
     <message>
         <source>Umbuchung durchf&#xc3;&#xbc;hren</source>
-        <translation type="unfinished"></translation>
+        <translation>Execute transfer</translation>
     </message>
     <message>
         <source>Handy Prepaid-Karte aufladen</source>
@@ -1116,11 +1116,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>Termin&#xc3;&#xbc;berweisung &#xc3;&#xa4;ndern</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit scheduled transfers</translation>
     </message>
     <message>
         <source>Dauerauftrag &#xc3;&#xa4;ndern</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit standing order</translation>
     </message>
     <message>
         <source>SEPA Lastschrift anlegen</source>
@@ -1132,7 +1132,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>&#xc3;&#x9c;berweisung durchf&#xc3;&#xbc;hren</source>
-        <translation type="unfinished"></translation>
+        <translation>Execute payment</translation>
     </message>
     <message>
         <source>AqBanking Typ unbekannt</source>
@@ -1156,7 +1156,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>Neu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">New</translation>
     </message>
     <message>
         <source>Pending</source>
@@ -1554,7 +1554,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>keine terminierten &#xc3;&#x9c;berweisungen f&#xc3;&#xbc;r dieses Konto vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>no scheduled transfer for this account</translation>
     </message>
     <message>
         <source>Kto-Nr.</source>
@@ -1605,7 +1605,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
     </message>
     <message>
         <source>keine bekannten Dauerauftr&#xc3;&#xa4;ge f&#xc3;&#xbc;r dieses Konto vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>no standing orders for this account</translation>
     </message>
     <message>
         <source>Kto-Nr.</source>
