@@ -5,19 +5,19 @@
     <name>BankAccountsWidget</name>
     <message>
         <source>BLZ/Kto-Nr</source>
-        <translation type="unfinished"></translation>
+        <translation>Bank code/Account</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Saldo</source>
-        <translation type="unfinished"></translation>
+        <translation>Balance</translation>
     </message>
     <message>
         <source>WÃ¤hr.</source>
-        <translation type="unfinished"></translation>
+        <translation>Curr.</translation>
     </message>
     <message>
         <source>Dispo</source>
@@ -25,19 +25,19 @@
     </message>
     <message>
         <source>Daten vom</source>
-        <translation type="unfinished"></translation>
+        <translation>Data from</translation>
     </message>
     <message>
         <source>Typ</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <source>Land</source>
-        <translation type="unfinished"></translation>
+        <translation>Country</translation>
     </message>
     <message>
         <source>Besitzer</source>
-        <translation type="unfinished"></translation>
+        <translation>Owner</translation>
     </message>
     <message>
         <source>Backend</source>
@@ -477,51 +477,51 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <source>Neu</source>
-        <translation type="unfinished"></translation>
+        <translation>New</translation>
     </message>
     <message>
         <source>Einen neuen EmpfÃ¤nger anlegen</source>
-        <translation type="unfinished"></translation>
+        <translation>Create a new addressee</translation>
     </message>
     <message>
         <source>LÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten EmpfÃ¤nger lÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete selected addressee</translation>
     </message>
     <message>
         <source>Ãndern</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten EmpfÃ¤nger bearbeiten</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit selected addressee</translation>
     </message>
     <message>
         <source>keine bekannten EmpfÃ¤nger vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>no known addressee present</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Kto-Nr</source>
-        <translation type="unfinished"></translation>
+        <translation>Account</translation>
     </message>
     <message>
         <source>BLZ</source>
-        <translation type="unfinished"></translation>
+        <translation>Bank-ID</translation>
     </message>
     <message>
         <source>Speichern</source>
-        <translation type="unfinished"></translation>
+        <translation>Save</translation>
     </message>
     <message>
         <source>Abbrechen</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -1303,11 +1303,11 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Diese Meldung nicht wieder anzeigen</source>
-        <translation type="unfinished"></translation>
+        <translation>Do not show this message again</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1408,15 +1408,15 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Neuen Auftrag, mit den Daten des gewÃ¤hlten Eintrags als Vorlage, erstellen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Create new order using the selected job&apos;s data.</translation>
     </message>
     <message>
         <source>Exportiert die ausgewÃ¤hlten EintrÃ¤ge fÃ¼r eine andere Anwendung.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exports the selected entries for another application.</translation>
     </message>
     <message>
         <source>LÃ¶scht die ausgewÃ¤hlten EintrÃ¤ge aus der Historie.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deletes the selected entries from the history.</translation>
     </message>
     <message>
         <source>Historie Eintrag lÃ¶schen</source>
@@ -1437,15 +1437,15 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>(%1 / %2) Export ...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Export abgebrochen</source>
-        <translation type="unfinished"></translation>
+        <translation>Export cancelled</translation>
     </message>
     <message>
         <source>Es wurde kein Dateiname angegeben unter den die Exportierten Daten gespeichert werden sollen!</source>
-        <translation>Export cancelled</translation>
+        <translation>No file name was specified under which the exported data shall be saved!</translation>
     </message>
     <message>
         <source>Export fehlerhaft</source>
@@ -1453,7 +1453,8 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Beim Export trat ein Fehler auf!&lt;/ br&gt;Bitte kontrollieren Sie die exportierten Daten und wiederholen ggf. den Vorgang!</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>&lt;br&gt; tag is wrong here</translatorcomment>
+        <translation type="unfinished">An error occurred during export!&lt;br /&gt;Please check the exported data and repeat the procedure if necessary!</translation>
     </message>
     <message>
         <source>Export erfolgreich</source>
@@ -1461,7 +1462,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Die ausgewÃ¤hlten EintrÃ¤ge der Historie wurden unter %1 gespeichert.</source>
-        <translation></translation>
+        <translation>The selected history entries were saved as %1.</translation>
     </message>
     <message>
         <source>Keine EintrÃ¤ge in der Historie vorhanden</source>
@@ -1479,51 +1480,51 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <name>widgetAccountData</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Kontonummer</source>
-        <translation type="unfinished"></translation>
+        <translation>Account</translation>
     </message>
     <message>
         <source>Bankleitzahl</source>
-        <translation type="unfinished"></translation>
+        <translation>Bank code</translation>
     </message>
     <message>
         <source>IBAN</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>BIC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Kreditinstitut</source>
-        <translation type="unfinished"></translation>
+        <translation>Institution</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Kontonummer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Account:</translation>
     </message>
     <message>
         <source>Bankleitzahl:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bank code:</translation>
     </message>
     <message>
         <source>Kreditinstitut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Institution:</translation>
     </message>
     <message>
         <source>IBAN:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>BIC:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1554,7 +1555,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>keine terminierten Ãberweisungen fÃ¼r dieses Konto vorhanden</source>
-        <translation>no scheduled transfer for this account</translation>
+        <translation>no scheduled transfers for this account</translation>
     </message>
     <message>
         <source>Kto-Nr.</source>
@@ -1581,27 +1582,27 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <name>widgetKnownStandingOrders</name>
     <message>
         <source>LÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Dauerauftrag lÃ¶schen</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete selected standing order</translation>
     </message>
     <message>
         <source>Ãndern</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <source>AusgewÃ¤hlten Dauerauftrag bearbeiten</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit selected standing order</translation>
     </message>
     <message>
         <source>Aktualisieren</source>
-        <translation type="unfinished"></translation>
+        <translation>Download</translation>
     </message>
     <message>
         <source>Holt alle beim Institut hinterlegten DauerauftrÃ¤ge</source>
-        <translation type="unfinished"></translation>
+        <translation>Downloads all standing orders from bank</translation>
     </message>
     <message>
         <source>keine bekannten DauerauftrÃ¤ge fÃ¼r dieses Konto vorhanden</source>
@@ -1609,77 +1610,77 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Kto-Nr.</source>
-        <translation type="unfinished"></translation>
+        <translation>Account</translation>
     </message>
     <message>
         <source>BLZ</source>
-        <translation type="unfinished"></translation>
+        <translation>Bank code</translation>
     </message>
     <message>
         <source>BegÃ¼nstigter</source>
-        <translation type="unfinished"></translation>
+        <translation>Addressee</translation>
     </message>
     <message>
         <source>Betrag</source>
-        <translation type="unfinished"></translation>
+        <translation>Amount</translation>
     </message>
     <message>
         <source>nÃ¤chste Ausf.</source>
-        <translation type="unfinished"></translation>
+        <translation>next date</translation>
     </message>
 </context>
 <context>
     <name>widgetPurpose</name>
     <message>
         <source>(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen Ã¼brig]</source>
-        <translation type="unfinished"></translation>
+        <translation>(max %1 lines, a %2 chars) [%3 chars and %4 lines left]</translation>
     </message>
 </context>
 <context>
     <name>widgetRecurrence</name>
     <message>
         <source>wÃ¶chentlich</source>
-        <translation type="unfinished"></translation>
+        <translation>weekly</translation>
     </message>
     <message>
         <source>monatlich</source>
-        <translation type="unfinished"></translation>
+        <translation>monthly</translation>
     </message>
     <message>
         <source>am</source>
-        <translation type="unfinished"></translation>
+        <translation>at</translation>
     </message>
     <message>
         <source>Erstmalig</source>
-        <translation type="unfinished"></translation>
+        <translation>first</translation>
     </message>
     <message>
         <source>Letztmalig</source>
-        <translation type="unfinished"></translation>
+        <translation>last</translation>
     </message>
     <message>
         <source>bis auf weiteres</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">until further notice</translation>
     </message>
     <message>
         <source>nÃ¤chste Ausf.</source>
-        <translation type="unfinished"></translation>
+        <translation>next</translation>
     </message>
     <message>
         <source>Wochen</source>
-        <translation type="unfinished"></translation>
+        <translation>weeks</translation>
     </message>
     <message>
         <source>Woche</source>
-        <translation type="unfinished"></translation>
+        <translation>week</translation>
     </message>
     <message>
         <source>Monate</source>
-        <translation type="unfinished"></translation>
+        <translation>months</translation>
     </message>
     <message>
         <source>Monat</source>
-        <translation type="unfinished"></translation>
+        <translation>month</translation>
     </message>
     <message>
         <source>Ultimo</source>
@@ -1687,7 +1688,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Immer der letzte Tag des Monats</source>
-        <translation type="unfinished"></translation>
+        <translation>Always the last day of the month</translation>
     </message>
     <message>
         <source>Ultimo-1</source>
@@ -1695,7 +1696,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Immer 1 Tag vor dem letzten des Monats</source>
-        <translation type="unfinished"></translation>
+        <translation>Always one day before the last day of the month</translation>
     </message>
     <message>
         <source>Ultimo-2</source>
@@ -1703,30 +1704,30 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <source>Immer 2 Tage vor dem letzten des Monats</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Always two days before the last day of the month</translation>
     </message>
     <message>
         <source>jede</source>
-        <translation type="unfinished"></translation>
+        <translation>every</translation>
     </message>
     <message>
         <source>jeden</source>
-        <translation type="unfinished"></translation>
+        <translation>every</translation>
     </message>
 </context>
 <context>
     <name>widgetTextKey</name>
     <message>
         <source>TextschlÃ¼ssel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">key</translation>
     </message>
     <message>
         <source>Unbekannt</source>
-        <translation type="unfinished"></translation>
+        <translation>unknown</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
