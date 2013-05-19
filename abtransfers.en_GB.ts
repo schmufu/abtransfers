@@ -16,7 +16,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>W&#xc3;&#xa4;hr.</source>
+        <source>WÃ¤hr.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -50,7 +50,7 @@
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Hier werden, wenn dies über die Einstellungen festgelegt ist, zusätzliche Debug Ausgaben des Programms angezeit. Mithilfe dieser Informationen ist es teilweise leichter möglich einen aufgetretenen Fehler zu beheben.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,11 +58,11 @@
         <source>Inhalt Speichern</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Inhalt löschen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Schließen</source>
         <translation type="unfinished"></translation>
     </message>
@@ -81,11 +81,11 @@
         <source>Einstellungen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Hier können die Einstellungen von AB-Transfers verändert werden.&lt;br /&gt;Wenn eine Einstellung noch nicht unterstützt wird ist sie deaktiviert, zeigt aber das aktuelle Verhalten richtig an.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -128,14 +128,14 @@ gespeichert (noch nicht implementiert).</source>
         <source>Aktuelle Daten</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>In dieser Datei werden die aktuellen Daten gespeichert.
 
 Dies umfasst die Konto-Salden von allen Accounts sowie
 die Daueraufträge und terminierten Überweisungen.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>In dieser Datei wird die Historie gespeichert.
 
 Alle Aufträge die zum Institut übertragen wurden
@@ -146,15 +146,15 @@ werden in dieser Datei gespeichert.</source>
         <source>Historie</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Alle bekannten Empfänger werden in dieser Datei gespeichert.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Empfänger</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn deaktiviert wird das Debug-Info Fenster deaktiviert und
 die Debug-Ausgaben finden nur noch auf der Konsole statt.
 
@@ -167,18 +167,18 @@ angezeigt werden.</source>
         <source>Debug Meldungen im Debug-Dialog anzeigen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn eine Transaktion durchgeführt wurde und der
 Empfänger noch nicht in den bekannten Empfängern
 vorhanden ist wird dieser automatisch zu diesen
 hinzugefügt.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Automatisch die bekannten Empänger erweitern</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -204,25 +204,25 @@ beim starten des Programms angezeigt.</source>
         <source>eventuelle Kosten</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn aktiviert wird jedes mal wenn ein Auftrag erfolgreich
 zum Ausgang hinzugefügt wurde ein entsprechender
 Hinweis angezeigt.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Auftrag zum Ausgang hinzugefügt</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Abfrage bei Im-/Export Profil löschen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Abfrage bei Historie-Eintrag löschen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -240,43 +240,43 @@ p, li { white-space: pre-wrap; }
         <source>Aktualisierung beim Starten</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Kontostände</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Daueraufträge</source>
         <translation>Standing orders</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>terminierte Überweisungen</source>
         <translation>scheduled transfers</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
 nach dem starten zum Insititut übertragen.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>automatisch ausführen</source>
         <translation type="unfinished"></translation>
     </message>
@@ -300,11 +300,11 @@ nach dem starten zum Insititut übertragen.</source>
         <source>Im.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Profil kann für den Import verwendet werden</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profil kann für den Import verwendet werden.&lt;/p&gt;&lt;p&gt;Diese Eigenschaft wird über das Profil gesetzt oder nicht, wenn gesetzt kann dieses Profil für das Importieren von Daten verwendet werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -312,11 +312,11 @@ nach dem starten zum Insititut übertragen.</source>
         <source>Ex.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Profil kann für den Export verwendet werden.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profil kann für den Export verwendet werden.&lt;/p&gt;&lt;p&gt;Diese Eigenschaft wird durch die Beschreibung des Profils gesetzt und kennzeichnet ob ein Profil für den Export von Daten verwendet werden kann oder nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -328,7 +328,7 @@ nach dem starten zum Insititut übertragen.</source>
         <source>Globales Profil</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Globales Profil.&lt;/p&gt;&lt;p&gt;Wenn dieses Profil global ist existiert es unter den Profilen von AqBanking und kann von jedem verwendet aber nicht geändert werden.&lt;/p&gt;&lt;p&gt;Ein nicht globales Profil kann nur durch den aktuellen Benutzer verwendet und auch geändert werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -340,7 +340,7 @@ nach dem starten zum Insititut übertragen.</source>
         <source>Als Favorit verwenden</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wenn ein Profil als Favorit markiert ist wird es im Context-Menü für den Export separat angezeigt und kann somit schnell gefunden und verwendet werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -356,11 +356,11 @@ nach dem starten zum Insititut übertragen.</source>
         <source>Erweitert</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Diese Einstellungen ermöglichen die Einflussnahme auf das ansonsten vorgegebene Verhalten von AB-Transfers.&lt;br /&gt;Sie sollten diese Einstellungen nur aktivieren wenn Sie wissen was Sie tun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Wenn diese Option aktiviert ist können die Aufträge im Ausgang in der vorgegebenen Reihenfolge verändert werden.
 
 Je nachdem an welcher Position ein Auftrag zur Bank gesendet wird kann dies Auswirkungen auf die Antwort der Bank haben.
@@ -368,11 +368,11 @@ Je nachdem an welcher Position ein Auftrag zur Bank gesendet wird kann dies Ausw
 Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stelle ein neuer Aufträge in den Ausgang eingereiht wird!</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Änderung der Reihenfolge im Ausgang ermöglichen (Hilfetext beachten)</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Ändern</source>
         <translation type="unfinished"></translation>
     </message>
@@ -384,11 +384,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <source>Erstellt ein neues Profil</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Löschen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Löscht das ausgwählte Profil</source>
         <translation type="unfinished"></translation>
     </message>
@@ -405,7 +405,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bekannte Empf&#xc3;&#xa4;nger Speichern in ...</source>
+        <source>Bekannte EmpfÃ¤nger Speichern in ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -413,19 +413,19 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sie m&#xc3;&#xb6;chten das Profil &quot;%1&quot; &#xc3;&#xa4;ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht ge&#xc3;&#xa4;ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;&#xc3;&#xbc;berdecken&lt;/i&gt;!&lt;br /&gt;Sie k&#xc3;&#xb6;nnen dann also nur noch auf das ge&#xc3;&#xa4;nderte Profil zugreifen und nicht mehr auf die urspr&#xc3;&#xbc;ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem l&#xc3;&#xb6;schen des lokalen Profils w&#xc3;&#xbc;rde das globale wieder verwendet werden k&#xc3;&#xb6;nnen)</source>
+        <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Globales Profil &#xc3;&#xa4;ndern</source>
+        <source>Globales Profil Ã¤ndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Profil &#xc3;&#x84;ndern</source>
+        <source>Profil Ãndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Beim &#xc3;&#x84;ndern des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben k&#xc3;&#xb6;nnen evt. weitere n&#xc3;&#xbc;tzliche Informationen enthalten sein</source>
+        <source>Beim Ãndern des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -433,7 +433,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bitte geben sie einen Namen f&#xc3;&#xbc;r das neue Profil ein</source>
+        <source>Bitte geben sie einen Namen fÃ¼r das neue Profil ein</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -445,15 +445,15 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Beim Anlegen des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben k&#xc3;&#xb6;nnen evt. weitere n&#xc3;&#xbc;tzliche Informationen enthalten sein</source>
+        <source>Beim Anlegen des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Profil l&#xc3;&#xb6;schen</source>
+        <source>Profil lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Soll das Profil %1 wirklich gel&#xc3;&#xb6;scht werden?</source>
+        <source>Soll das Profil %1 wirklich gelÃ¶scht werden?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -480,27 +480,27 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Einen neuen Empf&#xc3;&#xa4;nger anlegen</source>
+        <source>Einen neuen EmpfÃ¤nger anlegen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L&#xc3;&#xb6;schen</source>
+        <source>LÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Empf&#xc3;&#xa4;nger l&#xc3;&#xb6;schen</source>
+        <source>AusgewÃ¤hlten EmpfÃ¤nger lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x84;ndern</source>
+        <source>Ãndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Empf&#xc3;&#xa4;nger bearbeiten</source>
+        <source>AusgewÃ¤hlten EmpfÃ¤nger bearbeiten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>keine bekannten Empf&#xc3;&#xa4;nger vorhanden</source>
+        <source>keine bekannten EmpfÃ¤nger vorhanden</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -530,7 +530,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <source>AB-Transfers</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Übersicht</source>
         <translation>Overview</translation>
     </message>
@@ -546,7 +546,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <source>Historie</source>
         <translation>History</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Neue Überweisung</source>
         <translation>New entry</translation>
     </message>
@@ -567,7 +567,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Transfer</translation>
     </message>
     <message>
-        <source>Dauerauftr&#xc3;&#xa4;ge</source>
+        <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
     </message>
     <message>
@@ -579,10 +579,10 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Download</translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung</source>
+        <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Bekannte Aufträge</source>
         <translation>Known orders</translation>
     </message>
@@ -635,11 +635,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <source>Auftr&#xc3;&#xa4;ge im Ausgang</source>
+        <source>AuftrÃ¤ge im Ausgang</source>
         <translation>Orders in outbox</translation>
     </message>
     <message>
-        <source>Es befinden sich noch Auftr&#xc3;&#xa4;ge im Ausgang die noch nicht gesendet wurden!&lt;br /&gt;Beim Beenden des Programms werden die Auftr&#xc3;&#xa4;ge im Ausgang gel&#xc3;&#xb6;scht!&lt;br /&gt;&lt;br /&gt;Soll das Programm wirklich beendet werden?</source>
+        <source>Es befinden sich noch AuftrÃ¤ge im Ausgang die noch nicht gesendet wurden!&lt;br /&gt;Beim Beenden des Programms werden die AuftrÃ¤ge im Ausgang gelÃ¶scht!&lt;br /&gt;&lt;br /&gt;Soll das Programm wirklich beendet werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -647,7 +647,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h4&gt;Auftr&#xc3;&#xa4;ge k&#xc3;&#xb6;nnen geb&#xc3;&#xbc;hrenpflichtig sein&lt;/h4&gt;Bei einigen Kreditinstituten/Banken k&#xc3;&#xb6;nnen Geb&#xc3;&#xbc;hren f&#xc3;&#xbc;r bestimmte Auftr&#xc3;&#xa4;ge (Einrichtung von Dauerauftr&#xc3;&#xa4;gen, Sammel&#xc3;&#xbc;berweisungen, etc.) anfallen.&lt;br /&gt;Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten f&#xc3;&#xbc;r welche Auftr&#xc3;&#xa4;ge anfallen!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Ich &#xc3;&#xbc;bernehme keine Haftung f&#xc3;&#xbc;r eventuell entstehende Kosten!&lt;/b&gt;</source>
+        <source>&lt;h4&gt;AuftrÃ¤ge kÃ¶nnen gebÃ¼hrenpflichtig sein&lt;/h4&gt;Bei einigen Kreditinstituten/Banken kÃ¶nnen GebÃ¼hren fÃ¼r bestimmte AuftrÃ¤ge (Einrichtung von DauerauftrÃ¤gen, SammelÃ¼berweisungen, etc.) anfallen.&lt;br /&gt;Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten fÃ¼r welche AuftrÃ¤ge anfallen!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Ich Ã¼bernehme keine Haftung fÃ¼r eventuell entstehende Kosten!&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -667,7 +667,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unterst&#xc3;&#xbc;tze Auftr&#xc3;&#xa4;ge</source>
+        <source>UnterstÃ¼tze AuftrÃ¤ge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -679,11 +679,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x9c;berweisung</source>
+        <source>Ãberweisung</source>
         <translation>Payment</translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisungen</source>
+        <source>TerminÃ¼berweisungen</source>
         <translation>Scheduled transfers</translation>
     </message>
     <message>
@@ -691,11 +691,11 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Dauerauftr&#xc3;&#xa4;ge von &quot;%1&quot; (%2 - %3)</source>
+        <source>DauerauftrÃ¤ge von &quot;%1&quot; (%2 - %3)</source>
         <translation>Standing orders of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
-        <source>Terminierte &#xc3;&#x9c;berweisungen von &quot;%1&quot; (%2 - %3)</source>
+        <source>Terminierte Ãberweisungen von &quot;%1&quot; (%2 - %3)</source>
         <translation>Scheduled transfers of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
@@ -703,7 +703,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Online accounts</translation>
     </message>
     <message>
-        <source>Bekannte Empf&#xc3;&#xa4;nger</source>
+        <source>Bekannte EmpfÃ¤nger</source>
         <translation>Known addressees</translation>
     </message>
     <message>
@@ -711,15 +711,15 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Account</translation>
     </message>
     <message>
-        <source>Auftrag &quot;%1&quot; zum Ausgang hinzugef&#xc3;&#xbc;gt</source>
+        <source>Auftrag &quot;%1&quot; zum Ausgang hinzugefÃ¼gt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Auftrag zum Ausgang hinzugef&#xc3;&#xbc;gt</source>
+        <source>Auftrag zum Ausgang hinzugefÃ¼gt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Der Auftrag &quot;%1&quot; wurde erfolgreich zum Ausgangskorb hinzugef&#xc3;&#xbc;gt</source>
+        <source>Der Auftrag &quot;%1&quot; wurde erfolgreich zum Ausgangskorb hinzugefÃ¼gt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -731,7 +731,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>License</translation>
     </message>
     <message>
-        <source>Schlie&#xc3;&#x9f;en</source>
+        <source>SchlieÃen</source>
         <translation>Close</translation>
     </message>
     <message>
@@ -755,15 +755,15 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Auftrag wird von der Bank nicht unterst&#xc3;&#xbc;tzt!</source>
+        <source> - Auftrag wird von der Bank nicht unterstÃ¼tzt!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unterst&#xc3;&#xbc;tzte Auftr&#xc3;&#xa4;ge</source>
+        <source>UnterstÃ¼tzte AuftrÃ¤ge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Anzeige der vom Institut unterst&#xc3;&#xbc;tzten Auftr&#xc3;&#xa4;ge f&#xc3;&#xbc;r das Konto %1 (%2). Nicht alle Auftr&#xc3;&#xa4;ge werden auch von %3 unterst&#xc3;&#xbc;tzt!</source>
+        <source>Anzeige der vom Institut unterstÃ¼tzten AuftrÃ¤ge fÃ¼r das Konto %1 (%2). Nicht alle AuftrÃ¤ge werden auch von %3 unterstÃ¼tzt!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -783,29 +783,29 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation>Legend</translation>
     </message>
     <message>
-        <source>unterst&#xc3;&#xbc;tzt</source>
+        <source>unterstÃ¼tzt</source>
         <translation>supported</translation>
     </message>
     <message>
-        <source>nicht unterst&#xc3;&#xbc;tzt</source>
+        <source>nicht unterstÃ¼tzt</source>
         <translation>unsupported</translation>
     </message>
     <message>
-        <source>in zuk&#xc3;&#xbc;nftiger Version geplant</source>
+        <source>in zukÃ¼nftiger Version geplant</source>
         <translation>planned in future version</translation>
     </message>
     <message>
-        <source>&#xc3;&#x84;nderungen verwerfen?</source>
+        <source>Ãnderungen verwerfen?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Im Tab &apos;%1&apos; wurden &#xc3;&#x84;nderungen vorgenommen!
+        <source>Im Tab &apos;%1&apos; wurden Ãnderungen vorgenommen!
 
-Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
+Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Kein Konto vorhanden!  -- Ist ein Konto in &quot;Online Konten&quot; gew&#xc3;&#xa4;hlt?</source>
+        <source>Kein Konto vorhanden!  -- Ist ein Konto in &quot;Online Konten&quot; gewÃ¤hlt?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -821,11 +821,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Daten ge&#xc3;&#xa4;ndert</source>
+        <source>Daten geÃ¤ndert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Die Daten f&#xc3;&#xbc;r den Dauerauftrag sind in sich nicht konsistent und w&#xc3;&#xbc;rden auf die folgenden Werte ge&#xc3;&#xa4;ndert werden:&lt;br /&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Erstmalig:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Letztmalig:&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;N&#xc3;&#xa4;chste Ausf.:&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br /&gt;&lt;br /&gt;Sollen die Daten auf diese Werte ge&#xc3;&#xa4;ndert werden?</source>
+        <source>Die Daten fÃ¼r den Dauerauftrag sind in sich nicht konsistent und wÃ¼rden auf die folgenden Werte geÃ¤ndert werden:&lt;br /&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Erstmalig:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Letztmalig:&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;NÃ¤chste Ausf.:&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br /&gt;&lt;br /&gt;Sollen die Daten auf diese Werte geÃ¤ndert werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -833,7 +833,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Der Dauerauftrag befindet sich bereits im Ausgang!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Er wurde entweder schon bearbeitet oder soll gel&#xc3;&#xb6;scht werden. Solange sich zu diesem Dauerauftrag bereits eine &#xc3;&#x84;nderung im Ausgang befindet kann keine weitere &#xc3;&#x84;nderung stattfinden.&lt;br /&gt;Bitte l&#xc3;&#xb6;schen oder Bearbeiten Sie den entsprechenden Auftrag im Ausgang.</source>
+        <source>&lt;b&gt;Der Dauerauftrag befindet sich bereits im Ausgang!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Er wurde entweder schon bearbeitet oder soll gelÃ¶scht werden. Solange sich zu diesem Dauerauftrag bereits eine Ãnderung im Ausgang befindet kann keine weitere Ãnderung stattfinden.&lt;br /&gt;Bitte lÃ¶schen oder Bearbeiten Sie den entsprechenden Auftrag im Ausgang.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -841,23 +841,23 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Der gespeicherte Dauerauftrag ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Um sicher zu stellen das eine g&#xc3;&#xbc;ltige Version des Dauerauftrages gel&#xc3;&#xb6;scht oder ge&#xc3;&#xa4;ndert wird, sollten die Dauerauftr&#xc3;&#xa4;ge von diesem Konto aktualisiert werden.&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgef&#xc3;&#xbc;hrt werden?</source>
+        <source>&lt;b&gt;Der gespeicherte Dauerauftrag ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Um sicher zu stellen das eine gÃ¼ltige Version des Dauerauftrages gelÃ¶scht oder geÃ¤ndert wird, sollten die DauerauftrÃ¤ge von diesem Konto aktualisiert werden.&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgefÃ¼hrt werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Die terminierte &#xc3;&#x9c;berweisung befindet sich bereits im Ausgang!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Sie wurde entweder schon bearbeitet oder soll gel&#xc3;&#xb6;scht werden. Solange sich zu dieser terminierten &#xc3;&#x9c;berweisung bereits eine &#xc3;&#x84;nderung im Ausgang befindet kann keine weitere &#xc3;&#x84;nderung stattfinden.&lt;br /&gt;Bitte l&#xc3;&#xb6;schen oder bearbeiten Sie den entsprechenden Auftrag im Ausgang.</source>
+        <source>&lt;b&gt;Die terminierte Ãberweisung befindet sich bereits im Ausgang!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Sie wurde entweder schon bearbeitet oder soll gelÃ¶scht werden. Solange sich zu dieser terminierten Ãberweisung bereits eine Ãnderung im Ausgang befindet kann keine weitere Ãnderung stattfinden.&lt;br /&gt;Bitte lÃ¶schen oder bearbeiten Sie den entsprechenden Auftrag im Ausgang.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Die gespeicherte terminierte &#xc3;&#x9c;berweisung ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Das Auf&#xc3;&#xbc;hrungsdatum der terminierten &#xc3;&#x9c;berweisung ist bereits erreicht oder &#xc3;&#xbc;berschritten. Um sicher zu stellen das die terminierte &#xc3;&#x9c;berweisung noch nicht ausgef&#xc3;&#xbc;hrt wurde sollten diese aktualisiert werden.&lt;br /&gt;&lt;i&gt;(Ein l&#xc3;&#xb6;schen oder bearbeiten k&#xc3;&#xb6;nnte Fehler verursachen)&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgef&#xc3;&#xbc;hrt werden?</source>
+        <source>&lt;b&gt;Die gespeicherte terminierte Ãberweisung ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Das AufÃ¼hrungsdatum der terminierten Ãberweisung ist bereits erreicht oder Ã¼berschritten. Um sicher zu stellen das die terminierte Ãberweisung noch nicht ausgefÃ¼hrt wurde sollten diese aktualisiert werden.&lt;br /&gt;&lt;i&gt;(Ein lÃ¶schen oder bearbeiten kÃ¶nnte Fehler verursachen)&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgefÃ¼hrt werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Kein Account gefunden [%1/%2] - Erstellen nicht m&#xc3;&#xb6;glich</source>
+        <source>Kein Account gefunden [%1/%2] - Erstellen nicht mÃ¶glich</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;tr&gt;&lt;td&gt;Beg&#xc3;&#xbc;nstigter:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
+        <source>&lt;tr&gt;&lt;td&gt;BegÃ¼nstigter:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -865,19 +865,19 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;tr&gt;&lt;td&gt;&lt;b&gt;Ausf&#xc3;&#xbc;hren am:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
+        <source>&lt;tr&gt;&lt;td&gt;&lt;b&gt;AusfÃ¼hren am:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Folgende terminierte &#xc3;&#x9c;berweisungen haben den Ausf&#xc3;&#xbc;hrungstag erreicht oder &#xc3;&#xbc;berschritten:&lt;br /&gt;</source>
+        <source>Folgende terminierte Ãberweisungen haben den AusfÃ¼hrungstag erreicht oder Ã¼berschritten:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br /&gt;&lt;br /&gt;Es wird empfohlen die terminierten &#xc3;&#x9c;berweisungen zu aktualisieren.&lt;br /&gt;&lt;br /&gt;Soll bei allen Konten, die terminierte &#xc3;&#x9c;berweisungen unterst&#xc3;&#xbc;tzen, eine Aktualisierung durchgef&#xc3;&#xbc;hrt werden?</source>
+        <source>&lt;br /&gt;&lt;br /&gt;Es wird empfohlen die terminierten Ãberweisungen zu aktualisieren.&lt;br /&gt;&lt;br /&gt;Soll bei allen Konten, die terminierte Ãberweisungen unterstÃ¼tzen, eine Aktualisierung durchgefÃ¼hrt werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&quot;AqBanking einrichten ...&quot; kann nur aufgerufen werden wenn keine Auftr&#xc3;&#xa4;ge im Ausgang sind und auch keine Auftr&#xc3;&#xa4;ge in Bearbeitung sind.&lt;br /&gt;Wenn ein Auftrag im Ausgang ist und das entsprechende Konto gel&#xc3;&#xb6;scht werden w&#xc3;&#xbc;rde, w&#xc3;&#xbc;rde das Ausf&#xc3;&#xbc;hren zu einem Absturz f&#xc3;&#xbc;hren!&lt;br /&gt;&lt;br /&gt;Bitte schlie&#xc3;&#x9f;en Sie alle Bearbeitungen vollst&#xc3;&#xa4;ndig ab und rufen erst dann &quot;AqBanking einrichten ...&quot; auf.</source>
+        <source>&quot;AqBanking einrichten ...&quot; kann nur aufgerufen werden wenn keine AuftrÃ¤ge im Ausgang sind und auch keine AuftrÃ¤ge in Bearbeitung sind.&lt;br /&gt;Wenn ein Auftrag im Ausgang ist und das entsprechende Konto gelÃ¶scht werden wÃ¼rde, wÃ¼rde das AusfÃ¼hren zu einem Absturz fÃ¼hren!&lt;br /&gt;&lt;br /&gt;Bitte schlieÃen Sie alle Bearbeitungen vollstÃ¤ndig ab und rufen erst dann &quot;AqBanking einrichten ...&quot; auf.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -887,7 +887,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <source>Ausgang</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Aufträge die an die Bank gesendet werden sollen</source>
         <translation type="unfinished"></translation>
     </message>
@@ -920,15 +920,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L&#xc3;&#xb6;schen</source>
+        <source>LÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Ausführen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Job l&#xc3;&#xb6;schen</source>
+        <source>AusgewÃ¤hlten Job lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -936,15 +936,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Job bearbeiten</source>
+        <source>AusgewÃ¤hlten Job bearbeiten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Job nach oben verschieben</source>
+        <source>AusgewÃ¤hlten Job nach oben verschieben</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Job nach unten verschieben</source>
+        <source>AusgewÃ¤hlten Job nach unten verschieben</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -960,7 +960,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Keine Auftr&#xc3;&#xa4;ge zum Ausf&#xc3;&#xbc;hren vorhanden</source>
+        <source>Keine AuftrÃ¤ge zum AusfÃ¼hren vorhanden</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -972,7 +972,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Soll der ausgew&#xc3;&#xa4;hlte Auftrag wirklich gel&#xc3;&#xb6;scht werden?</source>
+        <source>Soll der ausgewÃ¤hlte Auftrag wirklich gelÃ¶scht werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -980,7 +980,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Dies entfernt den ausgew&#xc3;&#xa4;hlten Auftrag aus dem Ausgang und &#xc3;&#xb6;ffnet ihn zum bearbeiten.&lt;br /&gt;Wenn der Auftrag beim bearbeiten nicht mit &quot;Senden&quot; beendet wird, wird dieser nicht zur Bank gesendet!&lt;br /&gt;&lt;br /&gt;Soll der Auftrag bearbeitet werden?</source>
+        <source>Dies entfernt den ausgewÃ¤hlten Auftrag aus dem Ausgang und Ã¶ffnet ihn zum bearbeiten.&lt;br /&gt;Wenn der Auftrag beim bearbeiten nicht mit &quot;Senden&quot; beendet wird, wird dieser nicht zur Bank gesendet!&lt;br /&gt;&lt;br /&gt;Soll der Auftrag bearbeitet werden?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -991,7 +991,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Es sieht so aus als w&#xc3;&#xbc;rde %1 bereits gestartet sein!&lt;br /&gt;%1 sollte auf keinen Fall mehrmals gestartet werden, dies k&#xc3;&#xb6;nnte zu nicht vorhersagbaren Fehlern f&#xc3;&#xbc;hren!&lt;br /&gt;&lt;i&gt;Wenn %1 beim letzten ausf&#xc3;&#xbc;hren abgest&#xc3;&#xbc;rzt ist, ist es sicher diese Abfrage mit &quot;Ja&quot; zu quittieren.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Soll %1 wirklich gestartet werden?</source>
+        <source>Es sieht so aus als wÃ¼rde %1 bereits gestartet sein!&lt;br /&gt;%1 sollte auf keinen Fall mehrmals gestartet werden, dies kÃ¶nnte zu nicht vorhersagbaren Fehlern fÃ¼hren!&lt;br /&gt;&lt;i&gt;Wenn %1 beim letzten ausfÃ¼hren abgestÃ¼rzt ist, ist es sicher diese Abfrage mit &quot;Ja&quot; zu quittieren.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Soll %1 wirklich gestartet werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1051,23 +1051,23 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Die ersten 2 Zeichen m&#xc3;&#xbc;ssen Buchstaben sein. (L&#xc3;&#xa4;ndercode)</source>
+        <source>Die ersten 2 Zeichen mÃ¼ssen Buchstaben sein. (LÃ¤ndercode)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x9c;berpr&#xc3;&#xbc;fung von Kontonummer und Bankleitzahl f&#xc3;&#xbc;r Deutsches Konto fehlerhaft: %1</source>
+        <source>ÃberprÃ¼fung von Kontonummer und Bankleitzahl fÃ¼r Deutsches Konto fehlerhaft: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Umwandlung fehlgeschlagen - &#xc3;&#x9c;berpr&#xc3;&#xbc;fung konnte nicht durchgef&#xc3;&#xbc;hrt werden</source>
+        <source>Umwandlung fehlgeschlagen - ÃberprÃ¼fung konnte nicht durchgefÃ¼hrt werden</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Pr&#xc3;&#xbc;fsumme fehlerhaft (Modulus = %1)</source>
+        <source>PrÃ¼fsumme fehlerhaft (Modulus = %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung anlegen</source>
+        <source>TerminÃ¼berweisung anlegen</source>
         <translation>Create scheduled transfer</translation>
     </message>
     <message>
@@ -1079,15 +1079,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung l&#xc3;&#xb6;schen</source>
+        <source>TerminÃ¼berweisung lÃ¶schen</source>
         <translation>Delete scheduled transfer</translation>
     </message>
     <message>
-        <source>Dauerauftrag l&#xc3;&#xb6;schen</source>
+        <source>Dauerauftrag lÃ¶schen</source>
         <translation>Delete standing order</translation>
     </message>
     <message>
-        <source>Internationale &#xc3;&#x9c;berweisung</source>
+        <source>Internationale Ãberweisung</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1095,11 +1095,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation>Download balance</translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisungen abfragen</source>
+        <source>TerminÃ¼berweisungen abfragen</source>
         <translation>Download scheduled transfers</translation>
     </message>
     <message>
-        <source>Dauerauftr&#xc3;&#xa4;ge abfragen</source>
+        <source>DauerauftrÃ¤ge abfragen</source>
         <translation>Download standing orders</translation>
     </message>
     <message>
@@ -1107,7 +1107,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation>Download transactions</translation>
     </message>
     <message>
-        <source>Umbuchung durchf&#xc3;&#xbc;hren</source>
+        <source>Umbuchung durchfÃ¼hren</source>
         <translation>Execute transfer</translation>
     </message>
     <message>
@@ -1115,11 +1115,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung &#xc3;&#xa4;ndern</source>
+        <source>TerminÃ¼berweisung Ã¤ndern</source>
         <translation>Edit scheduled transfers</translation>
     </message>
     <message>
-        <source>Dauerauftrag &#xc3;&#xa4;ndern</source>
+        <source>Dauerauftrag Ã¤ndern</source>
         <translation>Edit standing order</translation>
     </message>
     <message>
@@ -1127,11 +1127,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SEPA &#xc3;&#x9c;berweisung</source>
+        <source>SEPA Ãberweisung</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x9c;berweisung durchf&#xc3;&#xbc;hren</source>
+        <source>Ãberweisung durchfÃ¼hren</source>
         <translation>Execute payment</translation>
     </message>
     <message>
@@ -1227,23 +1227,23 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausf&#xc3;&#xbc;hrung: %1 %2 am %3</source>
+        <source>AusfÃ¼hrung: %1 %2 am %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Erste Ausf&#xc3;&#xbc;hrung:   %1</source>
+        <source>Erste AusfÃ¼hrung:   %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Letzte Ausf&#xc3;&#xbc;hrung:  %1</source>
+        <source>Letzte AusfÃ¼hrung:  %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>N&#xc3;&#xa4;chste Ausf&#xc3;&#xbc;hrung: %1</source>
+        <source>NÃ¤chste AusfÃ¼hrung: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tag der Ausf&#xc3;&#xbc;hrung: %1</source>
+        <source>Tag der AusfÃ¼hrung: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1251,7 +1251,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Aktualisiert den aktuellen Saldo f&#xc3;&#xbc;r das</source>
+        <source>Aktualisiert den aktuellen Saldo fÃ¼r das</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1259,15 +1259,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Holt alle noch nicht ausgef&#xc3;&#xbc;hrten terminierten &#xc3;&#x9c;berweisungen</source>
+        <source>Holt alle noch nicht ausgefÃ¼hrten terminierten Ãberweisungen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>f&#xc3;&#xbc;r das Konto %1 (%2)</source>
+        <source>fÃ¼r das Konto %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Holt alle bei der Bank hinterlegten Dauerauftr&#xc3;&#xa4;ge</source>
+        <source>Holt alle bei der Bank hinterlegten DauerauftrÃ¤ge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1275,15 +1275,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>momentan von AB-Transfers nicht unterst&#xc3;&#xbc;tzt!</source>
+        <source>momentan von AB-Transfers nicht unterstÃ¼tzt!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bitte L&#xc3;&#xb6;schen Sie diesen Auftrag, da nicht sicher</source>
+        <source>Bitte LÃ¶schen Sie diesen Auftrag, da nicht sicher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ist welche Fehler eventuell auftreten k&#xc3;&#xb6;nnten!</source>
+        <source>ist welche Fehler eventuell auftreten kÃ¶nnten!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1321,35 +1321,35 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 Auftr&#xc3;&#xa4;ge in die Jobliste &#xc3;&#xbc;bernommen</source>
+        <source>%1 AuftrÃ¤ge in die Jobliste Ã¼bernommen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>F&#xc3;&#xbc;hre Job-Liste aus.</source>
+        <source>FÃ¼hre Job-Liste aus.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>*********************************************** E R R O R                               **** Fehler bei AB_Banking_ExecuteJobs().    **** return value = %1                       ****                                         **** Es wird abgebrochen und keine weitere   **** Bearbeitung/Auswertung durchgef&#xc3;&#xbc;hrt!    ***********************************************</source>
+        <source>*********************************************** E R R O R                               **** Fehler bei AB_Banking_ExecuteJobs().    **** return value = %1                       ****                                         **** Es wird abgebrochen und keine weitere   **** Bearbeitung/Auswertung durchgefÃ¼hrt!    ***********************************************</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alle Jobs &#xc3;&#xbc;bertragen und Antworten ausgewertet</source>
+        <source>Alle Jobs Ã¼bertragen und Antworten ausgewertet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fehlerhafte Ausf&#xc3;&#xbc;hrung</source>
+        <source>Fehlerhafte AusfÃ¼hrung</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Die Auftr&#xc3;&#xa4;ge wurden nicht erfolgreich ausgef&#xc3;&#xbc;hrt!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Alle Auftr&#xc3;&#xa4;ge die nicht erfolgreich ausgef&#xc3;&#xbc;hrt werden konnten befinden sich weiterhin im Ausgang. Dort k&#xc3;&#xb6;nnen diese Auftr&#xc3;&#xa4;ge &#xc3;&#xbc;ber das Kontext-Men&#xc3;&#xbc; (rechte Maustaste) bearbeitet und korrigiert oder gel&#xc3;&#xb6;scht werden.&lt;br /&gt;Bitte beachten Sie auch die Ausgaben im &quot;Log&quot;-Fenster um Hinweise f&#xc3;&#xbc;r die fehlerhafte Ausf&#xc3;&#xbc;hrung zu erhalten.</source>
+        <source>&lt;b&gt;Die AuftrÃ¤ge wurden nicht erfolgreich ausgefÃ¼hrt!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Alle AuftrÃ¤ge die nicht erfolgreich ausgefÃ¼hrt werden konnten befinden sich weiterhin im Ausgang. Dort kÃ¶nnen diese AuftrÃ¤ge Ã¼ber das Kontext-MenÃ¼ (rechte Maustaste) bearbeitet und korrigiert oder gelÃ¶scht werden.&lt;br /&gt;Bitte beachten Sie auch die Ausgaben im &quot;Log&quot;-Fenster um Hinweise fÃ¼r die fehlerhafte AusfÃ¼hrung zu erhalten.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Ausf&#xc3;&#xbc;hrung von &apos;%1&apos; erfolgreich.&lt;/b&gt; Der Auftrag wurde zur Historie hinzugef&#xc3;&#xbc;gt</source>
+        <source>&lt;b&gt;AusfÃ¼hrung von &apos;%1&apos; erfolgreich.&lt;/b&gt; Der Auftrag wurde zur Historie hinzugefÃ¼gt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;&lt;font color=red&gt;Ausf&#xc3;&#xbc;hrung von &apos;%1&apos; fehlerhaft.&lt;/font&gt;&lt;/b&gt; Der Auftrag bleibt im Ausgang erhalten</source>
+        <source>&lt;b&gt;&lt;font color=red&gt;AusfÃ¼hrung von &apos;%1&apos; fehlerhaft.&lt;/font&gt;&lt;/b&gt; Der Auftrag bleibt im Ausgang erhalten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1383,7 +1383,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L&#xc3;&#xb6;schen</source>
+        <source>LÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1391,7 +1391,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empf&#xc3;&#xa4;nger</source>
+        <source>EmpfÃ¤nger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1403,27 +1403,27 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgef&#xc3;&#xbc;hrt</source>
+        <source>AusgefÃ¼hrt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Neuen Auftrag, mit den Daten des gew&#xc3;&#xa4;hlten Eintrags als Vorlage, erstellen.</source>
+        <source>Neuen Auftrag, mit den Daten des gewÃ¤hlten Eintrags als Vorlage, erstellen.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Exportiert die ausgew&#xc3;&#xa4;hlten Eintr&#xc3;&#xa4;ge f&#xc3;&#xbc;r eine andere Anwendung.</source>
+        <source>Exportiert die ausgewÃ¤hlten EintrÃ¤ge fÃ¼r eine andere Anwendung.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L&#xc3;&#xb6;scht die ausgew&#xc3;&#xa4;hlten Eintr&#xc3;&#xa4;ge aus der Historie.</source>
+        <source>LÃ¶scht die ausgewÃ¤hlten EintrÃ¤ge aus der Historie.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Historie Eintrag l&#xc3;&#xb6;schen</source>
+        <source>Historie Eintrag lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sollen die gew&#xc3;&#xa4;hlten Eintr&#xc3;&#xa4;ge aus der Historie wirklich gel&#xc3;&#xb6;scht werden?&lt;br /&gt;&lt;i&gt;(Dies kann nicht r&#xc3;&#xbc;ckg&#xc3;&#xa4;ngig gemacht werden)&lt;/i&gt;</source>
+        <source>Sollen die gewÃ¤hlten EintrÃ¤ge aus der Historie wirklich gelÃ¶scht werden?&lt;br /&gt;&lt;i&gt;(Dies kann nicht rÃ¼ckgÃ¤ngig gemacht werden)&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1460,11 +1460,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Die ausgew&#xc3;&#xa4;hlten Eintr&#xc3;&#xa4;ge der Historie wurden unter %1 gespeichert.</source>
+        <source>Die ausgewÃ¤hlten EintrÃ¤ge der Historie wurden unter %1 gespeichert.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Keine Eintr&#xc3;&#xa4;ge in der Historie vorhanden</source>
+        <source>Keine EintrÃ¤ge in der Historie vorhanden</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1529,19 +1529,19 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
 <context>
     <name>widgetKnownDatedTransfers</name>
     <message>
-        <source>L&#xc3;&#xb6;schen</source>
+        <source>LÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlte terminierte &#xc3;&#x9c;berweisung l&#xc3;&#xb6;schen</source>
+        <source>AusgewÃ¤hlte terminierte Ãberweisung lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x84;ndern</source>
+        <source>Ãndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlte terminierte &#xc3;&#x9c;berweisung bearbeiten</source>
+        <source>AusgewÃ¤hlte terminierte Ãberweisung bearbeiten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1549,11 +1549,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Holt alle beim Institut hinterlegten terminierten &#xc3;&#x9c;berweisungen</source>
+        <source>Holt alle beim Institut hinterlegten terminierten Ãberweisungen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>keine terminierten &#xc3;&#x9c;berweisungen f&#xc3;&#xbc;r dieses Konto vorhanden</source>
+        <source>keine terminierten Ãberweisungen fÃ¼r dieses Konto vorhanden</source>
         <translation>no scheduled transfer for this account</translation>
     </message>
     <message>
@@ -1565,7 +1565,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Beg&#xc3;&#xbc;nstigter</source>
+        <source>BegÃ¼nstigter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1580,19 +1580,19 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
 <context>
     <name>widgetKnownStandingOrders</name>
     <message>
-        <source>L&#xc3;&#xb6;schen</source>
+        <source>LÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Dauerauftrag l&#xc3;&#xb6;schen</source>
+        <source>AusgewÃ¤hlten Dauerauftrag lÃ¶schen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x84;ndern</source>
+        <source>Ãndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausgew&#xc3;&#xa4;hlten Dauerauftrag bearbeiten</source>
+        <source>AusgewÃ¤hlten Dauerauftrag bearbeiten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1600,11 +1600,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Holt alle beim Institut hinterlegten Dauerauftr&#xc3;&#xa4;ge</source>
+        <source>Holt alle beim Institut hinterlegten DauerauftrÃ¤ge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>keine bekannten Dauerauftr&#xc3;&#xa4;ge f&#xc3;&#xbc;r dieses Konto vorhanden</source>
+        <source>keine bekannten DauerauftrÃ¤ge fÃ¼r dieses Konto vorhanden</source>
         <translation>no standing orders for this account</translation>
     </message>
     <message>
@@ -1616,7 +1616,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Beg&#xc3;&#xbc;nstigter</source>
+        <source>BegÃ¼nstigter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1624,21 +1624,21 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>n&#xc3;&#xa4;chste Ausf.</source>
+        <source>nÃ¤chste Ausf.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>widgetPurpose</name>
     <message>
-        <source>(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen &#xc3;&#xbc;brig]</source>
+        <source>(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen Ã¼brig]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>widgetRecurrence</name>
     <message>
-        <source>w&#xc3;&#xb6;chentlich</source>
+        <source>wÃ¶chentlich</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1662,7 +1662,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>n&#xc3;&#xa4;chste Ausf.</source>
+        <source>nÃ¤chste Ausf.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1717,7 +1717,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
 <context>
     <name>widgetTextKey</name>
     <message>
-        <source>Textschl&#xc3;&#xbc;ssel</source>
+        <source>TextschlÃ¼ssel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1736,7 +1736,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;&lt;font color=red&gt;Der &quot;Job&quot; &apos;%1&apos; ist leider noch nicht implementiert.&lt;br /&gt;Bitte haben Sie noch etwas Geduld und warten auf eine Aktualisierung.&lt;/font&gt;&lt;/h3&gt;(Eventuell folgende Texte sind ablaufbedingt und k&#xc3;&#xb6;nnen ignoriert werden)</source>
+        <source>&lt;h3&gt;&lt;font color=red&gt;Der &quot;Job&quot; &apos;%1&apos; ist leider noch nicht implementiert.&lt;br /&gt;Bitte haben Sie noch etwas Geduld und warten auf eine Aktualisierung.&lt;/font&gt;&lt;/h3&gt;(Eventuell folgende Texte sind ablaufbedingt und kÃ¶nnen ignoriert werden)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1744,11 +1744,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h2&gt;PROGRAMMIERFEHLER!&lt;/h2&gt;Der &quot;Job&quot; &apos;%1&apos; wird von widgetTransfer nichtunterst&#xc3;&#xbc;tzt!</source>
+        <source>&lt;h2&gt;PROGRAMMIERFEHLER!&lt;/h2&gt;Der &quot;Job&quot; &apos;%1&apos; wird von widgetTransfer nichtunterstÃ¼tzt!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>R&#xc3;&#xbc;ckg&#xc3;&#xa4;ngig</source>
+        <source>RÃ¼ckgÃ¤ngig</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1760,7 +1760,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Der Auftrag &apos;%1&apos; ist bei dem ausgew&#xc3;&#xa4;hltem Konto nicht verf&#xc3;&#xbc;gbar!&lt;/h2&gt;</source>
+        <source>&lt;h2&gt;Der Auftrag &apos;%1&apos; ist bei dem ausgewÃ¤hltem Konto nicht verfÃ¼gbar!&lt;/h2&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1768,11 +1768,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>AB-Transfers unterst&#xc3;&#xbc;tzt zwar die Verwendung von &apos;%1&apos;, aber &#xc3;&#xbc;ber die &apos;BankParameterDaten&apos; (BPD) wurde von dem Institut (%2) mitgeteilt das dieser Auftrag bei dem gew&#xc3;&#xa4;hlten Konto (%3) nicht unterst&#xc3;&#xbc;tzt wird.&lt;br /&gt;Die BPD werden von Zeit zu Zeit aktualisert. Eventuell wird zu einem sp&#xc3;&#xa4;teren Zeitpunkt der Auftrag vom Institut unterst&#xc3;&#xbc;tzt werden. Dies ist aber abh&#xc3;&#xa4;ngig vom Institut und kann von AB-Transfers nicht beeinflusst werden.</source>
+        <source>AB-Transfers unterstÃ¼tzt zwar die Verwendung von &apos;%1&apos;, aber Ã¼ber die &apos;BankParameterDaten&apos; (BPD) wurde von dem Institut (%2) mitgeteilt das dieser Auftrag bei dem gewÃ¤hlten Konto (%3) nicht unterstÃ¼tzt wird.&lt;br /&gt;Die BPD werden von Zeit zu Zeit aktualisert. Eventuell wird zu einem spÃ¤teren Zeitpunkt der Auftrag vom Institut unterstÃ¼tzt werden. Dies ist aber abhÃ¤ngig vom Institut und kann von AB-Transfers nicht beeinflusst werden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br /&gt;&lt;br /&gt;Hinweis f&#xc3;&#xbc;r SEPA &#xc3;&#x9c;berweisungen:&lt;br /&gt;SEPA &#xc3;&#x9c;berweisungen werden durch AqBanking erst ab Version 5.0.27 unterst&#xc3;&#xbc;tzt (aktuell verwendet wird Version %1)&lt;br /&gt;Eventuell ist ein Update von AqBanking erforderlich!</source>
+        <source>&lt;br /&gt;&lt;br /&gt;Hinweis fÃ¼r SEPA Ãberweisungen:&lt;br /&gt;SEPA Ãberweisungen werden durch AqBanking erst ab Version 5.0.27 unterstÃ¼tzt (aktuell verwendet wird Version %1)&lt;br /&gt;Eventuell ist ein Update von AqBanking erforderlich!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1788,23 +1788,23 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&#xc3;&#x9c;berweisung</source>
+        <source>Ãberweisung</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SEPA &#xc3;&#x9c;berweisung</source>
+        <source>SEPA Ãberweisung</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung anlegen</source>
+        <source>TerminÃ¼berweisung anlegen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Termin&#xc3;&#xbc;berweisung &#xc3;&#xa4;ndern</source>
+        <source>TerminÃ¼berweisung Ã¤ndern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausf&#xc3;&#xbc;hren am</source>
+        <source>AusfÃ¼hren am</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1812,7 +1812,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empf&#xc3;&#xa4;nger</source>
+        <source>EmpfÃ¤nger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1824,11 +1824,11 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ausf&#xc3;&#xbc;hrungsdaten</source>
+        <source>AusfÃ¼hrungsdaten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;&lt;br /&gt;Der Auftrag &apos;%1&apos;&apos; ist bei dem in Absender gew&#xc3;&#xa4;hlten Konto nicht verf&#xc3;&#xbc;gbar.&lt;br /&gt;Bitte w&#xc3;&#xa4;hlen Sie ein Konto bei dem der Auftrag auch ausgef&#xc3;&#xbc;hrt werden kann.&lt;/b&gt;&lt;br /&gt;</source>
+        <source>&lt;b&gt;&lt;br /&gt;Der Auftrag &apos;%1&apos;&apos; ist bei dem in Absender gewÃ¤hlten Konto nicht verfÃ¼gbar.&lt;br /&gt;Bitte wÃ¤hlen Sie ein Konto bei dem der Auftrag auch ausgefÃ¼hrt werden kann.&lt;/b&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1845,43 +1845,43 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;ngername nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤ngername nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;nger IBAN nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤nger IBAN nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;nger BIC nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤nger BIC nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;nger Kontonummer nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤nger Kontonummer nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;nger Bankleitzahl nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤nger Bankleitzahl nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Empf&#xc3;&#xa4;nger Institut nicht eingegeben&lt;br /&gt;</source>
+        <source> - EmpfÃ¤nger Institut nicht eingegeben&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - &lt;b&gt;Programmierfehler:&lt;/b&gt; Empf&#xc3;&#xa4;nger Konto Widget fehlt!&lt;br /&gt;</source>
+        <source> - &lt;b&gt;Programmierfehler:&lt;/b&gt; EmpfÃ¤nger Konto Widget fehlt!&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - &#xc3;&#x9c;berweisungsbetrag fehlt&lt;br /&gt;</source>
+        <source> - Ãberweisungsbetrag fehlt&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Ein Betrag von 0,00 kann nicht &#xc3;&#xbc;berwiesen werden&lt;br /&gt;</source>
+        <source> - Ein Betrag von 0,00 kann nicht Ã¼berwiesen werden&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - &#xc3;&#x9c;berweisungs-W&#xc3;&#xa4;hrung fehlt&lt;br /&gt;</source>
+        <source> - Ãberweisungs-WÃ¤hrung fehlt&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1910,7 +1910,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Textschl&#xc3;&#xbc;ssel nicht erlaubt&lt;br /&gt;</source>
+        <source> - TextschlÃ¼ssel nicht erlaubt&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1918,15 +1918,15 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Absender und Empf&#xc3;&#xa4;nger m&#xc3;&#xbc;ssen unterschiedlich sein&lt;br /&gt;&amp;nbsp;&amp;nbsp;&lt;i&gt;(Umbuchung von ein auf dasselbe Konto nicht m&#xc3;&#xb6;glich)&lt;/i&gt;&lt;br /&gt;</source>
+        <source> - Absender und EmpfÃ¤nger mÃ¼ssen unterschiedlich sein&lt;br /&gt;&amp;nbsp;&amp;nbsp;&lt;i&gt;(Umbuchung von ein auf dasselbe Konto nicht mÃ¶glich)&lt;/i&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Umbuchungungen sind nur zwischen Konten des selben&lt;br /&gt;&amp;nbsp;&amp;nbsp;Instituts m&#xc3;&#xb6;glich&lt;br /&gt;</source>
+        <source> - Umbuchungungen sind nur zwischen Konten des selben&lt;br /&gt;&amp;nbsp;&amp;nbsp;Instituts mÃ¶glich&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - &lt;b&gt;Programmierfehler:&lt;/b&gt; Bei &#xc3;&#x84;nderungen muss die Original&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Transaction gesetzt sein!&lt;br /&gt;</source>
+        <source> - &lt;b&gt;Programmierfehler:&lt;/b&gt; Bei Ãnderungen muss die Original&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Transaction gesetzt sein!&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1935,7 +1935,7 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br /&gt;&lt;hr&gt;Es sind Fehler aufgetreten an denen Sie nichts &#xc3;&#xa4;ndern k&#xc3;&#xb6;nnen (Programmierfehler).&lt;br /&gt;Bitte Informieren Sie den Author des Programms welche Fehler aufgetreten sind und wenn m&#xc3;&#xb6;glich die genauen Schritte die Sie durchgef&#xc3;&#xbc;hrt haben.&lt;br /&gt;Vielen Dank im vorraus bei Ihrer Hilfe zur Verbesserung des Programms.&lt;hr&gt;&lt;br /&gt;</source>
+        <source>&lt;br /&gt;&lt;hr&gt;Es sind Fehler aufgetreten an denen Sie nichts Ã¤ndern kÃ¶nnen (Programmierfehler).&lt;br /&gt;Bitte Informieren Sie den Author des Programms welche Fehler aufgetreten sind und wenn mÃ¶glich die genauen Schritte die Sie durchgefÃ¼hrt haben.&lt;br /&gt;Vielen Dank im vorraus bei Ihrer Hilfe zur Verbesserung des Programms.&lt;hr&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1943,31 +1943,31 @@ Sollen diese &#xc3;&#x84;nderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Tag von Erstmalig stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Tag von Erstmalig stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Tag von Letztmalig stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Tag von Letztmalig stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Tag von N&#xc3;&#xa4;chste Ausf. stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Tag von NÃ¤chste Ausf. stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus &#xc3;&#xbc;berein&lt;br /&gt;&amp;nbsp;&amp;nbsp;Letztmalig muss ein vielfaches des Zyklus von&lt;br /&gt;&amp;nbsp;&amp;nbsp;Erstmalig entfernt sein&lt;br /&gt;</source>
+        <source> - Letztmalig stimmt nicht mit Erstmalig und dem Zyklus Ã¼berein&lt;br /&gt;&amp;nbsp;&amp;nbsp;Letztmalig muss ein vielfaches des Zyklus von&lt;br /&gt;&amp;nbsp;&amp;nbsp;Erstmalig entfernt sein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Wochentag von Erstmalig stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Wochentag von Erstmalig stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Wochentag von Letztmalig stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Wochentag von Letztmalig stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> - Wochentag von N&#xc3;&#xa4;chste Ausf. stimmt nicht mit dem Ausf&#xc3;&#xbc;hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;&#xc3;&#xbc;berein&lt;br /&gt;</source>
+        <source> - Wochentag von NÃ¤chste Ausf. stimmt nicht mit dem AusfÃ¼hrungstag&lt;br /&gt;&amp;nbsp;&amp;nbsp;Ã¼berein&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
