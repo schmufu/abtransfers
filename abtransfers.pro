@@ -6,6 +6,14 @@ TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
 
+packagesExist(QtWebKit) {
+    message("using QtWebKit")
+    QT += webkit
+    DEFINES += USE_QT_WEBKIT
+} else {
+    message("QtWebKit not available, using QLabel for display")
+}
+
 TRANSLATIONS = abtransfers.en_GB.ts
 
 SOURCES += src/main.cpp \
