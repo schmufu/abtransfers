@@ -17,11 +17,9 @@ then
 		-target-language en_GB \
 		-locations relative \
 			abtransfers.pro
-
-	mv abtransfers.en_GB.ts translation
 else
 	echo "Releasing translations into app package..."
-	${BIN}/lrelease translation/abtransfers.en_GB.ts
-	cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
-	mv translation/abtransfers.en_GB.qm ${APP_RESOURCES}
+	${BIN}/lrelease abtransfers.en_GB.ts
+	cp abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
+	mv abtransfers.en_GB.qm ${APP_RESOURCES}
 fi
