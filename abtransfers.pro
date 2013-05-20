@@ -5,6 +5,15 @@ VERSION = 0.0.4.0 # Version of AB-Transfers
 TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
+
+packagesExist(QtWebKit) {
+	message("using QtWebKit")
+	QT += webkit
+	DEFINES += USE_QT_WEBKIT
+} else {
+	message("QtWebKit not available, using QLabel for display")
+}
+
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/widgets/bankaccountswidget.cpp \

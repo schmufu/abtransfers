@@ -45,6 +45,10 @@
 #include <QIcon>
 #include <QTimer>
 
+#if defined(USE_QT_WEBKIT)
+	#include <QWebView>
+#endif
+
 #include <aqbanking/banking.h>
 #include <aqbanking/account.h>
 #include <aqbanking/jobgettransactions.h>
@@ -954,6 +958,8 @@ void MainWindow::on_actionHelp_triggered()
 
 	QVBoxLayout *vbox = new QVBoxLayout(helpDialog);
 
+#if !defined(USE_QT_WEBKIT)
+	//QtWebKit not available, we use a QLabel for the Display
 	//ScrollArea for text display
 	QScrollArea *scroll = new QScrollArea();
 	scroll->setWidgetResizable(true);
@@ -967,12 +973,26 @@ void MainWindow::on_actionHelp_triggered()
 	text1->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 	text1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	text1->setTextFormat(Qt::RichText);
+
 	QFile helpText(":/text/help");
 	if (helpText.open(QFile::ReadOnly)) {
 		QTextStream stream(&helpText);
 		text1->setText(stream.readAll());
 		scroll->setWidget(text1);
 	}
+#else //QtWebKit is available, we use a QWebView. (supporting 'local links')
+	QWebView *view = new QWebView();
+	view->settings()->setDefaultTextEncoding("utf-8");
+	view->setMinimumSize(520, 600);
+
+	QFile helpText(":/text/help");
+	if (helpText.open(QFile::ReadOnly)) {
+		QTextStream stream(&helpText);
+		view->setHtml(stream.readAll());
+	}
+
+	vbox->addWidget(view);
+#endif
 
 	vbox->addSpacing(10);
 
