@@ -20,6 +20,13 @@ right-icon_16x16.png	Original: go-next.png
 system-users.png
 up-icon_16x16.png	Original: go-up.png
 view-refresh.png
+edit-undo_16x16.png
+edit-redo_16x16.png
+document-export_16x16.png
+document-edit_16x16.png
+dialog-close_16x16.png
+document-new_16x16.png
+document-save_16x16.png
 http://www.oxygen-icons.org
 License http://creativecommons.org/licenses/by-sa/3.0/
 

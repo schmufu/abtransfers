@@ -157,12 +157,13 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 
 	this->setAllLimits(this->m_limits);
 
-	this->pushButtonRevert = new QPushButton(QIcon::fromTheme("edit-undo"),
-						 tr("Rückgängig"), this);
-	this->pushButtonCancel = new QPushButton(QIcon::fromTheme("dialog-close"),
-						 tr("Abbrechen"), this);
-	this->pushButtonOK = new QPushButton(QIcon::fromTheme("dialog-ok-apply"),
-					     tr("Senden"), this);
+	QIcon ico;
+	ico = QIcon::fromTheme("edit-undo", QIcon(":/icons/edit-undo"));
+	this->pushButtonRevert = new QPushButton(ico, tr("Rückgängig"), this);
+	ico = QIcon::fromTheme("dialog-close", QIcon(":/icons/dialog-close"));
+	this->pushButtonCancel = new QPushButton(ico, tr("Abbrechen"), this);
+	ico = QIcon::fromTheme("dialog-ok-apply", QIcon(":/icons/ok"));
+	this->pushButtonOK = new QPushButton(ico, tr("Senden"), this);
 	connect(this->pushButtonOK, SIGNAL(clicked()),
 		this, SLOT(onOkButtonPressed()));
 	connect(this->pushButtonCancel, SIGNAL(clicked()),

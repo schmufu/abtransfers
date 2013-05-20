@@ -365,7 +365,7 @@ void MainWindow::createActions()
 
 	actSaveAllData = new QAction(this);
 	actSaveAllData->setText(tr("Speichern"));
-	actSaveAllData->setIcon(QIcon::fromTheme("document-save"));
+	actSaveAllData->setIcon(QIcon::fromTheme("document-save", QIcon(":/icons/document-save")));
 	connect(actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
 
 

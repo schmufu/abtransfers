@@ -77,19 +77,19 @@ void widgetKnownStandingOrders::createAllActions()
 	actDelete = new QAction(this);
 	actDelete->setText(tr("Löschen"));
 	actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
-	actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+	actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
 	connect(actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
 	actEdit= new QAction(this);
 	actEdit->setText(tr("Ändern"));
 	actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
-	actEdit->setIcon(QIcon::fromTheme("document-edit"));
+	actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
 	connect(actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 
 	actRefresh= new QAction(this);
 	actRefresh->setText(tr("Aktualisieren"));
 	actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
-	actRefresh->setIcon(QIcon::fromTheme("edit-redo"));
+	actRefresh->setIcon(QIcon::fromTheme("edit-redo", QIcon(":/icons/edit-redo")));
 	connect(actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
 }
 
