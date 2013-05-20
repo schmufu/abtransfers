@@ -8,7 +8,7 @@ then
 	lupdate abtransfers.pro
 else
 	echo "Releasing translations into app package..."
-	lrelease abtransfers.en_GB.ts
-	cp abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
-	mv abtransfers.en_GB.qm ${APP_RESOURCES}
+	lrelease translation/abtransfers.en_GB.ts
+	cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
+	mv translation/abtransfers.en_GB.qm ${APP_RESOURCES}
 fi
