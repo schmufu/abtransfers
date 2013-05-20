@@ -19,7 +19,7 @@ then
 			abtransfers.pro
 else
 	echo "Releasing translations into app package..."
-	${BIN}/lrelease abtransfers.en_GB.ts
-	cp abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
-	mv abtransfers.en_GB.qm ${APP_RESOURCES}
+	${BIN}/lrelease translation/abtransfers.en_GB.ts
+	cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US
+	mv translation/abtransfers.en_GB.qm ${APP_RESOURCES}
 fi

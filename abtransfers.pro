@@ -14,7 +14,7 @@ packagesExist(QtWebKit) {
     message("QtWebKit not available, using QLabel for display")
 }
 
-TRANSLATIONS = abtransfers.en_GB.ts
+TRANSLATIONS = translation/abtransfers.en_GB.ts
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -107,7 +107,7 @@ OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html \
-    abtransfers.en_GB.ts
+    translation/abtransfers.en_GB.ts
 RESOURCES += src/resources.qrc
 INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
     /opt/macports-test/include/gwenhywfar4

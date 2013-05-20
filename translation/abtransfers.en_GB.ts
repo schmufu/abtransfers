@@ -4,7 +4,7 @@
 <context>
     <name>BankAccountsWidget</name>
     <message>
-        <location filename="src/widgets/bankaccountswidget.cpp" line="+56"/>
+        <location filename="../src/widgets/bankaccountswidget.cpp" line="+56"/>
         <source>BLZ/Kto-Nr</source>
         <translation>Bank code/Account</translation>
     </message>
@@ -57,7 +57,7 @@
 <context>
     <name>DebugDialogWidget</name>
     <message>
-        <location filename="src/widgets/debugdialogwidget.ui" line="+14"/>
+        <location filename="../src/widgets/debugdialogwidget.ui" line="+14"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -82,7 +82,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/widgets/debugdialogwidget.cpp" line="+70"/>
+        <location filename="../src/widgets/debugdialogwidget.cpp" line="+70"/>
         <source>Speichern unter ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -95,7 +95,7 @@
 <context>
     <name>DialogSettings</name>
     <message>
-        <location filename="src/dialogs/dialogsettings.ui" line="+26"/>
+        <location filename="../src/dialogs/dialogsettings.ui" line="+26"/>
         <location line="+30"/>
         <source>Einstellungen</source>
         <translation type="unfinished">Settings</translation>
@@ -133,7 +133,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+9"/>
-        <location filename="src/dialogs/dialogsettings.cpp" line="+473"/>
+        <location filename="../src/dialogs/dialogsettings.cpp" line="+473"/>
         <source>Standard-Ordner</source>
         <translation type="unfinished"></translation>
     </message>
@@ -478,7 +478,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dialogs/dialogsettings.cpp" line="+14"/>
+        <location filename="../src/dialogs/dialogsettings.cpp" line="+14"/>
         <source>Aktuelle Daten Speichern in ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -563,12 +563,12 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
 <context>
     <name>KnownEmpfaengerWidget</name>
     <message>
-        <location filename="src/widgets/knownempfaengerwidget.ui" line="+20"/>
+        <location filename="../src/widgets/knownempfaengerwidget.ui" line="+20"/>
         <source>GroupBox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/widgets/knownempfaengerwidget.cpp" line="+163"/>
+        <location filename="../src/widgets/knownempfaengerwidget.cpp" line="+163"/>
         <source>Neu</source>
         <translation>New</translation>
     </message>
@@ -633,7 +633,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
 <context>
     <name>MainWindow</name>
     <message utf8="true">
-        <location filename="src/mainwindow.ui" line="+94"/>
+        <location filename="../src/mainwindow.ui" line="+94"/>
         <location line="+68"/>
         <source>Übersicht</source>
         <translation>Overview</translation>
@@ -660,13 +660,13 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <location line="+6"/>
-        <location filename="src/mainwindow.cpp" line="+307"/>
+        <location filename="../src/mainwindow.cpp" line="+307"/>
         <source>National</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="src/mainwindow.cpp" line="+5"/>
+        <location filename="../src/mainwindow.cpp" line="+5"/>
         <source>International</source>
         <translation type="unfinished"></translation>
     </message>
@@ -677,19 +677,19 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <location line="+7"/>
-        <location filename="src/mainwindow.cpp" line="+10"/>
+        <location filename="../src/mainwindow.cpp" line="+10"/>
         <source>Umbuchung</source>
         <translation>Transfer</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="+68"/>
+        <location filename="../src/mainwindow.cpp" line="+68"/>
         <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.ui" line="+35"/>
+        <location filename="../src/mainwindow.ui" line="+35"/>
         <location line="+42"/>
-        <location filename="src/mainwindow.cpp" line="-63"/>
+        <location filename="../src/mainwindow.cpp" line="-63"/>
         <location line="+10"/>
         <source>Anlegen</source>
         <translation>Create</translation>
@@ -697,18 +697,18 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     <message>
         <location line="-35"/>
         <location line="+42"/>
-        <location filename="src/mainwindow.cpp" line="-5"/>
+        <location filename="../src/mainwindow.cpp" line="-5"/>
         <location line="+10"/>
         <source>Aktualisieren</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="+2065"/>
+        <location filename="../src/mainwindow.cpp" line="+2065"/>
         <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
     <message utf8="true">
-        <location filename="src/mainwindow.ui" line="-55"/>
+        <location filename="../src/mainwindow.ui" line="-55"/>
         <source>Daueraufträge</source>
         <translation type="unfinished">Standing orders</translation>
     </message>
@@ -775,18 +775,18 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <location line="+5"/>
-        <location filename="src/mainwindow.cpp" line="-1450"/>
+        <location filename="../src/mainwindow.cpp" line="-1450"/>
         <source>Hilfe / FAQ</source>
         <translation>Help / FAQ</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="src/mainwindow.cpp" line="+1477"/>
+        <location filename="../src/mainwindow.cpp" line="+1477"/>
         <source>AqBanking einrichten ...</source>
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="-2208"/>
+        <location filename="../src/mainwindow.cpp" line="-2208"/>
         <source>AuftrÃ¤ge im Ausgang</source>
         <translation>Orders in outbox</translation>
     </message>
@@ -1101,7 +1101,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>Page_Ausgang</name>
     <message>
-        <location filename="src/pages/page_ausgang.ui" line="+14"/>
+        <location filename="../src/pages/page_ausgang.ui" line="+14"/>
         <source>Ausgang</source>
         <translation>Outbox</translation>
     </message>
@@ -1117,28 +1117,28 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="-38"/>
-        <location filename="src/pages/page_ausgang.cpp" line="+113"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="+113"/>
         <source>Auf</source>
         <translation>Up</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="src/pages/page_ausgang.cpp" line="+7"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="+7"/>
         <source>Ab</source>
         <translation>Down</translation>
     </message>
     <message>
-        <location filename="src/pages/page_ausgang.cpp" line="-21"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="-21"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
     <message utf8="true">
-        <location filename="src/pages/page_ausgang.ui" line="+51"/>
+        <location filename="../src/pages/page_ausgang.ui" line="+51"/>
         <source>Ausführen</source>
         <translation>Execute</translation>
     </message>
     <message>
-        <location filename="src/pages/page_ausgang.cpp" line="+1"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="+1"/>
         <source>AusgewÃ¤hlten Job lÃ¶schen</source>
         <translation>Delete selected job</translation>
     </message>
@@ -1211,7 +1211,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/main.cpp" line="+133"/>
+        <location filename="../src/main.cpp" line="+133"/>
         <source>%1 bereits gestartet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1221,7 +1221,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/aqb_accountinfo.cpp" line="+193"/>
+        <location filename="../src/aqb_accountinfo.cpp" line="+193"/>
         <source>unbekannt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1266,7 +1266,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/aqb_banking.cpp" line="+176"/>
+        <location filename="../src/aqb_banking.cpp" line="+176"/>
         <location line="+118"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
@@ -1312,7 +1312,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/abt_conv.cpp" line="+60"/>
+        <location filename="../src/abt_conv.cpp" line="+60"/>
         <source>TerminÃ¼berweisung anlegen</source>
         <translation>Create scheduled transfer</translation>
     </message>
@@ -1452,7 +1452,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/abt_jobinfo.cpp" line="+301"/>
+        <location filename="../src/abt_jobinfo.cpp" line="+301"/>
         <location line="+12"/>
         <source>Von: %1 (%2 - %3)</source>
         <translation type="unfinished"></translation>
@@ -1607,7 +1607,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>abt_dialog</name>
     <message>
-        <location filename="src/dialogs/abt_dialog.ui" line="+20"/>
+        <location filename="../src/dialogs/abt_dialog.ui" line="+20"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1623,12 +1623,12 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="src/dialogs/abt_dialog.cpp" line="+121"/>
+        <location filename="../src/dialogs/abt_dialog.cpp" line="+121"/>
         <source>Diese Meldung nicht wieder anzeigen</source>
         <translation>Do not show this message again</translation>
     </message>
     <message>
-        <location filename="src/dialogs/abt_dialog.cpp" line="-17"/>
+        <location filename="../src/dialogs/abt_dialog.cpp" line="-17"/>
         <source>%1 - %2</source>
         <translation></translation>
     </message>
@@ -1636,7 +1636,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>abt_job_ctrl</name>
     <message>
-        <location filename="src/abt_job_ctrl.cpp" line="+74"/>
+        <location filename="../src/abt_job_ctrl.cpp" line="+74"/>
         <source>Job-Controller erstellt (%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1694,7 +1694,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>abt_settings</name>
     <message>
-        <location filename="src/abt_settings.cpp" line="+152"/>
+        <location filename="../src/abt_settings.cpp" line="+152"/>
         <source>Unbekannt</source>
         <translation type="unfinished">unknown</translation>
     </message>
@@ -1702,19 +1702,19 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>page_history</name>
     <message>
-        <location filename="src/pages/page_history.ui" line="+14"/>
+        <location filename="../src/pages/page_history.ui" line="+14"/>
         <source>Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+57"/>
-        <location filename="src/pages/page_history.cpp" line="+149"/>
+        <location filename="../src/pages/page_history.cpp" line="+149"/>
         <source>Neu von Vorlage</source>
         <translation>New from template</translation>
     </message>
     <message>
         <location line="+32"/>
-        <location filename="src/pages/page_history.cpp" line="+10"/>
+        <location filename="../src/pages/page_history.cpp" line="+10"/>
         <source>Exportieren</source>
         <translation>Export</translation>
     </message>
@@ -1724,7 +1724,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/pages/page_history.cpp" line="+9"/>
+        <location filename="../src/pages/page_history.cpp" line="+9"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
@@ -1838,7 +1838,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>page_log</name>
     <message>
-        <location filename="src/pages/page_log.ui" line="+14"/>
+        <location filename="../src/pages/page_log.ui" line="+14"/>
         <source>Frame</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1846,7 +1846,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetAccountData</name>
     <message>
-        <location filename="src/widgets/widgetaccountdata.cpp" line="+117"/>
+        <location filename="../src/widgets/widgetaccountdata.cpp" line="+117"/>
         <source>Name</source>
         <translation></translation>
     </message>
@@ -1909,7 +1909,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetKnownDatedTransfers</name>
     <message>
-        <location filename="src/widgets/widgetknowndatedtransfers.cpp" line="+70"/>
+        <location filename="../src/widgets/widgetknowndatedtransfers.cpp" line="+70"/>
         <source>LÃ¶schen</source>
         <translation type="unfinished">Delete</translation>
     </message>
@@ -1972,7 +1972,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetKnownStandingOrders</name>
     <message>
-        <location filename="src/widgets/widgetknownstandingorders.cpp" line="+78"/>
+        <location filename="../src/widgets/widgetknownstandingorders.cpp" line="+78"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
@@ -2035,7 +2035,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetPurpose</name>
     <message>
-        <location filename="src/widgets/widgetpurpose.cpp" line="+52"/>
+        <location filename="../src/widgets/widgetpurpose.cpp" line="+52"/>
         <source>(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen Ã¼brig]</source>
         <translation>(max %1 lines, a %2 chars) [%3 chars and %4 lines left]</translation>
     </message>
@@ -2043,7 +2043,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetRecurrence</name>
     <message>
-        <location filename="src/widgets/widgetrecurrence.cpp" line="+46"/>
+        <location filename="../src/widgets/widgetrecurrence.cpp" line="+46"/>
         <source>wÃ¶chentlich</source>
         <translation>weekly</translation>
     </message>
@@ -2141,7 +2141,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetTextKey</name>
     <message>
-        <location filename="src/widgets/widgettextkey.cpp" line="+44"/>
+        <location filename="../src/widgets/widgettextkey.cpp" line="+44"/>
         <source>TextschlÃ¼ssel</source>
         <translation type="unfinished">key</translation>
     </message>
@@ -2159,7 +2159,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetTransfer</name>
     <message>
-        <location filename="src/widgets/widgettransfer.cpp" line="+77"/>
+        <location filename="../src/widgets/widgettransfer.cpp" line="+77"/>
         <source>nicht Implementiert</source>
         <translation type="unfinished"></translation>
     </message>
