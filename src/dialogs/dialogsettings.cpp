@@ -63,9 +63,13 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	//ensure that the state of the checkboxes "refresh at start" are consistant
 	this->onCheckBoxRefereshAtStartStateChanged(0);
 
-	this->ui->actionNewProfile->setIcon(QIcon::fromTheme("document-new"));
-	this->ui->actionEditProfile->setIcon(QIcon::fromTheme("document-edit"));
-	this->ui->actionDeleteProfile->setIcon(QIcon::fromTheme("edit-delete"));
+	QIcon ico;
+	ico = QIcon::fromTheme("document-new", QIcon(":/icons/document-new"));
+	this->ui->actionNewProfile->setIcon(ico);
+	ico = QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit"));
+	this->ui->actionEditProfile->setIcon(ico);
+	ico = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+	this->ui->actionDeleteProfile->setIcon(ico);
 
 	connect(this->ui->checkBox_getBalance, SIGNAL(stateChanged(int)),
 		this, SLOT(onCheckBoxRefereshAtStartStateChanged(int)));

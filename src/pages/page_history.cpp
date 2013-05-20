@@ -55,9 +55,13 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	this->ui->toolButton_new->setIcon(QIcon::fromTheme("document-new"));
-	this->ui->toolButton_export->setIcon(QIcon::fromTheme("document-export"));
-	this->ui->toolButton_delete->setIcon(QIcon::fromTheme("edit-delete"));
+	QIcon ico;
+	ico = QIcon::fromTheme("document-new", QIcon(":/icons/document-new"));
+	this->ui->toolButton_new->setIcon(ico);
+	ico = QIcon::fromTheme("document-export", QIcon(":/icons/document-export"));
+	this->ui->toolButton_export->setIcon(ico);
+	ico = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+	this->ui->toolButton_delete->setIcon(ico);
 
 	this->history = history;
 	this->createActions();

@@ -98,14 +98,14 @@ void Page_Ausgang::createAllActions()
 	this->actDelete = new QAction(this);
 	this->actDelete->setText(tr("Löschen"));
 	this->actDelete->setToolTip(tr("Ausgewählten Job löschen"));
-	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+	this->actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
 	connect(this->actDelete, SIGNAL(triggered()),
 		this, SLOT(onActionDeleteTriggered()));
 
 	this->actEdit = new QAction(this);
 	this->actEdit->setText(tr("Bearbeiten"));
 	this->actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
-	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
+	this->actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
 	connect(this->actEdit, SIGNAL(triggered()),
 		this, SLOT(onActionEditTriggered()));
 

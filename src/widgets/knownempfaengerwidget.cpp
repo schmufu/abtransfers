@@ -162,19 +162,19 @@ void KnownEmpfaengerWidget::CreateAllActions()
 	this->actNew = new QAction(this);
 	this->actNew->setText(tr("Neu"));
 	this->actNew->setToolTip(tr("Einen neuen Empfänger anlegen"));
-	this->actNew->setIcon(QIcon::fromTheme("document-new"));
+	this->actNew->setIcon(QIcon::fromTheme("document-new", QIcon(":/icons/document-new")));
 	connect(this->actNew, SIGNAL(triggered()), this, SLOT(onActionNewTriggered()));
 
 	this->actDelete = new QAction(this);
 	this->actDelete->setText(tr("Löschen"));
 	this->actDelete->setToolTip(tr("Ausgewählten Empfänger löschen"));
-	this->actDelete->setIcon(QIcon::fromTheme("edit-delete"));
+	this->actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
 	connect(this->actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
 	this->actEdit = new QAction(this);
 	this->actEdit->setText(tr("Ändern"));
 	this->actEdit->setToolTip(tr("Ausgewählten Empfänger bearbeiten"));
-	this->actEdit->setIcon(QIcon::fromTheme("document-edit"));
+	this->actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
 	connect(this->actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 }
 

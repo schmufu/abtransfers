@@ -13,6 +13,13 @@
         <file alias="ok">../images/ok-icon_16x16.png</file>
         <file alias="knownEmpfaenger">../images/system-users.png</file>
         <file alias="history-icon">../images/folder_clock_128x128.png</file>
+	<file alias="document-save">../images/document-save_16x16.png</file>
+	<file alias="document-edit">../images/document-edit_16x16.png</file>
+	<file alias="document-new">../images/document-new_16x16.png</file>
+	<file alias="document-export">../images/document-export_16x16.png</file>
+	<file alias="edit-redo">../images/edit-redo_16x16.png</file>
+	<file alias="edit-undo">../images/edit-undo_16x16.png</file>
+	<file alias="dialog-close">../images/dialog-close_16x16.png</file>
     </qresource>
     <qresource prefix="/text" lang="de">
         <file alias="help">helpText.html</file>
