@@ -17,15 +17,9 @@
  * Dont forget: svn propset svn:keywords "Date Author Rev HeadURL" filename
  ******************************************************************************
  * $HeadURL$
-<<<<<<< local
  * $Author$
  * $Date$
  * $Rev$
-=======
- * $Author$
- * $Date$
- * $Rev$
->>>>>>> other
  *
  * description:
  *

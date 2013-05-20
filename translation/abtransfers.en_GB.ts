@@ -98,12 +98,12 @@
         <location filename="../src/dialogs/dialogsettings.ui" line="+26"/>
         <location line="+30"/>
         <source>Einstellungen</source>
-        <translation type="unfinished">Settings</translation>
+        <translation>Settings</translation>
     </message>
     <message utf8="true">
         <location line="-14"/>
         <source>Hier können die Einstellungen von AB-Transfers verändert werden.&lt;br /&gt;Wenn eine Einstellung noch nicht unterstützt wird ist sie deaktiviert, zeigt aber das aktuelle Verhalten richtig an.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Here you can change AB-Transfers&apos; setting.&lt;br /&gt;In case a setting is not yet supported it will be deactivated, but will show the correct behaviour.</translation>
     </message>
     <message utf8="true">
         <location line="+30"/>
@@ -143,6 +143,7 @@ p, li { white-space: pre-wrap; }
 
 In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</source>
+        <translatorcomment>Typo im Deutschen &quot;Standard&quot;</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
