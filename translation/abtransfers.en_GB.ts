@@ -692,13 +692,14 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="+68"/>
+        <location line="+144"/>
         <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="+35"/>
         <location line="+42"/>
-        <location filename="../src/mainwindow.cpp" line="-63"/>
+        <location filename="../src/mainwindow.cpp" line="-207"/>
         <location line="+10"/>
         <source>Anlegen</source>
         <translation>Create</translation>
@@ -862,11 +863,12 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     </message>
     <message>
         <location line="+8"/>
+        <location line="+215"/>
         <source>TerminÃ¼berweisungen</source>
         <translation>Scheduled transfers</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="-199"/>
         <source>Dock Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
