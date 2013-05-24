@@ -694,6 +694,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <location filename="../src/mainwindow.cpp" line="+68"/>
         <location line="+144"/>
         <source>DauerauftrÃ¤ge</source>
+        <translatorcomment>Last two missing translations (1/2)</translatorcomment>
         <translation>Standing orders</translation>
     </message>
     <message>
@@ -865,6 +866,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
         <location line="+8"/>
         <location line="+215"/>
         <source>TerminÃ¼berweisungen</source>
+        <translatorcomment>Last two missing translations (2/2)</translatorcomment>
         <translation>Scheduled transfers</translation>
     </message>
     <message>
