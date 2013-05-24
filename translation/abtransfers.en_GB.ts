@@ -339,7 +339,7 @@ nach dem starten zum Insititut übertragen.</source>
     <message utf8="true">
         <location line="+5"/>
         <source>automatisch ausführen</source>
-        <extracomment>GK-Schreibung (auch zur Konsistenz im Dialog)</extracomment>
+        <translatorcomment>GK-Schreibung (auch zur Konsistenz im Dialog)</translatorcomment>
         <translation type="unfinished">Execute automatically</translation>
     </message>
     <message>
@@ -1968,7 +1968,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+40"/>
         <source>keine terminierten Ãberweisungen fÃ¼r dieses Konto vorhanden</source>
-        <extracomment>Große Schreibweise am Satzanfang im deutschen Original korrigieren!</extracomment>
+        <translatorcomment>Große Schreibweise am Satzanfang im deutschen Original korrigieren!</translatorcomment>
         <translation type="unfinished">No scheduled transfers for this account</translation>
     </message>
     <message>
@@ -2033,7 +2033,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+93"/>
         <source>keine bekannten DauerauftrÃ¤ge fÃ¼r dieses Konto vorhanden</source>
-        <extracomment>Große Schreibweise am Satzanfang im deutschen Original korrigieren!</extracomment>
+        <translatorcomment>Große Schreibweise am Satzanfang im deutschen Original korrigieren!</translatorcomment>
         <translation type="unfinished">No standing orders for this account</translation>
     </message>
     <message>
