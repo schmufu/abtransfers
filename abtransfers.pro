@@ -128,13 +128,16 @@ MOC_DIR = tmp
 # This variable specifies the directory where all intermediate objects should be placed.
 OBJECTS_DIR = tmp
 UI_DIR = tmp
-SVN_REVISION = $$system(svnversion -n | sed 's/[ ]/_/g' ) # current repository revision (without newline) and consider case of non-svn-directory
+
+# Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
+SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9]//g') # current repository revision (without newline) and consider case of non-svn-directory
+HG_REVISION =  $$system(hg sum | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
 
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
 # MVW_VERSION=\\\"$${VERSION}\\\" \ # MVW_VERSION_EXTRA=\"\\\"'development-version-test test-test'\\\"\" #damit auch space möglich ist
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
-DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
+DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
     ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 
@@ -143,4 +146,5 @@ DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
 # QT_NO_DEBUG_STREAM
 # we want to stop the build and output some information (only for debug)
 # error(Subversion revision: $$SVN_REVISION)
-message(Subversion revision: $$SVN_REVISION)
+message(Subversion revision: $${SVN_REVISION}$${HG_REVISION})
+#message(Mercurial revision: $${HG_REVISION})
