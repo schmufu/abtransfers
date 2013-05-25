@@ -147,7 +147,9 @@ p, li { white-space: pre-wrap; }
 In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</source>
         <translatorcomment>Typo im Deutschen &quot;Standard&quot;</translatorcomment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Defines the default folder for saving data.
+
+This folder will keep e.g. exported data (not yet implemented).</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -168,7 +170,10 @@ gespeichert (noch nicht implementiert).</source>
 
 Dies umfasst die Konto-Salden von allen Accounts sowie
 die Daueraufträge und terminierten Überweisungen.</source>
-        <translation type="unfinished"></translation>
+        <translation>To this file the current data will be saved.
+
+The data are the account balances of all accounts,
+as well as standing orders and scheduled transfers.</translation>
     </message>
     <message utf8="true">
         <location line="+16"/>
@@ -176,17 +181,20 @@ die Daueraufträge und terminierten Überweisungen.</source>
 
 Alle Aufträge die zum Institut übertragen wurden
 werden in dieser Datei gespeichert.</source>
-        <translation type="unfinished"></translation>
+        <translation>Into this file the history will be saved.
+
+All orders having been sent to the
+institute will be saved in this file.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Historie</source>
-        <translation type="unfinished">History</translation>
+        <translation>History</translation>
     </message>
     <message utf8="true">
         <location line="+19"/>
         <source>Alle bekannten Empfänger werden in dieser Datei gespeichert.</source>
-        <translation type="unfinished"></translation>
+        <translation>All known addressees will be saved in this file.</translation>
     </message>
     <message utf8="true">
         <location line="+7"/>
@@ -201,7 +209,11 @@ die Debug-Ausgaben finden nur noch auf der Konsole statt.
 Wenn aktiviert können alle Meldungen die normalerweise nur
 auf der Konsole stattfinden auch in dem Debug-Info Fenster
 angezeigt werden.</source>
-        <translation type="unfinished"></translation>
+        <translation>If deactivated the Debug-Info dialog will be deactivated and
+all debug output will be sent only to the console.
+
+If activated all messages which normally appear only on the 
+console will also be shown in the Debug-Info dialog.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -214,7 +226,9 @@ angezeigt werden.</source>
 Empfänger noch nicht in den bekannten Empfängern
 vorhanden ist wird dieser automatisch zu diesen
 hinzugefügt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If an order was executed and its addressee is not yet
+present in the list of known addressees it will be appended
+to the list.</translation>
     </message>
     <message utf8="true">
         <location line="+6"/>
@@ -244,7 +258,8 @@ p, li { white-space: pre-wrap; }
         <location line="+6"/>
         <source>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
 beim starten des Programms angezeigt.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Großschreibung im deutschen &quot;starten&quot;</translatorcomment>
+        <translation type="unfinished">If activated a hint about possible charges will be shown at program startup.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -256,7 +271,7 @@ beim starten des Programms angezeigt.</source>
         <source>Wenn aktiviert wird jedes mal wenn ein Auftrag erfolgreich
 zum Ausgang hinzugefügt wurde ein entsprechender
 Hinweis angezeigt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated a hint is displayed for every job successfully put into the outbox.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -298,7 +313,8 @@ p, li { white-space: pre-wrap; }
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Großschreibung von &quot;starten&quot;</translatorcomment>
+        <translation>If activated the balances for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -310,7 +326,7 @@ Kontostandes in den Ausgang eingestellt.</source>
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated the standing orders for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -322,7 +338,7 @@ Daueraufträge in den Ausgang eingestellt.</source>
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -334,7 +350,9 @@ terminierten Überweisungen in den Ausgang eingestellt.</source>
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
 nach dem starten zum Insititut übertragen.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Typo im Deutschen für &quot;Institut&quot;</translatorcomment>
+        <translation>If activated all selected jobs will not only be placed in
+the outbox but also sent to the institute right away.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -376,7 +394,7 @@ nach dem starten zum Insititut übertragen.</source>
     <message utf8="true">
         <location line="+3"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profil kann für den Import verwendet werden.&lt;/p&gt;&lt;p&gt;Diese Eigenschaft wird über das Profil gesetzt oder nicht, wenn gesetzt kann dieses Profil für das Importieren von Daten verwendet werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profile can be used for import.&lt;/p&gt;&lt;p&gt;This property is being set by the profile or not. If set this profile can be used for importing data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -391,7 +409,7 @@ nach dem starten zum Insititut übertragen.</source>
     <message utf8="true">
         <location line="+3"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profil kann für den Export verwendet werden.&lt;/p&gt;&lt;p&gt;Diese Eigenschaft wird durch die Beschreibung des Profils gesetzt und kennzeichnet ob ein Profil für den Export von Daten verwendet werden kann oder nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Profile can be used for export.&lt;/p&gt;&lt;p&gt;This property is being set by the profile and defines whether a profiel can be used for data export or not.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -406,7 +424,7 @@ nach dem starten zum Insititut übertragen.</source>
     <message utf8="true">
         <location line="+3"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Globales Profil.&lt;/p&gt;&lt;p&gt;Wenn dieses Profil global ist existiert es unter den Profilen von AqBanking und kann von jedem verwendet aber nicht geändert werden.&lt;/p&gt;&lt;p&gt;Ein nicht globales Profil kann nur durch den aktuellen Benutzer verwendet und auch geändert werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Globale profile.&lt;/p&gt;&lt;p&gt;If this profile is global it exists among AqBanking&apos;s profiles and can be used by it, but not be edit.&lt;/p&gt;&lt;p&gt;A non-global profile can only be used by the current user and can not be edited.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -421,7 +439,7 @@ nach dem starten zum Insititut übertragen.</source>
     <message utf8="true">
         <location line="+3"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wenn ein Profil als Favorit markiert ist wird es im Context-Menü für den Export separat angezeigt und kann somit schnell gefunden und verwendet werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If a profile is marked as favourite it will be shown in export&apos;s context menu separately and can therefore quickly be found and be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -452,7 +470,11 @@ nach dem starten zum Insititut übertragen.</source>
 Je nachdem an welcher Position ein Auftrag zur Bank gesendet wird kann dies Auswirkungen auf die Antwort der Bank haben.
 
 Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stelle ein neuer Aufträge in den Ausgang eingereiht wird!</source>
-        <translation type="unfinished"></translation>
+        <translation>If this option is activated the predefined order of jobs in the outbox can be changed.
+
+Sending jobs in a different order to the bank can influence the answer returned by the latter.
+
+Also a change of a job&apos;s position may have influence on the position where new jobs will be inserted.</translation>
     </message>
     <message utf8="true">
         <location line="+7"/>
@@ -513,7 +535,8 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     <message>
         <location line="+122"/>
         <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Im Deutschen Original fehlt das schließende &lt;/i&gt;-Tag!</translatorcomment>
+        <translation type="unfinished">You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;(&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -624,7 +647,7 @@ Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stell
     <message>
         <location line="+0"/>
         <source>BLZ</source>
-        <translation>Bank-ID</translation>
+        <translation type="unfinished">Bank code</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -1845,7 +1868,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+1"/>
         <source>Beim Export trat ein Fehler auf!&lt;/ br&gt;Bitte kontrollieren Sie die exportierten Daten und wiederholen ggf. den Vorgang!</source>
-        <translatorcomment>&lt;br&gt; tag is wrong here</translatorcomment>
+        <translatorcomment>&lt;br&gt;-Tag fehlerhaft</translatorcomment>
         <translation type="unfinished">An error occurred during export!&lt;br /&gt;Please check the exported data and repeat the procedure if necessary!</translation>
     </message>
     <message>
