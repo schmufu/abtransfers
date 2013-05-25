@@ -110,11 +110,11 @@ OTHER_FILES += \
     translation/abtransfers.en_GB.ts
 RESOURCES += src/resources.qrc
 
-// This is valid for Linux in general:
+# This is valid for Linux in general:
 unix: INCLUDEPATH += /usr/include/aqbanking5 \
     /usr/include/gwenhywfar4
 
-// This is only valid for Marko's MacPorts-Installation:
+# This is only valid for Marko's MacPorts-Installation:
 macx: INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
     /opt/macports-test/include/gwenhywfar4
 
