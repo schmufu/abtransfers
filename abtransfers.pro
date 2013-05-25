@@ -121,9 +121,7 @@ MOC_DIR = tmp
 # This variable specifies the directory where all intermediate objects should be placed.
 OBJECTS_DIR = tmp
 UI_DIR = tmp
-#SVN_REVISION = $$system(svnversion -n) # current repository revision (without newline)
-
-SVN_REVISION = "build_on_mac"
+SVN_REVISION = $$system(svnversion -n | sed 's/[ ]/_/g' ) # current repository revision (without newline) and consider case of non-svn-directory
 
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
