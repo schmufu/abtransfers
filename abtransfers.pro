@@ -109,8 +109,15 @@ OTHER_FILES += \
     src/helpText.html \
     translation/abtransfers.en_GB.ts
 RESOURCES += src/resources.qrc
-INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
+
+// This is valid for Linux in general:
+unix: INCLUDEPATH += /usr/include/aqbanking5 \
+    /usr/include/gwenhywfar4
+
+// This is only valid for Marko's MacPorts-Installation:
+macx: INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
     /opt/macports-test/include/gwenhywfar4
+
 LIBS += -laqbanking \
     -lgwenhywfar \
     -lgwengui-qt4
