@@ -538,7 +538,7 @@ void MainWindow::createDockKnownRecipients()
 //private
 void MainWindow::createDockStandingOrders()
 {
-	QDockWidget *dock = new QDockWidget("Daueraufträge", this);
+	QDockWidget *dock = new QDockWidget(tr("Daueraufträge"), this);
 	dock->setObjectName("dockStandingOrders");
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();
@@ -612,7 +612,7 @@ void MainWindow::dockStandingOrdersSetAccounts()
 //private
 void MainWindow::createDockDatedTransfers()
 {
-	QDockWidget *dock = new QDockWidget("Terminüberweisungen", this);
+	QDockWidget *dock = new QDockWidget(tr("Terminüberweisungen"), this);
 	dock->setObjectName("dockDatedTransfers");
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();

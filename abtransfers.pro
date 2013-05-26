@@ -7,12 +7,14 @@ DESTDIR = build
 TEMPLATE = app
 
 packagesExist(QtWebKit) {
-	message("using QtWebKit")
-	QT += webkit
-	DEFINES += USE_QT_WEBKIT
+    message("using QtWebKit")
+    QT += webkit
+    DEFINES += USE_QT_WEBKIT
 } else {
-	message("QtWebKit not available, using QLabel for display")
+    message("QtWebKit not available, using QLabel for display")
 }
+
+TRANSLATIONS = translation/abtransfers.en_GB.ts
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -106,10 +108,18 @@ FORMS += src/mainwindow.ui \
 OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
-    src/helpText.html
+    src/helpText.html \
+    translation/abtransfers.en_GB.ts
 RESOURCES += src/resources.qrc
-INCLUDEPATH += /usr/include/aqbanking5 \
+
+# This is valid for Linux in general:
+unix: INCLUDEPATH += /usr/include/aqbanking5 \
     /usr/include/gwenhywfar4
+
+# This is only valid for Marko's MacPorts-Installation:
+macx: INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
+    /opt/macports-test/include/gwenhywfar4
+
 LIBS += -laqbanking \
     -lgwenhywfar \
     -lgwengui-qt4
@@ -120,13 +130,16 @@ MOC_DIR = tmp
 # This variable specifies the directory where all intermediate objects should be placed.
 OBJECTS_DIR = tmp
 UI_DIR = tmp
-SVN_REVISION = $$system(svnversion -n) # current repository revision (without newline)
+
+# Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
+SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9]//g') # current repository revision (without newline) and consider case of non-svn-directory
+HG_REVISION =  $$system(hg sum | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
 
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
 # MVW_VERSION=\\\"$${VERSION}\\\" \ # MVW_VERSION_EXTRA=\"\\\"'development-version-test test-test'\\\"\" #damit auch space möglich ist
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
-DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
+DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
     ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 
@@ -135,4 +148,5 @@ DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
 # QT_NO_DEBUG_STREAM
 # we want to stop the build and output some information (only for debug)
 # error(Subversion revision: $$SVN_REVISION)
-message(Subversion revision: $$SVN_REVISION)
+message(Subversion revision: $${SVN_REVISION}$${HG_REVISION})
+#message(Mercurial revision: $${HG_REVISION})
