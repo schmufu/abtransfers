@@ -131,9 +131,12 @@ MOC_DIR = tmp
 OBJECTS_DIR = tmp
 UI_DIR = tmp
 
+#compile translations, so that they are useable for the resources file
+system(lrelease $${TRANSLATIONS})
+
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
-SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9]//g') # current repository revision (without newline) and consider case of non-svn-directory
-HG_REVISION =  $$system(hg sum | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
+SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9MSP:]//g') # current repository revision (without newline) and consider case of non-svn-directory
+HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
 
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
