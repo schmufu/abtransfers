@@ -65,32 +65,6 @@ int main(int argc, char *argv[])
 	qInstallMsgHandler(myMessageHandler);
 
 
-	/* At the moment, AB-Transfers is only available in German.
-	 * We set the language for the qt library to german, so that the
-	 * Qt text messages are also in german.
-	 */
-
-	qDebug() << "current system locale name:"
-		 << QLocale::system().name();
-	qDebug() << "search path for qt library translations:"
-		 << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-
-	QTranslator qtTranslator;
-	qDebug() << "setting default language for qt to: qt_de_DE "
-		 << "(regardless of the current system language)";
-	qtTranslator.load("qt_de_DE",
-			  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-	app.installTranslator(&qtTranslator);
-
-	/* The following could be enabled when translations for the program
-	 * are done. The search path for the application specific translation
-	 * must be adjusted!
-	 */
-//	QTranslator myappTranslator;
-//	myappTranslator.load("abtransfers_" + QLocale::system().name());
-//	app.installTranslator(&myappTranslator);
-
-
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);
 	#else

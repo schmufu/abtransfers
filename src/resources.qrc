@@ -24,4 +24,7 @@
     <qresource prefix="/text" lang="de">
         <file alias="help">helpText.html</file>
     </qresource>
+    <qresource>
+	<file>../translation/abtransfers.en_GB.qm</file>
+    </qresource>
 </RCC>

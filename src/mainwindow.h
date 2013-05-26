@@ -49,6 +49,7 @@
 
 class widgetTransfer;
 class widgetRecurrence;
+class TranslationChooser;
 
 namespace Ui {
 	class MainWindow;
@@ -108,6 +109,8 @@ private:
 	QDockWidget *dock_KnownDatedTransfers;
 
 	QTimer *timer;
+
+	TranslationChooser *translations;
 
 	void createActions();
 	void createMenus();

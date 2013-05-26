@@ -68,6 +68,7 @@
 
 #include "dialogs/dialogsettings.h"
 #include "dialogs/abt_dialog.h"
+#include "translationchooser.h"
 
 #include "abt_parser.h"
 
@@ -90,6 +91,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->dock_KnownStandingOrders = NULL;
 	this->dock_KnownDatedTransfers = NULL;
 	this->dock_Accounts = NULL;
+
+	//TODO: the last selected language should be restored at startup
+	this->translations = new TranslationChooser(QLocale::system(), this);
+	QAction *langMenu = this->ui->menuEinstellungen->addMenu(
+					this->translations->languageMenu());
+	langMenu->setText(tr("Sprache"));
 
 	//All accounts from AqBanking were created (this->accounts).
 	this->loadAccountData(); //Now the account data can be loaded
