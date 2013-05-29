@@ -109,7 +109,8 @@ OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html \
-    translation/abtransfers.en_GB.ts
+    translation/abtransfers.en_GB.ts \
+    translation/README.translations
 RESOURCES += src/resources.qrc
 
 # This is valid for Linux in general:
