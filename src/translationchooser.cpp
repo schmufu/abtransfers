@@ -188,7 +188,8 @@ void TranslationChooser::loadSupportedTranslations()
 		qDebug() << "Translations -"
 			 << "searching:" << location;
 		QDir dir(location);
-		QStringList fileNames = dir.entryList(QStringList("*.qm"),
+		QString nameFilter = this->appFilename + QString("*.qm");
+		QStringList fileNames = dir.entryList(QStringList(nameFilter),
 						      QDir::Files, QDir::Name);
 
 		QMutableStringListIterator i(fileNames);
