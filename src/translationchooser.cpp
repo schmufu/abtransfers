@@ -137,8 +137,10 @@ TranslationChooser::TranslationChooser(QLocale locale /* = QLocale() */,
 
 	this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
 	this->activeTranslators.clear();
+	this->langMenu = NULL;
 
 	this->loadSupportedTranslations();
+	this->createLanguageMenu();
 
 	this->setLanguage(locale);
 }
@@ -154,8 +156,10 @@ TranslationChooser::TranslationChooser(QString language /* = QString() */,
 	this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
 	this->activeTranslators.clear();
 	this->activeLanguageName = ""; //is updated by setLanguage();
+	this->langMenu = NULL;
 
 	this->loadSupportedTranslations();
+	this->createLanguageMenu();
 
 	this->setLanguage(language);
 }
@@ -173,6 +177,8 @@ TranslationChooser::~TranslationChooser()
 	foreach (QString key, this->supportedTranslations.keys()) {
 		delete this->supportedTranslations.take(key);
 	}
+
+	delete this->langMenu;
 }
 
 //private
@@ -356,6 +362,30 @@ QString TranslationChooser::localeName(const QString &qmFile) const
 	return localeStr;
 }
 
+//private
+/** \brief creates a menu with all supported languages
+ */
+void TranslationChooser::createLanguageMenu()
+{
+	if (this->langMenu)
+		delete this->langMenu;
+
+	this->langMenu = new QMenu();
+	QActionGroup *actGroup = new QActionGroup(this->langMenu);
+	actGroup->setExclusive(true);
+
+	foreach (const QString langName, this->supportedLanguages()) {
+		QAction *action = actGroup->addAction(langName);
+		action->setCheckable(true);
+	}
+
+	this->langMenu->addActions(actGroup->actions());
+
+	connect(actGroup, SIGNAL(triggered(QAction*)),
+		this, SLOT(actionTriggered(QAction*)));
+}
+
+//private
 /** \brief creates all relevant data for the supplied qmFile
  *
  * \attention The caller is responsible for deleting the returned pointer!
@@ -519,35 +549,23 @@ void TranslationChooser::setLanguage(const QLocale &locale)
 //private slot
 /** \brief slot for the QActions supplied by the languageMenu()
  */
-void TranslationChooser::actionTriggered()
+void TranslationChooser::actionTriggered(QAction *action)
 {
-	QAction *action = qobject_cast<QAction*>(QObject::sender());
-
 	if (!action)
-		return; //not called from a QAction!
+		return;
 
 	this->setLanguage(action->text());
 }
 
 //public
-/** \brief creates a menu with all supported translations
- *
- * \warning the caller is responsible for deletion of the returned pointer!
+/** \brief returns a menu with all supported translations
  *
  * All included actions are connected to the TranslationChooser class and
  * can switch the language without any further connections.
  */
-QMenu *TranslationChooser::languageMenu()
+QMenu *TranslationChooser::languageMenu() const
 {
-	QMenu *menu = new QMenu();
-
-	//the default language should also be selectable
-	foreach (const QString langName, this->supportedLanguages()) {
-		QAction *action = menu->addAction(langName);
-		connect(action, SIGNAL(triggered()), this, SLOT(actionTriggered()));
-	}
-
-	return menu;
+	return this->langMenu;
 }
 
 //public

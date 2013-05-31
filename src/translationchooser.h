@@ -40,6 +40,7 @@
 class QString;
 class QTranslator;
 class QMenu;
+class QAction;
 
 class TranslationChooserData;
 
@@ -105,6 +106,7 @@ private:
 
 	QString activeLanguageName;
 	QLocale activeLocale;
+	QMenu *langMenu;
 
 
 	void loadSupportedTranslations();
@@ -113,13 +115,14 @@ private:
 	static QString languageName(const QString &qmFile);
 	static double languageVersion(const QString &qmFile);
 	QString localeName(const QString &qmFile) const;
+	void createLanguageMenu();
 
 	TranslationChooserData *translationData(const QString &qmFile) const;
 
 	void uninstallAllTranslators();
 public:
 	QStringList supportedLanguages();
-	QMenu *languageMenu();
+	QMenu *languageMenu() const;
 	const QString &currentLanguage();
 
 signals:
@@ -130,7 +133,7 @@ public slots:
 	void setLanguage(const QLocale &locale);
 
 private slots:
-	void actionTriggered();
+	void actionTriggered(QAction *action);
 
 };
 
