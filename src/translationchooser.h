@@ -117,6 +117,9 @@ private:
 	QString localeName(const QString &qmFile) const;
 	void createLanguageMenu();
 
+	void installQtTranslation(const QString &locale);
+	void installAppTranslation(const QString &qmFile);
+
 	TranslationChooserData *translationData(const QString &qmFile) const;
 
 	void uninstallAllTranslators();

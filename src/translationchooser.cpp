@@ -127,7 +127,7 @@ bool TranslationChooserData::isValid() const
 
 
 
-/** \brief constructor with a QLocale to set at start.
+/** \brief constructor with a QLocale to set
  */
 TranslationChooser::TranslationChooser(QLocale locale /* = QLocale() */,
 				       QObject *parent /* = NULL */ ) :
@@ -139,13 +139,13 @@ TranslationChooser::TranslationChooser(QLocale locale /* = QLocale() */,
 	this->activeTranslators.clear();
 	this->langMenu = NULL;
 
+	//the calling order is important!
 	this->loadSupportedTranslations();
-	this->createLanguageMenu();
-
 	this->setLanguage(locale);
+	this->createLanguageMenu();
 }
 
-/** \brief constructor with a QString for the language name to set at start.
+/** \brief constructor with a QString for the language name to set
  */
 TranslationChooser::TranslationChooser(QString language /* = QString() */,
 				       QObject *parent /* = NULL */ ) :
@@ -158,10 +158,10 @@ TranslationChooser::TranslationChooser(QString language /* = QString() */,
 	this->activeLanguageName = ""; //is updated by setLanguage();
 	this->langMenu = NULL;
 
+	//the calling order is important!
 	this->loadSupportedTranslations();
-	this->createLanguageMenu();
-
 	this->setLanguage(language);
+	this->createLanguageMenu();
 }
 
 /** \brief uninstalls all installed QTranslators
@@ -377,12 +377,56 @@ void TranslationChooser::createLanguageMenu()
 	foreach (const QString langName, this->supportedLanguages()) {
 		QAction *action = actGroup->addAction(langName);
 		action->setCheckable(true);
+		action->setChecked(langName == this->activeLanguageName);
 	}
 
 	this->langMenu->addActions(actGroup->actions());
 
 	connect(actGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(actionTriggered(QAction*)));
+}
+
+//private
+/** \brief sets the translations for Qt strings to \a locale
+ */
+void TranslationChooser::installQtTranslation(const QString &locale)
+{
+	QTranslator *qtTranslator = new QTranslator();
+	QString libDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+	if (!qtTranslator->load("qt_" + locale, libDir)) {
+		if (!locale.startsWith("en")) {
+			//the locale en is built in qt, this could not be loaded
+			qWarning() << Q_FUNC_INFO << "could not load qt"
+				   << "translations for locale" << locale;
+		}
+		delete qtTranslator;
+	} else { //load successfull
+		qDebug() << Q_FUNC_INFO
+			 << "installing qt translations for" << locale;
+		qApp->installTranslator(qtTranslator);
+		this->activeTranslators.append(qtTranslator);
+	}
+}
+
+//private
+/** \brief loads the translations for the application from \a qmFile (if existent)
+ */
+void TranslationChooser::installAppTranslation(const QString &qmFile)
+{
+	if (qmFile.isEmpty())
+		return; //translation not possible
+
+	QTranslator *translator = new QTranslator();
+	if (!translator->load(qmFile)) {
+		qWarning() << Q_FUNC_INFO << "loading translations from"
+			   << qmFile << "failed";
+		delete translator;
+	} else {
+		qDebug() << Q_FUNC_INFO
+			 << "installing translations from" << qmFile;
+		qApp->installTranslator(translator);
+		this->activeTranslators.append(translator);
+	}
 }
 
 //private
@@ -437,6 +481,11 @@ QStringList TranslationChooser::supportedLanguages()
 
 //public slot
 /** \brief installs the translations for the given language
+ *
+ * If the default language is supplied, a translation is only performed if a
+ * translation file is available. Nevertheless the Qt translations are taking
+ * place (Otherwise Strings from Qt would be in English if German is the
+ * default language).
  */
 void TranslationChooser::setLanguage(const QString &language)
 {
@@ -445,61 +494,27 @@ void TranslationChooser::setLanguage(const QString &language)
 	const TranslationChooserData *tData;
 	tData = this->supportedTranslations.value(language, NULL);
 
-	//if the default language is selected, we only install a translation
-	//if a translation file is available. Nevertheless we try to install
-	//the default qt locale (Otherwise Strings from Qt would be in
-	//English if German is the default language).
+	bool defaultLang = language.toLower() == TC_DEFAULT_LANGUAGE.toLower();
 
-	if (tData == NULL && (language.toLower() != TC_DEFAULT_LANGUAGE.toLower())) {
-		qWarning() << Q_FUNC_INFO
-			   << "translations to" << language << "not supported!";
-		return; //nothing to install
-	}
-
-	if (tData == NULL && (language.toLower() == TC_DEFAULT_LANGUAGE.toLower())) {
-		qtLocale = TC_DEFAULT_LOCALE;
-	}
-
-	if (tData != NULL) {
+	if (tData) {
 		qtLocale = tData->localeName;
 		qmFile = tData->filename;
+	} else { //tData == NULL
+		if (defaultLang) {
+			qtLocale = TC_DEFAULT_LOCALE;
+		} else {
+			qWarning() << Q_FUNC_INFO << "translations to"
+				   << language << "not supported!";
+			return; //nothing to install
+		}
 	}
 
 	this->activeLanguageName = language;
 
 	this->uninstallAllTranslators();
 
-	//Install translation for build in Qt Strings
-	QTranslator *qtTranslator = new QTranslator();
-	if (!qtTranslator->load("qt_" + qtLocale,
-				QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
-		if (!qtLocale.startsWith("en")) {
-			//the locale en is built in qt, so this could never be loaded
-			qWarning() << Q_FUNC_INFO << "could not load qt"
-				   << "translations for locale" << qtLocale;
-		}
-		delete qtTranslator;
-	} else {
-		qDebug() << Q_FUNC_INFO
-			 << "installing qt translations for" << qtLocale;
-		qApp->installTranslator(qtTranslator);
-		this->activeTranslators.append(qtTranslator);
-	}
-
-	//Install translations for the application (if file exists)
-	if (!qmFile.isEmpty()) {
-		QTranslator *translator = new QTranslator();
-		if (!translator->load(qmFile)) {
-			qWarning() << Q_FUNC_INFO << "loading translations from"
-				   << qmFile << "failed";
-			delete translator;
-		} else {
-			qDebug() << Q_FUNC_INFO
-				 << "installing translations from" << qmFile;
-			qApp->installTranslator(translator);
-			this->activeTranslators.append(translator);
-		}
-	}
+	this->installQtTranslation(qtLocale);
+	this->installAppTranslation(qmFile);
 
 	emit this->languageChanged(language);
 }
@@ -518,31 +533,53 @@ void TranslationChooser::setLanguage(const QString &language)
  * If a supported translation is found for the given locale, the search is
  * stopped and the function setLanguage(QString language) is called with
  * the supported language.
+ *
+ * If no locale string matches the next try is to match against the language
+ * code from the locale. For 'en_US' this is 'en'. If a supported language file
+ * name locale start with 'en', then this file is used for translation.
+ * This mostly only takes places when no language is selected by the user
+ * (first start) or when this function is explicitly called.
  */
 void TranslationChooser::setLanguage(const QLocale &locale)
 {
-	QString language = "";
+	QString language = TC_DEFAULT_LANGUAGE;
 	QString localeStr = locale.name().toLower();
+	QString languageCode;
+
+	qDebug() << Q_FUNC_INFO << "localeStr =" << localeStr;
 
 	QStringList localeStrList;
 	localeStrList.append(localeStr);
 	while (localeStr.contains("_")) {
-		int dashPos = localeStr.lastIndexOf("_");
-		localeStr.truncate(dashPos);
+		int pos = localeStr.lastIndexOf("_");
+		localeStr.truncate(pos);
+		qDebug() << Q_FUNC_INFO << "localeStr =" << localeStr;
 		localeStrList.append(localeStr);
 	}
 
-	foreach (const TranslationChooserData *data, this->supportedTranslations.values()) {
-		foreach (const QString locStr, localeStrList) {
+	foreach (const QString locStr, localeStrList) {
+		//search all xx_XX names first, then the truncated
+		foreach (const TranslationChooserData *data,
+			 this->supportedTranslations.values()) {
 			if (data->localeName.toLower() == locStr) {
 				language = data->languageName;
-				break; //language found
+				goto LANGUAGE_FOUND; //break both foreach
 			}
 		}
-		if (!language.isEmpty())
-			break; //possible language found, cancel first foreach
 	}
 
+	//No exact translation found. Try to find a locale that starts with
+	//the language code (the first match is used)
+	languageCode = localeStrList.last(); //last is the shortest!
+	foreach (const TranslationChooserData *data,
+		 this->supportedTranslations.values()) {
+		if (data->localeName.startsWith(languageCode)) {
+			language = data->languageName;
+			goto LANGUAGE_FOUND;
+		}
+	}
+
+	LANGUAGE_FOUND:
 	this->setLanguage(language);
 }
 
