@@ -54,7 +54,8 @@ SOURCES += src/main.cpp \
     src/dialogs/dialogsettings.cpp \
     src/dialogs/abt_dialog.cpp \
     src/pages/page_history.cpp \
-    src/aqb_imexporters.cpp
+    src/aqb_imexporters.cpp \
+    src/translationchooser.cpp
 HEADERS += src/mainwindow.h \
     src/widgets/bankaccountswidget.h \
     src/aqb_accountinfo.h \
@@ -93,7 +94,8 @@ HEADERS += src/mainwindow.h \
     src/dialogs/dialogsettings.h \
     src/dialogs/abt_dialog.h \
     src/pages/page_history.h \
-    src/aqb_imexporters.h
+    src/aqb_imexporters.h \
+    src/translationchooser.h
 FORMS += src/mainwindow.ui \
     src/widgets/bankaccountswidget.ui \
     src/widgets/debugdialogwidget.ui \
@@ -107,7 +109,8 @@ OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html \
-    translation/abtransfers.en_GB.ts
+    translation/abtransfers.en_GB.ts \
+    translation/README.translations
 RESOURCES += src/resources.qrc
 
 # This is valid for Linux in general:
@@ -129,9 +132,12 @@ MOC_DIR = tmp
 OBJECTS_DIR = tmp
 UI_DIR = tmp
 
+#compile translations, so that they are useable for the resources file
+system(lrelease $${TRANSLATIONS})
+
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
-SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9]//g') # current repository revision (without newline) and consider case of non-svn-directory
-HG_REVISION =  $$system(hg sum | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
+SVN_REVISION = $$system(svnversion -n | sed 's/[^0-9MSP:]//g') # current repository revision (without newline) and consider case of non-svn-directory
+HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: \\([0-9^:]*\\):.*$/\\1/\") # repo checked out with Mercurial and hgsubversion?
 
 # revision as define for the Preprocessor ( \\\" so that \" goes to the Preprocessor)
 # DEFINES += MVW_SVN_REVISION=\\\"$${SVN_REVISION}\\\" \
