@@ -21,8 +21,7 @@ else
 	if [ `uname` = "Darwin" ]; then
 		echo "Releasing translations into app package..."
 		${BIN}/lrelease translation/abtransfers.en_GB.ts
-		cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}/abtransfers.en_US.qm
-		mv translation/abtransfers.en_GB.qm ${APP_RESOURCES}
+		cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}
 	else
 		echo "Releasing translations for Linux not yet implemented."
 	fi
