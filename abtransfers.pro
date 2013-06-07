@@ -6,12 +6,13 @@ TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
 
-packagesExist(QtWebKit) {
-    message("using QtWebKit")
+USEWEBKIT=$$system(pkg-config QtWebKit && echo "available")
+contains(USEWEBKIT, "available") {
+    message("QtWebKit available")
     QT += webkit
     DEFINES += USE_QT_WEBKIT
 } else {
-    message("QtWebKit not available, using QLabel for display")
+    message("QtWebKit not available, using QLabel")
 }
 
 TRANSLATIONS = translation/abtransfers.en_GB.ts
