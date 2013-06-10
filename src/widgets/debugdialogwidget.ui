@@ -20,7 +20,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Hier werden, wenn dies über die Einstellungen festgelegt ist, zusätzliche Debug Ausgaben des Programms angezeit. Mithilfe dieser Informationen ist es teilweise leichter möglich einen aufgetretenen Fehler zu beheben.</string>
+      <string>Hier werden, wenn dies über die Einstellungen festgelegt ist, zusätzliche Debug Ausgaben des Programms angezeigt. Mithilfe dieser Informationen ist es teilweise leichter möglich einen aufgetretenen Fehler zu beheben.</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -48,7 +48,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_save">
        <property name="text">
-        <string>Inhalt Speichern</string>
+        <string>Inhalt speichern</string>
        </property>
       </widget>
      </item>

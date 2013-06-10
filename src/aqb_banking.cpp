@@ -183,10 +183,10 @@ bool aqb_banking::checkAccount(const QString &country, const QString &branchId,
 		result = QObject::tr("Bank unbekannt");
 		break;
 	case AB_BankInfoCheckResult_UnknownResult:
-		result = QObject::tr("Ergebniss unbekannt");
+		result = QObject::tr("Ergebnis unbekannt");
 		break;
 	default:
-		result = QObject::tr("Unbekannter Ergebnisstyp");
+		result = QObject::tr("Unbekannter Ergebnistyp");
 		break;
 	}
 

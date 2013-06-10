@@ -74,7 +74,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeEuTransfer :
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
-		this->setWindowTitle(tr("nicht Implementiert"));
+		this->setWindowTitle(tr("Nicht implementiert"));
 		QLabel *notImplementet = new QLabel(tr(
 				"<h3><font color=red>"
 				"Der \"Job\" '%1' ist leider noch nicht "

@@ -651,7 +651,7 @@ void DialogSettings::on_actionEditProfile_triggered()
 				 "Profil zugreifen und nicht mehr auf die "
 				 "ursprüngliche Version!<br />"
 				 "(<i>Nach dem löschen des lokalen Profils würde "
-				 "das globale wieder verwendet werden können)")
+				 "das globale wieder verwendet werden können</i>)")
 			      .arg(profileName);
 
 		QMessageBox::information(this, tr("Globales Profil ändern"), msg);
@@ -706,7 +706,7 @@ void DialogSettings::on_actionEditProfile_triggered()
 					 "unerwarteter Fehler aufgetreten.<br />"
 					 "In den Debug-Ausgaben können evt. "
 					 "weitere nützliche Informationen "
-					 "enthalten sein").arg(profileName));
+					 "enthalten sein.").arg(profileName));
 	}
 
 	//im-/export profiles might be changed, reaload them
@@ -817,7 +817,7 @@ void DialogSettings::on_actionNewProfile_triggered()
 					 "unerwarteter Fehler aufgetreten.<br />"
 					 "In den Debug-Ausgaben können evt. "
 					 "weitere nützliche Informationen "
-					 "enthalten sein").arg(newname));
+					 "enthalten sein.").arg(newname));
 	}
 
 	//profile were saved, free the DB_NODE
