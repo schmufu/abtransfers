@@ -106,6 +106,8 @@ public:
 	void setAdvancedOption(const QString &option, bool value);
 	void deleteAdvancedOption(const QString &option);
 
+	QString language() const;
+
 	void saveColWidth(const QString &name, int col, int width);
 	int getColWidth(const QString &name, int col, int def = 100);
 
@@ -121,6 +123,8 @@ public slots:
 	void onReplaceKnownRecipient(int position, abt_EmpfaengerInfo *newRecipient);
 	void addKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
 	void deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo);
+
+	void setLanguage(const QString &language);
 };
 
 #endif // TRANS_SETTINGS_H
