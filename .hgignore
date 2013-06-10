@@ -1,3 +1,4 @@
 syntax: glob
 abtransfers.pro.user
 build
+translation/abtransfers.*.qm

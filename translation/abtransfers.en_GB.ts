@@ -1662,7 +1662,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>TranslationChooser</name>
     <message>
-        <location filename="../src/translationchooser.cpp" line="+304"/>
+        <location filename="../src/translationchooser.cpp" line="+311"/>
         <source>LANGUAGE</source>
         <extracomment>The name of the language (in native spelling). This text is used for the menu entry name for this translation.</extracomment>
         <translation>English (GB)</translation>
