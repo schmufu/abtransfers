@@ -194,7 +194,7 @@ void KnownEmpfaengerWidget::DisplayEmpfaenger()
 		ui->treeWidget->setColumnCount(1);
 
 		Item = new QTreeWidgetItem;
-		Item->setData(0, Qt::DisplayRole, tr("keine bekannten Empfänger vorhanden"));
+		Item->setData(0, Qt::DisplayRole, tr("Keine bekannten Empfänger vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
 		ui->treeWidget->addTopLevelItem(Item);
 		//vertical strech auf den Wert der enthaltenen Items setzen

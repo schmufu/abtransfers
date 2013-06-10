@@ -120,7 +120,7 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
-			      tr("keine terminierten Überweisungen für dieses Konto vorhanden"));
+			      tr("Keine terminierten Überweisungen für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
 		this->treeWidget->addTopLevelItem(Item);
 

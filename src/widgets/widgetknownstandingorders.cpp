@@ -181,7 +181,7 @@ void widgetKnownStandingOrders::refreshDisplayedItems(const aqb_AccountInfo *acc
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
-			      tr("keine bekannten Daueraufträge für dieses Konto vorhanden"));
+			      tr("Keine bekannten Daueraufträge für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //item not selectable
 		this->treeWidget->addTopLevelItem(Item);
 

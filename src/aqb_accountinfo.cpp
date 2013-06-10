@@ -190,7 +190,7 @@ void aqb_AccountInfo::updateAllInternalData()
 	type = AB_Account_GetAccountType(this->m_account);
 	switch (type) {
 		case AB_AccountType_Unknown:
-			this->m_AccountType = QObject::tr("unbekannt"); break;
+			this->m_AccountType = QObject::tr("Unbekannt"); break;
 		case AB_AccountType_Bank:
 			this->m_AccountType = QObject::tr("Girokonto"); break;
 		case AB_AccountType_CreditCard:

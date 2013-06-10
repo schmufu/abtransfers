@@ -278,7 +278,7 @@ void MainWindow::TimerTimeOut()
 	this->timer = NULL;
 
 	abt_dialog dia(this,
-		       tr("eventuelle Kosten"),
+		       tr("Eventuelle Kosten"),
 		       tr("<h4>Aufträge können gebührenpflichtig sein</h4>"
 			  ""
 			  "Bei einigen Kreditinstituten/Banken können Gebühren für "
@@ -854,7 +854,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 void MainWindow::on_actionAbout_abTransfers_triggered()
 {
 	QDialog *about = new QDialog(this);
-	about->setWindowTitle(tr("about %1").arg(qApp->applicationName()));
+	about->setWindowTitle(tr("Über %1").arg(qApp->applicationName()));
 
 	//show the license text on pushButton click
 	QDialog *licenseDialog = new QDialog(about);

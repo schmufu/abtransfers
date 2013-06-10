@@ -453,7 +453,7 @@ void page_history::onActExportSelected()
 
 	if (err != 0) {
 		QMessageBox::critical(this, tr("Export fehlerhaft"),
-				      tr("Beim Export trat ein Fehler auf!</ br>"
+				      tr("Beim Export trat ein Fehler auf!<br />"
 					 "Bitte kontrollieren Sie die exportierten "
 					 "Daten und wiederholen ggf. den "
 					 "Vorgang!"),

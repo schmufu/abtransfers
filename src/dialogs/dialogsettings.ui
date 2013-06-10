@@ -116,7 +116,7 @@ p, li { white-space: pre-wrap; }
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Legt das Standart Verzeichnis zum Speichern von Daten fest.
+                 <string>Legt das Standard Verzeichnis zum Speichern von Daten fest.
 
 In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</string>
@@ -345,10 +345,10 @@ p, li { white-space: pre-wrap; }
                <widget class="QCheckBox" name="checkBox_warnCosts">
                 <property name="toolTip">
                  <string>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
-beim starten des Programms angezeigt.</string>
+beim Starten des Programms angezeigt.</string>
                 </property>
                 <property name="text">
-                 <string>eventuelle Kosten</string>
+                 <string>Eventuelle Kosten</string>
                 </property>
                </widget>
               </item>
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Wenn aktiviert wird automatisch beim starten des
+                 <string>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</string>
                 </property>
@@ -466,7 +466,7 @@ Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</string>
                 </property>
                 <property name="text">
-                 <string>terminierte Überweisungen</string>
+                 <string>Terminierte Überweisungen</string>
                 </property>
                </widget>
               </item>
@@ -488,10 +488,10 @@ terminierten Überweisungen in den Ausgang eingestellt.</string>
                 <property name="toolTip">
                  <string>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
-nach dem starten zum Insititut übertragen.</string>
+nach dem starten zum Institut übertragen.</string>
                 </property>
                 <property name="text">
-                 <string>automatisch ausführen</string>
+                 <string>Automatisch ausführen</string>
                 </property>
                </widget>
               </item>
@@ -685,7 +685,7 @@ nach dem starten zum Insititut übertragen.</string>
             <string>Version</string>
            </property>
            <property name="toolTip">
-            <string>Die Verison der Profils</string>
+            <string>Die Version des Profils</string>
            </property>
           </column>
          </widget>
