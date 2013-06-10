@@ -92,8 +92,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->dock_KnownDatedTransfers = NULL;
 	this->dock_Accounts = NULL;
 
-	//TODO: the last selected language should be restored at startup
-	this->translations = new TranslationChooser(QLocale::system(), this);
+
+	QString lang = settings->language();
+	if (lang.isEmpty()) {
+		//try to use the current system locale
+		this->translations = new TranslationChooser(QLocale::system(), this);
+	} else {
+		this->translations = new TranslationChooser(lang, this);
+	}
+	//keep the settings updated by each language change
+	connect(this->translations, SIGNAL(languageChanged(QString)),
+		settings, SLOT(setLanguage(QString)));
+
 	QAction *langMenu = this->ui->menuEinstellungen->addMenu(
 					this->translations->languageMenu());
 	langMenu->setText(tr("Sprache"));

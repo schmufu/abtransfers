@@ -307,6 +307,15 @@ void abt_settings::deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo)
 	emit this->recipientsListChanged();
 }
 
+//public slot
+/** \brief stores the language wanted by the user at the settings
+ *
+ * Therefore the selected language can be restored at next start.
+ */
+void abt_settings::setLanguage(const QString &language)
+{
+	this->settings->setValue("Options/Language", language);
+}
 
 
 
@@ -454,6 +463,14 @@ void abt_settings::deleteAdvancedOption(const QString &option)
 	this->settings->beginGroup("Options/Advanced/");
 	this->settings->remove(option);
 	this->settings->endGroup();
+}
+
+//public
+/** \brief returns the language set by the user (or an empty string if nothing set)
+ */
+QString abt_settings::language() const
+{
+	return this->settings->value("Options/Language", QString("")).toString();
 }
 
 
