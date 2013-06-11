@@ -63,6 +63,86 @@ public:
 	abt_transactionLimits(const AB_TRANSACTION_LIMITS *el);
 	~abt_transactionLimits();
 
+        //! \deprecated Only use this for Debugging!
+        void printAllAsDebug() const;
+
+
+        int getMaxLenLocalName() const { return this->m_MaxLenLocalName; }
+        int getMinLenLocalName()  const { return this->m_MinLenLocalName; }
+        int getMaxLenRemoteName() const { return this->m_MaxLenRemoteName; }
+        int getMinLenRemoteName() const { return this->m_MinLenRemoteName; }
+        int getMaxLinesRemoteName() const { return this->m_MaxLinesRemoteName; }
+        int getMinLinesRemoteName() const { return this->m_MinLinesRemoteName; }
+        int getMaxLenLocalBankCode() const { return this->m_MaxLenLocalBankCode; }
+        int getMinLenLocalBankCode() const { return this->m_MinLenLocalBankCode; }
+        int getMaxLenLocalAccountNumber() const { return this->m_MaxLenLocalAccountNumber; }
+        int getMinLenLocalAccountNumber() const { return this->m_MinLenLocalAccountNumber; }
+        int getMaxLenLocalSuffix() const { return this->m_MaxLenLocalSuffix; }
+        int getMinLenLocalSuffix() const { return this->m_MinLenLocalSuffix; }
+        int getMaxLenRemoteBankCode() const { return this->m_MaxLenRemoteBankCode; }
+        int getMinLenRemoteBankCode() const { return this->m_MinLenRemoteBankCode; }
+        int getMaxLenRemoteAccountNumber() const { return this->m_MaxLenRemoteAccountNumber; }
+        int getMinLenRemoteAccountNumber() const { return this->m_MinLenRemoteAccountNumber; }
+        int getMaxLenRemoteSuffix() const { return this->m_MaxLenRemoteSuffix; }
+        int getMinLenRemoteSuffix() const { return this->m_MinLenRemoteSuffix; }
+        int getMaxLenRemoteIban() const { return this->m_MaxLenRemoteIban; }
+        int getMinLenRemoteIban() const { return this->m_MinLenRemoteIban; }
+        int getMaxLenTextKey() const { return this->m_MaxLenTextKey; }
+        int getMinLenTextKey() const { return this->m_MinLenTextKey; }
+        QStringList getValuesTextKey() const { return this->m_ValuesTextKey; }
+        QString getTextKeys() const { return this->m_TextKeys; }
+        int getMaxLenCustomerReference() const { return this->m_MaxLenCustomerReference; }
+        int getMinLenCustomerReference() const { return this->m_MinLenCustomerReference; }
+        int getMaxLenBankReference() const { return this->m_MaxLenBankReference; }
+        int getMinLenBankReference() const { return this->m_MinLenBankReference; }
+        int getMaxLenPurpose() const { return this->m_MaxLenPurpose; }
+        int getMinLenPurpose() const { return this->m_MinLenPurpose; }
+        int getMaxLinesPurpose() const { return this->m_MaxLinesPurpose; }
+        int getMinLinesPurpose() const { return this->m_MinLinesPurpose; }
+        int getMinValueSetupTime() const { return this->m_MinValueSetupTime; }
+        int getMaxValueSetupTime() const { return this->m_MaxValueSetupTime; }
+        QStringList getValuesCycleWeek() const { return this->m_ValuesCycleWeek; }
+        QStringList getValuesCycleMonth() const { return this->m_ValuesCycleMonth; }
+        QStringList getValuesExecutionDayWeek() const { return this->m_ValuesExecutionDayWeek; }
+        QStringList getValuesExecutionDayMonth() const { return this->m_ValuesExecutionDayMonth; }
+        int getAllowMonthly() const { return this->m_AllowMonthly; }
+        int getAllowWeekly() const { return this->m_AllowWeekly; }
+        int getAllowChangeRecipientAccount() const { return this->m_AllowChangeRecipientAccount; }
+        int getAllowChangeRecipientName() const { return this->m_AllowChangeRecipientName; }
+        int getAllowChangeValue() const { return this->m_AllowChangeValue; }
+        int getAllowChangeTextKey() const { return this->m_AllowChangeTextKey; }
+        int getAllowChangePurpose() const { return this->m_AllowChangePurpose; }
+        int getAllowChangeFirstExecutionDate() const { return this->m_AllowChangeFirstExecutionDate; }
+        int getAllowChangeLastExecutionDate() const { return this->m_AllowChangeLastExecutionDate; }
+        int getAllowChangeCycle() const { return this->m_AllowChangeCycle; }
+        int getAllowChangePeriod() const { return this->m_AllowChangePeriod; }
+        int getAllowChangeExecutionDay() const { return this->m_AllowChangeExecutionDay; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+private:
 	/** \name Issuer Name
 	    Limits for the issuer name. */
 	/// @{
@@ -318,8 +398,6 @@ public:
 
 	/// @}
 
-	//! \deprecated Only use this for Debugging!
-	void printAllAsDebug() const;
 };
 
 #endif // ABT_TRANSACTIONLIMITS_H

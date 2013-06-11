@@ -510,36 +510,36 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 	limits->printAllAsDebug();
 
         if (this->m_localAccount != NULL) {
-                this->m_localAccount->setLimitMaxLenAccountNumber(limits->m_MaxLenLocalAccountNumber);
-                this->m_localAccount->setLimitMaxLenBankCode(limits->m_MaxLenLocalBankCode);
-                this->m_localAccount->setLimitMaxLenName(limits->m_MaxLenLocalName);
+                this->m_localAccount->setLimitMaxLenAccountNumber(limits->getMaxLenLocalAccountNumber());
+                this->m_localAccount->setLimitMaxLenBankCode(limits->getMaxLenLocalBankCode());
+                this->m_localAccount->setLimitMaxLenName(limits->getMaxLenLocalName());
 	}
 
         if (this->m_remoteAccount != NULL) {
-                this->m_remoteAccount->setLimitAllowChangeAccountNumber(limits->m_AllowChangeRecipientAccount);
-                this->m_remoteAccount->setLimitAllowChangeBankCode(limits->m_AllowChangeRecipientAccount);
-                this->m_remoteAccount->setLimitAllowChangeBankName(limits->m_AllowChangeRecipientAccount);
-                this->m_remoteAccount->setLimitAllowChangeName(limits->m_AllowChangeRecipientName);
-                this->m_remoteAccount->setLimitMaxLenAccountNumber(limits->m_MaxLenRemoteAccountNumber);
-                this->m_remoteAccount->setLimitMaxLenBankCode(limits->m_MaxLenRemoteBankCode);
-                this->m_remoteAccount->setLimitMaxLenName(limits->m_MaxLenRemoteName);
-                this->m_remoteAccount->setLimitMaxLenIban(limits->m_MaxLenRemoteIban);
+                this->m_remoteAccount->setLimitAllowChangeAccountNumber(limits->getAllowChangeRecipientAccount());
+                this->m_remoteAccount->setLimitAllowChangeBankCode(limits->getAllowChangeRecipientAccount());
+                this->m_remoteAccount->setLimitAllowChangeBankName(limits->getAllowChangeRecipientAccount());
+                this->m_remoteAccount->setLimitAllowChangeName(limits->getAllowChangeRecipientName());
+                this->m_remoteAccount->setLimitMaxLenAccountNumber(limits->getMaxLenRemoteAccountNumber());
+                this->m_remoteAccount->setLimitMaxLenBankCode(limits->getMaxLenRemoteBankCode());
+                this->m_remoteAccount->setLimitMaxLenName(limits->getMaxLenRemoteName());
+                this->m_remoteAccount->setLimitMaxLenIban(limits->getMaxLenRemoteIban());
 	}
 
         if (this->m_value != NULL) {
-                this->m_value->setLimitAllowChange(limits->m_AllowChangeValue);
+                this->m_value->setLimitAllowChange(limits->getAllowChangeValue());
 	}
 
         if (this->m_purpose != NULL) {
-                this->m_purpose->setLimitAllowChange(limits->m_AllowChangePurpose);
-                this->m_purpose->setLimitMaxLines(limits->m_MaxLinesPurpose);
-                this->m_purpose->setLimitMaxLen(limits->m_MaxLenPurpose);
+                this->m_purpose->setLimitAllowChange(limits->getAllowChangePurpose());
+                this->m_purpose->setLimitMaxLines(limits->getMaxLinesPurpose());
+                this->m_purpose->setLimitMaxLen(limits->getMaxLenPurpose());
 	}
 
         if (this->m_textKey != NULL) {
                 int oldKey = this->m_textKey->getTextKey();
 		QList<int> allowedTextKeys;
-                foreach (QString key, limits->m_ValuesTextKey) {
+                foreach (QString key, limits->getValuesTextKey()) {
 			allowedTextKeys.append(key.toInt());
 		}
                 this->m_textKey->fillTextKeys(&allowedTextKeys);
@@ -547,32 +547,32 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		//Liste nicht vorhanden ist oder ungültig (-1) ist wird
 		//automatisch der erste Wert der neuen Liste gewählt.
                 this->m_textKey->setTextKey(oldKey);
-                this->m_textKey->setLimitAllowChange(limits->m_AllowChangeTextKey);
+                this->m_textKey->setLimitAllowChange(limits->getAllowChangeTextKey());
 	}
 
         if (this->m_recurrence != NULL) {
 		//Es müssen zwingend zuerst die Werte und danach die AllowChange
 		//Parameter gesetzt werden!
-                this->m_recurrence->setLimitValuesCycleMonth(limits->m_ValuesCycleMonth);
-                this->m_recurrence->setLimitValuesCycleWeek(limits->m_ValuesCycleWeek);
-                this->m_recurrence->setLimitValuesExecutionDayMonth(limits->m_ValuesExecutionDayMonth);
-                this->m_recurrence->setLimitValuesExecutionDayWeek(limits->m_ValuesExecutionDayWeek);
+                this->m_recurrence->setLimitValuesCycleMonth(limits->getValuesCycleMonth());
+                this->m_recurrence->setLimitValuesCycleWeek(limits->getValuesCycleWeek());
+                this->m_recurrence->setLimitValuesExecutionDayMonth(limits->getValuesExecutionDayMonth());
+                this->m_recurrence->setLimitValuesExecutionDayWeek(limits->getValuesExecutionDayWeek());
 
-                this->m_recurrence->setLimitAllowChangeCycle(limits->m_AllowChangeCycle);
-                this->m_recurrence->setLimitAllowChangeExecutionDay(limits->m_AllowChangeExecutionDay);
-                this->m_recurrence->setLimitAllowChangePeriod(limits->m_AllowChangePeriod);
-                this->m_recurrence->setLimitAllowMonthly(limits->m_AllowMonthly);
-                this->m_recurrence->setLimitAllowWeekly(limits->m_AllowWeekly);
-                this->m_recurrence->setLimitAllowChangeFirstExecutionDate(limits->m_AllowChangeFirstExecutionDate);
-                this->m_recurrence->setLimitAllowChangeLastExecutionDate(limits->m_AllowChangeLastExecutionDate);
+                this->m_recurrence->setLimitAllowChangeCycle(limits->getAllowChangeCycle());
+                this->m_recurrence->setLimitAllowChangeExecutionDay(limits->getAllowChangeExecutionDay());
+                this->m_recurrence->setLimitAllowChangePeriod(limits->getAllowChangePeriod());
+                this->m_recurrence->setLimitAllowMonthly(limits->getAllowMonthly());
+                this->m_recurrence->setLimitAllowWeekly(limits->getAllowWeekly());
+                this->m_recurrence->setLimitAllowChangeFirstExecutionDate(limits->getAllowChangeFirstExecutionDate());
+                this->m_recurrence->setLimitAllowChangeLastExecutionDate(limits->getAllowChangeLastExecutionDate());
 	}
 
         if (this->m_datedDate != NULL) {
-                this->m_datedDate->setLimitValuesExecutionDayMonth(limits->m_ValuesExecutionDayMonth);
-                this->m_datedDate->setLimitValuesExecutionDayWeek(limits->m_ValuesExecutionDayWeek);
-                this->m_datedDate->setLimitAllowChange(limits->m_AllowChangeFirstExecutionDate);
-                this->m_datedDate->setLimitMaxValueSetupTime(limits->m_MaxValueSetupTime);
-                this->m_datedDate->setLimitMinValueSetupTime(limits->m_MinValueSetupTime);
+                this->m_datedDate->setLimitValuesExecutionDayMonth(limits->getValuesExecutionDayMonth());
+                this->m_datedDate->setLimitValuesExecutionDayWeek(limits->getValuesExecutionDayWeek());
+                this->m_datedDate->setLimitAllowChange(limits->getAllowChangeFirstExecutionDate());
+                this->m_datedDate->setLimitMaxValueSetupTime(limits->getMaxValueSetupTime());
+                this->m_datedDate->setLimitMinValueSetupTime(limits->getMinValueSetupTime());
 	}
 
 }
@@ -747,7 +747,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		//Überprüfung das keine Zeile länger ist als erlaubt
 		QList<int> tooLong;
 		for (int i=0; i<purpose.size(); ++i) {
-                        if (purpose.at(i).length() > this->m_limits->m_MaxLenPurpose) {
+                        if (purpose.at(i).length() > this->m_limits->getMaxLenPurpose()) {
 				tooLong.append(i+1);
 			}
 		}
@@ -769,7 +769,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		}
 
 		//Überprüfung das nicht mehr Zeilen eingegeben wurden als Erlaubt
-                if (purpose.size() > this->m_limits->m_MaxLinesPurpose) {
+                if (purpose.size() > this->m_limits->getMaxLinesPurpose()) {
 			errorMsg.append(tr(" - Zu viele Zeilen (%1) im Verwendungszweck<br />").arg(purpose.size()));
 		}
 
@@ -778,7 +778,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	}
 
         if (this->m_textKey != NULL) {
-                if (!this->m_limits->m_ValuesTextKey.contains(
+                if (!this->m_limits->getValuesTextKey().contains(
                                 QString("%1").arg(this->m_textKey->getTextKey()))) {
 			errorMsg.append(tr(" - Textschlüssel nicht erlaubt<br />"));
 		}
