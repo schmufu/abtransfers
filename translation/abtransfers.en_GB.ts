@@ -1194,7 +1194,8 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+37"/>
         <source>Keine AuftrÃ¤ge zum AusfÃ¼hren vorhanden</source>
-        <translation>No jobs to execute</translation>
+        <translatorcomment>Aus unerfindlichen Gründen wird dieser String im Joblog nicht übersetzt angezeigt!!! WARUM?????</translatorcomment>
+        <translation type="unfinished">No jobs to execute</translation>
     </message>
     <message>
         <location line="+24"/>
