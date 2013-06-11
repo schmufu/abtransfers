@@ -7,7 +7,7 @@
         <location filename="../src/widgets/bankaccountswidget.cpp" line="+56"/>
         <source>BLZ/Kto-Nr</source>
         <translatorcomment>Ist &quot;Bank code&quot; zu lang und &quot;Bank-ID&quot; vielleicht besser? Oder gibt&apos;s eine bessere Übersetzung?</translatorcomment>
-        <translation type="unfinished">Bank code/Account</translation>
+        <translation>Bank code/Account</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -27,7 +27,7 @@
     <message>
         <location line="+1"/>
         <source>Dispo</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -52,7 +52,7 @@
     <message>
         <location line="+1"/>
         <source>Backend</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -60,6 +60,7 @@
     <message>
         <location filename="../src/widgets/debugdialogwidget.ui" line="+14"/>
         <source>Dialog</source>
+        <translatorcomment>Sollte dieser Dialog wirklich die Überschrift &quot;Dialog&quot; haben?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
@@ -285,7 +286,9 @@ p, li { white-space: pre-wrap; }
 
 In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</source>
-        <translation type="unfinished"></translation>
+        <translation>Defines the default folder for saving data.
+
+This folder will keep e.g. exported data (not yet implemented).</translation>
     </message>
     <message utf8="true">
         <location line="+210"/>
@@ -305,12 +308,12 @@ p, li { white-space: pre-wrap; }
         <location line="+18"/>
         <source>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
 beim Starten des Programms angezeigt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated a hint about possible charges will be shown at program startup.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Eventuelle Kosten</source>
-        <translation type="unfinished"></translation>
+        <translation>Possible charges</translation>
     </message>
     <message utf8="true">
         <location line="+52"/>
@@ -385,24 +388,25 @@ the outbox but also sent to the institute right away.</translation>
         <source>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated the balances for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+41"/>
         <source>Terminierte Überweisungen</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheduled transfers</translation>
     </message>
     <message utf8="true">
         <location line="+20"/>
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
 nach dem starten zum Institut übertragen.</source>
-        <translation type="unfinished"></translation>
+        <translation>If activated all selected jobs will not only be placed in
+the outbox but also sent to the institute right away.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
         <source>Automatisch ausführen</source>
-        <translation type="unfinished"></translation>
+        <translation>Execute automatically</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -493,7 +497,7 @@ nach dem starten zum Institut übertragen.</source>
     <message>
         <location line="+3"/>
         <source>Die Version des Profils</source>
-        <translation type="unfinished"></translation>
+        <translation>The profile version</translation>
     </message>
     <message>
         <source>Die Verison der Profils</source>
@@ -583,17 +587,17 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+122"/>
         <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen&lt;/i&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;(&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;)</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Beim Ãndern des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein.</source>
-        <translation type="unfinished"></translation>
+        <translation>An unexpected error occurred when editing profile %1&lt;br /&gt;Check whether there is useful information in the debug output.</translation>
     </message>
     <message>
         <location line="+111"/>
         <source>Beim Anlegen des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein.</source>
-        <translation type="unfinished"></translation>
+        <translation>An unexpected error occurred creating profile %1.&lt;br /&gt;Check whether there is useful information in the debug output.</translation>
     </message>
     <message>
         <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen)</source>
@@ -692,7 +696,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+21"/>
         <source>Keine bekannten EmpfÃ¤nger vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>No known addressee present</translation>
     </message>
     <message>
         <source>keine bekannten EmpfÃ¤nger vorhanden</source>
@@ -780,12 +784,12 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message utf8="true">
         <location line="+213"/>
         <source>Über Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>About Qt</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
         <source>Über AB-Transfers</source>
-        <translation type="unfinished"></translation>
+        <translation>About AB-Transfers</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="+68"/>
@@ -987,12 +991,12 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="-546"/>
         <source>Eventuelle Kosten</source>
-        <translation type="unfinished"></translation>
+        <translation>Possible charges</translation>
     </message>
     <message>
         <location line="+576"/>
         <source>Ãber %1</source>
-        <translation type="unfinished"></translation>
+        <translation>About %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1320,7 +1324,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/aqb_accountinfo.cpp" line="+193"/>
         <source>Unbekannt</source>
-        <translation type="unfinished"></translation>
+        <translation>Unknown</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1392,12 +1396,12 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+3"/>
         <source>Ergebnis unbekannt</source>
-        <translation type="unfinished"></translation>
+        <translation>Result unknown</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unbekannter Ergebnistyp</source>
-        <translation type="unfinished"></translation>
+        <translation>Unknown result type</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -1532,6 +1536,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+3"/>
         <source>Neu</source>
+        <translatorcomment>Hier plötzlich Deutsch, obwohl die anderen Stati Englisch gehalten waren...</translatorcomment>
         <translation type="unfinished">New</translation>
     </message>
     <message>
@@ -1591,7 +1596,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+3"/>
         <source>Betrag: NICHT VORHANDEN (sollte nicht vorkommen)</source>
-        <translation type="unfinished"></translation>
+        <translation>Amount: NOT PRESENT (should never happen)</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -1742,6 +1747,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/dialogs/abt_dialog.ui" line="+20"/>
         <source>Dialog</source>
+        <translatorcomment>Dialogtitel so gewünscht?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1951,7 +1957,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+1"/>
         <source>Beim Export trat ein Fehler auf!&lt;br /&gt;Bitte kontrollieren Sie die exportierten Daten und wiederholen ggf. den Vorgang!</source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred during export!&lt;br /&gt;Please check the exported data and repeat the procedure if necessary!</translation>
     </message>
     <message>
         <source>Beim Export trat ein Fehler auf!&lt;/ br&gt;Bitte kontrollieren Sie die exportierten Daten und wiederholen ggf. den Vorgang!</source>
@@ -2080,7 +2086,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+40"/>
         <source>Keine terminierten Ãberweisungen fÃ¼r dieses Konto vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>No scheduled transfers for this account</translation>
     </message>
     <message>
         <source>keine terminierten Ãberweisungen fÃ¼r dieses Konto vorhanden</source>
@@ -2149,7 +2155,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+93"/>
         <source>Keine bekannten DauerauftrÃ¤ge fÃ¼r dieses Konto vorhanden</source>
-        <translation type="unfinished"></translation>
+        <translation>No standing orders for this account</translation>
     </message>
     <message>
         <source>keine bekannten DauerauftrÃ¤ge fÃ¼r dieses Konto vorhanden</source>
@@ -2316,7 +2322,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location filename="../src/widgets/widgettransfer.cpp" line="+77"/>
         <source>Nicht implementiert</source>
-        <translation type="unfinished"></translation>
+        <translation>Not implemented</translation>
     </message>
     <message>
         <location line="+1"/>
