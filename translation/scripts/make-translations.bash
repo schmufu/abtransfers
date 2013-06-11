@@ -12,10 +12,15 @@ APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/abtransf
 if [ "$1" == "up" ]
 then
 	echo "Updating translations..."
+	if [ "$2" == "noobs" ]
+	then
+		OPTIONS=-no-obsolete
+	fi
 	${BIN}/lupdate \
 		-source-language de_DE \
 		-target-language en_GB \
 		-locations relative \
+		${OPTIONS} \
 			abtransfers.pro
 else
 	if [ `uname` = "Darwin" ]; then
