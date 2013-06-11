@@ -1,4 +1,16 @@
 #!/bin/bash
+#
+# Usage:
+#
+# * extract new translations from the sources
+#     make-translations.bash up
+# 
+# * extract translations and dump all obsolete ones
+#     make-translations.bash up noobs
+#
+# * create qm file and copy it into MacOSX app package
+#     make-translations.bash
+
 
 if [ `uname` = "Darwin" ]; then
 	PREFIX=/opt/macports-test
