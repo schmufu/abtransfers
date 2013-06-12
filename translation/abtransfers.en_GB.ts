@@ -1012,7 +1012,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <source>Im Tab &apos;%1&apos; wurden Ãnderungen vorgenommen!
 
 Sollen diese Ãnderungen verworfen werden?</source>
-        <translation>There are changes on tab &apos;%1&apos;!&lt;br /&gt;Shall the be discarded?</translation>
+        <translation type="unfinished">There are changes on tab &apos;%1&apos;!&lt;br /&gt;Shall they be discarded?</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1194,8 +1194,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+37"/>
         <source>Keine AuftrÃ¤ge zum AusfÃ¼hren vorhanden</source>
-        <translatorcomment>Aus unerfindlichen Gründen wird dieser String im Joblog nicht übersetzt angezeigt!!! WARUM?????</translatorcomment>
-        <translation type="unfinished">No jobs to execute</translation>
+        <translation>No jobs to execute</translation>
     </message>
     <message>
         <location line="+24"/>
