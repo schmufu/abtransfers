@@ -463,6 +463,7 @@ the outbox but also sent to the institute right away.</translation>
 Je nachdem an welcher Position ein Auftrag zur Bank gesendet wird kann dies Auswirkungen auf die Antwort der Bank haben.
 
 Außerdem hat eine Verschiebung unter Umständen Einfluss darauf an welche Stelle ein neuer Aufträge in den Ausgang eingereiht wird!</source>
+        <translatorcomment>3. Abschnitt im Deutschen fehlerhaft.</translatorcomment>
         <translation>If this option is activated the predefined order of jobs in the outbox can be changed.
 
 Sending jobs in a different order to the bank can influence the answer returned by the latter.
