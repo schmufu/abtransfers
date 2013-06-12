@@ -71,6 +71,8 @@ protected:
 	void changeEvent(QEvent *e);
 	void closeEvent(QCloseEvent *e);
 
+	void retranslateCppCode();
+
 private:
 	Ui::MainWindow *ui;
 	aqb_Accounts *accounts;
