@@ -315,7 +315,8 @@ p, li { white-space: pre-wrap; }
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</source>
-        <translation>If activated the standing orders for all accounts will be downloaded at program startup.</translation>
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="unfinished">If activated the standing orders for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
@@ -327,7 +328,8 @@ Daueraufträge in den Ausgang eingestellt.</source>
         <source>Wenn aktiviert wird automatisch beim starten des
 Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</source>
-        <translation>If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="unfinished">If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="-36"/>
@@ -346,7 +348,8 @@ Kontostandes in den Ausgang eingestellt.</source>
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
 nach dem starten zum Institut übertragen.</source>
-        <translation>If activated all selected jobs will not only be placed in
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="unfinished">If activated all selected jobs will not only be placed in
 the outbox but also sent to the institute right away.</translation>
     </message>
     <message utf8="true">
