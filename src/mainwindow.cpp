@@ -83,16 +83,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	this->accounts = new aqb_Accounts(banking->getAqBanking());
-	this->history = new abt_history(this);
-	this->logw = new page_log();
-	this->outbox = new Page_Ausgang(settings);
-	this->dock_KnownRecipient = NULL;
-	this->dock_KnownStandingOrders = NULL;
-	this->dock_KnownDatedTransfers = NULL;
-	this->dock_Accounts = NULL;
-
-
+	//at first set the wanted language, so that all later created objects
+	//consider the translations.
 	QString lang = settings->language();
 	if (lang.isEmpty()) {
 		//try to use the current system locale
@@ -107,6 +99,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	QAction *langMenu = this->ui->menuEinstellungen->addMenu(
 					this->translations->languageMenu());
 	langMenu->setText(tr("Sprache"));
+
+
+	this->accounts = new aqb_Accounts(banking->getAqBanking());
+	this->history = new abt_history(this);
+	this->logw = new page_log();
+	this->outbox = new Page_Ausgang(settings);
+	this->dock_KnownRecipient = NULL;
+	this->dock_KnownStandingOrders = NULL;
+	this->dock_KnownDatedTransfers = NULL;
+	this->dock_Accounts = NULL;
 
 	//All accounts from AqBanking were created (this->accounts).
 	this->loadAccountData(); //Now the account data can be loaded
@@ -226,6 +228,7 @@ void MainWindow::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -262,6 +265,24 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 	this->actSaveAllData->trigger(); //save all data before quit
 	e->accept(); //now we can get closed
+}
+
+//protected
+/** \brief retranslates all strings that are created during runtime.
+ *
+ * This function is also called when a QEvent::LanguageChange event occurs.
+ *
+ * Every string that is created at code level and not in .ui file and that is
+ * visible at the time of a language change should be added here.
+ *
+ * Strings that are newly created each time must not be added.
+ */
+void MainWindow::retranslateCppCode()
+{
+	this->dock_Accounts->setWindowTitle(tr("Online Konten"));
+	this->dock_KnownDatedTransfers->setWindowTitle(tr("Terminüberweisungen"));
+	this->dock_KnownRecipient->setWindowTitle(tr("Bekannte Empfänger"));
+	this->dock_KnownStandingOrders->setWindowTitle(tr("Daueraufträge"));
 }
 
 //private Slot
