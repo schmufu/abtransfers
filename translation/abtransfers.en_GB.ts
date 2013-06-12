@@ -1012,7 +1012,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <source>Im Tab &apos;%1&apos; wurden Ãnderungen vorgenommen!
 
 Sollen diese Ãnderungen verworfen werden?</source>
-        <translation type="unfinished">There are changes on tab &apos;%1&apos;!&lt;br /&gt;Shall they be discarded?</translation>
+        <translation>There are changes on tab &apos;%1&apos;!&lt;br /&gt;Shall they be discarded?</translation>
     </message>
     <message>
         <location line="+59"/>
