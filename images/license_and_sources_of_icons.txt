@@ -1,16 +1,9 @@
 In this file the source of the icons and the corresponding license are stated.
 
 
-folder_clock_128x128.png from "Enhanced Labs Design Studio"
-http://findicons.com/icon/50642/folder_clock
-License is stated as "Gemeinfrei, nicht-kommerziell"
+The following files are copied from the oxygen theme of kde, they are used
+as a fallback option for systems that do not support Qt QIcon::fromTheme()
 
-bank-icon.png and cabinet-icon.png from "stock icons iconshock"
-http://findicons.com/icon/439796/bank
-http://findicons.com/icon/439793/cabinet
-License is stated as "Gemeinfrei, nicht-kommerziell"
-
-The following files are copied from the oxygen theme of kde
 delete-icon_16x16.png	Original: edit-delete.png
 down-icon_16x16.png	Original: go-down.png
 edit-undo.png
@@ -27,17 +20,41 @@ document-edit_16x16.png
 dialog-close_16x16.png
 document-new_16x16.png
 document-save_16x16.png
-http://www.oxygen-icons.org
-License http://creativecommons.org/licenses/by-sa/3.0/
+
+The (outdated) website is: http://www.oxygen-icons.org
+License: http://www.gnu.org/licenses/lgpl.html
+
+On Jan 12 2008 the dual license statement was removed from the sources, see
+http://websvn.kde.org/trunk/kdesupport/oxygen-icons/COPYING?r1=699615&r2=760422
 
 
-ueberweisung.png
-These icons can be used in personal as well as commercial projects.
-If used in any project, credit to the author will be appreciated.
-http://www.m-worx.net
 
 
-lastschrift.png
-ueberweisung_DA.png
-are created by me (Patrick Wacker) this are combinations of the
-above icons.
+The following icons are self created or derived from other icons (CC-BY / Free).
+You could find the sources of them in the subdirectory 'image_src'.
+
+
+transfer_form.png
+
+Self created icon. Exported from GIMP image 'image_src/transfer_form.xcf'
+which uses an exported png image from the svg graphic 'image_src/transfer_form.svg'
+
+
+bank_transfer_128x128.png
+
+Self created combination of 'transfer_form.png' and 
+'image_src/original_icons/Bank.png'.
+Bank.png is from the "Ecommerce Business" icon pack
+http://www.iconspedia.com/pack/ecommerce-business-icons-4074/
+Author: DesignContest, http://www.designcontest.com/
+License: CC Attribution, http://creativecommons.org/licenses/by/3.0/
+
+
+history_calendar_128x128.png
+log_128x128.png
+
+Self created combinations of icons from the "Yopls" icon pack
+http://www.iconspedia.com/pack/yopls-icons-3728/
+Author: Evegen, http://evgen.deviantart.com/
+License: Free
+

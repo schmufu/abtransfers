@@ -1,0 +1,3533 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="531"
+   height="374.98819"
+   id="svg4268"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="transfer_form.svg"
+   enable-background="new"
+   inkscape:export-filename="/home/storage/data/Projects/_svn_programs/abtransfers_debian_icon_replace/images/image_src/transfer_form_363x256.png"
+   inkscape:export-xdpi="61.441936"
+   inkscape:export-ydpi="61.441936">
+  <title
+     id="title6622">German transfer form</title>
+  <defs
+     id="defs4270">
+    <linearGradient
+       id="linearGradient7228"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop7230" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6049"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6051" />
+    </linearGradient>
+    <filter
+       id="filter5650"
+       inkscape:label="Drop Shadow"
+       inkscape:menu="Shadows and Glows"
+       inkscape:menu-tooltip="Adds a colorizable glow inside"
+       color-interpolation-filters="sRGB"
+       style="color-interpolation-filters:sRGB;">
+      <feGaussianBlur
+         id="feGaussianBlur5652"
+         stdDeviation="10"
+         result="result8" />
+      <feComposite
+         id="feComposite5654"
+         in2="result8"
+         result="result6"
+         in="SourceGraphic"
+         operator="in" />
+      <feComposite
+         id="feComposite5656"
+         in2="result6"
+         operator="in"
+         result="result11" />
+      <feFlood
+         id="feFlood5658"
+         result="result10"
+         in="result11"
+         flood-opacity="1"
+         flood-color="rgb(255,222,85)" />
+      <feBlend
+         id="feBlend5660"
+         in2="result10"
+         mode="normal"
+         in="result11"
+         result="result12" />
+      <feComposite
+         id="feComposite5662"
+         in2="SourceGraphic"
+         result="fbSourceGraphic"
+         operator="in"
+         in="result12" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix5772" />
+      <feFlood
+         id="feFlood5774"
+         flood-opacity="0.5"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         in="fbSourceGraphic" />
+      <feComposite
+         id="feComposite5776"
+         in2="fbSourceGraphic"
+         in="flood"
+         operator="in"
+         result="composite1" />
+      <feGaussianBlur
+         id="feGaussianBlur5778"
+         in="composite"
+         stdDeviation="1"
+         result="blur" />
+      <feOffset
+         id="feOffset5780"
+         dx="8"
+         dy="8"
+         result="offset" />
+      <feComposite
+         id="feComposite5782"
+         in2="offset"
+         in="fbSourceGraphic"
+         operator="over"
+         result="composite2" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="342.98374"
+     inkscape:cy="366.41723"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer4"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="994"
+     inkscape:window-x="-4"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     units="mm"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     borderlayer="false"
+     inkscape:showpageshadow="false"
+     inkscape:snap-to-guides="true"
+     inkscape:snap-grids="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4295"
+       empspacing="254"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       units="mm"
+       spacingx="0.01mm"
+       spacingy="0.01mm"
+       empcolor="#c10035"
+       empopacity="0.58039216" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="27,0"
+       id="guide4297" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="504,0"
+       id="guide4299" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,67.5"
+       id="guide4303" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="234,97.476378"
+       id="guide4305" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="225,127.45276"
+       id="guide4307" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="279,157.42913"
+       id="guide4309" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="288,187.40551"
+       id="guide4311" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="288,217.38189"
+       id="guide4313" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="288,247.35827"
+       id="guide4315" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="306,277.33465"
+       id="guide4317" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="297,307.31102"
+       id="guide4319" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="481.35827,72.744094"
+       id="guide4030" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504,78.059055"
+       id="guide4032" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.74409,92.232283"
+       id="guide4034" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.70866,102.72047"
+       id="guide4036" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="508.375,122.20866"
+       id="guide4038" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.88583,132.69685"
+       id="guide4040" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.67323,152.18504"
+       id="guide4042" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.81496,162.67323"
+       id="guide4044" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.81496,182.16142"
+       id="guide4046" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.74409,192.64961"
+       id="guide4048" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.74409,212.1378"
+       id="guide4050" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.70866,222.62598"
+       id="guide4052" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.74409,242.11417"
+       id="guide4054" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.70866,252.60236"
+       id="guide4056" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.70866,272.09055"
+       id="guide4058" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.74409,282.57874"
+       id="guide4060" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="504.6378,302.06693"
+       id="guide4062" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="44.716535,369"
+       id="guide4064" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="62.433071,324"
+       id="guide4066" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="80.149606,324"
+       id="guide4068" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="97.866142,324"
+       id="guide4070" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="115.58268,315"
+       id="guide4072" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="133.29921,324"
+       id="guide4074" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="151.01575,333"
+       id="guide4076" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="168.73228,324.20846"
+       id="guide4078" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="186.44882,325.09234"
+       id="guide4080" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="204.16535,328.4511"
+       id="guide4082" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="221.88189,323.8549"
+       id="guide4084" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="239.59843,321.91036"
+       id="guide4086" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="257.31496,325.62267"
+       id="guide4088" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="275.0315,325.62267"
+       id="guide4090" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="292.74803,325.4459"
+       id="guide4092" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="310.46457,325.4459"
+       id="guide4094" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="328.1811,323.32457"
+       id="guide4096" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="345.89764,321.55681"
+       id="guide4098" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="363.61417,323.32457"
+       id="guide4100" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="381.33071,324.03168"
+       id="guide4102" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="399.04724,322.26391"
+       id="guide4104" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="416.76378,324.20846"
+       id="guide4106" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="434.48031,323.32457"
+       id="guide4108" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="452.19685,328.09755"
+       id="guide4110" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="469.91339,327.21366"
+       id="guide4112" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="487.62992,317.49094"
+       id="guide4114" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="550.98047,287.90625"
+       id="guide4376" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="220.11024,212.98819"
+       id="guide6182" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="221.0315,213.90945"
+       id="guide6184" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="279.70866,215.6811"
+       id="guide6188" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="30.259843,305.22047"
+       id="guide6254" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="32.137795,306.3189"
+       id="guide6256" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="230.31496,384.31253"
+       id="guide6368" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="4.8125,323.3125"
+       id="guide6393" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="18,327.61417"
+       id="guide6395" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="248.0315,351"
+       id="guide6423" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="265.74803,351"
+       id="guide6463" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4273">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>German transfer form</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+        <dc:date>13.06.2013</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Patrick Wacker</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:language>german</dc:language>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>transfer überweisung</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:description>A form for german money transfers according to
+&quot;Richtlinien für einheitliche Zahlungsverkehrsvordrucke (2009)&quot;
+http://www.die-deutsche-kreditwirtschaft.de/uploads/media/Richtlinie-ZV-Vordrucke-2009-ZKA-final-ZKA-Deckblatt-final_01.pdf</dc:description>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer7"
+     inkscape:label="additional information"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:17.71653557;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.42000002;stroke-dasharray:none;display:inline"
+       d="m 671.87752,-185.23724 -18,0"
+       id="path3774"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="679.64008"
+       y="-182.4516"
+       id="text3776"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3778"
+         x="679.64008"
+         y="-182.4516"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono">color for yellow</tspan></text>
+    <path
+       style="fill:none;stroke:#fca311;stroke-width:17.71653557;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45;stroke-dasharray:none;display:inline"
+       d="m 671.87752,-162.88258 -18,0"
+       id="path3774-2"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="679.64008"
+       y="-160.13112"
+       id="text3776-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3778-5"
+         x="679.64008"
+         y="-160.13112"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono">color for orange</tspan></text>
+    <path
+       style="fill:none;stroke:#f74a02;stroke-width:17.71653557;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.42000002;stroke-dasharray:none;display:inline"
+       d="m 671.87752,-141.04671 -18,0"
+       id="path3774-4"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="679.64008"
+       y="-137.29182"
+       id="text3776-4-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3778-5-8"
+         x="679.64008"
+         y="-137.29182"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono">color for red</tspan></text>
+    <g
+       style="display:inline"
+       id="g4328"
+       transform="translate(111.89528,-879.99122)">
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path3885"
+         d="m 550.98425,769.78346 -0.004,-5.31496"
+         style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path3887"
+         d="m 550.97557,750.29527 0,14.17322"
+         style="fill:none;stroke:#fca311;stroke-width:0.35433072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none" />
+    </g>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3.38354778;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3467"
+       width="402.65088"
+       height="350.85605"
+       x="633.56769"
+       y="-361.81705" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
+       x="645.64398"
+       y="-349.08914"
+       id="text4237"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4239"
+         x="645.64398"
+         y="-349.08914"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono">Additional information (should be hidden on export!)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="644.68695"
+       y="-269.29016"
+       id="text4241"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4243"
+         x="644.68695"
+         y="-269.29016">Fonts:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="644.17426"
+       y="-257.95319"
+       id="text4245"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4247"
+         x="644.17426"
+         y="-257.95319">&quot;DejaVu Sans Mono&quot;: used for this information</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="644.17426"
+       y="-244.83151"
+       id="text4249"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4251"
+         x="644.17426"
+         y="-244.83151">&quot;OCRA&quot;: used for red text of the transfer form</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="644.17426"
+       y="-232.65219"
+       id="text4253"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4255"
+         x="644.17426"
+         y="-232.65219">&quot;Purisa&quot;: used for text in the form fields</tspan><tspan
+         sodipodi:role="line"
+         x="644.17426"
+         y="-220.15219"
+         id="tspan4257" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="679.64008"
+       y="-116.36897"
+       id="text4263"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4265"
+         x="679.64008"
+         y="-116.36897">used as reference for form field separators</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="645.59515"
+       y="-330.81528"
+       id="text4267"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="645.59515"
+         y="-330.81528"
+         id="tspan4271">This transfer form is used in Germany for local bank transfers.</tspan><tspan
+         sodipodi:role="line"
+         x="645.59515"
+         y="-318.31528"
+         id="tspan4275">The dimensions and colors are according to </tspan><tspan
+         sodipodi:role="line"
+         x="645.59515"
+         y="-305.81528"
+         id="tspan4294">&quot;Richtlinien für einheitliche Zahlungsverkehrsvordrucke&quot; </tspan><tspan
+         sodipodi:role="line"
+         x="645.59515"
+         y="-293.31528"
+         id="tspan4296">from &quot;Zentraler Kreditausschuss&quot;.</tspan><tspan
+         sodipodi:role="line"
+         x="645.59515"
+         y="-285.79901"
+         id="tspan4283"
+         style="font-size:5px">(http://www.die-deutsche-kreditwirtschaft.de/uploads/media/Richtlinie-ZV-Vordrucke-2009-ZKA-final-ZKA-Deckblatt-final_01.pdf)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="645.64398"
+       y="-83.011795"
+       id="text4358"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4360"
+         x="645.64398"
+         y="-83.011795">All form filling text is in the layer named &quot;Content&quot;, to</tspan><tspan
+         sodipodi:role="line"
+         x="645.64398"
+         y="-70.511795"
+         id="tspan4362">export a form that could be used for manual filling this</tspan><tspan
+         sodipodi:role="line"
+         x="645.64398"
+         y="-58.011795"
+         id="tspan4364">layer could be disabled during export.</tspan><tspan
+         sodipodi:role="line"
+         x="645.64398"
+         y="-45.511795"
+         id="tspan4366" /><tspan
+         sodipodi:role="line"
+         x="645.64398"
+         y="-33.011795"
+         id="tspan4368">The same applies to all other layers.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono"
+       x="644.31641"
+       y="-219.25691"
+       id="text4259"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4261"
+         x="644.31641"
+         y="-219.25691">&quot;Pecita&quot;: used for numbers in the form fields and the signature</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Background"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.035423;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter5650)"
+       id="rect3955"
+       width="530.875"
+       height="374.86319"
+       x="0.062484421"
+       y="0.062494934"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+  </g>
+  <g
+     inkscape:label="FormBG"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-677.37401)"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+       d="m 0,67.677166 531,4e-6"
+       id="path3879"
+       inkscape:connector-curvature="0"
+       transform="translate(0,677.37401)"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+       d="m 0,307.48819 531,0"
+       id="path3881"
+       inkscape:connector-curvature="0"
+       transform="translate(0,677.37401)"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+       d="m 504,68.562993 0,238.039367"
+       id="path3897"
+       inkscape:connector-curvature="0"
+       transform="translate(0,677.37401)"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+       d="m 27,745.937 0,238.03937"
+       id="path3897-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:10.48818874;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 503.64567,894.93307 -476.291339,0"
+       id="path3917-9-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use3994"
+       transform="translate(0,-29.976564)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use3996"
+       transform="translate(0,-59.953128)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use3998"
+       transform="translate(0,-89.929692)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use4000"
+       transform="translate(0,59.953128)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use4002"
+       transform="translate(0,29.976564)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:4.35826778;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 503.64567,981.79956 -476.29134,0.005"
+       id="path3917-9-6-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6-3"
+       id="use4022"
+       transform="translate(7.2236021e-7,-233.68683)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3917-9-6"
+       id="use4024"
+       transform="translate(0,-119.90616)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:35.43307114;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 452.19685,282.75591 0,19.48819"
+       id="path4116"
+       inkscape:connector-curvature="0"
+       transform="translate(0,677.37401)"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:17.71653557;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 213.02471,960.12992 0,19.4882"
+       id="path4116-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:17.71653557;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 283.88673,840.2244 0,19.4882"
+       id="path4116-6-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:194.52755737;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 124.60498,840.22439 0,19.4882"
+       id="path4116-6-6-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:159.44882202;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 283.89114,780.27165 0,19.4882"
+       id="path4116-6-6-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 487.6191,769.78346 -0.004,-5.31496"
+       id="use4190"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 469.90257,769.78346 -0.004,-5.31496"
+       id="use4192"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4192"
+       id="use4194"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 434.46949,769.78346 -0.004,-5.31496"
+       id="use4196"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4196"
+       id="use4198"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4198"
+       id="use4200"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4200"
+       id="use4202"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4202"
+       id="use4204"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4204"
+       id="use4206"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4206"
+       id="use4208"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4208"
+       id="use4210"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4210"
+       id="use4212"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4212"
+       id="use4214"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4214"
+       id="use4216"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4216"
+       id="use4218"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4218"
+       id="use4220"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4220"
+       id="use4222"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4222"
+       id="use4224"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4224"
+       id="use4226"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4226"
+       id="use4228"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4228"
+       id="use4230"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4230"
+       id="use4232"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4232"
+       id="use4234"
+       transform="translate(-17.716538,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="use4236"
+       d="m 80.149606,769.78346 -0.0312,-5.31497"
+       style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4236"
+       id="use4240"
+       transform="translate(-17.716535,-3.0273441e-7)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4240"
+       id="use4242"
+       transform="translate(-17.716536,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4242"
+       id="use4244"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4244"
+       id="use4246"
+       transform="translate(17.716536,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4246"
+       id="use4248"
+       transform="translate(17.716535,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4248"
+       id="use4250"
+       transform="translate(17.716536,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4250"
+       id="use4252"
+       transform="translate(17.716538,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4252"
+       id="use4254"
+       transform="translate(17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4254"
+       id="use4256"
+       transform="translate(17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4256"
+       id="use4258"
+       transform="translate(17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4258"
+       id="use4260"
+       transform="translate(17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+       d="m 399.04724,799.75984 -0.0312,-5.31497"
+       id="use4264"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4264"
+       id="use4266"
+       transform="translate(17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4266"
+       id="use4268"
+       transform="translate(17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4268"
+       id="use4270"
+       transform="translate(17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4270"
+       id="use4272"
+       transform="translate(17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4272"
+       id="use4274"
+       transform="translate(17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4190"
+       id="use4276"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4192"
+       id="use4278"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4194"
+       id="use4280"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4196"
+       id="use4282"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4198"
+       id="use4284"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4200"
+       id="use4286"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4202"
+       id="use4288"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4204"
+       id="use4290"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4206"
+       id="use4292"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4208"
+       id="use4294"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4210"
+       id="use4296"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4212"
+       id="use4298"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4214"
+       id="use4300"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4216"
+       id="use4302"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4218"
+       id="use4304"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4220"
+       id="use4306"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4222"
+       id="use4308"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4224"
+       id="use4310"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4226"
+       id="use4312"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4228"
+       id="use4314"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4230"
+       id="use4316"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4232"
+       id="use4318"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4234"
+       id="use4320"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4236"
+       id="use4322"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4240"
+       id="use4324"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4242"
+       id="use4326"
+       transform="translate(0,59.95276)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <g
+       transform="translate(-63.36515,89.92913)"
+       id="use4332">
+      <path
+         style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+         d="m 550.98425,769.78346 -0.004,-5.31496"
+         id="path3412"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#fca311;stroke-width:0.35433072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+         d="m 550.97557,750.29527 0,14.17322"
+         id="path3414"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4332"
+       id="use4334"
+       transform="translate(-17.71653,-3.0273441e-7)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4334"
+       id="use4336"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4336"
+       id="use4338"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4338"
+       id="use4340"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4340"
+       id="use4342"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4342"
+       id="use4344"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4344"
+       id="use4346"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4346"
+       id="use4348"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4348"
+       id="use4350"
+       transform="translate(-17.71654,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4350"
+       id="use4352"
+       transform="translate(-17.71653,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4332"
+       id="use4354"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4334"
+       id="use4356"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4336"
+       id="use4358"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4338"
+       id="use4360"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4340"
+       id="use4362"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4342"
+       id="use4364"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4344"
+       id="use4366"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4346"
+       id="use4368"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4348"
+       id="use4370"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4350"
+       id="use4372"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4352"
+       id="use4374"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4332"
+       id="use4378"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4334"
+       id="use4380"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4336"
+       id="use4382"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4338"
+       id="use4384"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4340"
+       id="use4386"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4342"
+       id="use4388"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4344"
+       id="use4390"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4346"
+       id="use4392"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4348"
+       id="use4394"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4350"
+       id="use4396"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4352"
+       id="use4398"
+       transform="translate(-194.88189,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4378"
+       id="use4400"
+       transform="translate(-194.88189,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4380"
+       id="use4402"
+       transform="translate(-194.88189,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4382"
+       id="use4404"
+       transform="translate(-194.88189,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4384"
+       id="use4406"
+       transform="translate(-194.88189,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4354"
+       id="use4422"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4356"
+       id="use4424"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4358"
+       id="use4426"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4360"
+       id="use4428"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4362"
+       id="use4430"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4364"
+       id="use4432"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4366"
+       id="use4434"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4368"
+       id="use4436"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4370"
+       id="use4438"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4372"
+       id="use4440"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4374"
+       id="use4442"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4378"
+       id="use4444"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4380"
+       id="use4446"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4382"
+       id="use4448"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4384"
+       id="use4450"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4386"
+       id="use4452"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4388"
+       id="use4454"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4390"
+       id="use4456"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4392"
+       id="use4458"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4394"
+       id="use4460"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4396"
+       id="use4462"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4398"
+       id="use4464"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4400"
+       id="use4466"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4402"
+       id="use4468"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4404"
+       id="use4470"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4406"
+       id="use4472"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4422"
+       id="use4474"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4424"
+       id="use4476"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4426"
+       id="use4478"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4428"
+       id="use4480"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4430"
+       id="use4482"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4432"
+       id="use4484"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4434"
+       id="use4486"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4436"
+       id="use4488"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4438"
+       id="use4490"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4440"
+       id="use4492"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4442"
+       id="use4494"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4444"
+       id="use4496"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4446"
+       id="use4498"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4448"
+       id="use4500"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4450"
+       id="use4502"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4452"
+       id="use4504"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4454"
+       id="use4506"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4456"
+       id="use4508"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4458"
+       id="use4510"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4460"
+       id="use4512"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4462"
+       id="use4514"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4464"
+       id="use4516"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4466"
+       id="use4518"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4468"
+       id="use4520"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4470"
+       id="use4522"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4472"
+       id="use4524"
+       transform="translate(0,29.97638)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4508"
+       id="use4526"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4510"
+       id="use4528"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4512"
+       id="use4530"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4514"
+       id="use4532"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4516"
+       id="use4534"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4518"
+       id="use4536"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4520"
+       id="use4538"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4522"
+       id="use4540"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4524"
+       id="use4542"
+       transform="translate(9.9999995e-7,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4482"
+       id="use4544"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4484"
+       id="use4546"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4486"
+       id="use4548"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4488"
+       id="use4550"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4490"
+       id="use4552"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4492"
+       id="use4554"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4494"
+       id="use4556"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4496"
+       id="use4558"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4498"
+       id="use4560"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4500"
+       id="use4562"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4502"
+       id="use4564"
+       transform="translate(0,29.976376)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca311;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+       d="m 229.96185,705.32973 0,19.06299"
+       id="path3887-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca311;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none;display:inline"
+       d="m 248.0315,678.89763 0,45.8504 141.73228,0 0,-45.8504"
+       id="path3887-5-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca311;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none;display:inline"
+       d="m 389.76378,725.10236 0,19.06299"
+       id="path3887-5-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <g
+       transform="translate(-285.23222,-45.39066)"
+       id="use6461">
+      <path
+         style="fill:none;stroke:#fad716;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none"
+         d="m 550.98425,769.78346 -0.004,-5.31496"
+         id="path3418"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#fca311;stroke-width:0.35433072;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none"
+         d="m 550.97557,750.29527 0,14.17322"
+         id="path3420"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6461"
+       id="use6465"
+       transform="translate(17.716537,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6465"
+       id="use6467"
+       transform="translate(17.716535,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6467"
+       id="use6469"
+       transform="translate(17.716536,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6469"
+       id="use6471"
+       transform="translate(17.716535,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6471"
+       id="use6473"
+       transform="translate(17.716536,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use6473"
+       id="use6475"
+       transform="translate(17.716535,0)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:0.70866144;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none;display:inline"
+       d="m 9,724.74803 221.31496,0"
+       id="path6391"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#fca111;stroke-width:0.80088156;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.45098039;stroke-dasharray:none;display:inline"
+       d="m 221.33971,1032.8634 282.66354,0"
+       id="path6391-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use4264"
+       id="use6713"
+       transform="translate(-17.71653,-3.0273441e-7)"
+       width="531"
+       height="374.98819"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="TextBG"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:3.49928904;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209"
+       width="227.6181"
+       height="5.2440906"
+       x="32"
+       y="67.67717"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.8700788;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2"
+       width="117.86768"
+       height="6.6567044"
+       x="31.695312"
+       y="96.276367"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.8700788;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-1"
+       width="57.775589"
+       height="6.6212726"
+       x="412"
+       y="96.276367"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.8700788;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-6"
+       width="135.76085"
+       height="6.6566963"
+       x="31.695839"
+       y="126.21732"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.8700788;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-6-0"
+       width="79.668205"
+       height="5.0985889"
+       x="295.67432"
+       y="157.7518"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.67873526;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-8"
+       width="394.8483"
+       height="4.5637846"
+       x="31.494987"
+       y="187.39134"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.71528506;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-6-1"
+       width="210.84035"
+       height="4.6902266"
+       x="31.599255"
+       y="217.48166"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.7103014;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-6-1-1"
+       width="367.51758"
+       height="4.5003285"
+       x="31.609564"
+       y="247.65042"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.63893843;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect6209-2-6-1-9"
+       width="121.88819"
+       height="4.5008254"
+       x="31.581711"
+       y="277.30765"
+       ry="0"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Text"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.234375"
+       y="72.921257"
+       id="text4567"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569"
+         x="31.234375"
+         y="72.921257"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Begünstigter: Name, Vorname/Firma<tspan
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OCRA;-inkscape-font-specification:OCRA Bold"
+   id="tspan4555"> (max. 27 Stellen)</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.125"
+       y="102.89764"
+       id="text4567-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0"
+         x="31.125"
+         y="102.89764"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Konto-Nr. des Begünstigten</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.132812"
+       y="132.87402"
+       id="text4567-2-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-4"
+         x="31.132812"
+         y="132.87402"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Kreditinsitut des Begünstigten</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="412.76379"
+       y="102.89764"
+       id="text4567-2-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-6"
+         x="412.76379"
+         y="102.89764"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Bankleitzahl</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="294.74802"
+       y="162.85039"
+       id="text4567-2-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-63"
+         x="294.74802"
+         y="162.85039"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Betrag: Euro, Cent</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.65999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.125"
+       y="192.82677"
+       id="text4567-2-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-5"
+         x="31.125"
+         y="192.82677"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.65999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Kunden-Referenznummer - Verwendungszweck. ggf Name und Anschrift des Zahlers - (nur für Begünstigten)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.125"
+       y="222.80315"
+       id="text4567-2-30"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-59"
+         x="31.125"
+         y="222.80315"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">noch Verwendungszweck <tspan
+   style="font-size:6px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+   id="tspan6157">(insgesamt max. 2 Zeilen a 27 Stellen)</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.10000002px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.125"
+       y="252.77953"
+       id="text4567-2-18"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-41"
+         x="31.125"
+         y="252.77953"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.10000002px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Kontoinhaber/Zahler: Name, Vorname/Firma, Ort <tspan
+   style="font-size:6px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.10000002px;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+   id="tspan6168">(max 27 Stellen, keine Straßen- oder Postfachangaben)</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.13999999px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="31.121542"
+       y="282.75592"
+       id="text4567-2-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-3"
+         x="31.121542"
+         y="282.75592"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.13999999px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Konto-Nr. des Kontoinhabers</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.39999998px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;display:inline;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="8.3375416"
+       y="54.716354"
+       id="text4567-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-1"
+         x="8.3375416"
+         y="54.716354"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.39999998px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Name und Sitz des überweisenden Kreditinsituts</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.39999998px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;display:inline;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="247.21254"
+       y="54.700726"
+       id="text4567-5-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-1-4"
+         x="247.21254"
+         y="54.700726"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.39999998px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Bankleitzahl</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:125%;letter-spacing:-2.21000004px;word-spacing:-1.39999998px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRA;-inkscape-font-specification:OCRA Medium"
+       x="7.75"
+       y="17.738192"
+       id="text6498"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6500"
+         x="7.75"
+         y="17.738192"
+         style="font-size:12px;letter-spacing:-2.18000007px"><tspan
+   style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-2.18000007px;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+   id="tspan6502">Überweisung</tspan>/Zahlschein</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:7px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;display:inline;font-family:OCRA;-inkscape-font-specification:OCRA Medium"
+       x="398.04724"
+       y="31.98819"
+       id="text4567-5-3-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-1-4-8"
+         x="398.04724"
+         y="31.98819"
+         style="font-size:7px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRA;-inkscape-font-specification:OCRA Medium">Den Vordruck bitte nicht</tspan><tspan
+         sodipodi:role="line"
+         x="398.04724"
+         y="40.87215"
+         style="font-size:7px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRA;-inkscape-font-specification:OCRA Medium"
+         id="tspan6525">beschädigen, knicken,</tspan><tspan
+         sodipodi:role="line"
+         x="398.04724"
+         y="50.075878"
+         style="font-size:7px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRA;-inkscape-font-specification:OCRA Medium"
+         id="tspan6527">bestempeln oder beschmutzen.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;display:inline;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold"
+       x="220.99976"
+       y="363.01218"
+       id="text4567-2-6-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan4569-0-3-9"
+         x="220.99976"
+         y="363.01218"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-1.15999997px;word-spacing:-1.39999998px;fill:#f74a02;fill-opacity:1;font-family:OCRABold;-inkscape-font-specification:OCRABold Bold">Datum, Unterschrift(en)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="230.76584"
+       y="178.33858"
+       id="text6644-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-0"
+         x="230.76584"
+         y="178.33858">EUR</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Border"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       style="fill:none;stroke:#f74a02;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.74509804;stroke-dasharray:none"
+       d="m 220.11024,161.07874 56.69291,0 0,23.0315 -56.69291,0 0,-23.0315"
+       id="path6180"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833" />
+    <path
+       style="fill:none;stroke:#f74a02;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.74509804;stroke-dasharray:none"
+       d="m 290.97638,159.30709 0,24.80315 211.6063,0 0,-23.0315 -125.82284,0"
+       id="path6186"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png" />
+    <path
+       style="fill:none;stroke:#f74a02;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.74509804;stroke-dasharray:none"
+       d="m 28.419773,275.98819 -0.006,28.02708 177.524877,4.8e-4 0,-23.0315 -51.167,0"
+       id="path6186-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Content"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:8.26000023px;word-spacing:-3.51999998px;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa Bold Oblique"
+       x="32.071518"
+       y="89.185326"
+       id="text6644"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646"
+         x="32.071518"
+         y="89.185326"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:7.42000008px;word-spacing:-2.20000005px;font-family:Purisa;-inkscape-font-specification:Purisa Bold Oblique">Firma Ungenannt, Irgendwo</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="31.36441"
+       y="119.3468"
+       id="text6644-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4"
+         x="31.36441"
+         y="119.3468"
+         style="font-size:20px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8px;font-family:Pecita;-inkscape-font-specification:Pecita Bold Italic">9876543210</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:-3.17000008px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="31.364441"
+       y="149.0602"
+       id="text6644-4-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-6"
+         x="31.364441"
+         y="149.0602"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8.43999958px;word-spacing:-3.17000008px;font-family:Purisa;-inkscape-font-specification:Purisa Bold Oblique"><tspan
+   id="tspan5000"
+   style="letter-spacing:6.32000017px;word-spacing:-3.17000008px">Kred</tspan><tspan
+   style="letter-spacing:10.88999939px;word-spacing:-3.17000008px"
+   id="tspan4668">it</tspan><tspan
+   id="tspan5002"
+   style="letter-spacing:10.7300005px;word-spacing:-3.17000008px">i</tspan>nsti<tspan
+   style="letter-spacing:9.60999966px;word-spacing:-3.17000008px"
+   id="tspan5132">tu</tspan>t <tspan
+   style="letter-spacing:7px;word-spacing:-3.17000008px"
+   id="tspan4664">Irgendwo</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="367.30548"
+       y="119.34844"
+       id="text6644-4-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-0"
+         x="367.30548"
+         y="119.34844"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8px;font-family:Pecita;-inkscape-font-specification:Pecita Bold">12345678</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:8.59000015px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="404.12524"
+       y="179.56819"
+       id="text6644-4-2-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-0-4"
+         x="404.12524"
+         y="179.56819"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8.59000015px;font-family:Pecita;-inkscape-font-specification:Pecita Bold">145,00</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:5.28000021px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="31.36441"
+       y="209.15219"
+       id="text6644-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-1"
+         x="31.36441"
+         y="209.15219"
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;word-spacing:5.28000021px;font-family:Purisa;-inkscape-font-specification:Pecita Bold Italic"><tspan
+           style="font-style:italic;font-weight:bold;letter-spacing:6.88000011px;word-spacing:5.28000021px;-inkscape-font-specification:Pecita Bold Italic"
+           id="tspan5194">Referenznu<tspan
+   style="letter-spacing:4.48999977px"
+   id="tspan5342">mm</tspan>er:</tspan><tspan
+           style="font-size:20px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8px;word-spacing:5.28000021px;font-family:Pecita;-inkscape-font-specification:Pecita Bold Italic"
+           id="tspan5192"> 55548</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="30.86578"
+       y="269.54419"
+       id="text6644-2-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-1-0"
+         x="30.86578"
+         y="269.54419"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:7.0999999px;font-family:Purisa;-inkscape-font-specification:Purisa Bold Oblique">Mustermann, Frau</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="30.844902"
+       y="298.92914"
+       id="text6644-4-27"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-1"
+         x="30.844902"
+         y="298.92914"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8px;font-family:Pecita;-inkscape-font-specification:Pecita Bold">7894561230</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="472.28876"
+       y="298.92914"
+       id="text6644-4-27-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-1-2"
+         x="472.28876"
+         y="298.92914"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:OCRA;-inkscape-font-specification:OCRA Medium">18</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:6.0999999px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:OCRB;-inkscape-font-specification:OCRB"
+       x="252.21236"
+       y="43.778255"
+       id="text6644-4-2-56"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-0-42"
+         x="252.21236"
+         y="43.778255"
+         style="font-size:20px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:8px;font-family:Pecita;-inkscape-font-specification:Pecita Bold Italic">87654321</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa"
+       x="10.655724"
+       y="45.346645"
+       id="text6644-4-5-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6646-4-6-2"
+         x="10.655724"
+         y="45.346645"
+         style="font-style:oblique;font-weight:bold;-inkscape-font-specification:Purisa Bold Oblique">Kreditinstitut</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#1e37da;fill-opacity:1;stroke:none;font-family:Pecita;-inkscape-font-specification:Pecita Bold"
+       x="221.8819"
+       y="350.36078"
+       id="text6862"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/storage/temp/Ueberweisung-Zahlschein_gem-ZKA-Richtlinie-Vordrucke.png"
+       inkscape:export-xdpi="100.00833"
+       inkscape:export-ydpi="100.00833"><tspan
+         sodipodi:role="line"
+         id="tspan6864"
+         x="221.8819"
+         y="350.36078"><tspan
+           style="font-size:16px"
+           id="tspan4547">02.06.13, </tspan><tspan
+           style="font-size:28px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#1e37da;fill-opacity:1;font-family:Pecita;-inkscape-font-specification:Pecita Bold"
+           id="tspan6866"
+           dx="0 0 0 -8">F. Mustermann</tspan></tspan></text>
+  </g>
+</svg>
