@@ -1108,7 +1108,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="-99"/>
         <source>&lt;b&gt;Der gespeicherte Dauerauftrag ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Um sicher zu stellen das eine gÃ¼ltige Version des Dauerauftrages gelÃ¶scht oder geÃ¤ndert wird, sollten die DauerauftrÃ¤ge von diesem Konto aktualisiert werden.&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgefÃ¼hrt werden?</source>
-        <translation>&lt;b&gt;The saved standing order is out-dated.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;In order to make sure that a valid version of this standing order gets deleted of changed the standing orders of this account should be downloaded.&lt;br /&gt;&lt;br /&gt;Shall a download be executed?</translation>
+        <translation type="unfinished">&lt;b&gt;The saved standing order is out-dated, i.e. the execution date is today or in the past.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;In order to make sure that a valid version of this standing order gets deleted or modified the standing orders of this account should be downloaded.&lt;br /&gt;&lt;br /&gt;Shall a download be executed?</translation>
     </message>
     <message>
         <location line="+61"/>
