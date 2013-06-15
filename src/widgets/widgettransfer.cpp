@@ -451,7 +451,7 @@ void widgetTransfer::my_create_purpose()
 {
 	this->purpose = new widgetPurpose(this);
 
-	QLabel *labelPurpose = new QLabel("Verwendungszweck");
+	QLabel *labelPurpose = new QLabel(tr("Verwendungszweck"));
 	this->layoutPurpose = new QVBoxLayout();
 	this->layoutPurpose->addWidget(labelPurpose);
 	this->layoutPurpose->addWidget(this->purpose);

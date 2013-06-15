@@ -722,7 +722,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/mainwindow.cpp" line="+324"/>
+        <location filename="../src/mainwindow.cpp" line="+345"/>
         <source>National</source>
         <translation type="unfinished"></translation>
     </message>
@@ -754,7 +754,8 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>About AB-Transfers</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+68"/>
+        <location filename="../src/mainwindow.cpp" line="-75"/>
+        <location line="+143"/>
         <location line="+144"/>
         <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
@@ -834,12 +835,12 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-2342"/>
+        <location filename="../src/mainwindow.cpp" line="-2371"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+145"/>
         <source>AuftrÃ¤ge im Ausgang</source>
         <translation>Orders in outbox</translation>
     </message>
@@ -849,7 +850,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>There are still unsent jobs in the outbox!&lt;br /&gt;All jobs in the outbox will be deleted when exiting the program!&lt;br /&gt;&lt;br /&gt;Shall the program really be closed?</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+56"/>
         <source>&lt;h4&gt;AuftrÃ¤ge kÃ¶nnen gebÃ¼hrenpflichtig sein&lt;/h4&gt;Bei einigen Kreditinstituten/Banken kÃ¶nnen GebÃ¼hren fÃ¼r bestimmte AuftrÃ¤ge (Einrichtung von DauerauftrÃ¤gen, SammelÃ¼berweisungen, etc.) anfallen.&lt;br /&gt;Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten fÃ¼r welche AuftrÃ¤ge anfallen!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Ich Ã¼bernehme keine Haftung fÃ¼r eventuell entstehende Kosten!&lt;/b&gt;</source>
         <translation>&lt;h4&gt;Transactions can be chargeable&lt;/h4&gt;Some institutions/banks may charge your for specific transactions (creating standing orders, collective orders, etc.).&lt;br /&gt;Please inform yourself about which costs your institution/bank charges for transactions prior to using this software!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;I am not going to be liable for damages!&lt;/b&gt;</translation>
     </message>
@@ -894,7 +895,8 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Payment</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="-140"/>
+        <location line="+148"/>
         <location line="+215"/>
         <source>TerminÃ¼berweisungen</source>
         <translation>Scheduled transfers</translation>
@@ -915,12 +917,14 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Scheduled transfers of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="-215"/>
+        <location line="+237"/>
         <source>Online Konten</source>
         <translation>Online accounts</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-235"/>
+        <location line="+263"/>
         <source>Bekannte EmpfÃ¤nger</source>
         <translation>Known addressees</translation>
     </message>
@@ -2358,7 +2362,12 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>Amount (Euro,Cent)</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+12"/>
+        <source>Verwendungszweck</source>
+        <translation>Purpose</translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>AusfÃ¼hrungsdaten</source>
         <translation>Execution data</translation>
     </message>
