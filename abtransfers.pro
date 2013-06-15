@@ -6,12 +6,13 @@ TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
 
-packagesExist(QtWebKit) {
-	message("using QtWebKit")
-	QT += webkit
-	DEFINES += USE_QT_WEBKIT
+USEWEBKIT=$$system(pkg-config QtWebKit && echo "available")
+contains(USEWEBKIT, "available") {
+    message("QtWebKit available")
+    QT += webkit
+    DEFINES += USE_QT_WEBKIT
 } else {
-	message("QtWebKit not available, using QLabel for display")
+    message("QtWebKit not available, using QLabel")
 }
 
 SOURCES += src/main.cpp \
@@ -106,11 +107,18 @@ OTHER_FILES += \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     src/helpText.html
 RESOURCES += src/resources.qrc
-INCLUDEPATH += /usr/include/aqbanking5 \
-    /usr/include/gwenhywfar4
-LIBS += -laqbanking \
-    -lgwenhywfar \
-    -lgwengui-qt4
+
+unix|macx {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+} else {
+    warning(configuring project for a not tested platform. The LIBS are probably wrong.)
+    #The above (CONFIG/PKGCONFIG) could be used if pkg-config is available.
+    #Otherwise adjust the following
+    LIBS += -laqbanking -lgwenhywfar -lgwengui-qt4
+    INCLUDEPATH += /usr/include/aqbanking5 \
+		   /usr/include/gwenhywfar4
+}
 
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
