@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="bank-icon">../images/bank-icon.png</file>
-        <file alias="Log-Icon">../images/cabinet-icon.png</file>
-        <file alias="ueberweisung">../images/ueberweisung.png</file>
+        <file alias="bank-icon">../images/bank_transfer_128x128.png</file>
+        <file alias="Log-Icon">../images/log_128x128.png</file>
+        <file alias="ueberweisung">../images/transfer_form.png</file>
         <file alias="dauerauftrag">../images/ueberweisung_DA.png</file>
         <file alias="lastschrift">../images/lastschrift.png</file>
         <file alias="up">../images/up-icon_16x16.png</file>
@@ -12,7 +12,7 @@
         <file alias="delete">../images/delete-icon_16x16.png</file>
         <file alias="ok">../images/ok-icon_16x16.png</file>
         <file alias="knownEmpfaenger">../images/system-users.png</file>
-        <file alias="history-icon">../images/folder_clock_128x128.png</file>
+        <file alias="history-icon">../images/history_calendar_128x128.png</file>
 	<file alias="document-save">../images/document-save_16x16.png</file>
 	<file alias="document-edit">../images/document-edit_16x16.png</file>
 	<file alias="document-new">../images/document-new_16x16.png</file>
