@@ -22,9 +22,10 @@ document-new_16x16.png
 document-save_16x16.png
 
 The (outdated) website is: http://www.oxygen-icons.org
-License: http://www.gnu.org/licenses/lgpl.html
+License: GNU LGPL v3, http://www.gnu.org/licenses/lgpl.html
 
-On Jan 12 2008 the dual license statement was removed from the sources, see
+The website states that the icons are dual licensed, but on Jan 12 2008 the 
+dual license statement was removed from the sources, see
 http://websvn.kde.org/trunk/kdesupport/oxygen-icons/COPYING?r1=699615&r2=760422
 
 
@@ -55,6 +56,7 @@ log_128x128.png
 
 Self created combinations of icons from the "Yopls" icon pack
 http://www.iconspedia.com/pack/yopls-icons-3728/
-Author: Evegen, http://evgen.deviantart.com/
+Author: Evgen, http://evgen.deviantart.com/
 License: Free
-
+(See also the comments at http://evgen.deviantart.com/art/yopls-266560093, there
+~Evgen replied: "It is free for any use, including use in commercial products.")
