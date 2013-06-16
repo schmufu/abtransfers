@@ -92,7 +92,7 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	this->dateLast = new widgetDate(tr("Letztmalig"), Qt::AlignTop, this);
 	this->checkBoxNoEnd = new QCheckBox(tr("bis auf weiteres"), this);
 	this->dateNext = new widgetDate(tr("nächste Ausf."), Qt::AlignTop, this);
-	this->dateNext->setReadOnly(true);
+	this->dateNext->setDisabled(true);
 
 	connect(this->dateFirst, SIGNAL(dateChanged(QDate)),
 		this, SLOT(setNextExecutionDay(QDate)));
