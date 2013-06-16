@@ -455,16 +455,21 @@ const QDate widgetRecurrence::getNextExecutionDate() const
 
 
 //public slot
+/** \brief set the period (monthly or weekly)
+ *
+ * This sets the period only if allowed and not already set.
+ */
 void widgetRecurrence::setPeriod(AB_TRANSACTION_PERIOD period)
 {
 	QRadioButton *btn = (QRadioButton*)this->radio_group->button(period);
 
-	if (!btn) return;
+	if (!btn)
+		return; //no button for period available, abort
 
-	if (btn->isEnabled()) {
+	if (btn->isEnabled() && !btn->isChecked()) {
+		//button not checked, set checked and update widget
 		btn->setChecked(true);
-	} else {
-		btn->setChecked(false);
+		this->selectedPeriodChanged(period); //updates the whole widget
 	}
 }
 
