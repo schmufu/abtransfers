@@ -52,7 +52,7 @@ widgetPurpose::widgetPurpose(QWidget *parent) :
 	this->statusString = new QString(tr("(max %1 Zeilen, a %2 Zeichen) [%3 Zeichen und %4 Zeilen übrig]"));
 	this->statusLabel = new QLabel(this);
 	QFont labelFont(this->statusLabel->font());
-	labelFont.setPointSize(7);
+	labelFont.setPointSize(labelFont.pointSize() - 1);
 	this->statusLabel->setFont(labelFont);
 	this->textEdit->setReadOnly(false);
 	this->textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -162,12 +162,10 @@ void widgetPurpose::updateStatusLabel()
 		linecnt += this->textEdit->document()->findBlockByNumber(block).layout()->lineCount();
 	}
 
-	this->statusLabel->setText(
-			this->statusString
-				->arg(this->maxLines)
-				.arg(this->maxLength)
-				.arg(remainingChars)
-				.arg(this->maxLines - linecnt));
+	QString str;
+	str = this->statusString->arg(this->maxLines).arg(this->maxLength)
+	      .arg(remainingChars).arg(this->maxLines - linecnt);
+	this->statusLabel->setText(str);
 
 }
 

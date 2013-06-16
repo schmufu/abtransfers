@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.4.0 # Version of AB-Transfers
+VERSION = 0.0.4.1
 TARGET = abtransfers
 DESTDIR = build
 TEMPLATE = app
@@ -114,17 +114,17 @@ OTHER_FILES += \
     translation/README.translations
 RESOURCES += src/resources.qrc
 
-# This is valid for Linux in general:
-unix: INCLUDEPATH += /usr/include/aqbanking5 \
-    /usr/include/gwenhywfar4
-
-# This is only valid for Marko's MacPorts-Installation:
-macx: INCLUDEPATH += /opt/macports-test/include/aqbanking5 \
-    /opt/macports-test/include/gwenhywfar4
-
-LIBS += -laqbanking \
-    -lgwenhywfar \
-    -lgwengui-qt4
+unix|macx {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+} else {
+    warning(configuring project for a not tested platform. The LIBS are probably wrong.)
+    #The above (CONFIG/PKGCONFIG) could be used if pkg-config is available.
+    #Otherwise adjust the following
+    LIBS += -laqbanking -lgwenhywfar -lgwengui-qt4
+    INCLUDEPATH += /usr/include/aqbanking5 \
+		   /usr/include/gwenhywfar4
+}
 
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
