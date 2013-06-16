@@ -935,7 +935,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	vbox->addWidget(usedImages, 0, Qt::AlignLeft);
 
 	QLabel *iconsUrl = new QLabel(QString("Icons used from Oxygen <a href=\"%1\">%1</a><br />"
-					      "and from 'Ecommerce Business icon pack'<br >/"
+					      "and from 'Ecommerce Business icon pack'<br />"
 					      "<a href=\"%2\">%2</a>")
 					      .arg("http://www.oxygen-icons.org")
 					      .arg("http://www.iconspedia.com/pack/ecommerce-business-icons-4074"));
