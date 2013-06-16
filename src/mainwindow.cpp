@@ -913,10 +913,10 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	svnURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	vbox->addWidget(svnURL, 0, Qt::AlignLeft);
 
-	QLabel *viewvcURL = new QLabel(tr("viewvc: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/viewvc/ab_transfers/"));
-	viewvcURL->setOpenExternalLinks(true);
-	viewvcURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
-	vbox->addWidget(viewvcURL, 0, Qt::AlignLeft);
+	QLabel *tracUrl = new QLabel(tr("trac: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/trac/abtransfers/"));
+	tracUrl->setOpenExternalLinks(true);
+	tracUrl->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(tracUrl, 0, Qt::AlignLeft);
 
 	vbox->addSpacing(10);
 
