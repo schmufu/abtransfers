@@ -844,19 +844,20 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	licenseText->setText("Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
-			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
-			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
-			     "weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach<br />"
-			     "Ihrer Option) jeder späteren Version.<br /><br />"
-			     "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von<br />"
-			     "Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie<br />"
-			     "der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details<br />"
-			     "finden Sie in der GNU General Public License.<br /><br />"
-			     "Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem<br />"
-			     "Programm erhalten haben. Falls nicht, schreiben Sie an die<br />"
-			     "Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.<br /><br /><br />"
-			     "siehe <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>");
+	QString lt = "Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
+		     "This program is free software; you can redistribute it and/or<br />"
+		     "modify it under the terms of the GNU General Public License<br />"
+		     "as published by the Free Software Foundation; either version 2<br />"
+		     "of the License, or (at your option) any later version.<br /><br />"
+		     "This program is distributed in the hope that it will be useful,<br />"
+		     "but WITHOUT ANY WARRANTY; without even the implied warranty of<br />"
+		     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br />"
+		     "GNU General Public License for more details.<br /><br />"
+		     "You should have received a copy of the GNU General Public License<br />"
+		     "along with this program; if not, write to the Free Software<br />"
+		     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.<br /><br />";
+	lt.append(tr("siehe auch <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>"));
+	licenseText->setText(lt);
 	licenseText->setOpenExternalLinks(true);
 	licenseText->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	licenseLayout->addWidget(licenseText);
