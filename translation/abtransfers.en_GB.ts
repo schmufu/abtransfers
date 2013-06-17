@@ -7,7 +7,7 @@
         <location filename="../src/widgets/bankaccountswidget.cpp" line="+56"/>
         <source>BLZ/Kto-Nr</source>
         <translatorcomment>Ist &quot;Bank code&quot; zu lang und &quot;Bank-ID&quot; vielleicht besser? Oder gibt&apos;s eine bessere Übersetzung?</translatorcomment>
-        <translation>Bank code/Account</translation>
+        <translation type="unfinished">Bank code/Account</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -677,6 +677,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+0"/>
         <source>BLZ</source>
+        <translatorcomment>Was ist die korrekte englische Bezeichnung für BLZ?</translatorcomment>
         <translation type="unfinished">Bank code</translation>
     </message>
     <message>
@@ -777,7 +778,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+2065"/>
+        <location filename="../src/mainwindow.cpp" line="+2071"/>
         <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -835,7 +836,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-2371"/>
+        <location filename="../src/mainwindow.cpp" line="-2377"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
@@ -961,12 +962,17 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+4"/>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>Lizenz</source>
         <translation>License</translation>
     </message>
     <message>
-        <location line="-61"/>
+        <location line="-66"/>
+        <source>siehe auch &lt;a href=&quot;http://www.gnu.de/documents/gpl-2.0.de.html&quot;&gt;http://www.gnu.de/documents/gpl-2.0.de.html&lt;/a&gt;</source>
+        <translation>see also &lt;a href=&quot;http://www.gnu.de/documents/gpl-2.0.de.html&quot;&gt;http://www.gnu.de/documents/gpl-2.0.de.html&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>SchlieÃen</source>
         <translation>Close</translation>
     </message>
@@ -982,22 +988,22 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+5"/>
-        <source>viewvc: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
+        <source>trac: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+76"/>
+        <location line="+81"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-66"/>
+        <location line="-71"/>
         <source>&lt;b&gt;genutzte Grafiken:&lt;/b&gt;</source>
         <translation>&lt;b&gt;used icons:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location line="+96"/>
+        <location line="+101"/>
         <source> - Auftrag wird von der Bank nicht unterstÃ¼tzt!</source>
         <translation>- Transaction not supported by bank</translation>
     </message>
@@ -1108,7 +1114,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="-99"/>
         <source>&lt;b&gt;Der gespeicherte Dauerauftrag ist veraltet!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Um sicher zu stellen das eine gÃ¼ltige Version des Dauerauftrages gelÃ¶scht oder geÃ¤ndert wird, sollten die DauerauftrÃ¤ge von diesem Konto aktualisiert werden.&lt;br /&gt;&lt;br /&gt;Soll eine Aktualisierung durchgefÃ¼hrt werden?</source>
-        <translation type="unfinished">&lt;b&gt;The saved standing order is out-dated, i.e. the execution date is today or in the past.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;In order to make sure that a valid version of this standing order gets deleted or modified the standing orders of this account should be downloaded.&lt;br /&gt;&lt;br /&gt;Shall a download be executed?</translation>
+        <translation>&lt;b&gt;The saved standing order is out-dated, i.e. the execution date is today or in the past.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;In order to make sure that a valid version of this standing order gets deleted or modified the standing orders of this account should be downloaded.&lt;br /&gt;&lt;br /&gt;Shall a download be executed?</translation>
     </message>
     <message>
         <location line="+61"/>
