@@ -882,19 +882,20 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	licenseText->setText("Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
-			     "Dieses Programm ist freie Software. Sie können es unter den Bedingungen der<br />"
-			     "GNU General Public License, wie von der Free Software Foundation veröffentlicht,<br />"
-			     "weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach<br />"
-			     "Ihrer Option) jeder späteren Version.<br /><br />"
-			     "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von<br />"
-			     "Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie<br />"
-			     "der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details<br />"
-			     "finden Sie in der GNU General Public License.<br /><br />"
-			     "Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem<br />"
-			     "Programm erhalten haben. Falls nicht, schreiben Sie an die<br />"
-			     "Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.<br /><br /><br />"
-			     "siehe <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>");
+	QString lt = "Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
+		     "This program is free software; you can redistribute it and/or<br />"
+		     "modify it under the terms of the GNU General Public License<br />"
+		     "as published by the Free Software Foundation; either version 2<br />"
+		     "of the License, or (at your option) any later version.<br /><br />"
+		     "This program is distributed in the hope that it will be useful,<br />"
+		     "but WITHOUT ANY WARRANTY; without even the implied warranty of<br />"
+		     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br />"
+		     "GNU General Public License for more details.<br /><br />"
+		     "You should have received a copy of the GNU General Public License<br />"
+		     "along with this program; if not, write to the Free Software<br />"
+		     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.<br /><br />";
+	lt.append(tr("siehe auch <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>"));
+	licenseText->setText(lt);
 	licenseText->setOpenExternalLinks(true);
 	licenseText->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	licenseLayout->addWidget(licenseText);
@@ -950,10 +951,10 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	svnURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	vbox->addWidget(svnURL, 0, Qt::AlignLeft);
 
-	QLabel *viewvcURL = new QLabel(tr("viewvc: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/viewvc/ab_transfers/"));
-	viewvcURL->setOpenExternalLinks(true);
-	viewvcURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
-	vbox->addWidget(viewvcURL, 0, Qt::AlignLeft);
+	QLabel *tracUrl = new QLabel(tr("trac: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/trac/abtransfers/"));
+	tracUrl->setOpenExternalLinks(true);
+	tracUrl->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(tracUrl, 0, Qt::AlignLeft);
 
 	vbox->addSpacing(10);
 
@@ -971,10 +972,15 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QLabel *usedImages = new QLabel(tr("<b>genutzte Grafiken:</b>"));
 	vbox->addWidget(usedImages, 0, Qt::AlignLeft);
 
-	QLabel *iconsURL = new QLabel(QString("Icons used from: <a href=\"%1\">%1</a>").arg("http://www.oxygen-icons.org"));
-	iconsURL->setOpenExternalLinks(true);
-	iconsURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
-	vbox->addWidget(iconsURL, 0, Qt::AlignCenter);
+	QLabel *iconsUrl = new QLabel(QString("Icons used from Oxygen <a href=\"%1\">%1</a><br />"
+					      "and from 'Ecommerce Business icon pack'<br />"
+					      "<a href=\"%2\">%2</a>")
+					      .arg("http://www.oxygen-icons.org")
+					      .arg("http://www.iconspedia.com/pack/ecommerce-business-icons-4074"));
+	iconsUrl->setOpenExternalLinks(true);
+	iconsUrl->setAlignment(Qt::AlignHCenter);
+	iconsUrl->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+	vbox->addWidget(iconsUrl, 0, Qt::AlignCenter);
 
 	vbox->addSpacing(6);
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -92,7 +92,7 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	this->dateLast = new widgetDate(tr("Letztmalig"), Qt::AlignTop, this);
 	this->checkBoxNoEnd = new QCheckBox(tr("bis auf weiteres"), this);
 	this->dateNext = new widgetDate(tr("nächste Ausf."), Qt::AlignTop, this);
-	this->dateNext->setReadOnly(true);
+	this->dateNext->setDisabled(true);
 
 	connect(this->dateFirst, SIGNAL(dateChanged(QDate)),
 		this, SLOT(setNextExecutionDay(QDate)));
@@ -545,6 +545,7 @@ void widgetRecurrence::setLimitAllowChangeLastExecutionDate(int b)
 {
 	// -1 == nicht erlaubt (form disabled), sonst unbekannt o. erlaubt
 	this->dateLast->setDisabled(b == -1);
+	this->checkBoxNoEnd->setDisabled(b == -1);
 }
 
 //public Slot
