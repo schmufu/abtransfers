@@ -61,7 +61,7 @@
 #include "globalvars.h"
 #include "abt_conv.h"
 
-
+std::map<AB_JOB_TYPE,AbJobType *> m_abJobMap;
 
 abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
 			   QObject *parent) :
@@ -70,6 +70,8 @@ abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
 	this->jobqueue = new QList<abt_jobInfo*>;
 	this->m_allAccounts = allAccounts;
 	this->m_history = history;
+
+        initAbJobMap();
 
 	emit this->log(tr("Job-Controller erstellt (%1)").arg(
 			QDate::currentDate().toString(Qt::SystemLocaleLongDate)));
@@ -89,6 +91,30 @@ abt_job_ctrl::~abt_job_ctrl()
         this->jobqueue = NULL;
 
 	qDebug() << Q_FUNC_INFO << "deleted";
+}
+
+void abt_job_ctrl::initAbJobMap()
+{
+
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeUnknown , new AbJobTypeUnknown() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetBalance , new AbJobTypeGetBalance() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetTransactions , new AbJobTypeGetTransactions() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeTransfer , new AbJobTypeTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDebitNote , new AbJobTypeDebitNote() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeEuTransfer , new AbJobTypeEuTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetStandingOrders , new AbJobTypeGetStandingOrders() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetDatedTransfers , new AbJobTypeGetDatedTransfers() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateStandingOrder , new AbJobTypeCreateStandingOrder() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyStandingOrder , new AbJobTypeModifyStandingOrder() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteStandingOrder , new AbJobTypeDeleteStandingOrder() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateDatedTransfer , new AbJobTypeCreateDatedTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyDatedTransfer , new AbJobTypeModifyDatedTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteDatedTransfer , new AbJobTypeDeleteDatedTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeInternalTransfer , new AbJobTypeInternalTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeLoadCellPhone , new AbJobTypeLoadCellPhone() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaTransfer , new AbJobTypeSepaTransfer() ) );
+        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaDebitNote , new AbJobTypeSepaDebitNote() ) );
+
 }
 
 //static public
@@ -1693,7 +1719,8 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 
 			this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
 					"Der Auftrag wurde zur Historie hinzugefügt")
-				     .arg(abt_conv::JobTypeToQString(jobType)));
+                                .arg(abt_conv::JobTypeToQString((m_abJobMap.find(jobType))->second)));
+                                     //.arg(abt_conv::JobTypeToQString(jobType)));
 
 			//if wanted, we add a new known recipient
 			if (settings->autoAddNewRecipients()) {
@@ -1812,7 +1839,8 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 					"Ausführung von '%1' fehlerhaft."
 					"</font></b> "
 					"Der Auftrag bleibt im Ausgang erhalten")
-				     .arg(abt_conv::JobTypeToQString(jobType)));
+                                        .arg(abt_conv::JobTypeToQString((m_abJobMap.find(jobType))->second)));
+                                     //.arg(abt_conv::JobTypeToQString(jobType)));
 
 			//we remove the job from the AB_JOB_LIST2, therefore
 			//it wont be delete by the deletion of the AB_JOB_LIST2.

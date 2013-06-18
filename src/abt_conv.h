@@ -38,6 +38,7 @@
 #include <aqbanking/job.h>
 #include <gwenhywfar/stringlist.h>
 
+#include "abjobtype.hpp"
 
 /*! \brief conversion functions for GWEN* and AB* types to Qt types
   */
@@ -63,7 +64,8 @@ public:
 	abt_conv();
 
 	static const QString JobTypeToQString(const AB_JOB *j);
-	static const QString JobTypeToQString(AB_JOB_TYPE type);
+        static const QString JobTypeToQString(AB_JOB_TYPE type);
+        static const QString JobTypeToQString(AbJobType *abJobType);
 	static const QString JobStatusToQString(const AB_JOB *j);
 	static const QString JobStatusToQString(AB_JOB_STATUS status);
 

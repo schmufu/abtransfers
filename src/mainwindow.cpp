@@ -54,6 +54,7 @@
 
 #include "globalvars.h"
 #include "abt_conv.h"
+#include "abjobtype.hpp"
 #include "abt_transactionlimits.h"
 #include "widgets/widgettransfer.h"
 #include "widgets/bankaccountswidget.h"
@@ -1009,7 +1010,7 @@ void MainWindow::on_actionEinstellungen_triggered()
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 {
 	QString msg;
-	msg.append(abt_conv::JobTypeToQString(type));
+        msg.append(abt_conv::JobTypeToQString(type));
 	msg.append(tr(" - Auftrag wird von der Bank nicht unterstützt!"));
 	this->ui->statusBar->showMessage(msg, 8000);
 }

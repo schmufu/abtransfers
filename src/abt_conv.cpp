@@ -53,6 +53,12 @@ const QString abt_conv::JobTypeToQString(const AB_JOB *j)
 	return abt_conv::JobTypeToQString(type);
 }
 
+const QString abt_conv::JobTypeToQString(AbJobType *abJobType)
+{
+        return abJobType->getJobTypeToQString();
+}
+
+
 const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
 {
 	switch (type) {

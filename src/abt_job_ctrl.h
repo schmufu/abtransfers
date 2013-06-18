@@ -42,6 +42,7 @@
 #include "abt_jobinfo.h"
 #include "abt_history.h"
 
+#include "abjobtype.hpp"
 
 /** @brief Administration of the jobs that are send to the bank
   *
@@ -93,7 +94,7 @@ private:
 	QList<abt_jobInfo*> *jobqueue;
 	aqb_Accounts *m_allAccounts;
 	abt_history *m_history;
-
+        std::map<AB_JOB_TYPE,AbJobType *> m_abJobMap;
 	void addlog(const QString &str);
 
 	QStringList getParsedJobLogs(const AB_JOB *j) const;
@@ -105,6 +106,7 @@ private:
 	bool parseExecutedJobs(AB_JOB_LIST2 *jl);
 
 	void addNewRecipient(const abt_jobInfo *jobInfo);
+        void initAbJobMap();
 
 	int getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const;
 	int getSupposedJobqueue_LastPos(int firstPos) const;
