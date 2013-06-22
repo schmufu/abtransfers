@@ -57,6 +57,10 @@ class widgetKnownStandingOrders : public QWidget
 public:
 	explicit widgetKnownStandingOrders(QWidget *parent = 0);
 
+protected:
+	void changeEvent(QEvent *e);
+	void retranslateCppCode();
+
 private:
 	QTreeWidget *treeWidget; //!< main widget for display
 	QAction *actEdit; //!< QAction handling edit

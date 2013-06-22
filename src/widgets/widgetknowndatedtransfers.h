@@ -48,6 +48,10 @@ class widgetKnownDatedTransfers : public QWidget
 public:
 	explicit widgetKnownDatedTransfers(QWidget *parent = 0);
 
+protected:
+	void changeEvent(QEvent *e);
+	void retranslateCppCode();
+
 private:
 	QTreeWidget *treeWidget;
 	QAction *actEdit;
