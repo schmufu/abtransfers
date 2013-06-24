@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -135,6 +135,7 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
 	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog("ProfileConfirmDelete"));
 	this->ui->checkBox_warnDeleteHistory->setChecked(this->settings->showDialog("HistoryConfirmDelete"));
+	this->ui->checkBox_runtimeLanguageChange->setChecked(this->settings->showDialog("RuntimeLanguageChange"));
 
 	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
 	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
@@ -163,6 +164,7 @@ void DialogSettings::saveToSettings()
 	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
 	this->settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
 	this->settings->setShowDialog("HistoryConfirmDelete", this->ui->checkBox_warnDeleteHistory->isChecked());
+	this->settings->setShowDialog("RuntimeLanguageChange", this->ui->checkBox_runtimeLanguageChange->isChecked());
 
 	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
 	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
