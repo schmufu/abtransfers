@@ -71,7 +71,7 @@ public:
 
 private:
 	AB_JOB *m_job;
-	QStringList *m_jobInfo;
+	QStringList *jobInfoTmp;
 	abt_transaction *m_trans;
 	const AB_ACCOUNT *m_ABAccount;
 	AB_JOB_TYPE m_jobType;
@@ -121,7 +121,7 @@ public:
 	const QString getType() const;
 
 	/** \brief Der Info-Text zur Anzeige im Ausgang oder Historie */
-	const QStringList* getInfo() const;
+	const QStringList* getInfo();
 
 	/** \brief gibt den enthaltenen AB_Job zurück (could be NULL!) */
 	AB_JOB *getJob() const;
