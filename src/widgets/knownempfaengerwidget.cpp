@@ -74,6 +74,7 @@ void KnownEmpfaengerWidget::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -115,6 +116,18 @@ void KnownEmpfaengerWidget::twMousePressEvent(QMouseEvent *event)
 			this->dragStartPos = QPoint(0,0);
 		}
 	}
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void KnownEmpfaengerWidget::retranslateCppCode()
+{
+	//we simple delete and recreate the actions.
+	delete this->actNew;
+	delete this->actEdit;
+	delete this->actDelete;
+	this->CreateAllActions(); //this sets the new tr() strings ;)
+	this->DisplayEmpfaenger(); //redraw the whole tree widget
 }
 
 void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)

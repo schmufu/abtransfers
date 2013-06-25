@@ -73,6 +73,7 @@ protected:
 	bool eventFilter(QObject *obj, QEvent *event);
 	void twMouseMoveEvent(QMouseEvent *event);
 	void twMousePressEvent(QMouseEvent *event);
+	void retranslateCppCode();
 
 private:
 	void CreateAllActions();

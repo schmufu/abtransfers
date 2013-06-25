@@ -33,6 +33,7 @@
 #include <QtGui/QLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QTreeWidget>
+#include <QEvent>
 
 #include "../aqb_accountinfo.h"
 #include "../abt_standingorderinfo.h"
@@ -67,6 +68,31 @@ widgetKnownStandingOrders::widgetKnownStandingOrders(QWidget *parent) :
 	//sets the current account, establish all connections and refresh
 	//the treeWidget
 	this->setAccount(this->account);
+}
+
+//protected
+void widgetKnownStandingOrders::changeEvent(QEvent *e)
+{
+	QWidget::changeEvent(e);
+	switch (e->type()) {
+	case QEvent::LanguageChange:
+		this->retranslateCppCode();
+		break;
+	default:
+		break;
+	}
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void widgetKnownStandingOrders::retranslateCppCode()
+{
+	delete this->actDelete;
+	delete this->actEdit;
+	delete this->actRefresh;
+	this->createAllActions();
+
+	this->refreshDisplayedItems(this->account);
 }
 
 //private

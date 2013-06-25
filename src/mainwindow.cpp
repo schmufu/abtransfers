@@ -279,10 +279,25 @@ void MainWindow::closeEvent(QCloseEvent *e)
  */
 void MainWindow::retranslateCppCode()
 {
+	QLabel *accText;
+
 	this->dock_Accounts->setWindowTitle(tr("Online Konten"));
 	this->dock_KnownDatedTransfers->setWindowTitle(tr("Terminüberweisungen"));
 	this->dock_KnownRecipient->setWindowTitle(tr("Bekannte Empfänger"));
 	this->dock_KnownStandingOrders->setWindowTitle(tr("Daueraufträge"));
+
+	accText = this->dock_KnownStandingOrders->findChild<QLabel*>();
+	if (accText)
+		accText->setText(tr("Konto"));
+	accText = this->dock_KnownDatedTransfers->findChild<QLabel*>();
+	if (accText)
+		accText->setText(tr("Konto"));
+
+	//recreate all widgets in the scrollArea, so that translations taken place
+	this->createWidgetsInScrollArea();
+
+	this->outbox->refreshTreeWidget(this->jobctrl);
+	this->pageHistory->refreshTreeWidget(this->history);
 }
 
 //private Slot

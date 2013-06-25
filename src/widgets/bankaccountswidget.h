@@ -64,12 +64,13 @@ protected:
 	bool eventFilter(QObject *obj, QEvent *event);
 	void twMouseMoveEvent(QMouseEvent *event);
 	void twMousePressEvent(QMouseEvent *event);
-
+	void retranslateCppCode();
 
 private:
 	Ui::BankAccountsWidget *ui;
 
 	void setValuesForItem(QTreeWidgetItem *item, const aqb_AccountInfo *acc) const;
+	void setHeaderItemCaptions(QTreeWidgetItem *headerItem) const;
 
 signals:
 	void Account_Changed(const aqb_AccountInfo *new_account);

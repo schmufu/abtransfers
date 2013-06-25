@@ -53,20 +53,7 @@ BankAccountsWidget::BankAccountsWidget(const aqb_Accounts *accounts,
 
 	QTreeWidgetItem *headerItem = new QTreeWidgetItem;
 
-	headerItem->setData(0, Qt::DisplayRole, tr("BLZ/Kto-Nr"));
-	headerItem->setData(1, Qt::DisplayRole, tr("Name"));
-	headerItem->setData(2, Qt::DisplayRole, tr("Saldo"));
-	headerItem->setData(2, Qt::TextAlignmentRole, Qt::AlignHCenter); //Saldo mittig
-	headerItem->setData(3, Qt::DisplayRole, tr("Währ."));
-	headerItem->setData(4, Qt::DisplayRole, tr("Dispo"));
-	headerItem->setData(4, Qt::TextAlignmentRole, Qt::AlignHCenter); //Dispo mittig
-	headerItem->setData(5, Qt::DisplayRole, tr("Daten vom"));
-	headerItem->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum mittig
-	headerItem->setData(6, Qt::DisplayRole, tr("Typ"));
-	headerItem->setData(7, Qt::DisplayRole, tr("Land"));
-	headerItem->setData(8, Qt::DisplayRole, tr("Besitzer"));
-	headerItem->setData(9, Qt::DisplayRole, tr("Backend"));
-
+	this->setHeaderItemCaptions(headerItem);
 
 	ui->treeWidget->setColumnCount(10);
 	ui->treeWidget->setHeaderItem(headerItem);
@@ -86,6 +73,7 @@ void BankAccountsWidget::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -128,6 +116,14 @@ void BankAccountsWidget::twMousePressEvent(QMouseEvent *event)
 			this->dragStartPos = QPoint(0,0);
 		}
 	}
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void BankAccountsWidget::retranslateCppCode()
+{
+	QTreeWidgetItem *header = this->ui->treeWidget->headerItem();
+	this->setHeaderItemCaptions(header);
 }
 
 void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
@@ -286,6 +282,29 @@ void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
 	item->setData(7, Qt::DisplayRole, acc->Country());
 	item->setData(8, Qt::DisplayRole, acc->OwnerName());
 	item->setData(9, Qt::DisplayRole, acc->BackendName());
+}
+
+//private
+/** \brief sets all captions for the header item
+ *
+ * The captions are set on the supplied \a headerItem and also the
+ * TextAlignment attributes are set.
+ */
+void BankAccountsWidget::setHeaderItemCaptions(QTreeWidgetItem *headerItem) const
+{
+	headerItem->setData(0, Qt::DisplayRole, tr("BLZ/Kto-Nr"));
+	headerItem->setData(1, Qt::DisplayRole, tr("Name"));
+	headerItem->setData(2, Qt::DisplayRole, tr("Saldo"));
+	headerItem->setData(2, Qt::TextAlignmentRole, Qt::AlignHCenter); //Saldo centered
+	headerItem->setData(3, Qt::DisplayRole, tr("Währ."));
+	headerItem->setData(4, Qt::DisplayRole, tr("Dispo"));
+	headerItem->setData(4, Qt::TextAlignmentRole, Qt::AlignHCenter); //Dispo centered
+	headerItem->setData(5, Qt::DisplayRole, tr("Daten vom"));
+	headerItem->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum centered
+	headerItem->setData(6, Qt::DisplayRole, tr("Typ"));
+	headerItem->setData(7, Qt::DisplayRole, tr("Land"));
+	headerItem->setData(8, Qt::DisplayRole, tr("Besitzer"));
+	headerItem->setData(9, Qt::DisplayRole, tr("Backend"));
 }
 
 aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
