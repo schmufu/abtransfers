@@ -3,7 +3,7 @@ This file describes the background of translations used by AB-Transfers.
 Some special points must be taken into account when a translation should work.
 
 
-The trainslations could be updated by the package maintainer and the language
+The translations could be updated by the package maintainer and the language
 can be selected by the user at runtime. Therefore some information about the
 translation must be specified.
 This is done by two values that must be supplied for every translation:
@@ -13,7 +13,7 @@ TranslationChooser::LANG_VERSION - the version of the translation (must be
 				   convertible to a double) [e.g. 1.0 or 2.3]
 
 The translation for LANGUAGE must be unique for each translation! When you
-have a translation for the localization 'en_GB' and 'en_US', LANGUAGE should
+have translations for the localization 'en_GB' and 'en_US', LANGUAGE should
 be translated to "English (GB)" and "English (US)". Otherwise it is not
 possible for the application to distinguish between these two and they would
 be identified as the same.
@@ -31,7 +31,7 @@ The following directories are searched for 'abtransfers*.qm' files:
 ($APPDIR = the directory of the executable. $HOME = the directory of the user)
 
 On Linux:
-	'embedded to the executable'
+	'embedded into the executable'
 	/usr/share/abtransfers/
 	/usr/share/abtransfers/translation/
 	$APPDIR/
@@ -40,7 +40,7 @@ On Linux:
 	$HOME/.abtransfers/translation/
 
 On Mac OS:
-	'embedded to the executable'
+	'embedded into the executable'
 	$APPDIR/../Resources/
 	$APPDIR/../Resources/translation/
 	$HOME/.abtransfers/
@@ -50,11 +50,11 @@ On Windows:
 	to be defined
 
 
-The directories are shown in the sequence the are searched. Thus it is possible
-for a package maintainer to supply a newer version of a translation, without
-recompiling the application, by copying it to /usr/share/abtransfers/ and the
-user has the possibility to override this by installing a newer version to
-$HOME/.abtransfers/
+The directories above are shown in the sequence they are searched. Thus it is
+possible for a package maintainer to supply a newer version of a translation,
+without recompiling the application, by copying it to /usr/share/abtransfers/
+and the user has the possibility to override this by installing a newer version
+to $HOME/.abtransfers/
 
 If the same translation version (LANG_VERSION) is found in a later searched
 directory, this does not override the previous found version! So if the
@@ -65,7 +65,7 @@ directory is the same as the embedded version (the embedded is used!)
 
 
 When the user has not selected any language (at the first start) the current
-system locale is used to determine the most possible translation.
+system locale is used to determine the best possible translation.
 The locale supplied by the filename is used for this approach. The application
 name (abtransfers) plus one character (regardless which) and also the '.qm'
 suffix are removed. The exact character between the application name and the
@@ -80,9 +80,9 @@ are available (only the ones found are processed, see above for LANGUAGE)
     abtransfers.nl_BE.qm
     abtransfers.nl.qm
 
-So no one of the following will match the 'en_GB' and the default (German) is
+So no one of the above .qm files will match 'en_GB' and the default (German) is
 used. When the system locale is 'nl_NL' it would not match either, but the
-country code is stripped from the locale name and then the abtransfers.nl.qm
+country code is stripped from the locale name and then the 'abtransfers.nl.qm'
 file would match and is used.
 
 At the moment 'en' (stripped from en_GB) would not match to 'en_GB', but this
