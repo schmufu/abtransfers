@@ -119,6 +119,9 @@ void page_history::retranslateCppCode()
 	delete this->actExportSelected;
 	delete this->actGenerateNewTransaction;
 	this->createActions();
+
+	//recreate all items in the treeWidget
+	this->refreshTreeWidget(this->history);
 }
 
 //private
@@ -498,6 +501,9 @@ ONACTEXPORTSELECTED_CLEANUP:
 //public slot
 void page_history::refreshTreeWidget(const abt_history *hist)
 {
+	//store the newly supplied history (could be changed, but shouldn't)
+	this->history = hist;
+
 	if ((hist == NULL) ||
 	    (hist->getHistoryList()->size() == 0)) {
 		this->ui->treeWidget->clear(); //delete all items

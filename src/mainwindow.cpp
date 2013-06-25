@@ -157,24 +157,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->createWidgetsInScrollArea();
 
-	//connect the signals and slots for the PushButtons of the summary widget
-	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
-		this->actTransferNational, SLOT(trigger()));
-	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
-		this->actTransferInternational, SLOT(trigger()));
-	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
-		this->actTransferInternal, SLOT(trigger()));
-	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
-		this->actTransferSepa, SLOT(trigger()));
-	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
-		this->actStandingNew, SLOT(trigger()));
-	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
-		this->actStandingUpdate, SLOT(trigger()));
-	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
-		this->actDatedNew, SLOT(trigger()));
-	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
-		this->actDatedUpdate, SLOT(trigger()));
-
 	connect(this->pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
 		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
 	connect(this->pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
@@ -293,11 +275,41 @@ void MainWindow::retranslateCppCode()
 	if (accText)
 		accText->setText(tr("Konto"));
 
-	//recreate all widgets in the scrollArea, so that translations taken place
+	QAction *langMenu = this->ui->menuEinstellungen->actions().last();
+	langMenu->setText(tr("Sprache"));
+
+	//translations also taken place when the objects are created.
+	//simple recreate all actions and menus
+	this->deleteMenus();
+	this->deleteActions();
+	this->createActions();
+	this->createMenus();
+
+	//simple recreate all widgets in the scrollArea
 	this->createWidgetsInScrollArea();
 
+	//the jobctrl is handled by the mainwindow and the outbox is simply
+	//a view to our jobctrl. So we must call the outbox to update.
 	this->outbox->refreshTreeWidget(this->jobctrl);
-	this->pageHistory->refreshTreeWidget(this->history);
+
+	if (this->ui->tabWidget_UW->count() - 1 != 0) {
+		abt_dialog dia(this,
+			       tr("Übersetzung von geöffneten Aufträgen"),
+			       tr("Übersetzungen von bereits geöffneten "
+				  "Aufträgen werden zur Zeit nicht "
+				  "unterstützt.<br />"
+				  "Wenn Sie einen neuen Auftrag erstellen "
+				  "wird das Formular in der neuen Sprache "
+				  "angezeigt werden.<br /><br />"
+				  "<i>Noch in Bearbeitung befindliche Aufträge "
+				  "können aber durchaus noch weiter bearbeitet "
+				  "und ausgeführt werden</i>."),
+				QDialogButtonBox::Ok,
+				QDialogButtonBox::Ok,
+				QMessageBox::Information,
+				"RuntimeLanguageChange");
+		 dia.exec();
+	}
 }
 
 //private Slot
@@ -354,47 +366,67 @@ void MainWindow::TimerTimeOut()
 }
 
 //private
+/** \brief creates all actions and the required connections
+ *
+ * When adding actions here take care of adding them to deleteActions() as well!
+ */
 void MainWindow::createActions()
 {
 	actTransferNational = new QAction(this);
 	actTransferNational->setText(tr("National"));
 	actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
+	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
+		this->actTransferNational, SLOT(trigger()));
 
 	actTransferInternational = new QAction(this);
 	actTransferInternational->setText(tr("International"));
 	actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
+	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
+		this->actTransferInternational, SLOT(trigger()));
 
 	actTransferSepa = new QAction(this);
 	actTransferSepa->setText(tr("SEPA (EU weit)"));
 	actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
+	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
+		this->actTransferSepa, SLOT(trigger()));
 
 	actTransferInternal = new QAction(this);
 	actTransferInternal->setText(tr("Umbuchung"));
 	actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
+	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
+		this->actTransferInternal, SLOT(trigger()));
 
 	actDatedNew = new QAction(this);
 	actDatedNew->setText(tr("Anlegen"));
 	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
+	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
+		this->actDatedNew, SLOT(trigger()));
 
 	actDatedUpdate = new QAction(this);
 	actDatedUpdate->setText(tr("Aktualisieren"));
 	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
+	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
+		this->actDatedUpdate, SLOT(trigger()));
 
 	actStandingNew = new QAction(this);
 	actStandingNew->setText(tr("Anlegen"));
 	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
+	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
+		this->actStandingNew, SLOT(trigger()));
 
 	actStandingUpdate = new QAction(this);
 	actStandingUpdate->setText(tr("Aktualisieren"));
 	actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
+	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
+		this->actStandingUpdate, SLOT(trigger()));
 
 	actDebitNote = new QAction(this);
 	actDebitNote->setText(tr("Lastschrift"));
@@ -430,6 +462,28 @@ void MainWindow::createActions()
 
 }
 
+//private
+/** \brief deletes all created actions */
+void MainWindow::deleteActions()
+{
+	delete this->actTransferNational;
+	delete this->actTransferInternational;
+	delete this->actTransferSepa;
+	delete this->actTransferInternal;
+	delete this->actDatedNew;
+	delete this->actDatedUpdate;
+	delete this->actStandingNew;
+	delete this->actStandingUpdate;
+	delete this->actDebitNote;
+	delete this->actDebitNoteSepa;
+	delete this->actUpdateBalance;
+	delete this->actShowAvailableJobs;
+	delete this->actSaveAllData;
+#ifdef TESTWIDGETACCESS
+	delete this->actTestWidgetAccess;
+#endif
+}
+
 
 //private
 void MainWindow::createMenus()
@@ -454,6 +508,13 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
 	this->accountContextMenu->addAction(this->actShowAvailableJobs);
+}
+
+//private
+/** \brief deletes all created menus */
+void MainWindow::deleteMenus()
+{
+	delete this->accountContextMenu;
 }
 
 //private

@@ -115,7 +115,9 @@ private:
 	TranslationChooser *translations;
 
 	void createActions();
+	void deleteActions();
 	void createMenus();
+	void deleteMenus();
 	void createDockToolbar();
 	void createWidgetsInScrollArea();
 	void createDockBankAccountWidget();
