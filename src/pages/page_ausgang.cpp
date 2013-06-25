@@ -52,8 +52,6 @@ Page_Ausgang::Page_Ausgang(abt_settings *settings, QWidget *parent) :
 	this->refreshTreeWidget(NULL); //erstellt "Keine Aufträge vorhanden"
 
 	this->ui->pushButton_exec->setEnabled(false);
-
-	this->on_treeWidget_itemSelectionChanged(); //en-/disable actions and buttons
 }
 
 Page_Ausgang::~Page_Ausgang()
@@ -95,8 +93,6 @@ void Page_Ausgang::retranslateCppCode()
 	delete this->actUp;
 	delete this->actDown;
 	this->createAllActions();
-
-	this->on_treeWidget_itemSelectionChanged();
 }
 
 //private
@@ -135,6 +131,9 @@ void Page_Ausgang::createAllActions()
 		this, SLOT(onActionDownTriggered()));
 	connect(this->ui->pushButton_down, SIGNAL(clicked()),
 		this->actDown, SLOT(trigger()));
+
+	//set the correct en-/disabled states on the actions/buttons
+	this->on_treeWidget_itemSelectionChanged();
 }
 
 

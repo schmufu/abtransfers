@@ -71,9 +71,6 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	//default sorting by 'executed at' in descending order
 	this->ui->treeWidget->sortByColumn(4, Qt::DescendingOrder);
 
-	//calling the itemSelectionChanged() slot enables/disables the actions
-	this->on_treeWidget_itemSelectionChanged();
-
 	connect(this->history, SIGNAL(historyListChanged(const abt_history*)),
 		this, SLOT(refreshTreeWidget(const abt_history*)));
 
@@ -188,6 +185,9 @@ void page_history::createActions()
 		this, SLOT(onActDeleteSelected()));
 	this->ui->toolButton_delete->setDefaultAction(this->actDeleteSelected);
 	this->ui->treeWidget->addAction(this->actDeleteSelected);
+
+	//set the correct en-/disabled states on the actions
+	this->on_treeWidget_itemSelectionChanged();
 }
 
 /**
