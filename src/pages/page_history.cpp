@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -100,6 +100,7 @@ void page_history::changeEvent(QEvent *e)
 	switch(e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -110,6 +111,17 @@ void page_history::resizeEvent(QResizeEvent *event)
 {
 	this->setTreeWidgetColWidths();
 	QFrame::resizeEvent(event);
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void page_history::retranslateCppCode()
+{
+	//we simply delete the actions and recreate them
+	delete this->actDeleteSelected;
+	delete this->actExportSelected;
+	delete this->actGenerateNewTransaction;
+	this->createActions();
 }
 
 //private

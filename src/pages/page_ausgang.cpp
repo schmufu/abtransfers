@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-213 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -54,14 +54,6 @@ Page_Ausgang::Page_Ausgang(abt_settings *settings, QWidget *parent) :
 	this->ui->pushButton_exec->setEnabled(false);
 
 	this->on_treeWidget_itemSelectionChanged(); //en-/disable actions and buttons
-
-	connect(this->ui->pushButton_del, SIGNAL(clicked()),
-		this->actDelete, SLOT(trigger()));
-	connect(this->ui->pushButton_up, SIGNAL(clicked()),
-		this->actUp, SLOT(trigger()));
-	connect(this->ui->pushButton_down, SIGNAL(clicked()),
-		this->actDown, SLOT(trigger()));
-
 }
 
 Page_Ausgang::~Page_Ausgang()
@@ -80,6 +72,7 @@ void Page_Ausgang::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -92,6 +85,20 @@ void Page_Ausgang::resizeEvent(QResizeEvent *event)
 	QFrame::resizeEvent(event);
 }
 
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void Page_Ausgang::retranslateCppCode()
+{
+	//we simply delete the actions and recreate them
+	delete this->actDelete;
+	delete this->actEdit;
+	delete this->actUp;
+	delete this->actDown;
+	this->createAllActions();
+
+	this->on_treeWidget_itemSelectionChanged();
+}
+
 //private
 void Page_Ausgang::createAllActions()
 {
@@ -99,6 +106,8 @@ void Page_Ausgang::createAllActions()
 	this->actDelete->setText(tr("Löschen"));
 	this->actDelete->setToolTip(tr("Ausgewählten Job löschen"));
 	this->actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
+	connect(this->ui->pushButton_del, SIGNAL(clicked()),
+		this->actDelete, SLOT(trigger()));
 	connect(this->actDelete, SIGNAL(triggered()),
 		this, SLOT(onActionDeleteTriggered()));
 
@@ -113,6 +122,8 @@ void Page_Ausgang::createAllActions()
 	this->actUp->setText(tr("Auf"));
 	this->actUp->setToolTip(tr("Ausgewählten Job nach oben verschieben"));
 	this->actUp->setIcon(QIcon(":/icons/up"));
+	connect(this->ui->pushButton_up, SIGNAL(clicked()),
+		this->actUp, SLOT(trigger()));
 	connect(this->actUp, SIGNAL(triggered()),
 		this, SLOT(onActionUpTriggered()));
 
@@ -122,7 +133,8 @@ void Page_Ausgang::createAllActions()
 	this->actDown->setIcon(QIcon(":/icons/down"));
 	connect(this->actDown, SIGNAL(triggered()),
 		this, SLOT(onActionDownTriggered()));
-
+	connect(this->ui->pushButton_down, SIGNAL(clicked()),
+		this->actDown, SLOT(trigger()));
 }
 
 
