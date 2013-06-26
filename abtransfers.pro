@@ -109,7 +109,7 @@ FORMS += src/mainwindow.ui \
 OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
-    src/helpText.html \
+    src/helpText.de.html \
     translation/abtransfers.en_GB.ts \
     translation/README.translations
 RESOURCES += src/resources.qrc

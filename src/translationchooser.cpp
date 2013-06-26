@@ -75,7 +75,6 @@ QT_STATIC_CONST QString TC_TRANS_RESOURCE_STRING =
 QT_STATIC_CONST QString APP_SETTINGS_DIRNAME = "/.abtransfers/";
 
 
-
 /** \brief data class that is only used within the TranslationChooser class.
  *
  * This class is only used by the TranslationChooser to group the information
@@ -612,3 +611,38 @@ const QString &TranslationChooser::currentLanguage()
 {
 	return this->activeLanguageName;
 }
+
+#if defined(TRANSLATIONCHOOSER_ENABLE_HELPTEXT)
+//public
+/** \brief returns the help text filename for the selected language
+ *
+ * If no filename was set by the translator the default (german) is returned.
+ */
+QString TranslationChooser::helpTextFilename() const
+{
+	//: The filename of the help text.
+	//: The same directories as for the qm-files are searched!
+	QString helpFilename = tr("HELPTEXTFILENAME");
+
+	if (helpFilename == "HELPTEXTFILENAME") {
+		//no filename supplied, use default
+		helpFilename = ":/helptext_html/helpText.de.html";
+		return helpFilename;
+	}
+
+	//search backwards through the allowed locations
+	QStringList locations = this->qmFileLocations();
+	for (int i=locations.size()-1; i>=0; i--) {
+		QDir dir(locations.at(i));
+		QStringList helpFiles = dir.entryList(QStringList(helpFilename),
+						      QDir::Files, QDir::Name);
+		//return the first file found
+		if (!helpFiles.isEmpty()) {
+			return dir.filePath(helpFiles.first());
+		}
+	}
+
+	//if no help was found we return the default
+	return QString(":/helptext_html/helpText.de.html");
+}
+#endif

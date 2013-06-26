@@ -44,6 +44,9 @@ class QAction;
 
 class TranslationChooserData;
 
+/** \def enables or disables the compilation of the "HelpText" feature */
+#define TRANSLATIONCHOOSER_ENABLE_HELPTEXT
+
 
 /** \brief loads the supported translations and allows switching them at runtime
  *
@@ -127,6 +130,9 @@ public:
 	QStringList supportedLanguages();
 	QMenu *languageMenu() const;
 	const QString &currentLanguage();
+#if defined(TRANSLATIONCHOOSER_ENABLE_HELPTEXT)
+	QString helpTextFilename() const;
+#endif
 
 signals:
 	void languageChanged(const QString);
