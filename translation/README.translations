@@ -80,17 +80,31 @@ are available (only the ones found are processed, see above for LANGUAGE)
     abtransfers.nl_BE.qm
     abtransfers.nl.qm
 
-So no one of the above .qm files will match 'en_GB' and the default (German) is
-used. When the system locale is 'nl_NL' it would not match either, but the
-country code is stripped from the locale name and then the 'abtransfers.nl.qm'
-file would match and is used.
-
-At the moment 'en' (stripped from en_GB) would not match to 'en_GB', but this
-could be realized in a further version.
-
+So no one of the above .qm files will match 'en_GB' exactly. At a second try,
+when no excat match was possible, the ISO country code is truncated from the
+locale (at the _ character) and the first .qm file which match the country
+code (en) is used (in the above example: abtransfers.en_US.qm).
+When the system locale is 'nl_NL' it would not match either, but the
+country code is stripped from the locale name in the first run and then the
+'abtransfers.nl.qm' file would match and is used.
 
 The naming is only relevant for the first start, when the user has not selected
 any language. As soon as a language is selected by the user or the application
 is closed the set language is saved at the settings and restored at the next
 start.
+
+
+Help text translations
+----------------------
+
+For a translation of the help text the following could be used
+
+TranslationChooser::HELPFILENAME - the name of the translated help file.
+
+This file will be read and its content is displayed in a QWebView component,
+if QWebKit is available, or as the text of a QLabel.
+
+The same directories are searched as for the .qm files but in a opposide order.
+So at first the home directory and at last the embedded. The first file found
+will be used.
 

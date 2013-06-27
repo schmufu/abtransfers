@@ -187,7 +187,7 @@ TranslationChooser::~TranslationChooser()
  */
 void TranslationChooser::loadSupportedTranslations()
 {
-	QStringList qmLocations = this->qmFileLocations();
+	QStringList qmLocations = this->fileLocations();
 
 	foreach (QString location, qmLocations) {
 		qDebug() << "Translations -"
@@ -264,7 +264,7 @@ void TranslationChooser::addTranslation(const QString &qmFile)
 //private
 /** \brief returns a list with all locations that should be searched for qm files
  */
-QStringList TranslationChooser::qmFileLocations() const
+QStringList TranslationChooser::fileLocations() const
 {
 	QStringList locations;
 	locations.clear();
@@ -620,18 +620,19 @@ const QString &TranslationChooser::currentLanguage()
  */
 QString TranslationChooser::helpTextFilename() const
 {
+	static const QString defVal(TC_TRANS_RESOURCE_STRING + "abtransfers-helptext_de.html");
+
 	//: The filename of the help text.
 	//: The same directories as for the qm-files are searched!
 	QString helpFilename = tr("HELPTEXTFILENAME");
 
 	if (helpFilename == "HELPTEXTFILENAME") {
-		//no filename supplied, use default
-		helpFilename = ":/helptext_html/helpText.de.html";
-		return helpFilename;
+		//no translation supplied, use default (german)
+		return defVal;
 	}
 
 	//search backwards through the allowed locations
-	QStringList locations = this->qmFileLocations();
+	QStringList locations = this->fileLocations();
 	for (int i=locations.size()-1; i>=0; i--) {
 		QDir dir(locations.at(i));
 		QStringList helpFiles = dir.entryList(QStringList(helpFilename),
@@ -643,6 +644,6 @@ QString TranslationChooser::helpTextFilename() const
 	}
 
 	//if no help was found we return the default
-	return QString(":/helptext_html/helpText.de.html");
+	return defVal;
 }
 #endif
