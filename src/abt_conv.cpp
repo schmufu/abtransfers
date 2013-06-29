@@ -29,6 +29,8 @@
  ******************************************************************************/
 
 #include "abt_conv.h"
+#include "abt_job_ctrl.h"
+
 #include <QDebug>
 #include <string>
 #include <stdio.h>
@@ -37,6 +39,8 @@
 QList<GWEN_STRINGLIST*> *abt_conv::m_gwen_strlist = new QList<GWEN_STRINGLIST*>;
 QList<GWEN_TIME*> *abt_conv::m_gwen_timelist = new QList<GWEN_TIME*>;
 QList<AB_VALUE*> *abt_conv::m_gwen_abvlist = new QList<AB_VALUE*>;
+
+std::map<AB_JOB_TYPE,AbJobType *> abt_job_ctrl::m_abJobMap = abt_job_ctrl::initAbJobMap();
 
 abt_conv::abt_conv()
 {
@@ -49,77 +53,20 @@ abt_conv::abt_conv()
 //static
 const QString abt_conv::JobTypeToQString(const AB_JOB *j)
 {
-	AB_JOB_TYPE type = AB_Job_GetType(j);
-	return abt_conv::JobTypeToQString(type);
+        AB_JOB_TYPE type = AB_Job_GetType(j);
+        std::map<AB_JOB_TYPE,AbJobType *>::iterator abJobMapIt =
+                                        abt_job_ctrl::m_abJobMap.find(type);
+        if(abJobMapIt != abt_job_ctrl::m_abJobMap.end()) {
+                return abt_conv::JobTypeToQString(abJobMapIt->second);
+        } else {
+                qWarning() << "key was not found in m_avJobMap";
+                return QString("Unknown");
+        }
 }
 
 const QString abt_conv::JobTypeToQString(AbJobType *abJobType)
 {
         return abJobType->getJobTypeToQString();
-}
-
-
-const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
-{
-	switch (type) {
-	case AB_Job_TypeCreateDatedTransfer:
-		return (QObject::tr("Terminüberweisung anlegen"));
-		break;
-	case AB_Job_TypeCreateStandingOrder :
-		return (QObject::tr("Dauerauftrag anlegen"));
-		break;
-	case AB_Job_TypeDebitNote :
-		return (QObject::tr("Lastschrift anlegen"));
-		break;
-	case AB_Job_TypeDeleteDatedTransfer :
-		return (QObject::tr("Terminüberweisung löschen"));
-		break;
-	case AB_Job_TypeDeleteStandingOrder :
-		return (QObject::tr("Dauerauftrag löschen"));
-		break;
-	case AB_Job_TypeEuTransfer :
-		return (QObject::tr("Internationale Überweisung"));
-		break;
-	case AB_Job_TypeGetBalance :
-		return (QObject::tr("Kontostand abfragen"));
-		break;
-	case AB_Job_TypeGetDatedTransfers :
-		return (QObject::tr("Terminüberweisungen abfragen"));
-		break;
-	case AB_Job_TypeGetStandingOrders :
-		return (QObject::tr("Daueraufträge abfragen"));
-		break;
-	case AB_Job_TypeGetTransactions :
-		return (QObject::tr("Buchungen abfragen"));
-		break;
-	case AB_Job_TypeInternalTransfer :
-		return (QObject::tr("Umbuchung durchführen"));
-		break;
-	case AB_Job_TypeLoadCellPhone :
-		return (QObject::tr("Handy Prepaid-Karte aufladen"));
-		break;
-	case AB_Job_TypeModifyDatedTransfer :
-		return (QObject::tr("Terminüberweisung ändern"));
-		break;
-	case AB_Job_TypeModifyStandingOrder :
-		return (QObject::tr("Dauerauftrag ändern"));
-		break;
-	case AB_Job_TypeSepaDebitNote :
-		return (QObject::tr("SEPA Lastschrift anlegen"));
-		break;
-	case AB_Job_TypeSepaTransfer :
-		return (QObject::tr("SEPA Überweisung"));
-		break;
-	case AB_Job_TypeTransfer :
-		return (QObject::tr("Überweisung durchführen"));
-		break;
-	case AB_Job_TypeUnknown :
-		return (QObject::tr("AqBanking Typ unbekannt"));
-		break;
-	}
-
-	//default if no type match
-	return QObject::tr("ab_transfers Typ unbekannt");
 }
 
 //static

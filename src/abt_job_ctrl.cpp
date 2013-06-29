@@ -61,8 +61,6 @@
 #include "globalvars.h"
 #include "abt_conv.h"
 
-std::map<AB_JOB_TYPE,AbJobType *> m_abJobMap;
-
 abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
 			   QObject *parent) :
     QObject(parent)
@@ -70,8 +68,6 @@ abt_job_ctrl::abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
 	this->jobqueue = new QList<abt_jobInfo*>;
 	this->m_allAccounts = allAccounts;
 	this->m_history = history;
-
-        initAbJobMap();
 
 	emit this->log(tr("Job-Controller erstellt (%1)").arg(
 			QDate::currentDate().toString(Qt::SystemLocaleLongDate)));
@@ -93,28 +89,30 @@ abt_job_ctrl::~abt_job_ctrl()
 	qDebug() << Q_FUNC_INFO << "deleted";
 }
 
-void abt_job_ctrl::initAbJobMap()
-{
+std::map<AB_JOB_TYPE,AbJobType *> abt_job_ctrl::initAbJobMap() {
 
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeUnknown , new AbJobTypeUnknown() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetBalance , new AbJobTypeGetBalance() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetTransactions , new AbJobTypeGetTransactions() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeTransfer , new AbJobTypeTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDebitNote , new AbJobTypeDebitNote() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeEuTransfer , new AbJobTypeEuTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetStandingOrders , new AbJobTypeGetStandingOrders() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetDatedTransfers , new AbJobTypeGetDatedTransfers() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateStandingOrder , new AbJobTypeCreateStandingOrder() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyStandingOrder , new AbJobTypeModifyStandingOrder() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteStandingOrder , new AbJobTypeDeleteStandingOrder() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateDatedTransfer , new AbJobTypeCreateDatedTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyDatedTransfer , new AbJobTypeModifyDatedTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteDatedTransfer , new AbJobTypeDeleteDatedTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeInternalTransfer , new AbJobTypeInternalTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeLoadCellPhone , new AbJobTypeLoadCellPhone() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaTransfer , new AbJobTypeSepaTransfer() ) );
-        m_abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaDebitNote , new AbJobTypeSepaDebitNote() ) );
+        std::map<AB_JOB_TYPE,AbJobType *> abJobMap;
 
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeUnknown , new AbJobTypeUnknown() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetBalance , new AbJobTypeGetBalance() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetTransactions , new AbJobTypeGetTransactions() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeTransfer , new AbJobTypeTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDebitNote , new AbJobTypeDebitNote() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeEuTransfer , new AbJobTypeEuTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetStandingOrders , new AbJobTypeGetStandingOrders() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeGetDatedTransfers , new AbJobTypeGetDatedTransfers() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateStandingOrder , new AbJobTypeCreateStandingOrder() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyStandingOrder , new AbJobTypeModifyStandingOrder() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteStandingOrder , new AbJobTypeDeleteStandingOrder() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeCreateDatedTransfer , new AbJobTypeCreateDatedTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeModifyDatedTransfer , new AbJobTypeModifyDatedTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeDeleteDatedTransfer , new AbJobTypeDeleteDatedTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeInternalTransfer , new AbJobTypeInternalTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeLoadCellPhone , new AbJobTypeLoadCellPhone() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaTransfer , new AbJobTypeSepaTransfer() ) );
+        abJobMap.insert( std::pair<AB_JOB_TYPE,AbJobType *>(AB_Job_TypeSepaDebitNote , new AbJobTypeSepaDebitNote() ) );
+
+        return abJobMap;
 }
 
 //static public
@@ -1717,10 +1715,18 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 			abt_jobInfo *jobInfo = new abt_jobInfo(j);
 			this->m_history->add(jobInfo);
 
-			this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
-					"Der Auftrag wurde zur Historie hinzugefügt")
-                                .arg(abt_conv::JobTypeToQString((m_abJobMap.find(jobType))->second)));
-                                     //.arg(abt_conv::JobTypeToQString(jobType)));
+
+                        std::map<AB_JOB_TYPE,AbJobType *>::iterator abJobMapIt =
+                                                        abt_job_ctrl::m_abJobMap.find(jobType);
+                        if(abJobMapIt != abt_job_ctrl::m_abJobMap.end()) {
+                                this->addlog(tr("<b>Ausführung von '%1' erfolgreich.</b> "
+                                                "Der Auftrag wurde zur Historie hinzugefügt")
+                                        .arg(abt_conv::JobTypeToQString(abJobMapIt->second)));
+                        } else {
+                                qWarning() << "key was not found in m_avJobMap";
+                                this->addlog(tr("<b>Ausführung von 'unknown' erfolgreich.</b> "
+                                                "Der Auftrag wurde zur Historie hinzugefügt"));
+                        }
 
 			//if wanted, we add a new known recipient
 			if (settings->autoAddNewRecipients()) {

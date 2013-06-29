@@ -84,7 +84,6 @@
   *	  abt_job_ctrl.
   *
   */
-
 class abt_job_ctrl : public QObject
 {
 Q_OBJECT
@@ -93,8 +92,7 @@ private:
 	/** this is the main list where all jobs are queued for execution */
 	QList<abt_jobInfo*> *jobqueue;
 	aqb_Accounts *m_allAccounts;
-	abt_history *m_history;
-        std::map<AB_JOB_TYPE,AbJobType *> m_abJobMap;
+	abt_history *m_history;        
 	void addlog(const QString &str);
 
 	QStringList getParsedJobLogs(const AB_JOB *j) const;
@@ -105,8 +103,7 @@ private:
 
 	bool parseExecutedJobs(AB_JOB_LIST2 *jl);
 
-	void addNewRecipient(const abt_jobInfo *jobInfo);
-        void initAbJobMap();
+	void addNewRecipient(const abt_jobInfo *jobInfo);        
 
 	int getSupposedJobqueue_FirstPos(const AB_ACCOUNT *acc) const;
 	int getSupposedJobqueue_LastPos(int firstPos) const;
@@ -130,6 +127,9 @@ public:
 					       QHash<AB_JOB_TYPE, abt_transactionLimits*> *ah);
 
 	bool isTransactionInQueue(const abt_transaction *t) const;
+
+        static std::map<AB_JOB_TYPE,AbJobType *> initAbJobMap();
+        static std::map<AB_JOB_TYPE,AbJobType *> m_abJobMap;
 
 signals:
 	void jobNotAvailable(AB_JOB_TYPE type);

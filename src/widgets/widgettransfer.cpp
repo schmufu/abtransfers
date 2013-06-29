@@ -38,6 +38,7 @@
 #include <QtCore/QDebug>
 
 #include "../aqb_accountinfo.h"
+#include "../abt_job_ctrl.h"
 #include "../globalvars.h"	//for the global "banking" object
 
 widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
@@ -83,7 +84,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 				"auf eine Aktualisierung.</font></h3>"
 				"(Eventuell folgende Texte sind ablaufbedingt "
 				"und können ignoriert werden)"
-                                ).arg(abt_conv::JobTypeToQString(this->m_type)));
+                                ).arg(abt_conv::JobTypeToQString(
+                abt_job_ctrl::m_abJobMap.find(this->m_type)->second)));
 		notImplementet->setWordWrap(true);
 		notImplementet->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 		notImplementet->setMinimumWidth(350);
@@ -143,7 +145,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		QLabel *programError = new QLabel(tr(
 				"<h2>PROGRAMMIERFEHLER!</h2>"
 				"Der \"Job\" '%1' wird von widgetTransfer nicht"
-                                "unterstützt!").arg(abt_conv::JobTypeToQString(this->m_type)));
+                                "unterstützt!").arg(abt_conv::JobTypeToQString(
+                                abt_job_ctrl::m_abJobMap.find(this->m_type)->second)));
 		programError->setWordWrap(true);
                 this->m_layoutMain->insertWidget(0, programError, 0, Qt::AlignLeft | Qt::AlignVCenter);
                 this->m_type = AB_Job_TypeUnknown;
@@ -208,7 +211,8 @@ void widgetTransfer::my_createNotAvailableJobText()
 	QLabel *notAvailable = new QLabel(tr(
 			"<h2>Der Auftrag '%1' ist bei dem ausgewähltem Konto "
 			"nicht verfügbar!</h2>"
-                        ).arg(abt_conv::JobTypeToQString(this->m_type)));
+                        ).arg(abt_conv::JobTypeToQString(
+                        abt_job_ctrl::m_abJobMap.find(this->m_type)->second)));
 	notAvailable->setWordWrap(true);
 	notAvailable->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 	notAvailable->setMinimumWidth(350);
@@ -232,7 +236,8 @@ void widgetTransfer::my_createNotAvailableJobText()
 			"Institut unterstützt werden. Dies ist aber abhängig "
 			"vom Institut und kann von AB-Transfers nicht "
 			"beeinflusst werden.").arg(
-                                        abt_conv::JobTypeToQString(this->m_type),
+                                        abt_conv::JobTypeToQString(
+                                        abt_job_ctrl::m_abJobMap.find(this->m_type)->second),
 					BankName, KontoName));
         if (this->m_type == AB_Job_TypeSepaTransfer) {
 		description->setText(description->text().append(
@@ -658,7 +663,8 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 				   "gewählten Konto nicht verfügbar.<br />"
 				   "Bitte wählen Sie ein Konto bei dem der "
 				   "Auftrag auch ausgeführt werden kann.</b>"
-                                   "<br />").arg(abt_conv::JobTypeToQString(this->m_type)));
+                                   "<br />").arg(abt_conv::JobTypeToQString(
+                                   abt_job_ctrl::m_abJobMap.find(this->m_type)->second)));
 		//wir dürfen nicht weiter testen, da die weiteren Überprüfungen
 		//teilweise auf das vorhandensein der Limits angewiesen sind!
 		return false;

@@ -28,6 +28,8 @@
  *
  ******************************************************************************/
 
+#include <QDebug>
+
 #include "abt_jobinfo.h"
 
 #include <aqbanking/jobsingletransfer.h>
@@ -53,7 +55,7 @@
 #include "abt_conv.h"
 #include "aqb_accountinfo.h"
 #include "abt_transaction_base.h"
-
+#include "abt_job_ctrl.h"
 
 
 abt_jobInfo::abt_jobInfo(AB_JOB *j)
@@ -94,6 +96,7 @@ abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
 
 	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
 	this->createJobInfoStringList(this->m_jobInfo);
+
 }
 
 
@@ -199,7 +202,14 @@ AB_JOB_TYPE abt_jobInfo::getAbJobType() const
 
 const QString abt_jobInfo::getType() const
 {
-	return abt_conv::JobTypeToQString(this->m_jobType);
+        std::map<AB_JOB_TYPE,AbJobType *>::iterator abJobMapIt =
+                                        abt_job_ctrl::m_abJobMap.find(this->m_jobType);
+        if(abJobMapIt != abt_job_ctrl::m_abJobMap.end()) {
+                return abt_conv::JobTypeToQString(abJobMapIt->second);
+        } else {
+                qWarning() << "key was not found in m_avJobMap";
+                return QString("Unknown");
+        }
 }
 
 const QStringList *abt_jobInfo::getInfo() const

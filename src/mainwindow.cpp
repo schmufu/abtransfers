@@ -73,6 +73,7 @@
 #include "pages/pagewidgettests.h"
 #endif
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -1010,7 +1011,15 @@ void MainWindow::on_actionEinstellungen_triggered()
 void MainWindow::DisplayNotAvailableTypeAtStatusBar(AB_JOB_TYPE type)
 {
 	QString msg;
-        msg.append(abt_conv::JobTypeToQString(type));
+        std::map<AB_JOB_TYPE,AbJobType *>::iterator abJobMapIt =
+                                        abt_job_ctrl::m_abJobMap.find(type);
+        if(abJobMapIt != abt_job_ctrl::m_abJobMap.end()) {
+                msg.append(abt_conv::JobTypeToQString(abJobMapIt->second));
+        } else {
+                qWarning() << "key was not found in m_avJobMap";
+                msg.append(QString("Unknown"));
+        }
+
 	msg.append(tr(" - Auftrag wird von der Bank nicht unterstützt!"));
 	this->ui->statusBar->showMessage(msg, 8000);
 }
@@ -1158,7 +1167,8 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	int row = gl->rowCount(); //append new widgets
 	while (it.hasNext()) {
 		it.next();
-		QLabel *txt = new QLabel(abt_conv::JobTypeToQString(it.key()));
+                QLabel *txt = new QLabel(abt_conv::JobTypeToQString(
+                abt_job_ctrl::m_abJobMap.find(it.key())->second));
 		QLabel *IcoBank = new QLabel();
 		QLabel *IcoABT = new QLabel();
 
@@ -1329,7 +1339,8 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
         widgetTransfer *trans = new widgetTransfer(type, acc, this->m_accounts, this);
 
 	//add the new tab and set it as current
-	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
+        int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(
+                                        abt_job_ctrl::m_abJobMap.find(type)->second));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
 	connect(trans, SIGNAL(createTransfer(AB_JOB_TYPE,const widgetTransfer*)),
