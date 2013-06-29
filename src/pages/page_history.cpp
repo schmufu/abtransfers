@@ -280,7 +280,7 @@ void page_history::onActDeleteSelected()
 	QString msgTitle = tr("Historie Eintrag löschen");
 	QString msgText = tr("Sollen die gewählten Einträge aus der Historie wirklich "
 			     "gelöscht werden?<br />"
-			     "<i>(Dies kann nicht rückgängig gemacht werden)</i>");
+			     "<i>Dies kann nicht rückgängig gemacht werden.</i>");
 	abt_dialog dialog(this, msgTitle, msgText,
 			  QDialogButtonBox::Yes | QDialogButtonBox::No,
 			  QDialogButtonBox::Yes, QMessageBox::Question,

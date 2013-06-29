@@ -81,8 +81,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 				"implementiert.<br />"
 				"Bitte haben Sie noch etwas Geduld und warten "
 				"auf eine Aktualisierung.</font></h3>"
-				"(Eventuell folgende Texte sind ablaufbedingt "
-				"und können ignoriert werden)"
+				"<i>Eventuell folgende Texte sind ablaufbedingt "
+				"und können ignoriert werden.</i>"
 				).arg(abt_conv::JobTypeToQString(this->m_type)));
 		notImplementet->setWordWrap(true);
 		notImplementet->setAlignment(Qt::AlignTop | Qt::AlignLeft);
