@@ -367,9 +367,13 @@ QMenu *page_history::createExportContextMenu(QWidget *parent, const aqb_imexport
 }
 
 
-/**
- * @brief creates the export-context menu and exports the data according to
+/** \brief creates the export-context menu and exports the data according to
  *	  the user selection
+ *
+ * creates a ctx from the selected items in the history and saves this
+ * data with the selected profile from the plugin.
+ *
+ * Saving is done by a function from AqBanking.
  */
 //private slot
 void page_history::onActExportSelected()
@@ -385,12 +389,25 @@ void page_history::onActExportSelected()
 	QString dialogTitle = "";
 	QString tmpstr = "";
 
-	aqb_imexporters* iep = new aqb_imexporters(banking->getAqBanking());
-
+	aqb_imexporters *iep = new aqb_imexporters(banking->getAqBanking());
 	QMenu *exportConextMenu = this->createExportContextMenu(this, iep);
-
-
 	QAction *sel = exportConextMenu->exec(QCursor::pos());
+
+	//create a ctx for export from all selected items. This must be called
+	//before "QFileDialog::getSaveFileName()", otherwise the item selections
+	//are removed and NULL is returned from "getContextFromSelected()"
+	ctx = this->getContextFromSelected();
+
+	if (!ctx) {
+		QMessageBox::warning(this, tr("Export fehlgeschlagen"),
+				     tr("Es wurden keine zu exportierende Daten "
+					"ausgewählt.<br /><br />"
+					"<i>Dies sollte nicht auftreten! Wenn "
+					"diese Meldung reproduzierbar ist, melden "
+					"Sie es bitte als Bug.</i>"),
+				     QMessageBox::Ok);
+		goto ONACTEXPORTSELECTED_CLEANUP;
+	}
 
 	if (!sel) {
 		//no context menu item selected, abort
@@ -404,7 +421,6 @@ void page_history::onActExportSelected()
 		emit showSettingsForImExpFavorite();
 		goto ONACTEXPORTSELECTED_CLEANUP;
 	}
-
 
 	//we stored the pointer to plugin and profile in the user-data of the
 	//action, lets restore them
@@ -436,20 +452,14 @@ void page_history::onActExportSelected()
 		goto ONACTEXPORTSELECTED_CLEANUP;
 	}
 
-	//create a ctx from the selected items in the history and save this
-	//data with the selected profile from the plugin.
-	//Saving is done by a function from AqBanking.
-
-	//create a context for export from all selected items
-	ctx = this->getContextFromSelected();
-
-	err = AB_Banking_ExportToFile(banking->getAqBanking(),
-				      ctx, plugin->getName(),
-				      profile->getValue("name").toString().toUtf8(),
-				      saveFilename.toUtf8());
-
-	//we must free the ctx after using it
-	AB_ImExporterContext_free(ctx);
+	if (ctx) {
+		err = AB_Banking_ExportToFile(banking->getAqBanking(),
+					      ctx, plugin->getName(),
+					      profile->getValue("name").toString().toUtf8(),
+					      saveFilename.toUtf8());
+	} else {
+		err = 99; //no ctx available!
+	}
 
 	if (err != 0) {
 		QMessageBox::critical(this, tr("Export fehlerhaft"),
@@ -468,7 +478,10 @@ void page_history::onActExportSelected()
 
 
 ONACTEXPORTSELECTED_CLEANUP:
-
+	if (ctx) {
+		//we must free the ctx after using it
+		AB_ImExporterContext_free(ctx);
+	}
 	delete exportConextMenu; //menu and all childs no longer needed
 	delete iep; //also deletes ALL childs objects from aqb_imexporters!
 }
