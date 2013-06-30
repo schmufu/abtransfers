@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011, 2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -37,21 +37,21 @@
 widgetValue::widgetValue(QWidget *parent) :
     QWidget(parent)
 {
-	this->value = new QLineEdit(this);
 	this->currency = new QLineEdit(this);
+	this->value = new QLineEdit(this);
 
 	BetragValidator *validatorBetrag = new BetragValidator(this);
 	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
-
-	this->value->setMinimumWidth(125);
-	this->value->setValidator(validatorBetrag);
-	this->value->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-	this->value->setAlignment(Qt::AlignRight);
 
 	this->currency->setText("EUR");
 	this->currency->setReadOnly(true);
 	this->currency->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 	this->currency->setMaximumWidth(45);
+
+	this->value->setMinimumWidth(125);
+	this->value->setValidator(validatorBetrag);
+	this->value->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+	this->value->setAlignment(Qt::AlignRight);
 
 	QHBoxLayout *layout = new QHBoxLayout();
 	layout->addWidget(this->currency, 1, Qt::AlignRight);
@@ -134,14 +134,3 @@ void widgetValue::setLimitAllowChange(int b)
 {
 	this->setDisabled(b == -1);
 }
-
-
-
-
-
-
-
-
-
-
-
