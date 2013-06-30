@@ -410,7 +410,9 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 //private slot
 void widgetRecurrence::checkBoxNoEndChanged(bool checked)
 {
-	this->dateLast->setEnabled(!checked);
+	//setEnabled(false) would also disable the text label, we only want the
+	//date input field disabled when the checkbox "until further" is checked.
+	this->dateLast->setReadOnly(checked);
 }
 
 //public
