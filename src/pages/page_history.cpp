@@ -601,13 +601,17 @@ void page_history::on_treeWidget_itemClicked(QTreeWidgetItem *item, int /* colum
 }
 
 //private slot
-/**
-  * @brief saves the @a newSize of the @a column in the settings
+/** \brief saves the @a newSize of the @a column in the settings
   *
+  * The new width is only saved when the header is visible.
   */
 void page_history::onTreeWidgetColumnResized(int column, int /* oldSize */, int newSize)
 {
-	settings->saveColWidth("history", column, newSize);
+	if (!this->ui->treeWidget->isHeaderHidden()) {
+		//if no header is displayed there are no columns.
+		//Only save the width when headers are visible.
+		settings->saveColWidth("history", column, newSize);
+	}
 }
 
 //private slot
