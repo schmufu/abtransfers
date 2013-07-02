@@ -39,12 +39,11 @@ aqb_banking::aqb_banking()
 {
 	int rv;
 
-
 	this->ab = AB_Banking_new("abtransfers", NULL, 0);
 
-	//Das GUI muss bereits hier erstellt werden, da es anonsten zu
-	//einen Fehler kommen kann. (1x geschehen beim ersetzen der AqBanking
-	//Daten von einem anderen Rechner)
+	//The GUI must be created here, otherwise an error could occur.
+	//(happened ones, at the time were AqBanking data was replaced with
+	//data from another PC)
 	this->gui = new QT4_Gui();
 	GWEN_Gui_SetGui(this->gui->getCInterface());
 
@@ -79,9 +78,8 @@ aqb_banking::aqb_banking()
 		return;
 	}
 
-	//damit die gemachten Einstellungen des GWEN-Dialogs erhalten bleiben
+	//ensure that modifications to GWEN-Dialogs are saved
 	AB_Gui_Extend(this->gui->getCInterface(), this->ab);
-
 }
 
 aqb_banking::~aqb_banking()
@@ -106,12 +104,16 @@ aqb_banking::~aqb_banking()
 		fprintf(stderr, "ERROR: Error on deinit (%d)\n", rv);
 		return;
 	}
+
+	//no more dialog settings needs to be saved
+	AB_Gui_Unextend(this->gui->getCInterface());
+
 	AB_Banking_free(ab);
 
 	qDebug() << "AqBanking successfully deinitialized";
 
-	delete this->gui; //das erstellte GWEN_Qt4_GUI wieder löschen
-
+	GWEN_Gui_SetGui(NULL); //otherwise gwen tries to use this->gui
+	delete this->gui; //delete the created GWEN_Qt4_GUI
 }
 
 /*! \brief Gibt den Institut-Namen zur BLZ zurück
