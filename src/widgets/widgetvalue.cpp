@@ -194,7 +194,7 @@ void widgetValue::createCalcFrame()
 	this->calculator = new WidgetCalculator(this->calcFrame);
 	this->calcFrame->hide();
 
-	connect(this->calculator, SIGNAL(signalResultAvailable()),
+	connect(this->calculator, SIGNAL(resultAvailable()),
 		this, SLOT(calculatorResult()));
 }
 

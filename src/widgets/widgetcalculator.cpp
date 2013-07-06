@@ -28,8 +28,7 @@
  *
  ******************************************************************************/
 
-
-/* copyright information of the source file from kmymoney */
+/* copyright information from the source file of kmymoney */
 /***************************************************************************
 			  kmymoneycalculator.cpp  -  description
 			     -------------------
@@ -52,6 +51,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "widgetcalculator.h"
 
 #include <QLabel>
@@ -66,40 +66,40 @@
 WidgetCalculator::WidgetCalculator(QWidget* parent) :
 	QFrame(parent)
 {
-	m_comma = QLocale::system().decimalPoint();
-	m_clearOperandOnDigit = false;
+	this->comma = QLocale::system().decimalPoint();
+	this->clearOperandOnDigit = false;
 
 	QGridLayout* grid = new QGridLayout(this);
 
-	display = new QLabel(this);
+	this->display = new QLabel(this);
 	QPalette palette;
 	palette.setColor(display->backgroundRole(), QColor("#BDFFB4"));
-	display->setPalette(palette);
+	this->display->setPalette(palette);
 
-	display->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	display->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	this->display->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	this->display->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	grid->addWidget(display, 0, 0, 1, 5);
 
-	buttons[0] = new QPushButton("0", this);
-	buttons[1] = new QPushButton("1", this);
-	buttons[2] = new QPushButton("2", this);
-	buttons[3] = new QPushButton("3", this);
-	buttons[4] = new QPushButton("4", this);
-	buttons[5] = new QPushButton("5", this);
-	buttons[6] = new QPushButton("6", this);
-	buttons[7] = new QPushButton("7", this);
-	buttons[8] = new QPushButton("8", this);
-	buttons[9] = new QPushButton("9", this);
-	buttons[PLUS] = new QPushButton("+", this);
-	buttons[MINUS] = new QPushButton("-", this);
-	buttons[STAR] = new QPushButton("X", this);
-	buttons[COMMA] = new QPushButton(m_comma, this);
-	buttons[EQUAL] = new QPushButton("=", this);
-	buttons[SLASH] = new QPushButton("/", this);
-	buttons[CLEAR] = new QPushButton("C", this);
-	buttons[CLEARALL] = new QPushButton("AC", this);
-	buttons[PLUSMINUS] = new QPushButton("+-", this);
-	buttons[PERCENT] = new QPushButton("%", this);
+	this->buttons[0] = new QPushButton("0", this);
+	this->buttons[1] = new QPushButton("1", this);
+	this->buttons[2] = new QPushButton("2", this);
+	this->buttons[3] = new QPushButton("3", this);
+	this->buttons[4] = new QPushButton("4", this);
+	this->buttons[5] = new QPushButton("5", this);
+	this->buttons[6] = new QPushButton("6", this);
+	this->buttons[7] = new QPushButton("7", this);
+	this->buttons[8] = new QPushButton("8", this);
+	this->buttons[9] = new QPushButton("9", this);
+	this->buttons[PLUS] = new QPushButton("+", this);
+	this->buttons[MINUS] = new QPushButton("-", this);
+	this->buttons[STAR] = new QPushButton("X", this);
+	this->buttons[COMMA] = new QPushButton(comma, this);
+	this->buttons[EQUAL] = new QPushButton("=", this);
+	this->buttons[SLASH] = new QPushButton("/", this);
+	this->buttons[CLEAR] = new QPushButton("C", this);
+	this->buttons[CLEARALL] = new QPushButton("AC", this);
+	this->buttons[PLUSMINUS] = new QPushButton("+-", this);
+	this->buttons[PERCENT] = new QPushButton("%", this);
 
 	grid->addWidget(buttons[7], 1, 0);
 	grid->addWidget(buttons[8], 1, 1);
@@ -123,18 +123,18 @@ WidgetCalculator::WidgetCalculator(QWidget* parent) :
 	grid->addWidget(buttons[CLEAR], 1, 3);
 	grid->addWidget(buttons[CLEARALL], 1, 4);
 
-	buttons[EQUAL]->setFocus();
+	this->buttons[EQUAL]->setFocus();
 
-	op1 = 0.0;
-	stackedOp = op = 0;
-	operand.clear();
-	changeDisplay("0");
+	this->op1 = 0.0;
+	this->stackedOp = op = 0;
+	this->operand.clear();
+	this->changeDisplay("0");
 
 	// connect the digit signals through a signal mapper
 	QSignalMapper* mapper = new QSignalMapper(this);
 	for (int i = 0; i < 10; ++i) {
 		mapper->setMapping(buttons[i], i);
-		connect(buttons[i], SIGNAL(clicked()), mapper, SLOT(map()));
+		connect(this->buttons[i], SIGNAL(clicked()), mapper, SLOT(map()));
 	}
 	connect(mapper, SIGNAL(mapped(int)), this, SLOT(digitClicked(int)));
 
@@ -142,144 +142,174 @@ WidgetCalculator::WidgetCalculator(QWidget* parent) :
 	mapper = new QSignalMapper(this);
 	for (int i = PLUS; i <= EQUAL; ++i) {
 		mapper->setMapping(buttons[i], i);
-		connect(buttons[i], SIGNAL(clicked()), mapper, SLOT(map()));
+		connect(this->buttons[i], SIGNAL(clicked()), mapper, SLOT(map()));
 	}
 	connect(mapper, SIGNAL(mapped(int)), this, SLOT(calculationClicked(int)));
 
 	// connect all remaining signals
-	connect(buttons[COMMA], SIGNAL(clicked()), SLOT(commaClicked()));
-	connect(buttons[PLUSMINUS], SIGNAL(clicked()), SLOT(plusminusClicked()));
-	connect(buttons[PERCENT], SIGNAL(clicked()), SLOT(percentClicked()));
-	connect(buttons[CLEAR], SIGNAL(clicked()), SLOT(clearClicked()));
-	connect(buttons[CLEARALL], SIGNAL(clicked()), SLOT(clearAllClicked()));
+	connect(this->buttons[COMMA], SIGNAL(clicked()), SLOT(commaClicked()));
+	connect(this->buttons[PLUSMINUS], SIGNAL(clicked()), SLOT(plusminusClicked()));
+	connect(this->buttons[PERCENT], SIGNAL(clicked()), SLOT(percentClicked()));
+	connect(this->buttons[CLEAR], SIGNAL(clicked()), SLOT(clearClicked()));
+	connect(this->buttons[CLEARALL], SIGNAL(clicked()), SLOT(clearAllClicked()));
 
 	for (int i = 0; i < MAX_BUTTONS; ++i) {
-		buttons[i]->setMinimumSize(40, 30);
-		buttons[i]->setMaximumSize(40, 30);
+		this->buttons[i]->setMinimumSize(40, 30);
+		this->buttons[i]->setMaximumSize(40, 30);
 	}
 	// keep the size determined by the size of the contained buttons no matter what
-	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 WidgetCalculator::~WidgetCalculator()
 {
 }
 
+//protected slot
+/** \brief This method appends the digit represented by the parameter to the
+ *         current operand.
+ *
+ * @param button integer value of the digit to be added in the range [0..9]
+ */
 void WidgetCalculator::digitClicked(int button)
 {
-	if (m_clearOperandOnDigit) {
-		operand.clear();
-		m_clearOperandOnDigit = false;
+	if (this->clearOperandOnDigit) {
+		this->operand.clear();
+		this->clearOperandOnDigit = false;
 	}
 
-	operand += QChar(button + 0x30);
-	if (operand.length() > 16)
-		operand = operand.left(16);
-	changeDisplay(operand);
+	this->operand += QChar(button + 0x30);
+	if (this->operand.length() > 16)
+		this->operand = this->operand.left(16);
+	this->changeDisplay(operand);
 }
 
+//protected slot
+/** \brief This method appends a period (comma).
+ *
+ * This is used to initialize the fractional part of an operand. The period
+ * is only appended once.
+ */
 void WidgetCalculator::commaClicked(void)
 {
-	if (operand.length() == 0)
-		operand = '0';
-	if (operand.contains('.', Qt::CaseInsensitive) == 0)
-		operand.append('.');
+	if (this->operand.length() == 0)
+		this->operand = '0';
+	if (this->operand.contains('.', Qt::CaseInsensitive) == 0)
+		this->operand.append('.');
 
-	if (operand.length() > 16)
-		operand = operand.left(16);
-	changeDisplay(operand);
+	if (this->operand.length() > 16)
+		this->operand = operand.left(16);
+	this->changeDisplay(operand);
 }
 
+//protected slot
+/** \brief This method reverses the sign of the current operand */
 void WidgetCalculator::plusminusClicked(void)
 {
-	if (operand.length() == 0 && m_result.length() > 0)
-		operand = m_result;
+	if (this->operand.length() == 0 &&
+	    this->lastResult.length() > 0) {
+		this->operand = lastResult;
+	}
 
-	if (operand.length() > 0) {
-		if (operand.indexOf('-') != -1)
-			operand.remove('-');
-		else
-			operand.prepend('-');
-		changeDisplay(operand);
+	if (this->operand.length() > 0) {
+		if (this->operand.indexOf('-') != -1) {
+			this->operand.remove('-');
+		} else {
+			this->operand.prepend('-');
+		}
+		this->changeDisplay(operand);
 	}
 }
 
+//protected slot
+/** \brief This methods starts the operation contained in the parameter.
+ *
+ * @param button The Qt::Keycode for the button pressed or clicked
+ */
 void WidgetCalculator::calculationClicked(int button)
 {
-	if (operand.length() == 0 && op != 0 && button == EQUAL) {
-		op = 0;
-		m_result = normalizeString(op1);
-		changeDisplay(m_result);
+	if (this->operand.length() == 0 && this->op != 0 && button == EQUAL) {
+		this->op = 0;
+		this->lastResult = this->normalizeString(op1);
+		this->changeDisplay(this->lastResult);
 
-	} else if (operand.length() > 0 && op != 0) {
+	} else if (this->operand.length() > 0 && this->op != 0) {
 		// perform operation
-		double op2 = operand.toDouble();
+		double op2 = this->operand.toDouble();
 		bool error = false;
 
 		// if the pending operation is addition and we now do multiplication
 		// we just stack op1 and remember the operation in
-		if ((op == PLUS || op == MINUS) && (button == STAR || button == SLASH)) {
-			op0 = op1;
-			stackedOp = op;
-			op = 0;
+		if ((this->op == PLUS || this->op == MINUS) &&
+		    (button == STAR || button == SLASH)) {
+			this->op0 = this->op1;
+			this->stackedOp = this->op;
+			this->op = 0;
 		}
 
-		switch (op) {
+		switch (this->op) {
 		case PLUS:
-			op2 = op1 + op2;
+			op2 = this->op1 + op2;
 			break;
 		case MINUS:
-			op2 = op1 - op2;
+			op2 = this->op1 - op2;
 			break;
 		case STAR:
-			op2 = op1 * op2;
+			op2 = this->op1 * op2;
 			break;
 		case SLASH:
 			if (op2 == 0.0)
 				error = true;
 			else
-				op2 = op1 / op2;
+				op2 = this->op1 / op2;
 			break;
 		}
 
 		// if we have a pending addition operation, and the next operation is
 		// not multiplication, we calculate the stacked operation
-		if (stackedOp && button != STAR && button != SLASH) {
-			switch (stackedOp) {
+		if (this->stackedOp && button != STAR && button != SLASH) {
+			switch (this->stackedOp) {
 			case PLUS:
-				op2 = op0 + op2;
+				op2 = this->op0 + op2;
 				break;
 			case MINUS:
-				op2 = op0 - op2;
+				op2 = this->op0 - op2;
 				break;
 			}
-			stackedOp = 0;
+			this->stackedOp = 0;
 		}
 
 		if (error) {
-			op = 0;
-			changeDisplay("Error");
-			operand.clear();
+			this->op = 0;
+			this->changeDisplay("Error");
+			this->operand.clear();
 		} else {
-			op1 = op2;
-			m_result = normalizeString(op1);
-			changeDisplay(m_result);
+			this->op1 = op2;
+			this->lastResult = this->normalizeString(op1);
+			this->changeDisplay(this->lastResult);
 		}
-	} else if (operand.length() > 0 && op == 0) {
-		op1 = operand.toDouble();
-		m_result = normalizeString(op1);
-		changeDisplay(m_result);
+	} else if (this->operand.length() > 0 && this->op == 0) {
+		this->op1 = this->operand.toDouble();
+		this->lastResult = this->normalizeString(op1);
+		this->changeDisplay(this->lastResult);
 	}
 
 	if (button != EQUAL) {
-		op = button;
+		this->op = button;
 	} else {
-		op = 0;
-		emit signalResultAvailable();
+		this->op = 0;
+		emit resultAvailable();
 	}
-	operand.clear();
+	this->operand.clear();
 }
 
+//protected
+/** \brief This method is used to transform a double into a QString and
+ *         removing any trailing 0's and decimal separators.
+ *
+ * @param val reference to double value to be converted
+ * @return QString object containing the converted value
+ */
 QString WidgetCalculator::normalizeString(const double& val)
 {
 	QString str;
@@ -299,32 +329,38 @@ QString WidgetCalculator::normalizeString(const double& val)
 	return str;
 }
 
+//protected slot
+/** \brief This method clears the current operand */
 void WidgetCalculator::clearClicked(void)
 {
-	if (operand.length() > 0) {
-		operand = operand.left(operand.length() - 1);
+	if (this->operand.length() > 0) {
+		this->operand = this->operand.left(this->operand.length() - 1);
 	}
-	if (operand.length() == 0)
-		changeDisplay("0");
+	if (this->operand.length() == 0)
+		this->changeDisplay("0");
 	else
-		changeDisplay(operand);
+		this->changeDisplay(this->operand);
 }
 
+//protected slot
+/** \brief This method clears all registers */
 void WidgetCalculator::clearAllClicked(void)
 {
-	operand.clear();
-	op = 0;
-	changeDisplay("0");
+	this->operand.clear();
+	this->op = 0;
+	this->changeDisplay("0");
 }
 
+//protected slot
+/** \brief This method executes the percent operation */
 void WidgetCalculator::percentClicked(void)
 {
-	if (op != 0) {
-		double op2 = operand.toDouble();
-		switch (op) {
+	if (this->op != 0) {
+		double op2 = this->operand.toDouble();
+		switch (this->op) {
 		case PLUS:
 		case MINUS:
-			op2 = (op1 * op2) / 100;
+			op2 = (this->op1 * op2) / 100;
 			break;
 
 		case STAR:
@@ -332,15 +368,23 @@ void WidgetCalculator::percentClicked(void)
 			op2 /= 100;
 			break;
 		}
-		operand = normalizeString(op2);
-		changeDisplay(operand);
+		this->operand = this->normalizeString(op2);
+		this->changeDisplay(this->operand);
 	}
 }
 
+//public
+/** \brief this method is used to extract the result of the last calculation
+ *
+ * The fractional part is separated from the integral part by the character
+ * setup using setComma().
+ *
+ * @return QString representing the result of the last operation
+ */
 const QString WidgetCalculator::result(void) const
 {
-	QString txt = m_result;
-	txt.replace(QRegExp("\\."), m_comma);
+	QString txt = lastResult;
+	txt.replace(QRegExp("\\."), this->comma);
 	if (txt[0] == '-') {
 		txt = txt.mid(1); // get rid of the minus sign
 		QString mask;
@@ -372,13 +416,25 @@ const QString WidgetCalculator::result(void) const
 *********************************/
 }
 
+//protected slot
+/** \brief This method updates the display of the calculator with the text
+ *         passed as argument.
+ *
+ * @param str reference to QString containing the new display contents
+ */
 void WidgetCalculator::changeDisplay(const QString& str)
 {
 	QString txt = str;
-	txt.replace(QRegExp("\\."), m_comma);
-	display->setText("<b>" + txt + "</b>");
+	txt.replace(QRegExp("\\."), comma);
+	this->display->setText("<b>" + txt + "</b>");
 }
 
+//protected
+/** \brief handles the keyPressEvent's and executes the expected functions.
+ *
+ * This member function is used to handle all key press events. When e.g. 2
+ * is pressed this is mapped to the same action as by clicking the "2" button.
+ */
 void WidgetCalculator::keyPressEvent(QKeyEvent* ev)
 {
 	int button = -1;
@@ -394,9 +450,9 @@ void WidgetCalculator::keyPressEvent(QKeyEvent* ev)
 	case Qt::Key_7:
 	case Qt::Key_8:
 	case Qt::Key_9:
-		if (m_clearOperandOnDigit) {
-			operand.clear();
-			m_clearOperandOnDigit = false;
+		if (this->clearOperandOnDigit) {
+			this->operand.clear();
+			this->clearOperandOnDigit = false;
 		}
 		button = ev->key() - Qt::Key_0;
 		break;
@@ -408,9 +464,9 @@ void WidgetCalculator::keyPressEvent(QKeyEvent* ev)
 		break;
 	case Qt::Key_Comma:
 	case Qt::Key_Period:
-		if (m_clearOperandOnDigit) {
-			operand.clear();
-			m_clearOperandOnDigit = false;
+		if (this->clearOperandOnDigit) {
+			this->operand.clear();
+			this->clearOperandOnDigit = false;
 		}
 		button = COMMA;
 		break;
@@ -439,39 +495,49 @@ void WidgetCalculator::keyPressEvent(QKeyEvent* ev)
 		break;
 	}
 	if (button != -1)
-		buttons[button]->animateClick();
+		this->buttons[button]->animateClick();
 
-	m_clearOperandOnDigit = false;
+	this->clearOperandOnDigit = false;
 }
 
+//public
+/** \brief This method is used to preset the first operand and start execution
+ *         of an operation.
+ *
+ * This method is currently used by widgetValue. If @p ev is 0, then no
+ * operation will be started.
+ *
+ * @param value reference to QString representing the operands value
+ * @param ev    pointer to QKeyEvent representing the operation's key
+ */
 void WidgetCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
 {
 	bool negative = false;
 	// setup operand
-	operand = value;
+	this->operand = value;
 	//operand.replace(QRegExp(QString('\\') + KGlobal::locale()->thousandsSeparator()), QChar());
-	operand.replace(QRegExp(QString('\\') + QLocale::system().groupSeparator()), QChar());
-	operand.replace(QRegExp(QString('\\') + m_comma), ".");
-	if (operand.contains('(')) {
+	this->operand.replace(QRegExp(QString('\\') + QLocale::system().groupSeparator()), QChar());
+	this->operand.replace(QRegExp(QString('\\') + comma), ".");
+	if (this->operand.contains('(')) {
 		negative = true;
-		operand.remove('(');
-		operand.remove(')');
+		this->operand.remove('(');
+		this->operand.remove(')');
 	}
-	if (operand.contains('-')) {
+	if (this->operand.contains('-')) {
 		negative = true;
-		operand.remove('-');
+		this->operand.remove('-');
 	}
-	if (operand.isEmpty())
-		operand = '0';
+	if (this->operand.isEmpty())
+		this->operand = '0';
 	else if (negative)
-		operand = QString("-%1").arg(operand);
+		this->operand = QString("-%1").arg(operand);
 
-	changeDisplay(operand);
+	this->changeDisplay(this->operand);
 
 	// and operation
-	op = 0;
+	this->op = 0;
 	if (ev)
-		keyPressEvent(ev);
+		this->keyPressEvent(ev);
 	else
-		m_clearOperandOnDigit = true;
+		this->clearOperandOnDigit = true;
 }
