@@ -190,9 +190,18 @@ QDate widgetDate::getDate() const
 }
 
 //public slot
+/** \brief enables or disables the date edit input field
+ *
+ * The text label stays enabled. If you want to disable or enable the whole
+ * widget use widgetDate::setEnabled() instead.
+ *
+ * (The setEnabled() function of the date edit widget is used because the
+ *  setReadOnly() function would not visible indicate that a change is not
+ *  possible)
+ */
 void widgetDate::setReadOnly(bool readOnly)
 {
-	this->dateEdit->setReadOnly(readOnly);
+	this->dateEdit->setEnabled(!readOnly);
 }
 
 //public slot
