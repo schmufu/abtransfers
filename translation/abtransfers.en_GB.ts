@@ -4,7 +4,7 @@
 <context>
     <name>BankAccountsWidget</name>
     <message>
-        <location filename="../src/widgets/bankaccountswidget.cpp" line="+56"/>
+        <location filename="../src/widgets/bankaccountswidget.cpp" line="+295"/>
         <source>BLZ/Kto-Nr</source>
         <translatorcomment>Ist &quot;Bank code&quot; zu lang und &quot;Bank-ID&quot; vielleicht besser? Oder gibt&apos;s eine bessere Übersetzung?</translatorcomment>
         <translation>Bank code/Account</translation>
@@ -114,7 +114,7 @@
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/dialogs/dialogsettings.cpp" line="+477"/>
+        <location filename="../src/dialogs/dialogsettings.cpp" line="+479"/>
         <source>Standard-Ordner</source>
         <translation>Default folder</translation>
     </message>
@@ -312,7 +312,7 @@ beim Starten des Programms angezeigt.</source>
         <translation>Possible charges</translation>
     </message>
     <message utf8="true">
-        <location line="+52"/>
+        <location line="+59"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -375,7 +375,12 @@ Kontostandes in den Ausgang eingestellt.</source>
         <translation>If activated the balances for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
-        <location line="+41"/>
+        <location line="-51"/>
+        <source>Sprachänderung bei offenen Aufträgen</source>
+        <translation>Language changes for open jobs</translation>
+    </message>
+    <message utf8="true">
+        <location line="+92"/>
         <source>Terminierte Überweisungen</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -630,7 +635,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/knownempfaengerwidget.cpp" line="+163"/>
+        <location filename="../src/widgets/knownempfaengerwidget.cpp" line="+176"/>
         <source>Neu</source>
         <translation>New</translation>
     </message>
@@ -722,13 +727,13 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/mainwindow.cpp" line="+345"/>
+        <location filename="../src/mainwindow.cpp" line="+376"/>
         <source>National</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/mainwindow.cpp" line="+5"/>
+        <location filename="../src/mainwindow.cpp" line="+7"/>
         <source>International</source>
         <translation type="unfinished"></translation>
     </message>
@@ -739,7 +744,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/mainwindow.cpp" line="+10"/>
+        <location filename="../src/mainwindow.cpp" line="+14"/>
         <source>Umbuchung</source>
         <translation>Transfer</translation>
     </message>
@@ -754,30 +759,30 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>About AB-Transfers</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-75"/>
-        <location line="+143"/>
-        <location line="+144"/>
+        <location filename="../src/mainwindow.cpp" line="-128"/>
+        <location line="+228"/>
+        <location line="+151"/>
         <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="-183"/>
         <location line="+42"/>
-        <location filename="../src/mainwindow.cpp" line="-207"/>
-        <location line="+10"/>
+        <location filename="../src/mainwindow.cpp" line="-244"/>
+        <location line="+14"/>
         <source>Anlegen</source>
         <translation>Create</translation>
     </message>
     <message>
         <location line="-35"/>
         <location line="+42"/>
-        <location filename="../src/mainwindow.cpp" line="-5"/>
-        <location line="+10"/>
+        <location filename="../src/mainwindow.cpp" line="-7"/>
+        <location line="+14"/>
         <source>Aktualisieren</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+2065"/>
+        <location filename="../src/mainwindow.cpp" line="+2102"/>
         <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -835,12 +840,13 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-2371"/>
+        <location filename="../src/mainwindow.cpp" line="-2453"/>
+        <location line="+178"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="-51"/>
         <source>AuftrÃ¤ge im Ausgang</source>
         <translation>Orders in outbox</translation>
     </message>
@@ -850,17 +856,17 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>There are still unsent jobs in the outbox!&lt;br /&gt;All jobs in the outbox will be deleted when exiting the program!&lt;br /&gt;&lt;br /&gt;Shall the program really be closed?</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+101"/>
         <source>&lt;h4&gt;AuftrÃ¤ge kÃ¶nnen gebÃ¼hrenpflichtig sein&lt;/h4&gt;Bei einigen Kreditinstituten/Banken kÃ¶nnen GebÃ¼hren fÃ¼r bestimmte AuftrÃ¤ge (Einrichtung von DauerauftrÃ¤gen, SammelÃ¼berweisungen, etc.) anfallen.&lt;br /&gt;Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten fÃ¼r welche AuftrÃ¤ge anfallen!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Ich Ã¼bernehme keine Haftung fÃ¼r eventuell entstehende Kosten!&lt;/b&gt;</source>
         <translation>&lt;h4&gt;Transactions can be chargeable&lt;/h4&gt;Some institutions/banks may charge your for specific transactions (creating standing orders, collective orders, etc.).&lt;br /&gt;Please inform yourself about which costs your institution/bank charges for transactions prior to using this software!&lt;br /&gt;&lt;br /&gt;&lt;b&gt;I am not going to be liable for damages!&lt;/b&gt;</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+60"/>
         <source>SEPA (EU weit)</source>
         <translation>SEPA (EU wide)</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+42"/>
         <source>Lastschrift</source>
         <translation>Debit</translation>
     </message>
@@ -890,14 +896,14 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+34"/>
         <source>Ãberweisung</source>
         <translation>Payment</translation>
     </message>
     <message>
-        <location line="-140"/>
-        <location line="+148"/>
-        <location line="+215"/>
+        <location line="-225"/>
+        <location line="+233"/>
+        <location line="+222"/>
         <source>TerminÃ¼berweisungen</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -917,19 +923,21 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Scheduled transfers of &quot;%1&quot; (%2 - %3)</translation>
     </message>
     <message>
-        <location line="-215"/>
-        <location line="+237"/>
+        <location line="-307"/>
+        <location line="+329"/>
         <source>Online Konten</source>
         <translation>Online accounts</translation>
     </message>
     <message>
-        <location line="-235"/>
-        <location line="+263"/>
+        <location line="-327"/>
+        <location line="+355"/>
         <source>Bekannte EmpfÃ¤nger</source>
         <translation>Known addressees</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="-350"/>
+        <location line="+3"/>
+        <location line="+377"/>
         <location line="+74"/>
         <source>Konto</source>
         <translation>Account</translation>
@@ -950,12 +958,22 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>The Job &quot;%1&quot; was successfully added to the outbox</translation>
     </message>
     <message>
-        <location line="-546"/>
+        <location line="-595"/>
         <source>Eventuelle Kosten</source>
         <translation>Possible charges</translation>
     </message>
     <message>
-        <location line="+576"/>
+        <location line="-32"/>
+        <source>Ãbersetzung von geÃ¶ffneten AuftrÃ¤gen</source>
+        <translation>Translation of opened orders</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ãbersetzungen von bereits geÃ¶ffneten AuftrÃ¤gen werden zur Zeit nicht unterstÃ¼tzt.&lt;br /&gt;Wenn Sie einen neuen Auftrag erstellen wird das Formular in der neuen Sprache angezeigt werden.&lt;br /&gt;&lt;br /&gt;&lt;i&gt;Noch in Bearbeitung befindliche AuftrÃ¤ge kÃ¶nnen aber durchaus noch weiter bearbeitet und ausgefÃ¼hrt werden&lt;/i&gt;.</source>
+        <translation>Translations of already opened orders are currently not supported.&lt;br /&gt;Only if you create a new order the form will be displayed using the new language.&lt;br /&gt;&lt;br /&gt;&lt;i&gt;Orders currently opened for editing can still further be edited and executed.&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location line="+656"/>
         <source>Ãber %1</source>
         <translation>About %1</translation>
     </message>
@@ -1175,18 +1193,18 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="-38"/>
-        <location filename="../src/pages/page_ausgang.cpp" line="+113"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="+118"/>
         <source>Auf</source>
         <translation>Up</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../src/pages/page_ausgang.cpp" line="+7"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="+9"/>
         <source>Ab</source>
         <translation>Down</translation>
     </message>
     <message>
-        <location filename="../src/pages/page_ausgang.cpp" line="-21"/>
+        <location filename="../src/pages/page_ausgang.cpp" line="-25"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
@@ -1201,7 +1219,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Delete selected job</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+8"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
@@ -1216,12 +1234,12 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Move selected job up in queue</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>AusgewÃ¤hlten Job nach unten verschieben</source>
         <translation>Move selected job down in queue</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+15"/>
         <source>Nr.</source>
         <translation>No.</translation>
     </message>
@@ -1514,7 +1532,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>ab_transfers status unknown</translation>
     </message>
     <message>
-        <location filename="../src/abt_jobinfo.cpp" line="+301"/>
+        <location filename="../src/abt_jobinfo.cpp" line="+304"/>
         <location line="+12"/>
         <source>Von: %1 (%2 - %3)</source>
         <translation>From: %1 (%2 - %3)</translation>
@@ -1791,7 +1809,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="+57"/>
-        <location filename="../src/pages/page_history.cpp" line="+153"/>
+        <location filename="../src/pages/page_history.cpp" line="+165"/>
         <source>Neu von Vorlage</source>
         <translation>New from job</translation>
     </message>
@@ -1852,7 +1870,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Deletes the selected entries from the history.</translation>
     </message>
     <message>
-        <location line="+92"/>
+        <location line="+95"/>
         <source>Historie Eintrag lÃ¶schen</source>
         <translation>Delete history entry</translation>
     </message>
@@ -1913,7 +1931,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>The selected history entries were saved as %1.</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+38"/>
         <source>Keine EintrÃ¤ge in der Historie vorhanden</source>
         <translation>No history entries present</translation>
     </message>
@@ -1992,7 +2010,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetKnownDatedTransfers</name>
     <message>
-        <location filename="../src/widgets/widgetknowndatedtransfers.cpp" line="+70"/>
+        <location filename="../src/widgets/widgetknowndatedtransfers.cpp" line="+95"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
@@ -2056,7 +2074,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
 <context>
     <name>widgetKnownStandingOrders</name>
     <message>
-        <location filename="../src/widgets/widgetknownstandingorders.cpp" line="+78"/>
+        <location filename="../src/widgets/widgetknownstandingorders.cpp" line="+104"/>
         <source>LÃ¶schen</source>
         <translation>Delete</translation>
     </message>
