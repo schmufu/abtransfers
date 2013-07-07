@@ -43,6 +43,10 @@ widgetValue::widgetValue(QWidget *parent) :
 	this->currency = new QLineEdit(this);
 	this->value = new QLineEdit(this);
 	this->calcFrame = NULL;
+	//show and hide the calculator, otherwise the first display is not as
+	//expected (shown in the middle and not underneath the widget)
+	this->showCalculator();
+	this->calcFrame->hide();
 
 	BetragValidator *validatorBetrag = new BetragValidator(this);
 	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
@@ -53,7 +57,7 @@ widgetValue::widgetValue(QWidget *parent) :
 	this->currency->setMaximumWidth(45);
 
 	this->value->setMinimumWidth(125);
-//	this->value->setValidator(validatorBetrag);
+	this->value->setValidator(validatorBetrag);
 	this->value->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 	this->value->setAlignment(Qt::AlignRight);
 	this->value->installEventFilter(this);
@@ -121,8 +125,7 @@ bool widgetValue::eventFilter(QObject * /*o*/, QEvent *e)
 				// remove the selected text
 				this->value->cut();
 			}
-			showCalculator();
-			//calculatorOpen(k);
+			this->showCalculator(k);
 			break;
 		default:
 			rc = false;
@@ -208,15 +211,27 @@ void widgetValue::calculatorResult()
 //public slot
 void widgetValue::showCalculator()
 {
+	this->showCalculator(NULL);
+}
+
+//public slot
+void widgetValue::showCalculator(QKeyEvent *e)
+{
 	if (!this->calcFrame)
 		this->createCalcFrame();
 
-	this->calculator->setInitialValues(this->value->text(), NULL);
+	/* only works when the comma is set to ',' regardless of the comma
+	 * character the comma in the value text must be replaced with a
+	 * period. This should be further investigated, but for the moment
+	 * this works.
+	 */
+	this->calculator->setComma(',');
+	this->calculator->setInitialValues(this->value->text().replace(',','.'), e);
 
 	int h = this->calcFrame->height();
 	int w = this->calcFrame->width();
 
-	// usually, the calculator widget is shown underneath the MoneyEdit widget
+	// usually, the calculator widget is shown underneath the widget
 	// if it does not fit on the screen, we show it above this widget
 	QPoint p = this->mapToGlobal(QPoint(0, 0));
 	if (p.y() + this->height() + h > QApplication::desktop()->height())

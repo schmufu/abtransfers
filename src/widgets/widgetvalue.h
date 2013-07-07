@@ -74,6 +74,7 @@ private slots:
 
 public slots:
 	void showCalculator();
+	void showCalculator(QKeyEvent *e);
 	void clearAll();
 	void setValue(const QString &value);
 	void setValue(const AB_VALUE *abv);

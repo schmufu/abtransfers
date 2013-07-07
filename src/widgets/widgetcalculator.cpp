@@ -510,14 +510,19 @@ void WidgetCalculator::keyPressEvent(QKeyEvent* ev)
  * @param value reference to QString representing the operands value
  * @param ev    pointer to QKeyEvent representing the operation's key
  */
-void WidgetCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
+void WidgetCalculator::setInitialValues(const QString &value, QKeyEvent *ev)
 {
 	bool negative = false;
 	// setup operand
 	this->operand = value;
+
+	/** \todo use the current locale (or a separate setting?) for the
+	  *	  selection of the comma character.
+	  *	  At the moment always a "," is used!
+	  */
 	//operand.replace(QRegExp(QString('\\') + KGlobal::locale()->thousandsSeparator()), QChar());
-	this->operand.replace(QRegExp(QString('\\') + QLocale::system().groupSeparator()), QChar());
-	this->operand.replace(QRegExp(QString('\\') + comma), ".");
+	//this->operand.replace(QRegExp(QString('\\') + QLocale::system().groupSeparator()), QChar());
+	this->operand.replace(QRegExp(QString('\\') + this->comma), ".");
 	if (this->operand.contains('(')) {
 		negative = true;
 		this->operand.remove('(');
