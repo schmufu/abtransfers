@@ -130,10 +130,10 @@ private:
 public:
 	QStringList supportedLanguages();
 	QMenu *languageMenu() const;
-	const QString &currentLanguage();
-	const QString currentLanguageVersion();
-	const QString currentLanguageAppVersion();
-	const QString currentLanguageFile();
+	const QString &currentLanguage() const;
+	const QString currentLanguageVersion() const;
+	const QString currentLanguageAppVersion() const;
+	const QString currentLanguageFile() const;
 #if defined(TRANSLATIONCHOOSER_ENABLE_HELPTEXT)
 	QString helpTextFilename() const;
 #endif

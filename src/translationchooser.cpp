@@ -654,7 +654,7 @@ QMenu *TranslationChooser::languageMenu() const
 //public
 /** \brief returns the currently used language name
  */
-const QString &TranslationChooser::currentLanguage()
+const QString &TranslationChooser::currentLanguage() const
 {
 	return this->activeLanguageName;
 }
@@ -662,7 +662,7 @@ const QString &TranslationChooser::currentLanguage()
 //public
 /** \brief returns the version of the translation file.
  */
-const QString TranslationChooser::currentLanguageVersion()
+const QString TranslationChooser::currentLanguageVersion() const
 {
 	const TranslationChooserData *tdata = this->activeTranslationChooserData();
 
@@ -680,7 +680,7 @@ const QString TranslationChooser::currentLanguageVersion()
  * version. If they are different the loaded translation could be invalid on
  * some string translations.
  */
-const QString TranslationChooser::currentLanguageAppVersion()
+const QString TranslationChooser::currentLanguageAppVersion() const
 {
 	const TranslationChooserData *tdata = this->activeTranslationChooserData();
 
@@ -693,7 +693,7 @@ const QString TranslationChooser::currentLanguageAppVersion()
 //public
 /** \brief returns the currently used path and filename of the .qm file
  */
-const QString TranslationChooser::currentLanguageFile()
+const QString TranslationChooser::currentLanguageFile() const
 {
 	const TranslationChooserData *tdata = this->activeTranslationChooserData();
 
