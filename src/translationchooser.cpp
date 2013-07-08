@@ -88,12 +88,14 @@ public:
 	TranslationChooserData(const QString &filename = QString(),
 			       const QString &languageName = QString(),
 			       double translationVersion = 0.0,
-			       const QString &localeName = QString());
+			       const QString &localeName = QString(),
+			       const QString &appVersion = QString());
 	~TranslationChooserData();
 
 	QString filename;
 	QString languageName;
 	double translationVersion;
+	QString translationAppVersion;
 	QString localeName;
 
 	bool isValid() const;
@@ -102,12 +104,14 @@ public:
 TranslationChooserData::TranslationChooserData(const QString &filename,
 					       const QString &languageName,
 					       double translationVersion,
-					       const QString &localeName)
+					       const QString &localeName,
+					       const QString &appVersion)
 {
 	this->filename = filename;
 	this->languageName = languageName;
 	this->translationVersion = translationVersion;
 	this->localeName = localeName;
+	this->translationAppVersion = appVersion;
 }
 
 TranslationChooserData::~TranslationChooserData()
@@ -335,6 +339,32 @@ double TranslationChooser::languageVersion(const QString &qmFile)
 	return version;
 }
 
+//static private
+/** \brief returns the version number for which this translation should be used.
+ *
+ * The translator must set the "APP_VERSION" to the program version for which
+ * the translation should be used. This version number is returned by this
+ * function.
+ */
+QString TranslationChooser::languageAppVersion(const QString &qmFile)
+{
+	QTranslator translator;
+	translator.load(qmFile);
+
+	QString appVersion;
+	//: The version of the application for which this translation is.
+	//: This number is used to verify that the translation is for the
+	//: used version of the application.
+	appVersion = translator.translate("TranslationChooser", "APP_VERSION");
+
+	if (appVersion == "APP_VERSION") {
+		//translator did not set any version
+		appVersion = QString(); //use an empty strings
+	}
+
+	return appVersion;
+}
+
 //private
 /** \brief parses the locale from the supplied filename
  *
@@ -446,8 +476,25 @@ TranslationChooserData *TranslationChooser::translationData(const QString &qmFil
 	transData->languageName = this->languageName(qmFile);
 	transData->localeName = this->localeName(qmFile);
 	transData->translationVersion = this->languageVersion(qmFile);
+	transData->translationAppVersion = this->languageAppVersion(qmFile);
 
 	return transData;
+}
+
+//private
+/** \brief returns the TranslationChooserData for the currently active
+ *	   translation.
+ *
+ * If there is no TranslationChooserData for the current language, NULL is
+ * returned.
+ */
+const TranslationChooserData *TranslationChooser::activeTranslationChooserData() const
+{
+	const QString langName = this->currentLanguage();
+	const TranslationChooserData *tdata =
+			this->supportedTranslations.value(langName, NULL);
+
+	return tdata;
 }
 
 //private
@@ -611,6 +658,51 @@ const QString &TranslationChooser::currentLanguage()
 {
 	return this->activeLanguageName;
 }
+
+//public
+/** \brief returns the version of the translation file.
+ */
+const QString TranslationChooser::currentLanguageVersion()
+{
+	const TranslationChooserData *tdata = this->activeTranslationChooserData();
+
+	if (!tdata)
+		return QString();
+
+	return QString("%1").arg(tdata->translationVersion);
+}
+
+//public
+/** \brief returns the application version for which this translation should
+ *         be used.
+ *
+ * This version string could be compared with the currently running application
+ * version. If they are different the loaded translation could be invalid on
+ * some string translations.
+ */
+const QString TranslationChooser::currentLanguageAppVersion()
+{
+	const TranslationChooserData *tdata = this->activeTranslationChooserData();
+
+	if (!tdata)
+		return QString();
+
+	return tdata->translationAppVersion;
+}
+
+//public
+/** \brief returns the currently used path and filename of the .qm file
+ */
+const QString TranslationChooser::currentLanguageFile()
+{
+	const TranslationChooserData *tdata = this->activeTranslationChooserData();
+
+	if (!tdata)
+		return QString();
+
+	return tdata->filename;
+}
+
 
 #if defined(TRANSLATIONCHOOSER_ENABLE_HELPTEXT)
 //public

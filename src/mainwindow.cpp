@@ -211,6 +211,7 @@ void MainWindow::changeEvent(QEvent *e)
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
 		this->retranslateCppCode();
+		this->checkTranslationVersion();
 		break;
 	default:
 		break;
@@ -2119,6 +2120,66 @@ void MainWindow::deleteHistoryItems(QList<abt_jobInfo *> jiList)
 	foreach(abt_jobInfo* ji, jiList) {
 		this->history->remove(ji);
 	}
+}
+
+//private slot
+/** \brief this function should be called whenever a new language is selected
+ *
+ * It checks if the newly set language is for the current running application
+ * version and displays a warning to the user if the supplied version
+ * information from the translation is not equal to the version of the running
+ * application.
+ *
+ * \attention If the language file is from the embedded resource or empty (this
+ * is the case when the 'default' language is selected), we skip the warning
+ * message. Otherwise every testversion and release test would display the
+ * warning message.
+ */
+void MainWindow::checkTranslationVersion()
+{
+	const QString appVersion = QApplication::applicationVersion();
+	QString langAppVersion = this->translations->currentLanguageAppVersion();
+
+	if (appVersion == langAppVersion)
+		return; //everything fine
+
+	const QString langFile = this->translations->currentLanguageFile();
+
+	if (langFile.startsWith(":") || langFile.isEmpty()) {
+		//language file from embedded resource or the default language
+		//(German) is selected. Everthing fine ;)
+		return;
+	}
+
+	if (langAppVersion.isEmpty())
+		langAppVersion = tr("Unbekannt");
+
+	abt_dialog dia(this,
+		       tr("Übersetzung nicht für diese Version."),
+		       tr("Die gewählte Sprache verwendet eine Übersetzung für eine "
+			  "andere Version von %1.<br />"
+			  "<br />"
+			  "Version von %1: %2<br />"
+			  "<br />"
+			  "Gewählte Sprache: %3<br />"
+			  "Sprache für Version: %4<br />"
+			  "Verwendete Datei: %5<br />"
+			  "<br />"
+			  "Wenn die Übersetzung für eine ältere Version ist kann "
+			  "es sein das neu hinzugefügte Texte nicht übersetzt "
+			  "werden.")
+		       .arg(QApplication::applicationName())
+		       .arg(appVersion)
+		       .arg(this->translations->currentLanguage())
+		       .arg(langAppVersion)
+		       .arg(langFile),
+		       QDialogButtonBox::Ok, QDialogButtonBox::Ok,
+		       QMessageBox::Warning,
+		       QString("WarnTrans_%1-%2").arg(this->translations->currentLanguage())
+						 .arg(appVersion),
+		       true, tr("Diese Meldung nicht wieder anzeigen "
+				"(nicht reaktivierbar!)."));
+	dia.exec();
 }
 
 //private slot
