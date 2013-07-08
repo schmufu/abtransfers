@@ -6,9 +6,11 @@ Some special points must be taken into account when a translation should work.
 The translations could be updated by the package maintainer and the language
 can be selected by the user at runtime. Therefore some information about the
 translation must be specified.
-This is done by two values that must be supplied for every translation:
+This is done by three values that must be supplied for every translation:
 
 TranslationChooser::LANGUAGE     - the name of the language in native spelling.
+TranslationChooser::APP_VERSION  - the version of the application for which
+				   the translation should be used.
 TranslationChooser::LANG_VERSION - the version of the translation (must be
 				   convertible to a double) [e.g. 1.0 or 2.3]
 
@@ -20,6 +22,14 @@ be identified as the same.
 The translated value of LANGUAGE is also used in the language menu, so that
 the user can decide which language to use.
 
+The APP_VERSION must be set to the application version for which the
+translation should be used. If the translation of the APP_VERSION does not
+match the version of the application a warning is shown to the user that the
+translation possible miss some newer translations.
+This warning is not shown when the translation is embedded into the application.
+Embedded translations are always considered correct for the used version, it
+would only confuse the user if these are displayed as incorrect and the user
+would have no possibility to fix it.
 
 The LANG_VERSION comes into account when you want to update an already released
 translation. The translation file with the higher LANG_VERSION number is used.
