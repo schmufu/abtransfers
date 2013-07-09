@@ -28,7 +28,7 @@ function echo_usage() {
 	echo -e "\t-post string (optional)"
 	echo -e "\t\tString to append to the 'version', default: ''"
 	echo -e "\t-modify true/false (optional)"
-	echo -e "\t\tdefines if the project file should be modified or not, default: true"
+	echo -e "\t\tdefines if the version number should be modified in the repo files or not, default: true"
 }
 
 function parse_arguments() {
@@ -116,7 +116,7 @@ svn copy --quiet --message "Branch for release preperation of version $VERSION c
 
 if [[ "${MODIFYPRJFILE}" == "true" ]]; then
 	echo ""
-	echo "the script should modifiy the project file 'ab_transfer.pro', lets do it"
+	echo "the script should modifiy the project files, lets do it"
 	echo " - checkout the newly created branch"
 	
 	svn co --quiet ${SVNROOTURL}/${DESTDIR}/${PRESTRING}${VERSION}${POSTSTRING} /tmp/abtransfers_branch_temp
@@ -130,9 +130,22 @@ if [[ "${MODIFYPRJFILE}" == "true" ]]; then
 	sed -i "s/\([ ]*ABTRANSFER_VERSION_EXTRA=\\\*\"\)development-version\(.*\)/\1release-candidate\2/" /tmp/abtransfers_branch_temp/abtransfers.pro
 	echo "Version-Extra"
 	
-	echo " - commit the modified project file to the repository"
+	echo " - setting 'APP_VERSION' in all embedded translations to ${VERSION}"
+	for filename in $(ls /tmp/abtransfers_branch_temp/translation/*.ts); do
+		echo -e "\treplacing version in $(basename $filename)"
+		#the version string (e.g. "0.0.4.1") should only occur once within the
+		#<translation> tags (otherwise is is replaced more than once).
+		sed -i "s/^\([ ]*<translation>\)[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\(<\/translation>\)$/\1${VERSION}\2/" $filename
+	done
+
+	echo -n " - setting new version number in doxygen file: "
+	sed -i "s/^\(PROJECT_NUMBER[ ]*= \)[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+$/\1${VERSION}/"  /tmp/abtransfers_branch_temp/documentation/Doxyfile
+	echo "done"
 	
-	svn ci --quiet --message "Changed version number in project file to $VERSION" /tmp/abtransfers_branch_temp/
+	
+	echo " - commit the modified project to the repository"
+	
+	svn ci --quiet --message "Changed version number in project to $VERSION" /tmp/abtransfers_branch_temp/
 	
 	echo " - remove the temporary checkout"
 	rm -rf /tmp/abtransfers_branch_temp
