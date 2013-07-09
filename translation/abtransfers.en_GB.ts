@@ -59,9 +59,8 @@
     <name>DebugDialogWidget</name>
     <message>
         <location filename="../src/widgets/debugdialogwidget.ui" line="+14"/>
-        <source>Dialog</source>
-        <translatorcomment>Sollte dieser Dialog wirklich die Überschrift &quot;Dialog&quot; haben?</translatorcomment>
-        <translation type="unfinished"></translation>
+        <source>Debug Informationen</source>
+        <translation>Debug information</translation>
     </message>
     <message utf8="true">
         <location line="+9"/>
@@ -107,8 +106,45 @@
         <source>Hier können die Einstellungen von AB-Transfers verändert werden.&lt;br /&gt;Wenn eine Einstellung noch nicht unterstützt wird ist sie deaktiviert, zeigt aber das aktuelle Verhalten richtig an.</source>
         <translation>Here you can change AB-Transfers&apos; settings.&lt;br /&gt;In case a setting is not yet supported it will be deactivated, but the correct behaviour will be shown.</translation>
     </message>
+    <message utf8="true">
+        <location line="+30"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Speicherorte / Dateien&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann festgelegt werden welche Ordner und Dateien von AB-Transfers zum Speichern von Daten verwendet werden sollen.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In dem &amp;quot;Standard-Ordner&amp;quot; werden zum Beispiel exportierte Dateien gespeichert.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei &amp;quot;Aktuelle Daten&amp;quot; werden alle Daten der Konten sowie die vorhandenen Daueraufträge und terminierten Überweisungen gespeichert und beim Starten wieder geladen.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der &amp;quot;Historie&amp;quot;-Datei werden alle durchgeführten Aufträge die zum Institut gesendet wurden gespeichert und beim Starten wieder ausgelesen.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei die bei &amp;quot;Empfänger&amp;quot; angegeben ist werden die bekannten Empfänger gespeichert.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Bei allen Dateien werden die Berechtigungen auf lesen/schreiben für den aktuellen Benutzer gesetzt. Dies soll sicherstellen das niemand anderes die Daten lesen kann. Wenn die Berechtigungen zu den Dateien von Hand geändert werden wird dies beim Start von AB-Transfers wieder rückgängig gemacht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data locations / Files&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Here you can define which folders and files AB-Transfers is going to use to save its data.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the &amp;quot;default folder&amp;quot;, for instance, all exported data are saved.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The &amp;quot;current data&amp;quot; file stores all account data including their standing orders as well as scheduled transfers which will be reloaded at program startup.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the &amp;quot;history&amp;quot; file all orders sent to banks get saved and reloaded at program start.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The &amp;quot;addressees&amp;quot; file stores all known addressees.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The file permissions of all these files will be set to read/write for the current user. This shall make sure that noone else can read the data. If permission were changed manually AB-Transfers will revert these changes at program startup.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
     <message>
-        <location line="+49"/>
+        <location line="+19"/>
         <source>Speicherorte / Dateien</source>
         <translation>Data locations / Files</translation>
     </message>
@@ -124,7 +160,7 @@
         <location line="+13"/>
         <location line="+52"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-116"/>
@@ -198,12 +234,11 @@ present in the list of known addressees it will be appended
 to the list.</translation>
     </message>
     <message utf8="true">
-        <location line="+6"/>
         <source>Automatisch die bekannten Empänger erweitern</source>
-        <translation>Automatically expand addressees</translation>
+        <translation type="obsolete">Automatically expand addressees</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+44"/>
         <source>Hinweise anzeigen</source>
         <translation>Show hints</translation>
     </message>
@@ -230,7 +265,6 @@ Hinweis angezeigt.</source>
         <translation>Deleting history entry</translation>
     </message>
     <message utf8="true">
-        <location line="-305"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -248,7 +282,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei die bei &amp;quot;Empfänger&amp;quot; angegeben ist werden die bekannten Empfänger gespeichert.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Bei allen Dateien werden die Berechtigungen auf lesen/schreiben für den aktuellen Benutzer gesetzt. Dies soll sicherstellen das niemand anderes die Daten lesen kann. Wenn die Berechtigungen zu den Dateien von Hand geändert werden wird dies beim Start von AB-Transfers wieder rückgängig gemacht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
@@ -267,7 +301,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The file permissions of all these files will be set to read/write for the current user. This shall make sure that noone else can read the data. If permission were changed manually AB-Transfers will revert these changes at program startup.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="-258"/>
         <source>Legt das Standard Verzeichnis zum Speichern von Daten fest.
 
 In diesem Verzeichnis werden z.B. exportierte Daten
@@ -277,7 +311,6 @@ gespeichert (noch nicht implementiert).</source>
 This folder will keep e.g. exported data (not yet implemented).</translation>
     </message>
     <message utf8="true">
-        <location line="+210"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -289,7 +322,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Deaktivierte Hinweise können hier dann auch wieder aktiviert werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translatorcomment>Dt.: Anzeigen GK?</translatorcomment>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
@@ -301,7 +334,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Deactivated hints can be reactivated here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+228"/>
         <source>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
 beim Starten des Programms angezeigt.</source>
         <translation>If activated a hint about possible charges will be shown at program startup.</translation>
@@ -312,7 +345,6 @@ beim Starten des Programms angezeigt.</source>
         <translation>Possible charges</translation>
     </message>
     <message utf8="true">
-        <location line="+59"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -322,6 +354,100 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann festgelegt werden welche Aufträge automatisch beim starten von AB-Transfers in den Ausgang gestellt werden sollen.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Außerdem kann festgelegt werden das diese Aufträge auch sofort nach dem starten bereits ausgeführt werden.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Somit kann, wenn gewollt, sichergestellt werden das immer mit aktuellen Daten gearbeitet wird.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Download at program start&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Here can be defined which download jobs shall be put into the job outbox at program startup.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Also one can specify whether these jobs shall be executed automatically.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This ensures, if wanted, that always the current data is being dealt with.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+72"/>
+        <source>Aktualisierung beim Starten</source>
+        <translation>Download at program start</translation>
+    </message>
+    <message utf8="true">
+        <location line="+17"/>
+        <source>Kontostände</source>
+        <translation>Account balances</translation>
+    </message>
+    <message utf8="true">
+        <source>Wenn aktiviert wird automatisch beim starten des
+Programms für alle Konten eine Aktualisierung der
+Daueraufträge in den Ausgang eingestellt.</source>
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="obsolete">If activated the standing orders for all accounts will be downloaded at program startup.</translation>
+    </message>
+    <message utf8="true">
+        <location line="+18"/>
+        <source>Daueraufträge</source>
+        <translation>Standing orders</translation>
+    </message>
+    <message utf8="true">
+        <source>Wenn aktiviert wird automatisch beim starten des
+Programms für alle Konten eine Aktualisierung der
+terminierten Überweisungen in den Ausgang eingestellt.</source>
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="obsolete">If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
+    </message>
+    <message utf8="true">
+        <location line="-23"/>
+        <source>Wenn aktiviert wird automatisch beim Starten des
+Programms für alle Konten eine Aktualisierung des
+Kontostandes in den Ausgang eingestellt.</source>
+        <translation>If activated the balances for all accounts will be downloaded at program startup.</translation>
+    </message>
+    <message utf8="true">
+        <location line="-51"/>
+        <source>Sprachänderung bei offenen Aufträgen</source>
+        <translation>Language changes for open jobs</translation>
+    </message>
+    <message utf8="true">
+        <location line="-81"/>
+        <source>Automatisch die bekannten Empfänger erweitern</source>
+        <translation>Automatically expand known addressees</translation>
+    </message>
+    <message utf8="true">
+        <location line="+26"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweise anzeigen&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann ausgewählt werden welche Hinweise während der Benutzung angezeigt werden sollen.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Die meisten Hinweise können auch während der Benutzung über den Haken &amp;quot;nicht wieder anzeigen&amp;quot; deaktiviert werden.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Deaktivierte Hinweise können hier dann auch wieder aktiviert werden.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Show hints&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Here you can select which hints shall be shown during program usage.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Most hints can also be deactivated in certain dialogs of the application.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Deactivated hints can be reactivated here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message utf8="true">
+        <location line="+81"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Aktualisierung beim Starten&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann festgelegt werden welche Aufträge automatisch beim Starten von AB-Transfers in den Ausgang gestellt werden sollen.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Außerdem kann festgelegt werden das diese Aufträge auch sofort nach dem Starten bereits ausgeführt werden.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Somit kann, wenn gewollt, sichergestellt werden das immer mit aktuellen Daten gearbeitet wird.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -336,61 +462,39 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This ensures, if wanted, that always the current data is being dealt with.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message>
-        <location line="+13"/>
-        <source>Aktualisierung beim Starten</source>
-        <translation>Download at program start</translation>
-    </message>
     <message utf8="true">
-        <location line="+17"/>
-        <source>Kontostände</source>
-        <translation>Account balances</translation>
-    </message>
-    <message utf8="true">
-        <location line="+13"/>
-        <source>Wenn aktiviert wird automatisch beim starten des
+        <location line="+43"/>
+        <source>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</source>
-        <translatorcomment>dt. GK: Starten</translatorcomment>
-        <translation type="unfinished">If activated the standing orders for all accounts will be downloaded at program startup.</translation>
+        <translation>If activated the standing orders for all accounts will be downloaded at program startup.</translation>
+    </message>
+    <message utf8="true">
+        <location line="+18"/>
+        <source>Wenn aktiviert wird automatisch beim Starten des
+Programms für alle Konten eine Aktualisierung der
+terminierten Überweisungen in den Ausgang eingestellt.</source>
+        <translation>If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
     </message>
     <message utf8="true">
         <location line="+5"/>
-        <source>Daueraufträge</source>
-        <translation>Standing orders</translation>
-    </message>
-    <message utf8="true">
-        <location line="+13"/>
-        <source>Wenn aktiviert wird automatisch beim starten des
-Programms für alle Konten eine Aktualisierung der
-terminierten Überweisungen in den Ausgang eingestellt.</source>
-        <translatorcomment>dt. GK: Starten</translatorcomment>
-        <translation type="unfinished">If activated the scheduled transfers for all accounts will be downloaded at program startup.</translation>
-    </message>
-    <message utf8="true">
-        <location line="-36"/>
-        <source>Wenn aktiviert wird automatisch beim Starten des
-Programms für alle Konten eine Aktualisierung des
-Kontostandes in den Ausgang eingestellt.</source>
-        <translation>If activated the balances for all accounts will be downloaded at program startup.</translation>
-    </message>
-    <message utf8="true">
-        <location line="-51"/>
-        <source>Sprachänderung bei offenen Aufträgen</source>
-        <translation>Language changes for open jobs</translation>
-    </message>
-    <message utf8="true">
-        <location line="+92"/>
         <source>Terminierte Überweisungen</source>
         <translation>Scheduled transfers</translation>
+    </message>
+    <message utf8="true">
+        <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
+in den Ausgang gestellt sondern auch bereits gleich
+nach dem starten zum Institut übertragen.</source>
+        <translatorcomment>dt. GK: Starten</translatorcomment>
+        <translation type="obsolete">If activated all selected jobs will not only be placed in
+the outbox but also sent to the institute right away.</translation>
     </message>
     <message utf8="true">
         <location line="+20"/>
         <source>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
-nach dem starten zum Institut übertragen.</source>
-        <translatorcomment>dt. GK: Starten</translatorcomment>
-        <translation type="unfinished">If activated all selected jobs will not only be placed in
+nach dem Starten zum Institut übertragen.</source>
+        <translation>If activated all selected jobs will not only be placed in
 the outbox but also sent to the institute right away.</translation>
     </message>
     <message utf8="true">
@@ -571,12 +675,11 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>text-files (*.ctx);;all files (*.*)</translation>
     </message>
     <message>
-        <location line="+122"/>
         <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;(&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen&lt;/i&gt;)</source>
-        <translation>You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;(&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;)</translation>
+        <translation type="obsolete">You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;(&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;)</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+182"/>
         <source>Beim Ãndern des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein.</source>
         <translation>An unexpected error occurred when editing profile %1&lt;br /&gt;Check whether there is useful information in the debug output.</translation>
     </message>
@@ -591,7 +694,12 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Change global profile</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="-12"/>
+        <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen.&lt;/i&gt;</source>
+        <translation>You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location line="+59"/>
         <source>Profil Ãndern</source>
         <translation>Change profile</translation>
     </message>
@@ -727,7 +835,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/mainwindow.cpp" line="+376"/>
+        <location filename="../src/mainwindow.cpp" line="+377"/>
         <source>National</source>
         <translation type="unfinished"></translation>
     </message>
@@ -782,7 +890,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+2102"/>
+        <location filename="../src/mainwindow.cpp" line="+2162"/>
         <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -829,19 +937,19 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/mainwindow.cpp" line="-1450"/>
+        <location filename="../src/mainwindow.cpp" line="-1510"/>
         <source>Hilfe / FAQ</source>
         <translation>Help / FAQ</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/mainwindow.cpp" line="+1477"/>
+        <location filename="../src/mainwindow.cpp" line="+1537"/>
         <source>AqBanking einrichten ...</source>
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-2453"/>
-        <location line="+178"/>
+        <location filename="../src/mainwindow.cpp" line="-2514"/>
+        <location line="+179"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
@@ -979,12 +1087,17 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+4"/>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>Lizenz</source>
         <translation>License</translation>
     </message>
     <message>
-        <location line="-61"/>
+        <location line="-66"/>
+        <source>siehe auch &lt;a href=&quot;http://www.gnu.de/documents/gpl-2.0.de.html&quot;&gt;http://www.gnu.de/documents/gpl-2.0.de.html&lt;/a&gt;</source>
+        <translation>see also &lt;a href=&quot;http://www.gnu.de/documents/gpl-2.0.en.html&quot;&gt;http://www.gnu.de/documents/gpl-2.0.en.html&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>SchlieÃen</source>
         <translation>Close</translation>
     </message>
@@ -1000,22 +1113,22 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+5"/>
-        <source>viewvc: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
+        <source>trac: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+76"/>
+        <location line="+81"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-66"/>
+        <location line="-71"/>
         <source>&lt;b&gt;genutzte Grafiken:&lt;/b&gt;</source>
         <translation>&lt;b&gt;used icons:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location line="+96"/>
+        <location line="+101"/>
         <source> - Auftrag wird von der Bank nicht unterstÃ¼tzt!</source>
         <translation>- Transaction not supported by bank</translation>
     </message>
@@ -1144,7 +1257,29 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>No account found [%1/%2] - Creating impossible</translation>
     </message>
     <message>
-        <location line="+402"/>
+        <location line="+50"/>
+        <source>Unbekannt</source>
+        <translation>Unknown</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ãbersetzung nicht fÃ¼r diese Version.</source>
+        <translation>Translation not for this version.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Die gewÃ¤hlte Sprache verwendet eine Ãbersetzung fÃ¼r eine andere Version von %1.&lt;br /&gt;&lt;br /&gt;Version von %1: %2&lt;br /&gt;&lt;br /&gt;GewÃ¤hlte Sprache: %3&lt;br /&gt;Sprache fÃ¼r Version: %4&lt;br /&gt;Verwendete Datei: %5&lt;br /&gt;&lt;br /&gt;Wenn die Ãbersetzung fÃ¼r eine Ã¤ltere Version ist kann es sein das neu hinzugefÃ¼gte Texte nicht Ã¼bersetzt werden.</source>
+        <translatorcomment>review</translatorcomment>
+        <translation type="unfinished">The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for Version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Diese Meldung nicht wieder anzeigen (nicht reaktivierbar!).</source>
+        <translatorcomment>Wie &quot;reaktivierbar&quot; am besten übersetzen? Oder auch andere Bezeichnung im Deutschen?</translatorcomment>
+        <translation type="unfinished">Do not show this message again (not reverse able!).</translation>
+    </message>
+    <message>
+        <location line="+387"/>
         <source>&lt;tr&gt;&lt;td&gt;BegÃ¼nstigter:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr&gt;&lt;td&gt;Addressee:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
@@ -1297,12 +1432,14 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>It loos as if %1 has already been started!&lt;br /&gt;%1 should never be started multiple times, since that could lead to unforseeable errors!&lt;br /&gt;&lt;i&gt;However, if %1 crashed the previous time you started it, it is safe to answer this dialog with &quot;Yes&quot;.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Shall %1 really be started?</translation>
     </message>
     <message>
+        <location filename="../src/abt_conv.cpp" line="+156"/>
         <location filename="../src/aqb_accountinfo.cpp" line="+193"/>
         <source>Unbekannt</source>
+        <extracomment>possible English translation &quot;Unknown&quot;</extracomment>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location filename="../src/aqb_accountinfo.cpp" line="+2"/>
         <source>Girokonto</source>
         <translation>Checking</translation>
     </message>
@@ -1312,10 +1449,10 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Credit card</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Checking</source>
-        <translatorcomment>Hmmm?? Noch ein Checking? Gibt&apos;s das im Deutschen?</translatorcomment>
-        <translation type="unfinished"></translation>
+        <location line="+3"/>
+        <source>Scheckkonto</source>
+        <extracomment>possible englisch translation &quot;Checking&quot;</extracomment>
+        <translation>Checking</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1338,13 +1475,13 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Money market</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>type unknown</source>
-        <translatorcomment>Deutsch?</translatorcomment>
+        <location line="+6"/>
+        <source>AqBanking account type unknown</source>
+        <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/aqb_banking.cpp" line="+176"/>
+        <location filename="../src/aqb_banking.cpp" line="+178"/>
         <location line="+118"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
@@ -1390,7 +1527,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Checksum erroneous (Modulus = %1)</translation>
     </message>
     <message>
-        <location filename="../src/abt_conv.cpp" line="+60"/>
+        <location filename="../src/abt_conv.cpp" line="-96"/>
         <source>TerminÃ¼berweisung anlegen</source>
         <translation>Create scheduled transfer</translation>
     </message>
@@ -1485,51 +1622,61 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>ab_transfers type unknown</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>Enqueued</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Neu</source>
-        <translatorcomment>Hier plötzlich Deutsch, obwohl die anderen Stati Englisch gehalten waren...</translatorcomment>
-        <translation type="unfinished">New</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Pending</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Sent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>aqBanking status unbekannt</source>
-        <translation>AqBanking status unknown</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Updated</source>
-        <translatorcomment>Deutsch?</translatorcomment>
-        <translation type="unfinished"></translation>
+        <location line="+16"/>
+        <source>Eingereiht</source>
+        <extracomment>possible English translation &quot;Enqueued&quot;</extracomment>
+        <translation>Enqueued</translation>
     </message>
     <message>
         <location line="+4"/>
+        <source>Fehlerhaft</source>
+        <extracomment>possible English translation &quot;Error&quot;</extracomment>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Abgeschlossen</source>
+        <extracomment>possible English translation &quot;Finished&quot;</extracomment>
+        <translation>Finished</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Ausstehend</source>
+        <extracomment>possible English translation &quot;Pending&quot;</extracomment>
+        <translation>Pending</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Gesendet</source>
+        <extracomment>possible English translation &quot;Sent&quot;</extracomment>
+        <translation>Sent</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Aktualisiert</source>
+        <extracomment>possible English translation &quot;Updated&quot;</extracomment>
+        <translation>Updated</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>AqBanking job status unknown</source>
+        <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-24"/>
+        <source>Neu</source>
+        <extracomment>possible English translation &quot;New&quot;</extracomment>
+        <translatorcomment>Hier plötzlich Deutsch, obwohl die anderen Stati Englisch gehalten waren...</translatorcomment>
+        <translation>New</translation>
+    </message>
+    <message>
+        <source>aqBanking status unbekannt</source>
+        <translation type="obsolete">AqBanking status unknown</translation>
+    </message>
+    <message>
         <source>ab_transfer status unbekannt</source>
-        <translation>ab_transfers status unknown</translation>
+        <translation type="obsolete">ab_transfers status unknown</translation>
     </message>
     <message>
         <location filename="../src/abt_jobinfo.cpp" line="+304"/>
@@ -1538,11 +1685,15 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>From: %1 (%2 - %3)</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+12"/>
         <source>Zu:  %1 (%2 - %3)</source>
         <translatorcomment>Zwei Leerzeichen nach Doppelpunkt gewollt? Dann auch bei &quot;Von:...&quot; einfügen!</translatorcomment>
-        <translation type="unfinished">To: %1 (%2 - %3)</translation>
+        <translation type="obsolete">To: %1 (%2 - %3)</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <location line="+12"/>
+        <source>Zu: %1 (%2 - %3)</source>
+        <translation>To: %1 (%2 - %3)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1603,18 +1754,31 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="+3"/>
+        <source>Erste AusfÃ¼hrung: %1</source>
+        <translation>First execution: %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Letzte AusfÃ¼hrung: %1</source>
+        <translation>Last execution: %1</translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>Zu: %1 (%2 - %3) [%4]</source>
+        <translation>To: %1 (%2 - %3) [%4]</translation>
+    </message>
+    <message>
         <source>Erste AusfÃ¼hrung:   %1</source>
         <translatorcomment>3 Leerzeichen nach Doppelpunkt gewünscht?</translatorcomment>
-        <translation type="unfinished">First execution:   %1</translation>
+        <translation type="obsolete">First execution:   %1</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Letzte AusfÃ¼hrung:  %1</source>
         <translatorcomment>2 Leerzeichen nach Doppelpunkt gewünscht?</translatorcomment>
-        <translation>Last execution:  %1</translation>
+        <translation type="obsolete">Last execution:  %1</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-42"/>
         <source>NÃ¤chste AusfÃ¼hrung: %1</source>
         <translation>Next execution: %1</translation>
     </message>
@@ -1624,13 +1788,12 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Day of execution: %1</translation>
     </message>
     <message>
-        <location line="+32"/>
         <source>Zu:  %1 (%2 - %3) [%4]</source>
         <translatorcomment>2 LZ nach Doppelpunkt?</translatorcomment>
-        <translation>To:  %1 (%2 - %3) [%4]</translation>
+        <translation type="obsolete">To:  %1 (%2 - %3) [%4]</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+43"/>
         <source>Aktualisiert den aktuellen Saldo fÃ¼r das</source>
         <translation>Downloads the balance for</translation>
     </message>
@@ -1691,7 +1854,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>TranslationChooser</name>
     <message>
-        <location filename="../src/translationchooser.cpp" line="+311"/>
+        <location filename="../src/translationchooser.cpp" line="+314"/>
         <source>LANGUAGE</source>
         <extracomment>The name of the language (in native spelling). This text is used for the menu entry name for this translation.</extracomment>
         <translation>English (GB)</translation>
@@ -1702,17 +1865,23 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <extracomment>The version of the translation. Must be convertible to a double! This number is used to distinguish between different translations for the same language. (The one with higher number is used)</extracomment>
         <translation>0.1</translation>
     </message>
+    <message>
+        <location line="+25"/>
+        <source>APP_VERSION</source>
+        <extracomment>The version of the application for which this translation is. This number is used to verify that the translation is for the used version of the application.</extracomment>
+        <translation>0.0.4.1</translation>
+    </message>
+    <message>
+        <location line="+361"/>
+        <source>HELPTEXTFILENAME</source>
+        <extracomment>The filename of the help text. The same directories as for the qm-files are searched!</extracomment>
+        <translation>abtransfers-helptext_en.html</translation>
+    </message>
 </context>
 <context>
     <name>abt_dialog</name>
     <message>
-        <location filename="../src/dialogs/abt_dialog.ui" line="+20"/>
-        <source>Dialog</source>
-        <translatorcomment>Dialogtitel so gewünscht?</translatorcomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+21"/>
+        <location filename="../src/dialogs/abt_dialog.ui" line="+41"/>
         <source>Placeholder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1875,10 +2044,14 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Delete history entry</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Sollen die gewÃ¤hlten EintrÃ¤ge aus der Historie wirklich gelÃ¶scht werden?&lt;br /&gt;&lt;i&gt;(Dies kann nicht rÃ¼ckgÃ¤ngig gemacht werden)&lt;/i&gt;</source>
         <translatorcomment>Satzendezeichen im Deutschen fehlt</translatorcomment>
-        <translation>Shall the selected history entries really be deleted?&lt;br /&gt;&lt;i&gt;(This can not be undone!)&lt;/i&gt;</translation>
+        <translation type="obsolete">Shall the selected history entries really be deleted?&lt;br /&gt;&lt;i&gt;(This can not be undone!)&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Sollen die gewÃ¤hlten EintrÃ¤ge aus der Historie wirklich gelÃ¶scht werden?&lt;br /&gt;&lt;i&gt;Dies kann nicht rÃ¼ckgÃ¤ngig gemacht werden.&lt;/i&gt;</source>
+        <translation>Shall the selected history entries really be deleted?&lt;br /&gt;&lt;i&gt;This can not be undone!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1887,7 +2060,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     </message>
     <message>
         <location line="+62"/>
-        <location line="+38"/>
+        <location line="+55"/>
         <source>Einstellungen</source>
         <comment>favorite</comment>
         <extracomment>String for the favorite settings item in the menu
@@ -1896,7 +2069,17 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>Settings</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-16"/>
+        <source>Export fehlgeschlagen</source>
+        <translation>Export failed</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Es wurden keine zu exportierende Daten ausgewÃ¤hlt.&lt;br /&gt;&lt;br /&gt;&lt;i&gt;Dies sollte nicht auftreten! Wenn diese Meldung reproduzierbar ist, melden Sie es bitte als Bug.&lt;/i&gt;</source>
+        <translation>There are no selected data to be exported.&lt;br /&gt;&lt;br /&gt;&lt;i&gt;This should not happen! If this message is reproduceable, please report this as a Bug.&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location line="+37"/>
         <source>(%1 / %2) Export ...</source>
         <translation></translation>
     </message>
@@ -1911,7 +2094,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>No file name was specified under which the exported data shall be saved!</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+17"/>
         <source>Export fehlerhaft</source>
         <translation>Export erroneous</translation>
     </message>
@@ -1931,7 +2114,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>The selected history entries were saved as %1.</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+41"/>
         <source>Keine EintrÃ¤ge in der Historie vorhanden</source>
         <translation>No history entries present</translation>
     </message>
@@ -2266,10 +2449,14 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>Not implemented</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>&lt;h3&gt;&lt;font color=red&gt;Der &quot;Job&quot; &apos;%1&apos; ist leider noch nicht implementiert.&lt;br /&gt;Bitte haben Sie noch etwas Geduld und warten auf eine Aktualisierung.&lt;/font&gt;&lt;/h3&gt;(Eventuell folgende Texte sind ablaufbedingt und kÃ¶nnen ignoriert werden)</source>
         <translatorcomment>Im Deutschen kein Punkt am Ende?</translatorcomment>
-        <translation type="unfinished">&lt;h3&gt;&lt;font color=red&gt;The &quot;Job&quot; &apos;%1&apos; is not yet implemented.&lt;br /&gt;Please be patient and wait for a update.&lt;/font&gt;&lt;/h3&gt;(Possibly following text lines appear due to the workflow but can be ignored.)</translation>
+        <translation type="obsolete">&lt;h3&gt;&lt;font color=red&gt;The &quot;Job&quot; &apos;%1&apos; is not yet implemented.&lt;br /&gt;Please be patient and wait for a update.&lt;/font&gt;&lt;/h3&gt;(Possibly following text lines appear due to the workflow but can be ignored.)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;h3&gt;&lt;font color=red&gt;Der &quot;Job&quot; &apos;%1&apos; ist leider noch nicht implementiert.&lt;br /&gt;Bitte haben Sie noch etwas Geduld und warten auf eine Aktualisierung.&lt;/font&gt;&lt;/h3&gt;&lt;i&gt;Eventuell folgende Texte sind ablaufbedingt und kÃ¶nnen ignoriert werden.&lt;/i&gt;</source>
+        <translation>&lt;h3&gt;&lt;font color=red&gt;The &quot;Job&quot; &apos;%1&apos; is not yet implemented.&lt;br /&gt;Please be patient and wait for a update.&lt;/font&gt;&lt;/h3&gt;&lt;i&gt;Possibly following text lines appear due to the workflow but can be ignored.&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+64"/>

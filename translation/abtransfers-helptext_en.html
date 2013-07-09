@@ -1,0 +1,107 @@
+<!-- this file is included in the resources of AB-Transfers and displayed as
+     a help text in the specific dialog.
+     The basic html-tags that are supported by Qt are allowed. !-->
+
+<h2>AB-Transfers Help</h2>
+
+<b>This will be the English translated help text. Until all translations are
+realized the original German information are used.</b>
+
+<pre>
+Hier wird Zuk&uuml;nftig eine kleine Hilfe zu AB-Transfers angezeigt werden.
+Bis diese fertig erstellt ist kann es aber noch eine Weile dauern.
+</pre>
+
+<h3><a name="toc">Inhaltsverzeichnis</a></h3>
+<a href="#section1">Auftr&auml;ge k&ouml;nnen geb&uuml;hrenpflichtig sein</a><br />
+<a href="#section2">Generelle Hinweise</a><br />
+<a href="#section3">Sammel&uuml;berweisungen</a><br />
+<a href="#section4">Aktualisieren von Dauerauftr&auml;gen und Termin&uuml;berweisungen</a><br />
+<a href="#section5">Nutzung des integrierten Taschenrechners</a><br />
+
+<h3 id="section1">Auftr&auml;ge k&ouml;nnen geb&uuml;hrenpflichtig sein</h3>
+Bei einigen Kreditinstituten/Banken k&ouml;nnen Geb&uuml;hren f&uuml;r bestimmte
+Auftr&auml;ge (Einrichtung von Dauerauftr&auml;gen, Sammel&uuml;berweisungen,
+etc.) anfallen.<br />
+Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten
+f&uuml;r welche Auftr&auml;ge anfallen!<br />
+<br />
+<b>Ich &Uuml;bernehme keine Haftung f&uuml;r eventuell entstehende Kosten!</b>
+<br />
+<a href="#toc">Inhalt</a>
+<br />
+
+
+<h3 id="section2">Generelle Hinweise</h3>
+
+Von der Bank wird bekannt gegeben welche Transaktionen (&uuml;berweisung,
+Dauerauftr&auml;ge etc.) unterst&uuml;tzt werden. Wenn eine Transaktion
+durchgef&uuml;hrt werden soll die zwar durch AB-Transfers unterst&uuml;tzt
+wird aber von der Bank nicht wird ein entsprechender Hinweis angezeigt.<br />
+Au&szlig;erdem werden von der Bank Limitierungen, bez&uuml;glich der Daten
+die in den einzelnen Transaktionen eingegeben werden d&uuml;rfen vorgegeben.
+Auch diese Limitierungen werden von AB-Transfers ausgewertet und in den
+meisten F&auml;llen sind dann nur Eingaben erlaubt die zu diesen Limitierungen
+konsistent sind. Dies geschieht einerseits bereits bei der Eingabe der Daten,
+zus&auml;tzlich aber nochmals beim Einstellen der Transaktion in den Ausgang
+(dort werden dann insbesondere Eingaben gepr&uuml;ft die w&auml;hrend der
+Eingabe nur schwer zu kontrollieren sind).
+<br />
+<a href="#toc">Inhalt</a>
+<br />
+
+
+<h3 id="section3">Sammel&uuml;berweisungen</h3>
+
+AB-Transfers hat keinen Einfluss darauf ob Sammel&uuml;berweisungen
+durchgef&uuml;hrt werden oder nicht. Dies ist abh&auml;ngig vom verwendeten
+Backend in AqBanking und davon ob dies von der Bank unterst&uuml;tzt wird.<br />
+In AqBanking existiert die M&ouml;glichkeit dem Backend mitzuteilen das
+einzelne &uuml;berweisungen den Sammel&uuml;berweisungen bevorzugt werden
+sollen ("PreferSingleTransfer"). Dies kann z.B. &uuml;ber den Befehl
+<pre>
+aqhbci-tool4 addaccountflags -a <i>KONTONUMMER</i> -f "preferSingleTransfer"
+</pre>
+eingestellt werden (Details siehe Hilfe von AqBanking).
+<br />
+<a href="#toc">Inhalt</a>
+<br />
+
+
+<h3 id="section4">Aktualisieren von Dauerauftr&auml;gen und Termin&uuml;berweisungen</h3>
+
+Die Schaltfl&auml;chen zum Aktualisieren von Dauerauftragen bzw.
+Termin&uuml;berweisungen beziehen sich immer auf das in "Online-Konten"
+gew&auml;hlte Konto.<br />
+Wenn also die Dauerauftr&auml;ge aktualisiert werden sollen muss zuerst das
+Konto ausgew&auml;hlt und dann auf "Aktualiseren" geklickt werden. Um die
+Dauerauftr&auml;ge f&uuml;r alle Konten zu Aktualisieren muss dies f&uuml;r
+jedes Konto durchgef&uuml;hrt werden und danach im Ausgang auf "Ausf&uuml;hren"
+geklickt werden.<br />
+Irgendwann wird sich das Layout der &uuml;bersichtsseite aber noch &auml;ndern,
+wie genau die Darstellung dann erfolgen wird weiß ich zur Zeit aber auch
+noch nicht. Wenn jemand dazu einen Vorschlag hat wie dies besser gestaltet
+werden k&ouml;nnte, dies bitte als E-Mail an mich "Patrick Wacker"
+&lt;schmufu.s@gmx.de&gt; schicken. Vielen Dank.
+<br />
+<a href="#toc">Inhalt</a>
+<br />
+
+
+<h3 id="section5">Nutzung des integrierten Taschenrechners</h3>
+
+Der Taschenrechner kann entweder direkt durch einen Klick auf die Schaltfl&auml;che
+neben dem Eingabefeld f&uuml;r den Betrag aufgerufen werden oder auch automatisch
+bei der Eingabe.<br />
+Wenn bereits ein Betrag eingegeben wurde kann durch die Eingabe von +, -, *, /
+automatisch der Taschenrechner aufgerufen werden. Dabei wird der vorhandene
+Betrag als erster Operand gesetzt und auch die zu verwendende Operation
+eingestellt. Es kann also gleich der zweite Operand eingegeben werden und durch
+bet&auml;tigen von "Enter" das Ergebnis als Betrag &uuml;bernommen werden.<br />
+<i>Beispiel:</i><br />
+&nbsp;&nbsp;&nbsp;&nbsp;Betrag: 12,50<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Eingabe: &lt;*&gt; &lt;2&gt; &lt;Enter&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Ergebnis: 25,00
+<br />
+<a href="#toc">Inhalt</a>
+<br />
