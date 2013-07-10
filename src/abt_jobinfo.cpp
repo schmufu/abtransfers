@@ -325,9 +325,9 @@ void abt_jobInfo::createJobInfoStringList_Append_To(QStringList *strList) const
 	if (!this->m_trans) return; //only if transaction available
 	QString info;
 
-	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
-						    this->m_trans->getRemoteAccountNumber(),
-						    this->m_trans->getRemoteBankCode());
+	info = QObject::tr("Zu: %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						   this->m_trans->getRemoteAccountNumber(),
+						   this->m_trans->getRemoteBankCode());
 	strList->append(info);
 }
 
@@ -337,9 +337,9 @@ void abt_jobInfo::createJobInfoStringList_Append_To_Sepa(QStringList *strList) c
 	if (!this->m_trans) return; //only if transaction available
 	QString info;
 
-	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
-						    this->m_trans->getRemoteIban(),
-						    this->m_trans->getRemoteBic());
+	info = QObject::tr("Zu: %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						   this->m_trans->getRemoteIban(),
+						   this->m_trans->getRemoteBic());
 	strList->append(info);
 }
 
@@ -435,9 +435,9 @@ void abt_jobInfo::createJobInfoStringList_ForStandingOrders(QStringList *strList
 	strList->append(QObject::tr("Ausführung: %1 %2 am %3").arg(
 			strCycle, strPeriod).arg(day));
 
-	strList->append(QObject::tr("Erste Ausführung:   %1").arg(
+	strList->append(QObject::tr("Erste Ausführung: %1").arg(
 			t->getFirstExecutionDate().toString()));
-	strList->append(QObject::tr("Letzte Ausführung:  %1").arg(
+	strList->append(QObject::tr("Letzte Ausführung: %1").arg(
 			t->getLastExecutionDate().toString()));
 	strList->append(QObject::tr("Nächste Ausführung: %1").arg(
 			t->getNextExecutionDate().toString()));
@@ -481,7 +481,7 @@ void abt_jobInfo::createJobInfoStringList_DeleteStandingOrder(QStringList *strLi
 void abt_jobInfo::createJobInfoStringList_EuTransfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Append_From(strList);
-	strList->append(QObject::tr("Zu:  %1 (%2 - %3) [%4]").arg(
+	strList->append(QObject::tr("Zu: %1 (%2 - %3) [%4]").arg(
 			this->m_trans->getRemoteName().at(0),
 			this->m_trans->getRemoteAccountNumber(),
 			this->m_trans->getRemoteBankCode(),

@@ -128,32 +128,44 @@ const QString abt_conv::JobStatusToQString(AB_JOB_STATUS status)
 {
 	switch (status) {
 	case AB_Job_StatusEnqueued:
-		return QObject::tr("Enqueued");
+		//: possible English translation "Enqueued"
+		return QObject::tr("Eingereiht");
 		break;
 	case AB_Job_StatusError:
-		return QObject::tr("Error");
+		//: possible English translation "Error"
+		return QObject::tr("Fehlerhaft");
 		break;
 	case AB_Job_StatusFinished:
-		return QObject::tr("Finished");
+		//: possible English translation "Finished"
+		return QObject::tr("Abgeschlossen");
 		break;
 	case AB_Job_StatusNew:
+		//: possible English translation "New"
 		return QObject::tr("Neu");
 		break;
 	case AB_Job_StatusPending:
-		return QObject::tr("Pending");
+		//: possible English translation "Pending"
+		return QObject::tr("Ausstehend");
 		break;
 	case AB_Job_StatusSent:
-		return QObject::tr("Sent");
+		//: possible English translation "Sent"
+		return QObject::tr("Gesendet");
 		break;
 	case AB_Job_StatusUnknown:
-		return QObject::tr("aqBanking status unbekannt");
+		//: possible English translation "Unknown"
+		return QObject::tr("Unbekannt");
 		break;
 	case AB_Job_StatusUpdated:
-		return QObject::tr("Updated");
+		//: possible English translation "Updated"
+		return QObject::tr("Aktualisiert");
 		break;
 	}
 
-	return QObject::tr("ab_transfer status unbekannt");
+	//: all enum values are handled, this is returned when
+	//: a new enum value is introduced by AqBanking which
+	//: AB-Transfers does not handle.
+	//: (Translation not realy necessary)
+	return QObject::tr("AqBanking job status unknown");
 }
 
 //static

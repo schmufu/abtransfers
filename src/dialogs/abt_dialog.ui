@@ -17,7 +17,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string notr="true" extracomment="windowTitle is set during instantiation, no translation needed">Dialog</string>
   </property>
   <property name="locale">
    <locale language="German" country="Germany"/>
