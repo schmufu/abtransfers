@@ -1078,6 +1078,8 @@ void MainWindow::on_actionHelp_triggered()
 
 	QVBoxLayout *vbox = new QVBoxLayout(helpDialog);
 
+	QFile helpText(this->translations->helpTextFilename());
+
 #if !defined(USE_QT_WEBKIT)
 	//QtWebKit not available, we use a QLabel for the Display
 	//ScrollArea for text display
@@ -1094,7 +1096,6 @@ void MainWindow::on_actionHelp_triggered()
 	text1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	text1->setTextFormat(Qt::RichText);
 
-	QFile helpText(":/text/help");
 	if (helpText.open(QFile::ReadOnly)) {
 		QTextStream stream(&helpText);
 		text1->setText(stream.readAll());
@@ -1105,7 +1106,6 @@ void MainWindow::on_actionHelp_triggered()
 	view->settings()->setDefaultTextEncoding("utf-8");
 	view->setMinimumSize(520, 600);
 
-	QFile helpText(":/text/help");
 	if (helpText.open(QFile::ReadOnly)) {
 		QTextStream stream(&helpText);
 		view->setHtml(stream.readAll());
