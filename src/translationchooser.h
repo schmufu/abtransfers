@@ -111,10 +111,9 @@ private:
 	QLocale activeLocale;
 	QMenu *langMenu;
 
-
 	void loadSupportedTranslations();
 	void addTranslation(const QString &qmFile);
-	QStringList qmFileLocations() const;
+	QStringList fileLocations() const;
 	static QString languageName(const QString &qmFile);
 	static double languageVersion(const QString &qmFile);
 	QString localeName(const QString &qmFile) const;

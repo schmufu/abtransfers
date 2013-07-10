@@ -21,10 +21,8 @@
 	<file alias="edit-undo">../images/edit-undo_16x16.png</file>
 	<file alias="dialog-close">../images/dialog-close_16x16.png</file>
     </qresource>
-    <qresource prefix="/helptext_html">
-	<file>helpText.de.html</file>
-    </qresource>
     <qresource>
 	<file>../translation/abtransfers.en_GB.qm</file>
+	<file>../translation/abtransfers-helptext_de.html</file>
     </qresource>
 </RCC>
