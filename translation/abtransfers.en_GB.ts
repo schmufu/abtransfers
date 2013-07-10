@@ -601,8 +601,7 @@ the outbox but also sent to the institute right away.</translation>
     <message utf8="true">
         <location line="+6"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Diese Einstellungen ermöglichen die Einflussnahme auf das ansonsten vorgegebene Verhalten von AB-Transfers.&lt;br /&gt;Sie sollten diese Einstellungen nur aktivieren wenn Sie wissen was Sie tun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translatorcomment>Warum ist hier ein richtiger HTML-Block drin? War bei anderen Dialogen oder Tabs nicht so.</translatorcomment>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;These settings allow to change the normally well-defined workflow of AB-Transfers.&lt;br /&gt;You should only activate this if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;These settings allow to change the normally well-defined workflow of AB-Transfers.&lt;br /&gt;You should only activate this if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <location line="+18"/>
@@ -740,6 +739,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location filename="../src/widgets/knownempfaengerwidget.ui" line="+20"/>
         <source>GroupBox</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1151,6 +1151,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+1"/>
         <source>%1</source>
+        <translatorcomment>String-Argument macht keinen Sinn übersetzt zu werden.</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1270,14 +1271,13 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+1"/>
         <source>Die gewÃ¤hlte Sprache verwendet eine Ãbersetzung fÃ¼r eine andere Version von %1.&lt;br /&gt;&lt;br /&gt;Version von %1: %2&lt;br /&gt;&lt;br /&gt;GewÃ¤hlte Sprache: %3&lt;br /&gt;Sprache fÃ¼r Version: %4&lt;br /&gt;Verwendete Datei: %5&lt;br /&gt;&lt;br /&gt;Wenn die Ãbersetzung fÃ¼r eine Ã¤ltere Version ist kann es sein das neu hinzugefÃ¼gte Texte nicht Ã¼bersetzt werden.</source>
-        <translatorcomment>review</translatorcomment>
+        <translatorcomment>Please review this translation!</translatorcomment>
         <translation type="unfinished">The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for Version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Diese Meldung nicht wieder anzeigen (nicht reaktivierbar!).</source>
-        <translatorcomment>Wie &quot;reaktivierbar&quot; am besten übersetzen? Oder auch andere Bezeichnung im Deutschen?</translatorcomment>
-        <translation type="unfinished">Do not show this message again (not reverse able!).</translation>
+        <translation>Do not show this message again (not reversible!).</translation>
     </message>
     <message>
         <location line="+387"/>
@@ -1479,6 +1479,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <location line="+6"/>
         <source>AqBanking account type unknown</source>
         <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
+        <translatorcomment>Deutsch?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1662,6 +1663,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <location line="+8"/>
         <source>AqBanking job status unknown</source>
         <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
+        <translatorcomment>Deutsch?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1884,11 +1886,13 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/dialogs/abt_dialog.ui" line="+41"/>
         <source>Placeholder</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
         <source>TextLabel</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1958,7 +1962,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+32"/>
         <source>JobLog: %1</source>
-        <translatorcomment>Deutsch?</translatorcomment>
+        <translatorcomment>Deutsch? Evtl. &quot;Auftragsprotokoll&quot;??</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1975,6 +1979,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/pages/page_history.ui" line="+14"/>
         <source>Frame</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2125,6 +2130,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location filename="../src/pages/page_log.ui" line="+14"/>
         <source>Frame</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
