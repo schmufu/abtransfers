@@ -24,5 +24,6 @@
     <qresource>
 	<file>../translation/abtransfers.en_GB.qm</file>
 	<file>../translation/abtransfers-helptext_de.html</file>
+	<file>../translation/abtransfers-helptext_en.html</file>
     </qresource>
 </RCC>

@@ -112,6 +112,7 @@ OTHER_FILES += \
     documentation/Doxyfile \
     documentation/HBCI_Geschaeftsvorfaelle.txt \
     translation/abtransfers-helptext_de.html \
+    translation/abtransfers-helptext_en.html \
     translation/abtransfers.en_GB.ts \
     translation/README.translations
 RESOURCES += src/resources.qrc
