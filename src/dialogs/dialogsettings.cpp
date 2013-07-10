@@ -652,8 +652,8 @@ void DialogSettings::on_actionEditProfile_triggered()
 				 "Sie können dann also nur noch auf das geänderte "
 				 "Profil zugreifen und nicht mehr auf die "
 				 "ursprüngliche Version!<br />"
-				 "(<i>Nach dem löschen des lokalen Profils würde "
-				 "das globale wieder verwendet werden können</i>)")
+				 "<i>Nach dem löschen des lokalen Profils würde "
+				 "das globale wieder verwendet werden können.</i>")
 			      .arg(profileName);
 
 		QMessageBox::information(this, tr("Globales Profil ändern"), msg);

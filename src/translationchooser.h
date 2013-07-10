@@ -116,6 +116,7 @@ private:
 	QStringList fileLocations() const;
 	static QString languageName(const QString &qmFile);
 	static double languageVersion(const QString &qmFile);
+	static QString languageAppVersion(const QString &qmFile);
 	QString localeName(const QString &qmFile) const;
 	void createLanguageMenu();
 
@@ -123,12 +124,16 @@ private:
 	void installAppTranslation(const QString &qmFile);
 
 	TranslationChooserData *translationData(const QString &qmFile) const;
+	const TranslationChooserData *activeTranslationChooserData() const;
 
 	void uninstallAllTranslators();
 public:
 	QStringList supportedLanguages();
 	QMenu *languageMenu() const;
-	const QString &currentLanguage();
+	const QString &currentLanguage() const;
+	const QString currentLanguageVersion() const;
+	const QString currentLanguageAppVersion() const;
+	const QString currentLanguageFile() const;
 #if defined(TRANSLATIONCHOOSER_ENABLE_HELPTEXT)
 	QString helpTextFilename() const;
 #endif

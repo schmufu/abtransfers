@@ -223,6 +223,8 @@ private slots:
 
 	void deleteHistoryItems(QList<abt_jobInfo*> jiList);
 
+	void checkTranslationVersion();
+
 };
 
 #endif // MAINWINDOW_H

@@ -36,6 +36,7 @@
 #include <QtCore/QDebug>
 
 #include "../abt_conv.h"
+#include "widgetcalculator.h"
 
 /** \brief Widget zur Anzeige und Eingabe eines Betrages
  *
@@ -48,10 +49,17 @@ public:
 	explicit widgetValue(QWidget *parent = 0);
 	~widgetValue();
 
+protected:
+	QWidget *focusWidget();
+	bool eventFilter(QObject *o, QEvent *e);
+
 private:
 	QLineEdit *value;
 	QLineEdit *currency;
+	WidgetCalculator *calculator;
+	QFrame *calcFrame;
 
+	void createCalcFrame();
 
 public:
 	QString getValue() const;
@@ -61,7 +69,12 @@ public:
 
 signals:
 
+private slots:
+	void calculatorResult();
+
 public slots:
+	void showCalculator();
+	void showCalculator(QKeyEvent *e);
 	void clearAll();
 	void setValue(const QString &value);
 	void setValue(const AB_VALUE *abv);
@@ -70,6 +83,7 @@ public slots:
 	void setValueCurrency(const QString &value, const QString &currency = "EUR");
 
 	void setLimitAllowChange(int b);
+
 
 };
 
