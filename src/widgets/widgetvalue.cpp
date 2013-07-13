@@ -64,7 +64,8 @@ widgetValue::widgetValue(QWidget *parent) :
 
 	QHBoxLayout *layout = new QHBoxLayout();
 	/** \todo: add fallback icon for calculator button */
-	QPushButton *calcBtn = new QPushButton(QIcon::fromTheme("accessories-calculator"), "", this);
+	QIcon ico = QIcon::fromTheme("accessories-calculator", QIcon(":/icons/calculator"));
+	QPushButton *calcBtn = new QPushButton(ico, "", this);
 	calcBtn->setFocusProxy(this->value);
 	connect(calcBtn, SIGNAL(clicked()), this, SLOT(showCalculator()));
 

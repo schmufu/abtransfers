@@ -20,6 +20,7 @@
 	<file alias="edit-redo">../images/edit-redo_16x16.png</file>
 	<file alias="edit-undo">../images/edit-undo_16x16.png</file>
 	<file alias="dialog-close">../images/dialog-close_16x16.png</file>
+	<file alias="calculator">../images/accessories-calculator_16x16.png</file>
     </qresource>
     <qresource>
 	<file>../translation/abtransfers.en_GB.qm</file>

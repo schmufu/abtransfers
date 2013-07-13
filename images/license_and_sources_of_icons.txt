@@ -20,6 +20,7 @@ document-edit_16x16.png
 dialog-close_16x16.png
 document-new_16x16.png
 document-save_16x16.png
+accessories-calculator_16x16.png
 
 The (outdated) website is: http://www.oxygen-icons.org
 License: GNU LGPL v3, http://www.gnu.org/licenses/lgpl.html
