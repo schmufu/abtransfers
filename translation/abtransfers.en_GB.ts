@@ -1269,8 +1269,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+1"/>
         <source>Die gewÃ¤hlte Sprache verwendet eine Ãbersetzung fÃ¼r eine andere Version von %1.&lt;br /&gt;&lt;br /&gt;Version von %1: %2&lt;br /&gt;&lt;br /&gt;GewÃ¤hlte Sprache: %3&lt;br /&gt;Sprache fÃ¼r Version: %4&lt;br /&gt;Verwendete Datei: %5&lt;br /&gt;&lt;br /&gt;Wenn die Ãbersetzung fÃ¼r eine Ã¤ltere Version ist kann es sein das neu hinzugefÃ¼gte Texte nicht Ã¼bersetzt werden.</source>
-        <translatorcomment>Please review this translation!</translatorcomment>
-        <translation type="unfinished">The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for Version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
+        <translation>The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
     </message>
     <message>
         <location line="+21"/>
