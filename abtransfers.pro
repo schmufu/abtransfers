@@ -129,6 +129,14 @@ unix|macx {
 		   /usr/include/gwenhywfar4
 }
 
+# This is the code needed for the dock icon on Max OS X.
+macx:HEADERS += src/macdockiconhandler.h
+macx:OBJECTIVE_SOURCES += src/macdockiconhandler.mm
+macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
+macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
+macx:ICON = images/abtransfers.icns
+macx:TARGET = "AB-Transfers"
+
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
 
