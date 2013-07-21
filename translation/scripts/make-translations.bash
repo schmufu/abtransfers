@@ -19,7 +19,7 @@ else
 fi
 
 BIN=${PREFIX}/bin
-APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/abtransfers.app/Contents/Resources/
+APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/AB-Transfers.app/Contents/Resources/
 
 if [ "$1" == "up" ]
 then
