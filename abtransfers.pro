@@ -132,6 +132,8 @@ unix|macx {
 
 # This is needed for the dock icon on Max OS X.
 macx:ICON = images/abtransfers.icns
+# According to http://osdir.com/ml/kde-commits/2011-09/msg06346.html the following seems to be necessary.
+macx:DEFINES += MSG_NOSIGNAL=0
 
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
