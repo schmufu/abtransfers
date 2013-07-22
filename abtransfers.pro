@@ -2,7 +2,8 @@
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
 VERSION = 0.0.4.1
-TARGET = abtransfers
+!macx:TARGET = abtransfers
+macx:TARGET = "AB-Transfers"
 DESTDIR = build
 TEMPLATE = app
 
@@ -129,13 +130,8 @@ unix|macx {
 		   /usr/include/gwenhywfar4
 }
 
-# This is the code needed for the dock icon on Max OS X.
-macx:HEADERS += src/macdockiconhandler.h
-macx:OBJECTIVE_SOURCES += src/macdockiconhandler.mm
-macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
-macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
+# This is needed for the dock icon on Max OS X.
 macx:ICON = images/abtransfers.icns
-macx:TARGET = "AB-Transfers"
 
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
