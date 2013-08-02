@@ -564,7 +564,15 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->recurrence->setLimitAllowMonthly(limits->AllowMonthly);
 		this->recurrence->setLimitAllowWeekly(limits->AllowWeekly);
 		this->recurrence->setLimitAllowChangeFirstExecutionDate(limits->AllowChangeFirstExecutionDate);
-		this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+
+		if (banking->isLastDateSupported()) {
+			this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+		} else {
+			//last date is not supported by aqbanking
+			this->recurrence->setLimitAllowChangeLastExecutionDate(-1);
+			//"until further" is checked if the date is invalid
+			this->recurrence->setLastExecutionDay(QDate());
+		}
 	}
 
 	if (this->datedDate != NULL) {
