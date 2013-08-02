@@ -116,6 +116,22 @@ aqb_banking::~aqb_banking()
 	delete this->gui; //delete the created GWEN_Qt4_GUI
 }
 
+//public
+/** returns true if the last date of standing order is supported to be set
+ *
+ * AqBanking does not support setting the last date for a standing order,
+ * therefore this function should be used to check if setting the last date
+ * is supported or not.
+ */
+bool aqb_banking::isLastDateSupported() const
+{
+	/** \todo: Adjust the version label when AqBanking supports setting
+	 *         the last date.
+	 */
+	return !(this->aqbanking_version < "9.9.9");
+}
+
+
 /*! \brief Gibt den Institut-Namen zur BLZ zurück
   */
 QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
