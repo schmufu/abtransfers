@@ -16,7 +16,7 @@ contains(USEWEBKIT, "available") {
     message("QtWebKit not available, using QLabel")
 }
 
-TRANSLATIONS = translation/abtransfers.en_GB.ts
+TRANSLATIONS = $$files(translation/abtransfers.*.ts)
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -142,7 +142,9 @@ MOC_DIR = tmp
 OBJECTS_DIR = tmp
 UI_DIR = tmp
 
-#compile translations, so that they are useable for the resources file
+# Compile translations, so that they are useable for the resources file
+#  Attention: this option was removed in Qt5:
+!greaterThan(QT_MAJOR_VERSION, 4):CODECFORTR = UTF-8
 system(lrelease $${TRANSLATIONS})
 
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
