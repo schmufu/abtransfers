@@ -143,8 +143,7 @@ OBJECTS_DIR = tmp
 UI_DIR = tmp
 
 # Compile translations, so that they are useable for the resources file
-#  Attention: this option was removed in Qt5:
-!greaterThan(QT_MAJOR_VERSION, 4):CODECFORTR = UTF-8
+CODECFORTR = UTF-8
 system(lrelease $${TRANSLATIONS})
 
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
