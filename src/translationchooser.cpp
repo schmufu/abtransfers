@@ -45,10 +45,11 @@
 
 
 
-//not possible! Because the QApplication is not instantiated at this point in
-//time. The private QString 'appFilename' is used instead and assigned at
-//the Constructor.
-//QT_STATIC_CONST QString TC_APPNAME = QFileInfo(QApplication::applicationFilePath()).fileName();
+/** The application name. When TC_APPNAME is empty the filename of the
+ *  application executeable is used (TARGET from .pro file), otherwise the
+ *  name defined here.
+ */
+QT_STATIC_CONST QString TC_APPNAME = "abtransfers";
 
 /** default language (tr() in the source is used with this language) */
 QT_STATIC_CONST QString TC_DEFAULT_LANGUAGE = "Deutsch";
@@ -138,7 +139,11 @@ TranslationChooser::TranslationChooser(QLocale locale /* = QLocale() */,
 {
 	qDebug() << Q_FUNC_INFO << "called";
 
-	this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
+	if (TC_APPNAME.isEmpty())
+		this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
+	else
+		this->appFilename = TC_APPNAME;
+
 	this->activeTranslators.clear();
 	this->langMenu = NULL;
 
@@ -156,7 +161,11 @@ TranslationChooser::TranslationChooser(QString language /* = QString() */,
 {
 	qDebug() << Q_FUNC_INFO << "called";
 
-	this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
+	if (TC_APPNAME.isEmpty())
+		this->appFilename = QFileInfo(qApp->applicationFilePath()).fileName();
+	else
+		this->appFilename = TC_APPNAME;
+
 	this->activeTranslators.clear();
 	this->activeLanguageName = ""; //is updated by setLanguage();
 	this->langMenu = NULL;
