@@ -19,6 +19,7 @@ else
 fi
 
 BIN=${PREFIX}/bin
+TC_APPNAME=abtransfers
 APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/AB-Transfers.app/Contents/Resources/
 LANGS="en_GB"
 
@@ -46,7 +47,7 @@ else
 		for LANG in $LANGS ; do
 			echo "lrelease for language '$LANG'..."
 			${BIN}/lrelease translation/abtransfers.$LANG.ts
-			cp translation/abtransfers.$LANG.qm ${APP_RESOURCES}/AB-Transfers.$LANG.qm
+			cp translation/abtransfers.$LANG.qm ${APP_RESOURCES}/$TC_APPNAME.$LANG.qm
 		done
 	else
 		echo "Releasing translations for Linux not yet implemented."
