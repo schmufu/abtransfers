@@ -6,7 +6,6 @@
     <message>
         <location filename="../src/widgets/bankaccountswidget.cpp" line="+295"/>
         <source>BLZ/Kto-Nr</source>
-        <translatorcomment>Ist &quot;Bank code&quot; zu lang und &quot;Bank-ID&quot; vielleicht besser? Oder gibt&apos;s eine bessere Übersetzung?</translatorcomment>
         <translation>Bank code/Account</translation>
     </message>
     <message>
@@ -505,18 +504,18 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+28"/>
         <source>Im-/Export</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+34"/>
         <location line="+26"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -526,7 +525,7 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+5"/>
         <source>Im.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location line="+3"/>
@@ -541,7 +540,7 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+5"/>
         <source>Ex.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location line="+3"/>
@@ -556,7 +555,7 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+5"/>
         <source>Gl.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -571,7 +570,7 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+5"/>
         <source>Fav.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -586,7 +585,7 @@ the outbox but also sent to the institute right away.</translation>
     <message>
         <location line="+5"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -601,8 +600,7 @@ the outbox but also sent to the institute right away.</translation>
     <message utf8="true">
         <location line="+6"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Diese Einstellungen ermöglichen die Einflussnahme auf das ansonsten vorgegebene Verhalten von AB-Transfers.&lt;br /&gt;Sie sollten diese Einstellungen nur aktivieren wenn Sie wissen was Sie tun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translatorcomment>Warum ist hier ein richtiger HTML-Block drin? War bei anderen Dialogen oder Tabs nicht so.</translatorcomment>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;These settings allow to change the normally well-defined workflow of AB-Transfers.&lt;br /&gt;You should only activate this if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;These settings allow to change the normally well-defined workflow of AB-Transfers.&lt;br /&gt;You should only activate this if you know what you are doing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <location line="+18"/>
@@ -740,6 +738,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location filename="../src/widgets/knownempfaengerwidget.ui" line="+20"/>
         <source>GroupBox</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -790,7 +789,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+0"/>
         <source>BLZ</source>
-        <translation type="unfinished">Bank code</translation>
+        <translation>Bank code</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -837,18 +836,18 @@ Also a change of a job&apos;s position may have influence on the position where 
         <location line="+6"/>
         <location filename="../src/mainwindow.cpp" line="+377"/>
         <source>National</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/mainwindow.cpp" line="+7"/>
         <source>International</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>SEPA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -928,7 +927,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+11"/>
         <source>Debug-Info</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1018,7 +1017,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="-199"/>
         <source>Dock Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1104,23 +1103,23 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+42"/>
         <source>Website: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>svn repo: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>trac: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+81"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-71"/>
@@ -1150,6 +1149,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="+1"/>
         <source>%1</source>
+        <translatorcomment>String-Argument macht keinen Sinn übersetzt zu werden.</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1269,14 +1269,12 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+1"/>
         <source>Die gewÃ¤hlte Sprache verwendet eine Ãbersetzung fÃ¼r eine andere Version von %1.&lt;br /&gt;&lt;br /&gt;Version von %1: %2&lt;br /&gt;&lt;br /&gt;GewÃ¤hlte Sprache: %3&lt;br /&gt;Sprache fÃ¼r Version: %4&lt;br /&gt;Verwendete Datei: %5&lt;br /&gt;&lt;br /&gt;Wenn die Ãbersetzung fÃ¼r eine Ã¤ltere Version ist kann es sein das neu hinzugefÃ¼gte Texte nicht Ã¼bersetzt werden.</source>
-        <translatorcomment>review</translatorcomment>
-        <translation type="unfinished">The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for Version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
+        <translation>The selected language uses a translation that is for another version of %1&lt;br /&gt;&lt;br /&gt;Version of %1: %2&lt;br /&gt;&lt;br /&gt;Selected language: %3&lt;br /&gt;Language for version: %4&lt;br /&gt;Used file: %5&lt;br /&gt;&lt;br /&gt;If the translation file is for an older version it could occur that some newly added texts are not translated.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Diese Meldung nicht wieder anzeigen (nicht reaktivierbar!).</source>
-        <translatorcomment>Wie &quot;reaktivierbar&quot; am besten übersetzen? Oder auch andere Bezeichnung im Deutschen?</translatorcomment>
-        <translation type="unfinished">Do not show this message again (not reverse able!).</translation>
+        <translation>Do not show this message again (not reversible!).</translation>
     </message>
     <message>
         <location line="+387"/>
@@ -1462,7 +1460,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+2"/>
         <source>Investment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1478,13 +1476,14 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <location line="+6"/>
         <source>AqBanking account type unknown</source>
         <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
+        <translatorcomment>Deutsch?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/aqb_banking.cpp" line="+178"/>
         <location line="+118"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-114"/>
@@ -1661,6 +1660,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <location line="+8"/>
         <source>AqBanking job status unknown</source>
         <extracomment>all enum values are handled, this is returned when a new enum value is introduced by AqBanking which AB-Transfers does not handle. (Translation not realy necessary)</extracomment>
+        <translatorcomment>Deutsch?</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1883,11 +1883,13 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/dialogs/abt_dialog.ui" line="+41"/>
         <source>Placeholder</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
         <source>TextLabel</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1957,7 +1959,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+32"/>
         <source>JobLog: %1</source>
-        <translatorcomment>Deutsch?</translatorcomment>
+        <translatorcomment>Deutsch? Evtl. &quot;Auftragsprotokoll&quot;??</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1974,6 +1976,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location filename="../src/pages/page_history.ui" line="+14"/>
         <source>Frame</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2124,6 +2127,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location filename="../src/pages/page_log.ui" line="+14"/>
         <source>Frame</source>
+        <translatorcomment>Kein Bedarf für eine Übersetzung!</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2497,8 +2501,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+5"/>
         <source>AB-Transfers unterstÃ¼tzt zwar die Verwendung von &apos;%1&apos;, aber Ã¼ber die &apos;BankParameterDaten&apos; (BPD) wurde von dem Institut (%2) mitgeteilt das dieser Auftrag bei dem gewÃ¤hlten Konto (%3) nicht unterstÃ¼tzt wird.&lt;br /&gt;Die BPD werden von Zeit zu Zeit aktualisert. Eventuell wird zu einem spÃ¤teren Zeitpunkt der Auftrag vom Institut unterstÃ¼tzt werden. Dies ist aber abhÃ¤ngig vom Institut und kann von AB-Transfers nicht beeinflusst werden.</source>
-        <translatorcomment>Warum ist hier der Name der Applikation (AB-Transfers) hard-coded und nicht wie an anderer Stelle parametrisiert?</translatorcomment>
-        <translation type="unfinished">AB-Transfers supports the use of &apos;%1&apos;, but the institute (%2) informed via the BPD entry that this transaction is not supported for the selected account (%3).&lt;br /&gt;The BPD entries get updated from time to time. Perhaps this transaction will be supported by your bank at a later time. This depends on the institute and can not be influenced by AB-Transfers.</translation>
+        <translation>AB-Transfers supports the use of &apos;%1&apos;, but the institute (%2) informed via the BPD entry that this transaction is not supported for the selected account (%3).&lt;br /&gt;BPD entries get updated from time to time. Perhaps this transaction will be supported by your bank at a later time. This depends on the institute and can not be influenced by AB-Transfers.</translation>
     </message>
     <message>
         <location line="+14"/>

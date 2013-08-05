@@ -19,7 +19,9 @@ else
 fi
 
 BIN=${PREFIX}/bin
-APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/abtransfers.app/Contents/Resources/
+TC_APPNAME=abtransfers
+APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/AB-Transfers.app/Contents/Resources/
+LANGS="en_GB"
 
 if [ "$1" == "up" ]
 then
@@ -28,17 +30,25 @@ then
 	then
 		OPTIONS=-no-obsolete
 	fi
-	${BIN}/lupdate \
-		-source-language de_DE \
-		-target-language en_GB \
-		-locations relative \
-		${OPTIONS} \
-			abtransfers.pro
+
+	for LANG in $LANGS ; do
+		echo "lupdate for language '$LANG'..."
+		${BIN}/lupdate \
+			-source-language de_DE \
+			-target-language $LANG \
+			-locations relative \
+			${OPTIONS} \
+				abtransfers.pro \
+			-ts translation/abtransfers.$LANG.ts
+	done
 else
 	if [ `uname` = "Darwin" ]; then
 		echo "Releasing translations into app package..."
-		${BIN}/lrelease translation/abtransfers.en_GB.ts
-		cp translation/abtransfers.en_GB.qm ${APP_RESOURCES}
+		for LANG in $LANGS ; do
+			echo "lrelease for language '$LANG'..."
+			${BIN}/lrelease translation/abtransfers.$LANG.ts
+			cp translation/abtransfers.$LANG.qm ${APP_RESOURCES}/$TC_APPNAME.$LANG.qm
+		done
 	else
 		echo "Releasing translations for Linux not yet implemented."
 	fi

@@ -2,7 +2,8 @@
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
 VERSION = 0.0.4.1
-TARGET = abtransfers
+!macx:TARGET = abtransfers
+macx:TARGET = "AB-Transfers"
 DESTDIR = build
 TEMPLATE = app
 
@@ -15,7 +16,7 @@ contains(USEWEBKIT, "available") {
     message("QtWebKit not available, using QLabel")
 }
 
-TRANSLATIONS = translation/abtransfers.en_GB.ts
+TRANSLATIONS = $$files(translation/abtransfers.*.ts)
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -129,6 +130,11 @@ unix|macx {
 		   /usr/include/gwenhywfar4
 }
 
+# This is needed for the dock icon on Max OS X.
+macx:ICON = images/abtransfers.icns
+# According to http://osdir.com/ml/kde-commits/2011-09/msg06346.html the following seems to be necessary.
+macx:DEFINES += MSG_NOSIGNAL=0
+
 # This variable specifies the directory where all intermediate moc files should be placed.
 MOC_DIR = tmp
 
@@ -136,7 +142,8 @@ MOC_DIR = tmp
 OBJECTS_DIR = tmp
 UI_DIR = tmp
 
-#compile translations, so that they are useable for the resources file
+# Compile translations, so that they are useable for the resources file
+CODECFORTR = UTF-8
 system(lrelease $${TRANSLATIONS})
 
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
