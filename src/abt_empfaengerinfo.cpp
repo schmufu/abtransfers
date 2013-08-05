@@ -58,13 +58,30 @@ abt_EmpfaengerInfo::~abt_EmpfaengerInfo()
 
 }
 
-bool abt_EmpfaengerInfo::operator ==(const abt_EmpfaengerInfo& e) const
+/** \brief compares the supplied abt_EmpfaengerInfo with this one
+ *
+ * A recipient is identified by the account number and bank code or by
+ * the IBAN and BIC. If one of this pairs are identical, the recipients
+ * are the same.
+ *
+ * The pairs are only tested if neither of them are empty!
+ */
+bool abt_EmpfaengerInfo::operator ==(const abt_EmpfaengerInfo &e) const
 {
-	//A recipient is identified by the account number and Bankcode or
-	//by the IBAN and BIC if one of this pairs are identical, the
-	//recipients are the same.
-	return (((this->getKontonummer() == e.getKontonummer()) &&
-		 (this->getBLZ() == e.getBLZ())) ||
-		((this->getIBAN() == e.getIBAN()) &&
-		 (this->getBIC() == e.getBIC())));
+	bool ktoBlzEqual = false;
+	bool ibanBicEqual = false;
+
+	if (!this->getKontonummer().isEmpty() && !this->getBLZ().isEmpty() &&
+	    !e.getKontonummer().isEmpty() && !e.getBLZ().isEmpty()) {
+		ktoBlzEqual = (this->getKontonummer() == e.getKontonummer()) &&
+			      (this->getBLZ() == e.getBLZ());
+	}
+
+	if (!this->getIBAN().isEmpty() && !this->getBIC().isEmpty() &&
+	    !e.getIBAN().isEmpty() && !e.getBIC().isEmpty()) {
+		ibanBicEqual = (this->getIBAN() == e.getIBAN()) &&
+			       (this->getBIC() == e.getBIC());
+	}
+
+	return ktoBlzEqual || ibanBicEqual;
 }

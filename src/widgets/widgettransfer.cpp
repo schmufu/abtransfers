@@ -339,7 +339,7 @@ void widgetTransfer::my_create_dated_transfer_form(bool newTransfer)
 	this->my_create_local_remote_horizontal(newTransfer);
 	this->my_create_value_with_label_left();
 	this->my_create_purpose();
-	this->datedDate = new widgetDate(tr("Ausführen am"), Qt::AlignLeft, this);
+	this->datedDate = new widgetDate(tr("Ausführen am"), Qt::AlignLeft);
 	this->my_create_textKey();
 
 	this->layoutMain->addLayout(this->layoutAccount);
@@ -378,7 +378,7 @@ void widgetTransfer::my_create_localAccount_groupbox(bool /* newTransfer */,
 {
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
-	this->localAccount = new widgetAccountData(this,
+	this->localAccount = new widgetAccountData(NULL,
 						   this->m_accountAtCreation,
 						   this->m_allAccounts);
 	gbll->addWidget(this->localAccount);
@@ -400,7 +400,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 		//account input as for the local-account input.
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(this,
+		this->remoteAccount = new widgetAccountData(NULL,
 							    this->m_accountAtCreation,
 							    this->m_allAccounts);
 		gbrl->addWidget(this->remoteAccount);
@@ -409,7 +409,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 		//Die RemoteKontoEingabe ermöglichen
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(this, NULL, NULL, sepaFields);
+		this->remoteAccount = new widgetAccountData(NULL, NULL, NULL, sepaFields);
 		this->remoteAccount->setAllowDropAccount(allowLocal);
 		this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipient);
 		gbrl->addWidget(this->remoteAccount);
@@ -430,7 +430,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 void widgetTransfer::my_create_value_with_label_left()
 {
 	QLabel *labelValue = new QLabel(tr("Betrag (Euro,Cent):"));
-	this->value = new widgetValue(this);
+	this->value = new widgetValue();
 	this->layoutValue = new QHBoxLayout();
 	this->layoutValue->addWidget(labelValue, 2, Qt::AlignRight);
 	this->layoutValue->addWidget(this->value, 0, Qt::AlignRight);
@@ -440,7 +440,7 @@ void widgetTransfer::my_create_value_with_label_left()
 void widgetTransfer::my_create_value_with_label_top()
 {
 	QLabel *labelValue = new QLabel(tr("Betrag: (Euro,Cent)"));
-	this->value = new widgetValue(this);
+	this->value = new widgetValue();
 	this->layoutValue = new QVBoxLayout();
 	this->layoutValue->addWidget(labelValue, 2, Qt::AlignRight);
 	this->layoutValue->addWidget(this->value, 0, Qt::AlignRight);
@@ -449,7 +449,7 @@ void widgetTransfer::my_create_value_with_label_top()
 //private
 void widgetTransfer::my_create_purpose()
 {
-	this->purpose = new widgetPurpose(this);
+	this->purpose = new widgetPurpose();
 
 	QLabel *labelPurpose = new QLabel(tr("Verwendungszweck"));
 	this->layoutPurpose = new QVBoxLayout();
@@ -467,7 +467,7 @@ void widgetTransfer::my_create_textKey()
 void widgetTransfer::my_create_recurrence()
 {
 	this->groubBoxRecurrence = new QGroupBox(tr("Ausführungsdaten"));
-	this->recurrence = new widgetRecurrence(this);
+	this->recurrence = new widgetRecurrence();
 
 	QVBoxLayout *grbl = new QVBoxLayout();
 	grbl->addWidget(this->recurrence);
@@ -564,7 +564,15 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->recurrence->setLimitAllowMonthly(limits->AllowMonthly);
 		this->recurrence->setLimitAllowWeekly(limits->AllowWeekly);
 		this->recurrence->setLimitAllowChangeFirstExecutionDate(limits->AllowChangeFirstExecutionDate);
-		this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+
+		if (banking->isLastDateSupported()) {
+			this->recurrence->setLimitAllowChangeLastExecutionDate(limits->AllowChangeLastExecutionDate);
+		} else {
+			//last date is not supported by aqbanking
+			this->recurrence->setLimitAllowChangeLastExecutionDate(-1);
+			//"until further" is checked if the date is invalid
+			this->recurrence->setLastExecutionDay(QDate());
+		}
 	}
 
 	if (this->datedDate != NULL) {

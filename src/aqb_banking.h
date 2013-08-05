@@ -58,6 +58,7 @@ public:
 	GWEN_GUI* getCInterface() const { return this->gui->getCInterface(); }
 
 	const QString &getAqBankingVersion() const { return this->aqbanking_version; }
+	bool isLastDateSupported() const;
 	QString getInstituteFromBLZ(const QString &BLZ) const;
 	QString getInstituteFromBIC(const QString &BIC) const;
 
