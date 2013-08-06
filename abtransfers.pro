@@ -143,7 +143,11 @@ OBJECTS_DIR = tmp
 UI_DIR = tmp
 
 # Compile translations, so that they are useable for the resources file
-CODECFORTR = UTF-8
+#  But keep in mind that
+#   1) "lupdate's CODECFORTR is deprecated and will be removed soon."   (Seems to be only needed for Windows!)
+#   2) "QTextCodec::codecForTr() and QTextCodec::setCodecForTr() have been removed"  -->> main.cpp affected!!!
+#  (See http://qt.gitorious.org/qt/qtbase/blobs/stable/dist/changes-5.0.0 for reference.)
+!greaterThan(QT_MAJOR_VERSION, 4):CODECFORTR = UTF-8
 system(lrelease $${TRANSLATIONS})
 
 # Only one of the two commands will return a valid SVN revision, depending on whether the working is SVN or Hg(+hgsubversion):
