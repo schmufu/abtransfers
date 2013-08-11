@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -64,7 +64,7 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 
 	//Alle weiteren Elemente so setzen als währen wir ohne job aufgerufen
 	//worden, bzw. die benötigten Parameter aus dem Job kopieren
-	this->m_jobInfo = new QStringList();
+	this->jobInfoTmp = NULL;
 	this->m_jobType = AB_Job_GetType(this->m_job);
 	this->m_jobStatus = AB_Job_GetStatus(this->m_job);
 	this->m_ABAccount = AB_Job_GetAccount(this->m_job);
@@ -73,9 +73,6 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 	//oder keine AB_Transaction. Dies durchgehen und den privaten
 	//Pointer (this->m_trans) entsprechend setzen
 	this->setMyTransactionFromJob();
-
-	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
-	this->createJobInfoStringList(this->m_jobInfo);
 }
 
 abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
@@ -85,15 +82,11 @@ abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
 	  m_jobType(type),
 	  m_jobStatus(status)
 {
-	this->m_jobInfo = new QStringList();
+	this->jobInfoTmp = NULL;
 	//wir speichern eine kopie der AB_TRANSACTION als neue abt_transaction
 	this->m_trans = new abt_transaction(AB_Transaction_dup(t), true);
 
 	this->m_date = QDateTime(abt_conv::GwenTimeToQDate(AB_Transaction_GetDate(t)));
-
-
-	//create the info stringlist that is displayed at the "Ausgang"/"Historie" page
-	this->createJobInfoStringList(this->m_jobInfo);
 }
 
 
@@ -105,7 +98,7 @@ abt_jobInfo::~abt_jobInfo()
 	delete this->m_trans; //could be NULL, but it is safe to delete a NULL-Pointer
 
 	//we created the StringList, so we delete it.
-	delete this->m_jobInfo;
+	delete this->jobInfoTmp; //could be NULL, but it is safe to delete a NULL-Pointer
 }
 
 /** \brief setzt den privaten pointer \a this->trans auf die Transaction des jobs */
@@ -200,9 +193,19 @@ const QString abt_jobInfo::getType() const
 	return abt_conv::JobTypeToQString(this->m_jobType);
 }
 
-const QStringList *abt_jobInfo::getInfo() const
+const QStringList *abt_jobInfo::getInfo()
 {
-	return this->m_jobInfo;
+	/** \todo: rethink the creation!
+	 * Must this be a pointer? We could simple return the QStringList.
+	 * Strings are implicit shared, so this should not slow down the
+	 * performance. [see r500 for the previous implementation]
+	 */
+	if (this->jobInfoTmp)
+		delete this->jobInfoTmp;
+
+	this->jobInfoTmp = new QStringList;
+	this->createJobInfoStringList(this->jobInfoTmp);
+	return this->jobInfoTmp;
 }
 
 AB_JOB *abt_jobInfo::getJob() const
@@ -322,9 +325,9 @@ void abt_jobInfo::createJobInfoStringList_Append_To(QStringList *strList) const
 	if (!this->m_trans) return; //only if transaction available
 	QString info;
 
-	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
-						    this->m_trans->getRemoteAccountNumber(),
-						    this->m_trans->getRemoteBankCode());
+	info = QObject::tr("Zu: %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						   this->m_trans->getRemoteAccountNumber(),
+						   this->m_trans->getRemoteBankCode());
 	strList->append(info);
 }
 
@@ -334,9 +337,9 @@ void abt_jobInfo::createJobInfoStringList_Append_To_Sepa(QStringList *strList) c
 	if (!this->m_trans) return; //only if transaction available
 	QString info;
 
-	info = QObject::tr("Zu:  %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
-						    this->m_trans->getRemoteIban(),
-						    this->m_trans->getRemoteBic());
+	info = QObject::tr("Zu: %1 (%2 - %3)").arg(this->m_trans->getRemoteName().at(0),
+						   this->m_trans->getRemoteIban(),
+						   this->m_trans->getRemoteBic());
 	strList->append(info);
 }
 
@@ -362,7 +365,7 @@ void abt_jobInfo::createJobInfoStringList_Append_Value(QStringList *strList) con
 		info = QObject::tr("Betrag: %1 %2").arg(abt_conv::ABValueToString(v, true),
 						AB_Value_GetCurrency(v));
 	} else { //Kein AB_VALUE vorhanden
-		info = QObject::tr("Betrag: NICHT VORHANDEN (sollte nicht vorkommen");
+		info = QObject::tr("Betrag: NICHT VORHANDEN (sollte nicht vorkommen)");
 	}
 
 	strList->append(info);
@@ -432,9 +435,9 @@ void abt_jobInfo::createJobInfoStringList_ForStandingOrders(QStringList *strList
 	strList->append(QObject::tr("Ausführung: %1 %2 am %3").arg(
 			strCycle, strPeriod).arg(day));
 
-	strList->append(QObject::tr("Erste Ausführung:   %1").arg(
+	strList->append(QObject::tr("Erste Ausführung: %1").arg(
 			t->getFirstExecutionDate().toString()));
-	strList->append(QObject::tr("Letzte Ausführung:  %1").arg(
+	strList->append(QObject::tr("Letzte Ausführung: %1").arg(
 			t->getLastExecutionDate().toString()));
 	strList->append(QObject::tr("Nächste Ausführung: %1").arg(
 			t->getNextExecutionDate().toString()));
@@ -478,7 +481,7 @@ void abt_jobInfo::createJobInfoStringList_DeleteStandingOrder(QStringList *strLi
 void abt_jobInfo::createJobInfoStringList_EuTransfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Append_From(strList);
-	strList->append(QObject::tr("Zu:  %1 (%2 - %3) [%4]").arg(
+	strList->append(QObject::tr("Zu: %1 (%2 - %3) [%4]").arg(
 			this->m_trans->getRemoteName().at(0),
 			this->m_trans->getRemoteAccountNumber(),
 			this->m_trans->getRemoteBankCode(),

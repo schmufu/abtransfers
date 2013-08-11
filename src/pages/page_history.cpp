@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -71,9 +71,6 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	//default sorting by 'executed at' in descending order
 	this->ui->treeWidget->sortByColumn(4, Qt::DescendingOrder);
 
-	//calling the itemSelectionChanged() slot enables/disables the actions
-	this->on_treeWidget_itemSelectionChanged();
-
 	connect(this->history, SIGNAL(historyListChanged(const abt_history*)),
 		this, SLOT(refreshTreeWidget(const abt_history*)));
 
@@ -100,6 +97,7 @@ void page_history::changeEvent(QEvent *e)
 	switch(e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
 		break;
 	default:
 		break;
@@ -110,6 +108,20 @@ void page_history::resizeEvent(QResizeEvent *event)
 {
 	this->setTreeWidgetColWidths();
 	QFrame::resizeEvent(event);
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void page_history::retranslateCppCode()
+{
+	//we simply delete the actions and recreate them
+	delete this->actDeleteSelected;
+	delete this->actExportSelected;
+	delete this->actGenerateNewTransaction;
+	this->createActions();
+
+	//recreate all items in the treeWidget
+	this->refreshTreeWidget(this->history);
 }
 
 //private
@@ -176,6 +188,9 @@ void page_history::createActions()
 		this, SLOT(onActDeleteSelected()));
 	this->ui->toolButton_delete->setDefaultAction(this->actDeleteSelected);
 	this->ui->treeWidget->addAction(this->actDeleteSelected);
+
+	//set the correct en-/disabled states on the actions
+	this->on_treeWidget_itemSelectionChanged();
 }
 
 /**
@@ -265,7 +280,7 @@ void page_history::onActDeleteSelected()
 	QString msgTitle = tr("Historie Eintrag löschen");
 	QString msgText = tr("Sollen die gewählten Einträge aus der Historie wirklich "
 			     "gelöscht werden?<br />"
-			     "<i>(Dies kann nicht rückgängig gemacht werden)</i>");
+			     "<i>Dies kann nicht rückgängig gemacht werden.</i>");
 	abt_dialog dialog(this, msgTitle, msgText,
 			  QDialogButtonBox::Yes | QDialogButtonBox::No,
 			  QDialogButtonBox::Yes, QMessageBox::Question,
@@ -463,7 +478,7 @@ void page_history::onActExportSelected()
 
 	if (err != 0) {
 		QMessageBox::critical(this, tr("Export fehlerhaft"),
-				      tr("Beim Export trat ein Fehler auf!</ br>"
+				      tr("Beim Export trat ein Fehler auf!<br />"
 					 "Bitte kontrollieren Sie die exportierten "
 					 "Daten und wiederholen ggf. den "
 					 "Vorgang!"),
@@ -499,6 +514,9 @@ ONACTEXPORTSELECTED_CLEANUP:
 //public slot
 void page_history::refreshTreeWidget(const abt_history *hist)
 {
+	//store the newly supplied history (could be changed, but shouldn't)
+	this->history = hist;
+
 	if ((hist == NULL) ||
 	    (hist->getHistoryList()->size() == 0)) {
 		this->ui->treeWidget->clear(); //delete all items

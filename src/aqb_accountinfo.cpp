@@ -190,13 +190,14 @@ void aqb_AccountInfo::updateAllInternalData()
 	type = AB_Account_GetAccountType(this->m_account);
 	switch (type) {
 		case AB_AccountType_Unknown:
-			this->m_AccountType = QObject::tr("unbekannt"); break;
+			this->m_AccountType = QObject::tr("Unbekannt"); break;
 		case AB_AccountType_Bank:
 			this->m_AccountType = QObject::tr("Girokonto"); break;
 		case AB_AccountType_CreditCard:
 			this->m_AccountType = QObject::tr("Kredit-Karte"); break;
 		case AB_AccountType_Checking:
-			this->m_AccountType = QObject::tr("Checking"); break;
+			//: possible englisch translation "Checking"
+			this->m_AccountType = QObject::tr("Scheckkonto"); break;
 		case AB_AccountType_Savings:
 			this->m_AccountType = QObject::tr("Sparkonto"); break;
 		case AB_AccountType_Investment:
@@ -206,7 +207,12 @@ void aqb_AccountInfo::updateAllInternalData()
 		case AB_AccountType_MoneyMarket:
 			this->m_AccountType = QObject::tr("MoneyMarket"); break;
 		default:
-			this->m_AccountType = QObject::tr("type unknown"); break;
+			//: all enum values are handled, this is returned when
+			//: a new enum value is introduced by AqBanking which
+			//: AB-Transfers does not handle.
+			//: (Translation not realy necessary)
+			this->m_AccountType = QObject::tr("AqBanking account type unknown");
+		break;
 	}
 
 	//alle Limits für die Jobs dieses Accounts auslesen und im QHash merken

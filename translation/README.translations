@@ -1,0 +1,120 @@
+This file describes the background of translations used by AB-Transfers.
+
+Some special points must be taken into account when a translation should work.
+
+
+The translations could be updated by the package maintainer and the language
+can be selected by the user at runtime. Therefore some information about the
+translation must be specified.
+This is done by three values that must be supplied for every translation:
+
+TranslationChooser::LANGUAGE     - the name of the language in native spelling.
+TranslationChooser::APP_VERSION  - the version of the application for which
+				   the translation should be used.
+TranslationChooser::LANG_VERSION - the version of the translation (must be
+				   convertible to a double) [e.g. 1.0 or 2.3]
+
+The translation for LANGUAGE must be unique for each translation! When you
+have translations for the localization 'en_GB' and 'en_US', LANGUAGE should
+be translated to "English (GB)" and "English (US)". Otherwise it is not
+possible for the application to distinguish between these two and they would
+be identified as the same.
+The translated value of LANGUAGE is also used in the language menu, so that
+the user can decide which language to use.
+
+The APP_VERSION must be set to the application version for which the
+translation should be used. If the translation of the APP_VERSION does not
+match the version of the application a warning is shown to the user that the
+translation possible miss some newer translations.
+This warning is not shown when the translation is embedded into the application.
+Embedded translations are always considered correct for the used version, it
+would only confuse the user if these are displayed as incorrect and the user
+would have no possibility to fix it.
+
+The LANG_VERSION comes into account when you want to update an already released
+translation. The translation file with the higher LANG_VERSION number is used.
+The main translations are embedded into the application (trough the resource
+file). Nevertheless it is possible to override the embedded translation by
+a file within the filesystem.
+
+The following directories are searched for 'abtransfers*.qm' files:
+($APPDIR = the directory of the executable. $HOME = the directory of the user)
+
+On Linux:
+	'embedded into the executable'
+	/usr/share/abtransfers/
+	/usr/share/abtransfers/translation/
+	$APPDIR/
+	$APPDIR/translation/
+	$HOME/.abtransfers/
+	$HOME/.abtransfers/translation/
+
+On Mac OS:
+	'embedded into the executable'
+	$APPDIR/../Resources/
+	$APPDIR/../Resources/translation/
+	$HOME/.abtransfers/
+	$HOME/.abtransfers/translation/
+
+On Windows:
+	to be defined
+
+
+The directories above are shown in the sequence they are searched. Thus it is
+possible for a package maintainer to supply a newer version of a translation,
+without recompiling the application, by copying it to /usr/share/abtransfers/
+and the user has the possibility to override this by installing a newer version
+to $HOME/.abtransfers/
+
+If the same translation version (LANG_VERSION) is found in a later searched
+directory, this does not override the previous found version! So if the
+application was compiled with LANG_VERSION=1.1 and a version 1.2 is in
+/usr/share/abtransfers/ and also in $HOME/.abtransfers/ the translation from
+/usr/share/abtransfers/ is used! The same applies when the version in a
+directory is the same as the embedded version (the embedded is used!)
+
+
+When the user has not selected any language (at the first start) the current
+system locale is used to determine the best possible translation.
+The locale supplied by the filename is used for this approach. The application
+name (abtransfers) plus one character (regardless which) and also the '.qm'
+suffix are removed. The exact character between the application name and the
+locale is irrelevant, but must be present. Between the ISO language code and
+the ISO country code must be a underline (The country code is not mandatory).
+Examples: abtransfers.en_US.qm / abtransfers_en_US.qm / abtransfers-en.qm
+
+Lets assume that the system locale is 'en_GB' and the following translations
+are available (only the ones found are processed, see above for LANGUAGE)
+    abtransfers.en_US.qm
+    abtransfers.fr.qm
+    abtransfers.nl_BE.qm
+    abtransfers.nl.qm
+
+So no one of the above .qm files will match 'en_GB' exactly. At a second try,
+when no excat match was possible, the ISO country code is truncated from the
+locale (at the _ character) and the first .qm file which match the country
+code (en) is used (in the above example: abtransfers.en_US.qm).
+When the system locale is 'nl_NL' it would not match either, but the
+country code is stripped from the locale name in the first run and then the
+'abtransfers.nl.qm' file would match and is used.
+
+The naming is only relevant for the first start, when the user has not selected
+any language. As soon as a language is selected by the user or the application
+is closed the set language is saved at the settings and restored at the next
+start.
+
+
+Help text translations
+----------------------
+
+For a translation of the help text the following could be used
+
+TranslationChooser::HELPFILENAME - the name of the translated help file.
+
+This file will be read and its content is displayed in a QWebView component,
+if QWebKit is available, or as the text of a QLabel.
+
+The same directories are searched as for the .qm files but in a opposide order.
+So at first the home directory and at last the embedded. The first file found
+will be used.
+

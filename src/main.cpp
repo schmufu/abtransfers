@@ -54,8 +54,14 @@ int main(int argc, char *argv[])
 	int apprv;
 	QApplication app(argc, argv);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#warning "compiling with Qt version >= 5.0.0. This is not tested well!"
+#else
+	//setCodecForTr() and setCodedForCString() are removed in Qt 5.0.0
+	//see http://qt-project.org/doc/qt-5.0/qtdoc/sourcebreaks.html
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+#endif
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
 
@@ -63,32 +69,6 @@ int main(int argc, char *argv[])
 	//etc. messages and install the MsgHandler that redirect the messages.
 	debugDialog = new DebugDialogWidget();
 	qInstallMsgHandler(myMessageHandler);
-
-
-	/* At the moment, AB-Transfers is only available in German.
-	 * We set the language for the qt library to german, so that the
-	 * Qt text messages are also in german.
-	 */
-
-	qDebug() << "current system locale name:"
-		 << QLocale::system().name();
-	qDebug() << "search path for qt library translations:"
-		 << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-
-	QTranslator qtTranslator;
-	qDebug() << "setting default language for qt to: qt_de_DE "
-		 << "(regardless of the current system language)";
-	qtTranslator.load("qt_de_DE",
-			  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-	app.installTranslator(&qtTranslator);
-
-	/* The following could be enabled when translations for the program
-	 * are done. The search path for the application specific translation
-	 * must be adjusted!
-	 */
-//	QTranslator myappTranslator;
-//	myappTranslator.load("abtransfers_" + QLocale::system().name());
-//	app.installTranslator(&myappTranslator);
 
 
 	#ifdef ABTRANSFER_VERSION

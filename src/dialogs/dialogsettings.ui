@@ -49,7 +49,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -79,9 +79,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In dem &amp;quot;Standard-Ordner&amp;quot; werden zum Beispiel exportierte Dateien gespeichert.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei &amp;quot;Aktuelle Daten&amp;quot; werden alle Daten der Konten sowie die vorhandenen Daueraufträge und terminierten Überweisungen gespeichert und beim starten wieder geladen.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei &amp;quot;Aktuelle Daten&amp;quot; werden alle Daten der Konten sowie die vorhandenen Daueraufträge und terminierten Überweisungen gespeichert und beim Starten wieder geladen.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der &amp;quot;Historie&amp;quot;-Datei werden alle durchgeführten Aufträge die zum Institut gesendet wurden gespeichert und beim starten wieder ausgelesen.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der &amp;quot;Historie&amp;quot;-Datei werden alle durchgeführten Aufträge die zum Institut gesendet wurden gespeichert und beim Starten wieder ausgelesen.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In der Datei die bei &amp;quot;Empfänger&amp;quot; angegeben ist werden die bekannten Empfänger gespeichert.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -116,7 +116,7 @@ p, li { white-space: pre-wrap; }
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Legt das Standart Verzeichnis zum Speichern von Daten fest.
+                 <string>Legt das Standard Verzeichnis zum Speichern von Daten fest.
 
 In diesem Verzeichnis werden z.B. exportierte Daten
 gespeichert (noch nicht implementiert).</string>
@@ -300,7 +300,7 @@ vorhanden ist wird dieser automatisch zu diesen
 hinzugefügt.</string>
                </property>
                <property name="text">
-                <string>Automatisch die bekannten Empänger erweitern</string>
+                <string>Automatisch die bekannten Empfänger erweitern</string>
                </property>
               </widget>
              </item>
@@ -330,7 +330,7 @@ hinzugefügt.</string>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweise Anzeigen&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweise anzeigen&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann ausgewählt werden welche Hinweise während der Benutzung angezeigt werden sollen.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Die meisten Hinweise können auch während der Benutzung über den Haken &amp;quot;nicht wieder anzeigen&amp;quot; deaktiviert werden.&lt;/p&gt;
@@ -345,10 +345,10 @@ p, li { white-space: pre-wrap; }
                <widget class="QCheckBox" name="checkBox_warnCosts">
                 <property name="toolTip">
                  <string>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
-beim starten des Programms angezeigt.</string>
+beim Starten des Programms angezeigt.</string>
                 </property>
                 <property name="text">
-                 <string>eventuelle Kosten</string>
+                 <string>Eventuelle Kosten</string>
                 </property>
                </widget>
               </item>
@@ -375,6 +375,13 @@ Hinweis angezeigt.</string>
                <widget class="QCheckBox" name="checkBox_warnDeleteHistory">
                 <property name="text">
                  <string>Abfrage bei Historie-Eintrag löschen</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_runtimeLanguageChange">
+                <property name="text">
+                 <string>Sprachänderung bei offenen Aufträgen</string>
                 </property>
                </widget>
               </item>
@@ -406,9 +413,9 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Aktualisierung beim Starten&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann festgelegt werden welche Aufträge automatisch beim starten von AB-Transfers in den Ausgang gestellt werden sollen.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hier kann festgelegt werden welche Aufträge automatisch beim Starten von AB-Transfers in den Ausgang gestellt werden sollen.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Außerdem kann festgelegt werden das diese Aufträge auch sofort nach dem starten bereits ausgeführt werden.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Außerdem kann festgelegt werden das diese Aufträge auch sofort nach dem Starten bereits ausgeführt werden.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Somit kann, wenn gewollt, sichergestellt werden das immer mit aktuellen Daten gearbeitet wird.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -425,7 +432,7 @@ p, li { white-space: pre-wrap; }
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Wenn aktiviert wird automatisch beim starten des
+                 <string>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung des
 Kontostandes in den Ausgang eingestellt.</string>
                 </property>
@@ -443,7 +450,7 @@ Kontostandes in den Ausgang eingestellt.</string>
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Wenn aktiviert wird automatisch beim starten des
+                 <string>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung der
 Daueraufträge in den Ausgang eingestellt.</string>
                 </property>
@@ -461,12 +468,12 @@ Daueraufträge in den Ausgang eingestellt.</string>
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Wenn aktiviert wird automatisch beim starten des
+                 <string>Wenn aktiviert wird automatisch beim Starten des
 Programms für alle Konten eine Aktualisierung der
 terminierten Überweisungen in den Ausgang eingestellt.</string>
                 </property>
                 <property name="text">
-                 <string>terminierte Überweisungen</string>
+                 <string>Terminierte Überweisungen</string>
                 </property>
                </widget>
               </item>
@@ -488,10 +495,10 @@ terminierten Überweisungen in den Ausgang eingestellt.</string>
                 <property name="toolTip">
                  <string>Wenn aktiviert werden die gewählten Aufträge nicht nur
 in den Ausgang gestellt sondern auch bereits gleich
-nach dem starten zum Insititut übertragen.</string>
+nach dem Starten zum Institut übertragen.</string>
                 </property>
                 <property name="text">
-                 <string>automatisch ausführen</string>
+                 <string>Automatisch ausführen</string>
                 </property>
                </widget>
               </item>
@@ -685,7 +692,7 @@ nach dem starten zum Insititut übertragen.</string>
             <string>Version</string>
            </property>
            <property name="toolTip">
-            <string>Die Verison der Profils</string>
+            <string>Die Version des Profils</string>
            </property>
           </column>
          </widget>

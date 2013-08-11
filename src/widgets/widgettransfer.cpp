@@ -74,15 +74,15 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeEuTransfer :
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote : {
-		this->setWindowTitle(tr("nicht Implementiert"));
+		this->setWindowTitle(tr("Nicht implementiert"));
 		QLabel *notImplementet = new QLabel(tr(
 				"<h3><font color=red>"
 				"Der \"Job\" '%1' ist leider noch nicht "
 				"implementiert.<br />"
 				"Bitte haben Sie noch etwas Geduld und warten "
 				"auf eine Aktualisierung.</font></h3>"
-				"(Eventuell folgende Texte sind ablaufbedingt "
-				"und können ignoriert werden)"
+				"<i>Eventuell folgende Texte sind ablaufbedingt "
+				"und können ignoriert werden.</i>"
 				).arg(abt_conv::JobTypeToQString(this->m_type)));
 		notImplementet->setWordWrap(true);
 		notImplementet->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -219,15 +219,19 @@ void widgetTransfer::my_createNotAvailableJobText()
 		BankName = tr("unbekannt");
 		KontoName = tr("unbekannt");
 	} else {
-		BankName = this->m_accountAtCreation->BankName();
-		KontoName = this->m_accountAtCreation->Name();
+		BankName = QString("%1 [%2]").arg(
+				   this->m_accountAtCreation->BankName(),
+				   this->m_accountAtCreation->BankCode());
+		KontoName = QString("%1 [%2]").arg(
+				    this->m_accountAtCreation->Name(),
+				    this->m_accountAtCreation->Number());
 	}
 	QLabel *description = new QLabel(tr(
 			"AB-Transfers unterstützt zwar die Verwendung von '%1', "
-			"aber über die 'BankParameterDaten' (BPD) wurde von dem "
+			"aber über die 'UserParameterDaten' (UPD) wurde von dem "
 			"Institut (%2) mitgeteilt das dieser Auftrag bei dem "
 			"gewählten Konto (%3) nicht unterstützt wird.<br />"
-			"Die BPD werden von Zeit zu Zeit aktualisert. Eventuell "
+			"Die UPD werden von Zeit zu Zeit aktualisert. Eventuell "
 			"wird zu einem späteren Zeitpunkt der Auftrag vom "
 			"Institut unterstützt werden. Dies ist aber abhängig "
 			"vom Institut und kann von AB-Transfers nicht "
@@ -451,7 +455,7 @@ void widgetTransfer::my_create_purpose()
 {
 	this->purpose = new widgetPurpose();
 
-	QLabel *labelPurpose = new QLabel("Verwendungszweck");
+	QLabel *labelPurpose = new QLabel(tr("Verwendungszweck"));
 	this->layoutPurpose = new QVBoxLayout();
 	this->layoutPurpose->addWidget(labelPurpose);
 	this->layoutPurpose->addWidget(this->purpose);

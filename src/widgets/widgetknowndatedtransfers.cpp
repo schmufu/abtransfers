@@ -31,6 +31,7 @@
 #include "widgetknowndatedtransfers.h"
 #include <QtGui/QLayout>
 #include <QtGui/QMenu>
+#include <QEvent>
 
 #include "../aqb_accountinfo.h"
 #include "../abt_settings.h"
@@ -62,6 +63,30 @@ widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 	this->setAccount(this->m_account);
 }
 
+//protected
+void widgetKnownDatedTransfers::changeEvent(QEvent *e)
+{
+	QWidget::changeEvent(e);
+	switch (e->type()) {
+	case QEvent::LanguageChange:
+		this->retranslateCppCode();
+		break;
+	default:
+		break;
+	}
+}
+
+//protected
+/** \copydoc MainWindow::retranslateCppCode() */
+void widgetKnownDatedTransfers::retranslateCppCode()
+{
+	delete this->actDelete;
+	delete this->actEdit;
+	delete this->actRefresh;
+	this->createAllActions();
+
+	this->refreshKnownDatedTransfers(this->m_account);
+}
 
 //private
 void widgetKnownDatedTransfers::createAllActions()
@@ -120,7 +145,7 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 
 		QTreeWidgetItem *Item = new QTreeWidgetItem;
 		Item->setData(0, Qt::DisplayRole,
-			      tr("keine terminierten Überweisungen für dieses Konto vorhanden"));
+			      tr("Keine terminierten Überweisungen für dieses Konto vorhanden"));
 		Item->setFlags(Qt::NoItemFlags); //Nicht wählbares Item
 		this->treeWidget->addTopLevelItem(Item);
 

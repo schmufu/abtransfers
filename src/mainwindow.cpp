@@ -68,6 +68,7 @@
 
 #include "dialogs/dialogsettings.h"
 #include "dialogs/abt_dialog.h"
+#include "translationchooser.h"
 
 #include "abt_parser.h"
 
@@ -81,6 +82,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+
+	//at first set the wanted language, so that all later created objects
+	//consider the translations.
+	QString lang = settings->language();
+	if (lang.isEmpty()) {
+		//try to use the current system locale
+		this->translations = new TranslationChooser(QLocale::system(), this);
+	} else {
+		this->translations = new TranslationChooser(lang, this);
+	}
+	//keep the settings updated by each language change
+	connect(this->translations, SIGNAL(languageChanged(QString)),
+		settings, SLOT(setLanguage(QString)));
+
+	QAction *langMenu = this->ui->menuEinstellungen->addMenu(
+					this->translations->languageMenu());
+	langMenu->setText(tr("Sprache"));
+
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
 	this->history = new abt_history(this);
@@ -138,24 +157,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->createWidgetsInScrollArea();
 
-	//connect the signals and slots for the PushButtons of the summary widget
-	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
-		this->actTransferNational, SLOT(trigger()));
-	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
-		this->actTransferInternational, SLOT(trigger()));
-	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
-		this->actTransferInternal, SLOT(trigger()));
-	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
-		this->actTransferSepa, SLOT(trigger()));
-	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
-		this->actStandingNew, SLOT(trigger()));
-	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
-		this->actStandingUpdate, SLOT(trigger()));
-	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
-		this->actDatedNew, SLOT(trigger()));
-	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
-		this->actDatedUpdate, SLOT(trigger()));
-
 	connect(this->pageHistory, SIGNAL(createNewFromHistory(const abt_jobInfo*)),
 		this, SLOT(createTransferFromJob(const abt_jobInfo*)));
 	connect(this->pageHistory, SIGNAL(deleteFromHistory(QList<abt_jobInfo*>)),
@@ -209,6 +210,8 @@ void MainWindow::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
+		this->retranslateCppCode();
+		this->checkTranslationVersion();
 		break;
 	default:
 		break;
@@ -247,6 +250,69 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	e->accept(); //now we can get closed
 }
 
+//protected
+/** \brief retranslates all strings that are created during runtime.
+ *
+ * This function is also called when a QEvent::LanguageChange event occurs.
+ *
+ * Every string that is created at code level and not in .ui file and that is
+ * visible at the time of a language change should be added here.
+ *
+ * Strings that are newly created each time must not be added.
+ */
+void MainWindow::retranslateCppCode()
+{
+	QLabel *accText;
+
+	this->dock_Accounts->setWindowTitle(tr("Online Konten"));
+	this->dock_KnownDatedTransfers->setWindowTitle(tr("Terminüberweisungen"));
+	this->dock_KnownRecipient->setWindowTitle(tr("Bekannte Empfänger"));
+	this->dock_KnownStandingOrders->setWindowTitle(tr("Daueraufträge"));
+
+	accText = this->dock_KnownStandingOrders->findChild<QLabel*>();
+	if (accText)
+		accText->setText(tr("Konto"));
+	accText = this->dock_KnownDatedTransfers->findChild<QLabel*>();
+	if (accText)
+		accText->setText(tr("Konto"));
+
+	QAction *langMenu = this->ui->menuEinstellungen->actions().last();
+	langMenu->setText(tr("Sprache"));
+
+	//translations also taken place when the objects are created.
+	//simple recreate all actions and menus
+	this->deleteMenus();
+	this->deleteActions();
+	this->createActions();
+	this->createMenus();
+
+	//simple recreate all widgets in the scrollArea
+	this->createWidgetsInScrollArea();
+
+	//the jobctrl is handled by the mainwindow and the outbox is simply
+	//a view to our jobctrl. So we must call the outbox to update.
+	this->outbox->refreshTreeWidget(this->jobctrl);
+
+	if (this->ui->tabWidget_UW->count() - 1 != 0) {
+		abt_dialog dia(this,
+			       tr("Übersetzung von geöffneten Aufträgen"),
+			       tr("Übersetzungen von bereits geöffneten "
+				  "Aufträgen werden zur Zeit nicht "
+				  "unterstützt.<br />"
+				  "Wenn Sie einen neuen Auftrag erstellen "
+				  "wird das Formular in der neuen Sprache "
+				  "angezeigt werden.<br /><br />"
+				  "<i>Noch in Bearbeitung befindliche Aufträge "
+				  "können aber durchaus noch weiter bearbeitet "
+				  "und ausgeführt werden</i>."),
+				QDialogButtonBox::Ok,
+				QDialogButtonBox::Ok,
+				QMessageBox::Information,
+				"RuntimeLanguageChange");
+		 dia.exec();
+	}
+}
+
 //private Slot
 /** @brief Execution after the Eventloop is running
  *
@@ -261,7 +327,7 @@ void MainWindow::TimerTimeOut()
 	this->timer = NULL;
 
 	abt_dialog dia(this,
-		       tr("eventuelle Kosten"),
+		       tr("Eventuelle Kosten"),
 		       tr("<h4>Aufträge können gebührenpflichtig sein</h4>"
 			  ""
 			  "Bei einigen Kreditinstituten/Banken können Gebühren für "
@@ -301,47 +367,67 @@ void MainWindow::TimerTimeOut()
 }
 
 //private
+/** \brief creates all actions and the required connections
+ *
+ * When adding actions here take care of adding them to deleteActions() as well!
+ */
 void MainWindow::createActions()
 {
 	actTransferNational = new QAction(this);
 	actTransferNational->setText(tr("National"));
 	actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
+	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
+		this->actTransferNational, SLOT(trigger()));
 
 	actTransferInternational = new QAction(this);
 	actTransferInternational->setText(tr("International"));
 	actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
+	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
+		this->actTransferInternational, SLOT(trigger()));
 
 	actTransferSepa = new QAction(this);
 	actTransferSepa->setText(tr("SEPA (EU weit)"));
 	actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
+	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
+		this->actTransferSepa, SLOT(trigger()));
 
 	actTransferInternal = new QAction(this);
 	actTransferInternal->setText(tr("Umbuchung"));
 	actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
+	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
+		this->actTransferInternal, SLOT(trigger()));
 
 	actDatedNew = new QAction(this);
 	actDatedNew->setText(tr("Anlegen"));
 	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
+	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
+		this->actDatedNew, SLOT(trigger()));
 
 	actDatedUpdate = new QAction(this);
 	actDatedUpdate->setText(tr("Aktualisieren"));
 	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
+	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
+		this->actDatedUpdate, SLOT(trigger()));
 
 	actStandingNew = new QAction(this);
 	actStandingNew->setText(tr("Anlegen"));
 	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
+	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
+		this->actStandingNew, SLOT(trigger()));
 
 	actStandingUpdate = new QAction(this);
 	actStandingUpdate->setText(tr("Aktualisieren"));
 	actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
 	connect(actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
+	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
+		this->actStandingUpdate, SLOT(trigger()));
 
 	actDebitNote = new QAction(this);
 	actDebitNote->setText(tr("Lastschrift"));
@@ -377,6 +463,28 @@ void MainWindow::createActions()
 
 }
 
+//private
+/** \brief deletes all created actions */
+void MainWindow::deleteActions()
+{
+	delete this->actTransferNational;
+	delete this->actTransferInternational;
+	delete this->actTransferSepa;
+	delete this->actTransferInternal;
+	delete this->actDatedNew;
+	delete this->actDatedUpdate;
+	delete this->actStandingNew;
+	delete this->actStandingUpdate;
+	delete this->actDebitNote;
+	delete this->actDebitNoteSepa;
+	delete this->actUpdateBalance;
+	delete this->actShowAvailableJobs;
+	delete this->actSaveAllData;
+#ifdef TESTWIDGETACCESS
+	delete this->actTestWidgetAccess;
+#endif
+}
+
 
 //private
 void MainWindow::createMenus()
@@ -401,6 +509,13 @@ void MainWindow::createMenus()
 	this->accountContextMenu->addSeparator();
 	this->accountContextMenu->addAction(this->actUpdateBalance);
 	this->accountContextMenu->addAction(this->actShowAvailableJobs);
+}
+
+//private
+/** \brief deletes all created menus */
+void MainWindow::deleteMenus()
+{
+	delete this->accountContextMenu;
 }
 
 //private
@@ -531,7 +646,7 @@ void MainWindow::createDockKnownRecipients()
 //private
 void MainWindow::createDockStandingOrders()
 {
-	QDockWidget *dock = new QDockWidget("Daueraufträge", this);
+	QDockWidget *dock = new QDockWidget(tr("Daueraufträge"), this);
 	dock->setObjectName("dockStandingOrders");
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();
@@ -605,7 +720,7 @@ void MainWindow::dockStandingOrdersSetAccounts()
 //private
 void MainWindow::createDockDatedTransfers()
 {
-	QDockWidget *dock = new QDockWidget("Terminüberweisungen", this);
+	QDockWidget *dock = new QDockWidget(tr("Terminüberweisungen"), this);
 	dock->setObjectName("dockDatedTransfers");
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();
@@ -837,7 +952,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 void MainWindow::on_actionAbout_abTransfers_triggered()
 {
 	QDialog *about = new QDialog(this);
-	about->setWindowTitle(tr("about %1").arg(qApp->applicationName()));
+	about->setWindowTitle(tr("Über %1").arg(qApp->applicationName()));
 
 	//show the license text on pushButton click
 	QDialog *licenseDialog = new QDialog(about);
@@ -964,6 +1079,8 @@ void MainWindow::on_actionHelp_triggered()
 
 	QVBoxLayout *vbox = new QVBoxLayout(helpDialog);
 
+	QFile helpText(this->translations->helpTextFilename());
+
 #if !defined(USE_QT_WEBKIT)
 	//QtWebKit not available, we use a QLabel for the Display
 	//ScrollArea for text display
@@ -980,7 +1097,6 @@ void MainWindow::on_actionHelp_triggered()
 	text1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	text1->setTextFormat(Qt::RichText);
 
-	QFile helpText(":/text/help");
 	if (helpText.open(QFile::ReadOnly)) {
 		QTextStream stream(&helpText);
 		text1->setText(stream.readAll());
@@ -991,7 +1107,6 @@ void MainWindow::on_actionHelp_triggered()
 	view->settings()->setDefaultTextEncoding("utf-8");
 	view->setMinimumSize(520, 600);
 
-	QFile helpText(":/text/help");
 	if (helpText.open(QFile::ReadOnly)) {
 		QTextStream stream(&helpText);
 		view->setHtml(stream.readAll());
@@ -2005,6 +2120,66 @@ void MainWindow::deleteHistoryItems(QList<abt_jobInfo *> jiList)
 	foreach(abt_jobInfo* ji, jiList) {
 		this->history->remove(ji);
 	}
+}
+
+//private slot
+/** \brief this function should be called whenever a new language is selected
+ *
+ * It checks if the newly set language is for the current running application
+ * version and displays a warning to the user if the supplied version
+ * information from the translation is not equal to the version of the running
+ * application.
+ *
+ * \attention If the language file is from the embedded resource or empty (this
+ * is the case when the 'default' language is selected), we skip the warning
+ * message. Otherwise every testversion and release test would display the
+ * warning message.
+ */
+void MainWindow::checkTranslationVersion()
+{
+	const QString appVersion = QApplication::applicationVersion();
+	QString langAppVersion = this->translations->currentLanguageAppVersion();
+
+	if (appVersion == langAppVersion)
+		return; //everything fine
+
+	const QString langFile = this->translations->currentLanguageFile();
+
+	if (langFile.startsWith(":") || langFile.isEmpty()) {
+		//language file from embedded resource or the default language
+		//(German) is selected. Everthing fine ;)
+		return;
+	}
+
+	if (langAppVersion.isEmpty())
+		langAppVersion = tr("Unbekannt");
+
+	abt_dialog dia(this,
+		       tr("Übersetzung nicht für diese Version."),
+		       tr("Die gewählte Sprache verwendet eine Übersetzung für eine "
+			  "andere Version von %1.<br />"
+			  "<br />"
+			  "Version von %1: %2<br />"
+			  "<br />"
+			  "Gewählte Sprache: %3<br />"
+			  "Sprache für Version: %4<br />"
+			  "Verwendete Datei: %5<br />"
+			  "<br />"
+			  "Wenn die Übersetzung für eine ältere Version ist kann "
+			  "es sein das neu hinzugefügte Texte nicht übersetzt "
+			  "werden.")
+		       .arg(QApplication::applicationName())
+		       .arg(appVersion)
+		       .arg(this->translations->currentLanguage())
+		       .arg(langAppVersion)
+		       .arg(langFile),
+		       QDialogButtonBox::Ok, QDialogButtonBox::Ok,
+		       QMessageBox::Warning,
+		       QString("WarnTrans_%1-%2").arg(this->translations->currentLanguage())
+						 .arg(appVersion),
+		       true, tr("Diese Meldung nicht wieder anzeigen "
+				"(nicht reaktivierbar!)."));
+	dia.exec();
 }
 
 //private slot

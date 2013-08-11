@@ -413,27 +413,12 @@
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
-    <string>About Qt</string>
+    <string>Über Qt</string>
    </property>
   </action>
   <action name="actionAbout_abTransfers">
    <property name="text">
-    <string>About AB-Transfers</string>
-   </property>
-  </action>
-  <action name="actionAddGetDAs">
-   <property name="text">
-    <string>AddGetDAs</string>
-   </property>
-  </action>
-  <action name="actionAddGetDated">
-   <property name="text">
-    <string>AddGetDated</string>
-   </property>
-  </action>
-  <action name="actionExecQueued">
-   <property name="text">
-    <string>ExecQueued</string>
+    <string>Über AB-Transfers</string>
    </property>
   </action>
   <action name="actionEinstellungen">

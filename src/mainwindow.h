@@ -49,6 +49,7 @@
 
 class widgetTransfer;
 class widgetRecurrence;
+class TranslationChooser;
 
 namespace Ui {
 	class MainWindow;
@@ -69,6 +70,8 @@ public:
 protected:
 	void changeEvent(QEvent *e);
 	void closeEvent(QCloseEvent *e);
+
+	void retranslateCppCode();
 
 private:
 	Ui::MainWindow *ui;
@@ -109,8 +112,12 @@ private:
 
 	QTimer *timer;
 
+	TranslationChooser *translations;
+
 	void createActions();
+	void deleteActions();
 	void createMenus();
+	void deleteMenus();
 	void createDockToolbar();
 	void createWidgetsInScrollArea();
 	void createDockBankAccountWidget();
@@ -215,6 +222,8 @@ private slots:
 	void createTransferFromJob(const abt_jobInfo *ji);
 
 	void deleteHistoryItems(QList<abt_jobInfo*> jiList);
+
+	void checkTranslationVersion();
 
 };
 
