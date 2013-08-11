@@ -219,15 +219,19 @@ void widgetTransfer::my_createNotAvailableJobText()
 		BankName = tr("unbekannt");
 		KontoName = tr("unbekannt");
 	} else {
-		BankName = this->m_accountAtCreation->BankName();
-		KontoName = this->m_accountAtCreation->Name();
+		BankName = QString("%1 [%2]").arg(
+				   this->m_accountAtCreation->BankName(),
+				   this->m_accountAtCreation->BankCode());
+		KontoName = QString("%1 [%2]").arg(
+				    this->m_accountAtCreation->Name(),
+				    this->m_accountAtCreation->Number());
 	}
 	QLabel *description = new QLabel(tr(
 			"AB-Transfers unterstützt zwar die Verwendung von '%1', "
-			"aber über die 'BankParameterDaten' (BPD) wurde von dem "
+			"aber über die 'UserParameterDaten' (UPD) wurde von dem "
 			"Institut (%2) mitgeteilt das dieser Auftrag bei dem "
 			"gewählten Konto (%3) nicht unterstützt wird.<br />"
-			"Die BPD werden von Zeit zu Zeit aktualisert. Eventuell "
+			"Die UPD werden von Zeit zu Zeit aktualisert. Eventuell "
 			"wird zu einem späteren Zeitpunkt der Auftrag vom "
 			"Institut unterstützt werden. Dies ist aber abhängig "
 			"vom Institut und kann von AB-Transfers nicht "
