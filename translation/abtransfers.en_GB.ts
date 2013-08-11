@@ -1603,7 +1603,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
     <message>
         <location line="+3"/>
         <source>SEPA Ãberweisung</source>
-        <translation>SEPA debit note</translation>
+        <translation>SEPA transfer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2506,7 +2506,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+14"/>
         <source>&lt;br /&gt;&lt;br /&gt;Hinweis fÃ¼r SEPA Ãberweisungen:&lt;br /&gt;SEPA Ãberweisungen werden durch AqBanking erst ab Version 5.0.27 unterstÃ¼tzt (aktuell verwendet wird Version %1)&lt;br /&gt;Eventuell ist ein Update von AqBanking erforderlich!</source>
-        <translation>&lt;br /&gt;&lt;br /&gt;Hint for SEPA payments:&lt;br /&gt;AqBanking supports SEPA payments only since version 5.0.27 (currently used %1)&lt;br /&gt;Perhaps an AqBanking update is necessary!</translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;Hint for SEPA transfers:&lt;br /&gt;AqBanking supports SEPA transfers only since version 5.0.27 (currently used %1)&lt;br /&gt;Perhaps an AqBanking update is necessary!</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2531,7 +2531,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
     <message>
         <location line="+15"/>
         <source>SEPA Ãberweisung</source>
-        <translation>SEPA payment</translation>
+        <translation>SEPA transfer</translation>
     </message>
     <message>
         <location line="+17"/>
