@@ -521,7 +521,7 @@ void TranslationChooser::uninstallAllTranslators()
 //public
 /** \brief returns all supported languages (in native spelling).
  */
-QStringList TranslationChooser::supportedLanguages()
+QStringList TranslationChooser::supportedLanguages() const
 {
 	QStringList supported;
 	//the default language should also be included

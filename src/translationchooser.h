@@ -128,7 +128,7 @@ private:
 
 	void uninstallAllTranslators();
 public:
-	QStringList supportedLanguages();
+	QStringList supportedLanguages() const;
 	QMenu *languageMenu() const;
 	const QString &currentLanguage() const;
 	const QString currentLanguageVersion() const;
