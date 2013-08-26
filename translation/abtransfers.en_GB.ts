@@ -2196,7 +2196,12 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>monthly</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+16"/>
+        <source>alle </source>
+        <translation type="unfinished">every </translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>am</source>
         <translation>at</translation>
     </message>
@@ -2221,7 +2226,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>next</translation>
     </message>
     <message>
-        <location line="+148"/>
+        <location line="+112"/>
         <source>Wochen</source>
         <translation>weeks</translation>
     </message>

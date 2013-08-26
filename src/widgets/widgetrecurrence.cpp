@@ -60,7 +60,7 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 
 	//SpinBox erstellen
 	this->spinBox = new QSpinBox(this);
-	this->spinBox->setPrefix("alle ");
+	this->spinBox->setPrefix(tr("alle "));
 	this->spinBox->setMinimumWidth(75);
 	this->spinBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	connect(this->spinBox, SIGNAL(valueChanged(int)),
