@@ -127,42 +127,6 @@ widgetRecurrence::~widgetRecurrence()
 
 //private static
 /**
- * Die in \a strl enhaltenen Strings werden in integer konvertiert und als
- * Qt::DayOfWeek interpretiert in der \a dayl gespeichert.
- */
-void widgetRecurrence::saveStringListInDayofweekList(const QStringList &strl,
-						     QList<Qt::DayOfWeek> &dayl)
-{
-	dayl.clear(); //alle Elemente der Zielliste löschen
-
-	for (int i=0; i<strl.count(); ++i) {
-		dayl.append((Qt::DayOfWeek)strl.at(i).toInt());
-	}
-
-	qSort(dayl); //the list must be sorted!
-
-}
-
-//private static
-/**
- * Die in \a strl enhaltenen Strings werden in integer konvertiert und in der
- * \a intl gespeichert.
- */
-void widgetRecurrence::saveStringListInIntList(const QStringList &strl,
-					       QList<int> &intl)
-{
-	intl.clear(); //alle Elemente der Zielliste löschen
-
-	for (int i=0; i<strl.count(); ++i) {
-		intl.append(strl.at(i).toInt());
-	}
-
-	qSort(intl); //the list must be sorted!
-
-}
-
-//private static
-/**
  * Dieser Funktion muss eine sortierte Liste übergeben werden! Ansonsten ist
  * der Rückgabewert undefiniert!
  *
@@ -581,30 +545,117 @@ void widgetRecurrence::setLimitMaxValueSetupTime(int days)
 }
 
 //public Slot
+/** \brief sets the allowed values for the montly cycle
+ *
+ * When \a values only contains "0" this means that all possible values are
+ * allowed ("1"-"12").
+ *
+ * The strings at \a values are converted to integer, stored in the
+ * corresponding list and the widget states are updated.
+ */
 void widgetRecurrence::setLimitValuesCycleMonth(const QStringList &values)
 {
-	saveStringListInIntList(values, this->allowedCycleMonth);
+	this->allowedCycleMonth.clear(); //values will be set, remove old ones
+
+	if ((values.count() == 1) && (values.at(0).toInt() == 0)) {
+		//"0" was supplied, this means that all possible values are allowed!
+		for (int i=1; i<=12; ++i) {
+			this->allowedCycleMonth.append(i);
+		}
+	} else {
+		for (int i=0; i<values.count(); ++i) {
+			this->allowedCycleMonth.append(values.at(i).toInt());
+		}
+	}
+
+	qSort(this->allowedCycleMonth); //the list must be sorted!
 	this->updateWidgetStates();
 }
 
 //public Slot
+/** \brief sets the allowed values for the weekly cycle
+ *
+ * When \a values only contains "0" this means that all possible values are
+ * allowed ("1"-"52").
+ *
+ * The strings at \a values are converted to integer, stored in the
+ * corresponding list and the widget states are updated.
+ */
 void widgetRecurrence::setLimitValuesCycleWeek(const QStringList &values)
 {
-	saveStringListInIntList(values, this->allowedCycleWeek);
+	this->allowedCycleWeek.clear(); //values will be set, remove old ones
+
+	if ((values.count() == 1) && (values.at(0).toInt() == 0)) {
+		//"0" was supplied, this means that all possible values are allowed!
+		for (int i=1; i<=52; ++i) {
+			this->allowedCycleWeek.append(i);
+		}
+	} else {
+		for (int i=0; i<values.count(); ++i) {
+			this->allowedCycleWeek.append(values.at(i).toInt());
+		}
+	}
+
+	qSort(this->allowedCycleWeek); //the list must be sorted!
 	this->updateWidgetStates();
 }
 
 //public Slot
+/** \brief sets the allowed values for the day [1-31] (in monthly cycle)
+ *
+ * When \a values only contains "0" this means that all possible values are
+ * allowed ("1"-"30", "97" (ultimo-2), "98" (ultimo-1) and "99" (ultimo)).
+ *
+ * The strings at \a values are converted to integer, stored in the
+ * corresponding list and the widget states are updated.
+ */
 void widgetRecurrence::setLimitValuesExecutionDayMonth(const QStringList &values)
 {
-	saveStringListInIntList(values, this->allowedExecutionDays);
+	this->allowedExecutionDays.clear(); //values will be set, remove old ones
+
+	if ((values.count() == 1) && (values.at(0).toInt() == 0)) {
+		//"0" was supplied, this means that all possible values are allowed!
+		for (int i=1; i<=30; ++i) {
+			this->allowedExecutionDays.append(i);
+		}
+		this->allowedExecutionDays.append(97); //ultimo-2
+		this->allowedExecutionDays.append(98); //ultimo-1
+		this->allowedExecutionDays.append(99); //ultimo
+	} else {
+		for (int i=0; i<values.count(); ++i) {
+			this->allowedExecutionDays.append(values.at(i).toInt());
+		}
+	}
+
+	qSort(this->allowedExecutionDays); //the list must be sorted!
 	this->updateWidgetStates();
 }
 
 //public Slot
+/** \brief sets the allowed values for the weekday [1-7] (in weekly cycle)
+ *
+ * When \a values only contains "0" this means that all possible values are
+ * allowed ("1"-"7").
+ *
+ * The strings at \a values are converted to integer, stored as Qt::DayOfWeek
+ * in the corresponding list and the widget states are updated.
+ */
 void widgetRecurrence::setLimitValuesExecutionDayWeek(const QStringList &values)
 {
-	saveStringListInDayofweekList(values, this->allowedExecutionWeekDays);
+	this->allowedExecutionWeekDays.clear(); //values will be set, remove old ones
+
+	if ((values.count() == 1) && (values.at(0).toInt() == 0)) {
+		//"0" was supplied, this means that all possible values are allowed!
+		for (int i=1; i<=7; ++i) {
+			this->allowedExecutionWeekDays.append((Qt::DayOfWeek)i);
+		}
+	} else {
+		for (int i=0; i<values.count(); ++i) {
+			this->allowedExecutionWeekDays.append((Qt::DayOfWeek)values.at(i).toInt());
+		}
+	}
+
+	qSort(this->allowedExecutionWeekDays); //the list must be sorted!
 	this->updateWidgetStates();
 }
 
