@@ -311,6 +311,13 @@ hinzugefügt.</string>
                </property>
                <item>
                 <widget class="QCheckBox" name="checkBox_autoExport">
+                 <property name="toolTip">
+                  <string>Wenn Transaktionen aus dem Ausgang durchgeführt
+wurden werden diese, sofern erfolgreich, automatisch 
+in der angegebenen Datei gespeichert.
+Dazu wird das angegebene Plugin und Profil für den 
+Export verwendet.</string>
+                 </property>
                  <property name="text">
                   <string>Automatischer Export von durchgeführten Aufträgen</string>
                  </property>
@@ -450,7 +457,7 @@ hinzugefügt.</string>
                     </size>
                    </property>
                    <property name="toolTip">
-                    <string>Alle bekannten Empfänger werden in dieser Datei gespeichert.</string>
+                    <string>Erfolgreich durchgeführte Aufträge werden in dieser Datei gespeichert.</string>
                    </property>
                   </widget>
                  </item>
