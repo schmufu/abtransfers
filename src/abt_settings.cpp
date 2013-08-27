@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -92,6 +92,11 @@ abt_settings::abt_settings(QObject *parent) :
 	this->m_historyFilename =
 		this->settings->value("Main/HistoryFilename", defValue).toString();
 
+	//filename for the automatic export
+	defValue = homePath + "/.abtransfers/automatic_export.csv";
+	defValue = QDir::toNativeSeparators(defValue);
+	this->m_autoExportFilename =
+		this->settings->value("Main/AutoExportFilename", defValue).toString();
 
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
@@ -394,6 +399,42 @@ void abt_settings::setAutoAddNewRecipients(bool value)
 	this->settings->setValue("Options/autoAddNewRecipients", value);
 }
 
+//public
+bool abt_settings::autoExportEnabled() const
+{
+	return this->settings->value("Options/autoExportEnabled", false).toBool();
+}
+
+//public
+void abt_settings::setAutoExportEnabled(bool value)
+{
+	this->settings->setValue("Options/autoExportEnabled", value);
+}
+
+//public
+const QString abt_settings::autoExportProfileName() const
+{
+	return this->settings->value("Options/autoExportProfileName", "csv").toString();
+}
+
+//public
+void abt_settings::setAutoExportProfileName(const QString name) const
+{
+	this->settings->setValue("Options/autoExportProfileName", name);
+}
+
+//public
+const QString abt_settings::autoExportPluginName() const
+{
+	return this->settings->value("Options/autoExportPluginName", "default").toString();
+}
+
+//public
+void abt_settings::setAutoExportPluginName(const QString name) const
+{
+	this->settings->setValue("Options/autoExportPluginName", name);
+}
+
 /**
  * @brief reads all entrys for Im-/Exporter favorites from the settings
  *
@@ -604,5 +645,18 @@ void abt_settings::setDataDir(const QString &dirname)
 	this->settings->setValue("Main/DataDir", dirname);
 
 	this->m_dataDir = dirname;
+}
+
+//public
+void abt_settings::setAutoExportFilename(const QString &filename)
+{
+	if (filename.isEmpty()) {
+		qWarning() << Q_FUNC_INFO << "filename is empty, nothing to store";
+		return; // cancel
+	}
+
+	this->settings->setValue("Main/AutoExportFilename", filename);
+
+	this->m_autoExportFilename = filename;
 }
 

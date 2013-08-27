@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -52,6 +52,7 @@ private:
 	QString m_recipientsFilename;
 	QString m_accountdataFilename;
 	QString m_historyFilename;
+	QString m_autoExportFilename;
 	QSettings *settings;
 	QList<abt_EmpfaengerInfo*>* m_recipientsList;
 	QHash<int, QString> *m_textKeyDescr;
@@ -68,11 +69,13 @@ public:
 	const QString getAccountDataFilename() const { return this->m_accountdataFilename; }
 	const QString getHistoryFilename() const { return this->m_historyFilename; }
 	const QString getDataDir() const { return this->m_dataDir; }
+	const QString autoExportFilename() const { return this->m_autoExportFilename; }
 
 	void setRecipientsFilename(const QString &filename);
 	void setAccountDataFilename(const QString &filename);
 	void setHistoryFilename(const QString &filename);
 	void setDataDir(const QString &dirname);
+	void setAutoExportFilename(const QString &filename);
 
 	const QList<abt_EmpfaengerInfo*>* loadKnownEmpfaenger();
 	void saveKnownEmpfaenger();
@@ -96,6 +99,13 @@ public:
 
 	bool autoAddNewRecipients() const;
 	void setAutoAddNewRecipients(bool value);
+
+	bool autoExportEnabled() const;
+	void setAutoExportEnabled(bool value);
+	const QString autoExportProfileName() const;
+	void setAutoExportProfileName(const QString name) const;
+	const QString autoExportPluginName() const;
+	void setAutoExportPluginName(const QString name) const;
 
 	QStringList getAllProfileFavorites() const;
 	bool isProfileFavorit(const QString &name) const;

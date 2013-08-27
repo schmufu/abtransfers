@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -73,6 +73,7 @@ private:
 	void reloadImExporters();
 	void refreshImExPluginListWidget();
 	void refreshImExProfileTableWidget();
+	void refreshAutoExportComboBoxPlugin();
 
 	/** @brief set @a plugin and @a profile to the selected values (or NULL) */
 	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
@@ -91,6 +92,7 @@ private slots:
 	void on_toolButton_selectHistory_clicked();
 	void on_toolButton_selectAccountData_clicked();
 	void on_toolButton_selectDataDir_clicked();
+	void on_toolButton_selectAutoExportFilename_clicked();
 
 	void on_listWidget_plugins_currentRowChanged(int currentRow);
 	void on_tableWidget_profiles_itemChanged(QTableWidgetItem *item);
@@ -99,6 +101,8 @@ private slots:
 	void on_actionEditProfile_triggered();
 	void on_actionNewProfile_triggered();
 	void on_actionDeleteProfile_triggered();
+	void on_comboBox_plugin_currentIndexChanged(const QString &arg1);
+	void on_checkBox_autoExport_toggled(bool checked);
 };
 
 #endif // DIALOGSETTINGS_H
