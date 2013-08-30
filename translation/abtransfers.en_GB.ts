@@ -320,9 +320,9 @@ wurden werden diese, sofern erfolgreich, automatisch
 in der angegebenen Datei gespeichert.
 Dazu wird das angegebene Plugin und Profil für den 
 Export verwendet.</source>
-        <translation>If jobs from the outbox are executed successfully,
-they are atomitcallly exported to the given file.
-Therefore the selected plugin and profile is used.</translation>
+        <translation type="unfinished">If jobs from the outbox are executed successfully,
+they are atomically exported to the given file.
+For this the selected plugin and profile are being used.</translation>
     </message>
     <message utf8="true">
         <location line="+7"/>
