@@ -818,6 +818,11 @@ void MainWindow::createJobCtrlAndConnections()
 	connect(this->outbox, SIGNAL(editJob(int)),
 		this, SLOT(onEditJobFromOutbox(int)));
 
+	//After the execution of all jobs, the account and history entrys
+	//should be saved (regardless of the execution was successfull or not)
+	connect(this->jobctrl, SIGNAL(executionFinished(bool)),
+		this, SLOT(onActionSaveAllDataTriggered()));
+
 	connect(this->jobctrl, SIGNAL(jobQueueListChanged()),
 		this, SLOT(onJobCtrlQueueListChanged()));
 	connect(this->outbox, SIGNAL(moveJobInList(int,int)),
@@ -2185,8 +2190,10 @@ void MainWindow::checkTranslationVersion()
 //private slot
 void MainWindow::onActionSaveAllDataTriggered()
 {
+	qDebug() << Q_FUNC_INFO << "saving account and history data";
 	this->saveAccountData();
 	this->saveHistoryData();
+	qDebug() << Q_FUNC_INFO << "saved account and history data";
 }
 
 //private

@@ -1719,6 +1719,7 @@ void abt_job_ctrl::execQueuedTransactions()
 
 		//the queuelist changed, tell everyone who wants to know
 		emit this->jobQueueListChanged();
+		emit this->executionFinished(false);
 
 		return;
 	}
@@ -1772,6 +1773,7 @@ void abt_job_ctrl::execQueuedTransactions()
 				      QMessageBox::Ok, QMessageBox::Ok);
 	}
 
+	emit this->executionFinished(successfull);
 }
 
 //private

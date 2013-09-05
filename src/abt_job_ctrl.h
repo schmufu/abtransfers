@@ -136,6 +136,11 @@ signals:
 	void jobQueueListChanged();
 	void jobAdded(const abt_jobInfo *jobInfo);
 	void log(const QString &str);
+	/** \brief is emitted when all jobs are executed.
+	 *
+	 * \a successfull is true when everything went fine, otherwise false.
+	 */
+	void executionFinished(bool successfull);
 
 public slots:
 	void addNewSingleTransfer(const aqb_AccountInfo *acc, const abt_transaction *t);
