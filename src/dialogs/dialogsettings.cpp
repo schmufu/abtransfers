@@ -1079,4 +1079,5 @@ void DialogSettings::on_checkBox_autoExport_toggled(bool checked)
 	this->ui->label_8->setEnabled(checked);
 	this->ui->label_9->setEnabled(checked);
 	this->ui->label_10->setEnabled(checked);
+	this->ui->label_11->setEnabled(checked);
 }
