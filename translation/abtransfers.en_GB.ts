@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/dialogs/dialogsettings.cpp" line="+554"/>
+        <location filename="../src/dialogs/dialogsettings.cpp" line="+560"/>
         <source>Standard-Ordner</source>
         <translation>Default folder</translation>
     </message>
@@ -158,12 +158,12 @@ p, li { white-space: pre-wrap; }
         <location line="+58"/>
         <location line="+13"/>
         <location line="+52"/>
-        <location line="+215"/>
+        <location line="+262"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-331"/>
+        <location line="-378"/>
         <source>Aktuelle Daten</source>
         <translation>Current data</translation>
     </message>
@@ -234,7 +234,7 @@ present in the list of known addressees it will be appended
 to the list.</translation>
     </message>
     <message>
-        <location line="+218"/>
+        <location line="+265"/>
         <source>Hinweise anzeigen</source>
         <translation>Show hints</translation>
     </message>
@@ -261,7 +261,7 @@ Hinweis angezeigt.</source>
         <translation>Deleting history entry</translation>
     </message>
     <message>
-        <location line="-432"/>
+        <location line="-479"/>
         <source>Legt das Standard Verzeichnis zum Speichern von Daten fest.
 
 In diesem Verzeichnis werden z.B. exportierte Daten
@@ -271,7 +271,7 @@ gespeichert (noch nicht implementiert).</source>
 This folder will keep e.g. exported data (not yet implemented).</translation>
     </message>
     <message>
-        <location line="+402"/>
+        <location line="+449"/>
         <source>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
 beim Starten des Programms angezeigt.</source>
         <translation>If activated a hint about possible charges will be shown at program startup.</translation>
@@ -309,7 +309,7 @@ Kontostandes in den Ausgang eingestellt.</source>
         <translation>Language changes for open jobs</translation>
     </message>
     <message utf8="true">
-        <location line="-255"/>
+        <location line="-302"/>
         <source>Automatisch die bekannten Empfänger erweitern</source>
         <translation>Automatically expand known addressees</translation>
     </message>
@@ -321,7 +321,7 @@ in der angegebenen Datei gespeichert.
 Dazu wird das angegebene Plugin und Profil für den 
 Export verwendet.</source>
         <translation type="unfinished">If jobs from the outbox are executed successfully,
-they are atomically exported to the given file.
+they are automatically exported to the given file.
 For this the selected plugin and profile are being used.</translation>
     </message>
     <message utf8="true">
@@ -329,28 +329,51 @@ For this the selected plugin and profile are being used.</translation>
         <source>Automatischer Export von durchgeführten Aufträgen</source>
         <translation>Automatically export successfully executed jobs</translation>
     </message>
+    <message utf8="true">
+        <location line="+15"/>
+        <source>Die meisten Export Plugins/Profile unterstützen nur den
+Export von Buchungen (transactions).
+Wenn diese Option gesetzt ist werden unter anderem
+Überweisungen, Daueraufträge etc. in eine Buchung
+umgewandelt damit diese auch Exportiert werden.</source>
+        <translation type="unfinished">Most export plugins/profiles only support transactions
+to be exported.
+With this option set, transfers, standing orders etc.
+will be converted to transactions so that they will also
+be exported.</translation>
+    </message>
+    <message utf8="true">
+        <location line="+7"/>
+        <source>Aufträge immer als &quot;Buchung&quot; exportieren</source>
+        <translation type="unfinished">Always export executed jobs as transactions</translation>
+    </message>
     <message>
-        <location line="+31"/>
+        <location line="+33"/>
         <source>Plugin</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+42"/>
         <source>Profil</source>
         <translation>Profile</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+52"/>
         <source>Dateiname</source>
         <translation>File name</translation>
     </message>
     <message utf8="true">
-        <location line="+19"/>
+        <location line="+21"/>
         <source>Erfolgreich durchgeführte Aufträge werden in dieser Datei gespeichert.</source>
         <translation>Successfully executed transactions are saved within this file.</translation>
     </message>
     <message utf8="true">
-        <location line="+43"/>
+        <location line="+7"/>
+        <source> (Datei wird bei jeder Ausführung von Aufträgen überschrieben!)</source>
+        <translation type="unfinished"> (File will be overwritten each time jobs are executed!)</translation>
+    </message>
+    <message utf8="true">
+        <location line="+51"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -571,8 +594,12 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message utf8="true">
         <location line="+3"/>
-        <source>Löscht das ausgwählte Profil</source>
+        <source>Löscht das ausgewählte Profil</source>
         <translation>Deletes the selected profile</translation>
+    </message>
+    <message utf8="true">
+        <source>Löscht das ausgwählte Profil</source>
+        <translation type="obsolete">Deletes the selected profile</translation>
     </message>
     <message>
         <location filename="../src/dialogs/dialogsettings.cpp" line="+14"/>
@@ -1818,7 +1845,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Job controller created (%1)</translation>
     </message>
     <message>
-        <location line="+1454"/>
+        <location line="+1595"/>
         <source>Erstelle Job-Liste.</source>
         <translation>Creating job list.</translation>
     </message>
@@ -1838,7 +1865,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>*********************************************** E R R O R                               **** Error at AB_Banking_ExecuteJobs().    **** return value = %1                       ****                                         **** Execution cancelled   **** no further processing!    ***********************************************</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+50"/>
         <source>Alle Jobs Ã¼bertragen und Antworten ausgewertet</source>
         <translation>All jobs executed and responses analysed</translation>
     </message>

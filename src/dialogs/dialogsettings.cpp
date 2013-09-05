@@ -54,6 +54,10 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	this->imexp = new aqb_imexporters(ab); //loads all im-/exporters from aqbanking
 	this->imex_favorites = new QHash<QString, bool>();
 
+	QFont font(this->ui->label_11->font());
+	font.setPointSize(font.pointSize() - 1);
+	this->ui->label_11->setFont(font);
+
 	//normaly we want the first tab active after start (everybody could use
 	// the following public function to set the active tab after creation)
 	this->setActiveTab(0);
