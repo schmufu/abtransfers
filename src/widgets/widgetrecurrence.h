@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -96,16 +96,11 @@ private:
 	AB_TRANSACTION_PERIOD m_period;
 
 
-	/*! \todo die nachfolgenden 4 Funktionen evt. auch als static in abt_conv */
+	/*! \todo die nachfolgenden 2 Funktionen evt. auch als static in abt_conv */
 
-	//! speichert die \a strl in der QList<Qt::DayOfWeek> \a dayl
-	static void saveStringListInDayofweekList(const QStringList &strl,
-					   QList<Qt::DayOfWeek> &dayl);
-	//! speichert die \a strl in der QList<int> \a intl
-	static void saveStringListInIntList(const QStringList &strl, QList<int> &intl);
-	//! returns the next higher value or \a currv when no higher Value exist
+	//! returns the next higher value or \a currv when no higher value exist
 	static int getNextHigherValueFromList(int currv, const QList<int> &list, int step=1);
-	//! returns the next lower value or \a currv when no lower Value exist
+	//! returns the next lower value or \a currv when no lower value exist
 	static int getNextLowerValueFromList(int currv, const QList<int> &list, int step=1);
 
 	//! stellt alle Edits auf die hinterlegeten Werte ein

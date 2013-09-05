@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -170,7 +170,7 @@ int aqb_iePlugin::loadProfiles(AB_BANKING* ab)
 	return this->profiles->size();
 }
 
-const aqb_iePlugin *aqb_imexporters::getPluginByName(QString &name) const
+const aqb_iePlugin *aqb_imexporters::getPluginByName(const QString &name) const
 {
 	if (name.isEmpty() || name.isNull())
 		return NULL; //a plugin with no name cant be available

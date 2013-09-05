@@ -145,11 +145,35 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(
 			this->settings->isAdvancedOptionSet("ManualOutboxRearrange"));
 
-	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
-
 	this->loadFavoriteImExpFromSettings();
 
 	this->refreshImExPluginListWidget();
+	this->refreshAutoExportComboBoxPlugin();
+
+	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
+	this->ui->checkBox_autoExport->setChecked(this->settings->autoExportEnabled());
+	this->ui->lineEdit_autoExportFilename->setText(this->settings->autoExportFilename());
+
+	//update enable/disabled state of corresponding widgets
+	this->on_checkBox_autoExport_toggled(this->ui->checkBox_autoExport->isChecked());
+
+	//select previous selected plugin and profile entries
+	QString iexpName = this->settings->autoExportPluginName();
+	for (int i=0; i<this->ui->comboBox_plugin->count(); ++i) {
+		if (this->ui->comboBox_plugin->itemText(i) == iexpName) {
+			this->ui->comboBox_plugin->setCurrentIndex(i);
+			break;
+		}
+	}
+
+	iexpName = this->settings->autoExportProfileName();
+	for (int i=0; i<this->ui->comboBox_profile->count(); ++i) {
+		if (this->ui->comboBox_profile->itemText(i) == iexpName) {
+			this->ui->comboBox_profile->setCurrentIndex(i);
+			break;
+		}
+	}
+
 }
 
 //private
@@ -175,6 +199,11 @@ void DialogSettings::saveToSettings()
 			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
 
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
+
+	this->settings->setAutoExportEnabled(this->ui->checkBox_autoExport->isChecked());
+	this->settings->setAutoExportPluginName(this->ui->comboBox_plugin->currentText());
+	this->settings->setAutoExportProfileName(this->ui->comboBox_profile->currentText());
+	this->settings->setAutoExportFilename(this->ui->lineEdit_autoExportFilename->text());
 
 	this->saveFavoriteImExpToSettings();
 
@@ -369,6 +398,49 @@ void DialogSettings::refreshImExProfileTableWidget()
 }
 
 //private
+/** \brief updates the entries in the combo box for automatic export
+ *
+ * This function must only be called when the imexp (Im-/Export) object
+ * has loaded all plugins and profiles (this is the case when the slot
+ * updatedImExporters() was called or the object was just created).
+ */
+void DialogSettings::refreshAutoExportComboBoxPlugin()
+{
+	Q_ASSERT(this->imexp);
+	const QString currText = this->ui->comboBox_plugin->currentText();
+	int exportsAvailable;
+	int idx = 0;
+
+	this->ui->comboBox_plugin->clear();
+	foreach(const aqb_iePlugin *plugin, *this->imexp->getPlugins()) {
+		exportsAvailable = false;
+		foreach(aqb_ieProfile *profile, *plugin->getProfiles()) {
+			//the plugin must contain a profile useable for export
+			if (profile->getNames()->contains("export") &&
+			    profile->getValue("export").toInt() == 1) {
+				exportsAvailable = true;
+				break;
+			}
+		}
+
+		if (exportsAvailable) {
+			const QString pluginName = plugin->getName();
+			const QString pluginHint = plugin->getDescShort();
+			this->ui->comboBox_plugin->addItem(pluginName);
+			this->ui->comboBox_plugin->setItemData(this->ui->comboBox_plugin->count()-1,
+							       pluginHint,
+							       Qt::ToolTipRole);
+			if (currText == pluginName) {
+				idx = this->ui->comboBox_plugin->count() - 1;
+			}
+		}
+	}
+
+	//restore previous selected entry
+	this->ui->comboBox_plugin->setCurrentIndex(idx);
+}
+
+//private
 bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 						 const aqb_ieProfile **profile) const
 {
@@ -439,11 +511,14 @@ void DialogSettings::setActiveTab(int tabId)
 *
 * The refresh also changes the currentRow and emits the signal
 * currentRowChanged() which refreshes the tableWidget_profiles
+*
+* In addition the combo box entries for the automatic export are updated.
 */
 void DialogSettings::updatedImExporters()
 {
 	//we refresh the ListWidget for the plugins
 	this->refreshImExPluginListWidget();
+	this->refreshAutoExportComboBoxPlugin();
 }
 
 //private slot
@@ -530,6 +605,21 @@ void DialogSettings::on_toolButton_selectRecipients_clicked()
 		this->ui->lineEdit_recipients->setText(file);
 	}
 }
+
+//private slot
+void DialogSettings::on_toolButton_selectAutoExportFilename_clicked()
+{
+	QString file = QFileDialog::getSaveFileName(this,
+						    tr("Automatischen Export Speichern in ..."),
+						    this->ui->lineEdit_dataDir->text(),
+						    tr("Alle Dateien (*.*)"),
+						    NULL);
+
+	if (!file.isEmpty() || QFile::exists(file)) {
+		this->ui->lineEdit_autoExportFilename->setText(file);
+	}
+}
+
 
 /**
  * @brief sets the states (enabled/disabled) of the refreshAtStart checkbox
@@ -907,4 +997,79 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 	//im-/export profiles might be changed, reaload them
 	this->reloadImExporters();
 
+}
+
+//private slot
+/** \brief reloads the profiles for the corresponding plugin.
+ *
+ * When the plugin selection changed, this function refresh the combobox
+ * for the profiles of the newly selected plugin.
+ */
+void DialogSettings::on_comboBox_plugin_currentIndexChanged(const QString &arg1)
+{
+	Q_ASSERT(this->imexp);
+	int idx = -1;
+	const QString currText = this->ui->comboBox_profile->currentText();
+	const QList<aqb_ieProfile*> *profiles = NULL;
+
+	if (this->imexp->getPluginByName(arg1) != NULL) {
+		profiles = this->imexp->getPluginByName(arg1)->getProfiles();
+	} else {
+		//no profiles available
+		this->ui->comboBox_profile->clear();
+		return;
+	}
+
+	this->ui->comboBox_profile->clear();
+	foreach(aqb_ieProfile *profile, *profiles) {
+		//export possible?
+		if (profile->getValue("export").isValid() &&
+		    profile->getValue("export").toBool()) {
+			const QString itemName = profile->getValue("name").toString();
+			const QString itemHint = profile->getValue("shortDescr").toString();
+
+			this->ui->comboBox_profile->addItem(itemName);
+			this->ui->comboBox_profile->setItemData(this->ui->comboBox_profile->count()-1,
+								itemHint, Qt::ToolTipRole);
+			if (currText == itemName) {
+				idx = this->ui->comboBox_profile->count() - 1;
+			}
+		}
+	}
+
+	//restore selected entry, set it to "default" (if possible) or set it
+	//to the first entry
+CURRENT_INDEX_CHANGED_SET_INDEX:
+	if (idx != -1) {
+		//idx is possible, use it
+		this->ui->comboBox_profile->setCurrentIndex(idx);
+		return;
+	} else {
+		for (int i=0; i<this->ui->comboBox_profile->count(); ++i) {
+			if (this->ui->comboBox_profile->itemText(i) == "default") {
+				idx = i;
+				//default idx found, use it
+				goto CURRENT_INDEX_CHANGED_SET_INDEX;
+			}
+		}
+	}
+
+	//set first entry, no used and no default entry was found
+	if (this->ui->comboBox_profile->count() >= 1) {
+		this->ui->comboBox_profile->setCurrentIndex(0);
+	}
+}
+
+//private slot
+/** \brief enables or disables corresponding widgets depending on \a checked state.
+ */
+void DialogSettings::on_checkBox_autoExport_toggled(bool checked)
+{
+	this->ui->lineEdit_autoExportFilename->setEnabled(checked);
+	this->ui->comboBox_plugin->setEnabled(checked);
+	this->ui->comboBox_profile->setEnabled(checked);
+	this->ui->toolButton_selectAutoExportFilename->setEnabled(checked);
+	this->ui->label_8->setEnabled(checked);
+	this->ui->label_9->setEnabled(checked);
+	this->ui->label_10->setEnabled(checked);
 }

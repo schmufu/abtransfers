@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2012 Patrick Wacker
+ * Copyright (C) 2012-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -86,7 +86,7 @@ public:
 	const QList<aqb_iePlugin*>* getPlugins() const { return this->plugins; }
 
 	//! convenient function to get the plugin by name
-	const aqb_iePlugin* getPluginByName(QString &name) const;
+	const aqb_iePlugin* getPluginByName(const QString &name) const;
 	//! convenient function to get the plugin by filename
 	const aqb_iePlugin* getPluginByFilename(QString &filename) const;
 

@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/dialogs/dialogsettings.cpp" line="+479"/>
+        <location filename="../src/dialogs/dialogsettings.cpp" line="+554"/>
         <source>Standard-Ordner</source>
         <translation>Default folder</translation>
     </message>
@@ -158,11 +158,12 @@ p, li { white-space: pre-wrap; }
         <location line="+58"/>
         <location line="+13"/>
         <location line="+52"/>
+        <location line="+215"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-116"/>
+        <location line="-331"/>
         <source>Aktuelle Daten</source>
         <translation>Current data</translation>
     </message>
@@ -233,7 +234,7 @@ present in the list of known addressees it will be appended
 to the list.</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+218"/>
         <source>Hinweise anzeigen</source>
         <translation>Show hints</translation>
     </message>
@@ -260,7 +261,7 @@ Hinweis angezeigt.</source>
         <translation>Deleting history entry</translation>
     </message>
     <message>
-        <location line="-258"/>
+        <location line="-432"/>
         <source>Legt das Standard Verzeichnis zum Speichern von Daten fest.
 
 In diesem Verzeichnis werden z.B. exportierte Daten
@@ -270,7 +271,7 @@ gespeichert (noch nicht implementiert).</source>
 This folder will keep e.g. exported data (not yet implemented).</translation>
     </message>
     <message>
-        <location line="+228"/>
+        <location line="+402"/>
         <source>Wenn aktiviert wird ein Hinweis zu eventuellen Kosten
 beim Starten des Programms angezeigt.</source>
         <translation>If activated a hint about possible charges will be shown at program startup.</translation>
@@ -308,12 +309,48 @@ Kontostandes in den Ausgang eingestellt.</source>
         <translation>Language changes for open jobs</translation>
     </message>
     <message utf8="true">
-        <location line="-81"/>
+        <location line="-255"/>
         <source>Automatisch die bekannten Empfänger erweitern</source>
         <translation>Automatically expand known addressees</translation>
     </message>
     <message utf8="true">
-        <location line="+26"/>
+        <location line="+12"/>
+        <source>Wenn Transaktionen aus dem Ausgang durchgeführt
+wurden werden diese, sofern erfolgreich, automatisch 
+in der angegebenen Datei gespeichert.
+Dazu wird das angegebene Plugin und Profil für den 
+Export verwendet.</source>
+        <translation type="unfinished">If jobs from the outbox are executed successfully,
+they are atomically exported to the given file.
+For this the selected plugin and profile are being used.</translation>
+    </message>
+    <message utf8="true">
+        <location line="+7"/>
+        <source>Automatischer Export von durchgeführten Aufträgen</source>
+        <translation>Automatically export successfully executed jobs</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Plugin</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>Profil</source>
+        <translation>Profile</translation>
+    </message>
+    <message>
+        <location line="+49"/>
+        <source>Dateiname</source>
+        <translation>File name</translation>
+    </message>
+    <message utf8="true">
+        <location line="+19"/>
+        <source>Erfolgreich durchgeführte Aufträge werden in dieser Datei gespeichert.</source>
+        <translation>Successfully executed transactions are saved within this file.</translation>
+    </message>
+    <message utf8="true">
+        <location line="+43"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -564,7 +601,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>text-files (*.ctx);;all files (*.*)</translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+197"/>
         <source>Beim Ãndern des Profils %1 ist ein unerwarteter Fehler aufgetreten.&lt;br /&gt;In den Debug-Ausgaben kÃ¶nnen evt. weitere nÃ¼tzliche Informationen enthalten sein.</source>
         <translation>An unexpected error occurred when editing profile %1&lt;br /&gt;Check whether there is useful information in the debug output.</translation>
     </message>
@@ -579,7 +616,17 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Change global profile</translation>
     </message>
     <message>
-        <location line="-12"/>
+        <location line="-136"/>
+        <source>Automatischen Export Speichern in ...</source>
+        <translation>Automatic export save in ...</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Alle Dateien (*.*)</source>
+        <translation>all files (*.*)</translation>
+    </message>
+    <message>
+        <location line="+122"/>
         <source>Sie mÃ¶chten das Profil &quot;%1&quot; Ã¤ndern, dieses Profil ist ein &apos;globales&apos; Profil. Wenn von Ihnen der Name (&quot;%1&quot;) nicht geÃ¤ndert wird, wird das dann als lokal gespeicherte Profil das globale &lt;i&gt;Ã¼berdecken&lt;/i&gt;!&lt;br /&gt;Sie kÃ¶nnen dann also nur noch auf das geÃ¤nderte Profil zugreifen und nicht mehr auf die ursprÃ¼ngliche Version!&lt;br /&gt;&lt;i&gt;Nach dem lÃ¶schen des lokalen Profils wÃ¼rde das globale wieder verwendet werden kÃ¶nnen.&lt;/i&gt;</source>
         <translation>You want to edit profile &quot;%1&quot;, but it is a &apos;global&apos; profile. If you don&apos;t change its name (&quot;%1&quot;), this locally saved profile will be &lt;i&gt;overlaying&lt;/i&gt; the global one!&lt;br /&gt;This means that you can only access the edited profile and not anymore the original version!&lt;br /&gt;&lt;i&gt;After deleting the local profile the global one would be again usable.&lt;/i&gt;</translation>
     </message>
@@ -1791,7 +1838,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>*********************************************** E R R O R                               **** Error at AB_Banking_ExecuteJobs().    **** return value = %1                       ****                                         **** Execution cancelled   **** no further processing!    ***********************************************</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+61"/>
         <source>Alle Jobs Ã¼bertragen und Antworten ausgewertet</source>
         <translation>All jobs executed and responses analysed</translation>
     </message>
@@ -1825,7 +1872,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
 <context>
     <name>abt_settings</name>
     <message>
-        <location filename="../src/abt_settings.cpp" line="+152"/>
+        <location filename="../src/abt_settings.cpp" line="+157"/>
         <source>Unbekannt</source>
         <translation>Unknown</translation>
     </message>
@@ -2196,7 +2243,12 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>monthly</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+16"/>
+        <source>alle </source>
+        <translation>every </translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>am</source>
         <translation>at</translation>
     </message>
@@ -2221,7 +2273,7 @@ must be the same string as for the favorite settings item in the menu</extracomm
         <translation>next</translation>
     </message>
     <message>
-        <location line="+148"/>
+        <location line="+112"/>
         <source>Wochen</source>
         <translation>weeks</translation>
     </message>

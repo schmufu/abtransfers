@@ -4,104 +4,157 @@
 
 <h2>AB-Transfers Help</h2>
 
-<b>This will be the English translated help text. Until all translations are
-realized the original German information are used.</b>
-
 <pre>
+<!--
 Hier wird Zuk&uuml;nftig eine kleine Hilfe zu AB-Transfers angezeigt werden.
 Bis diese fertig erstellt ist kann es aber noch eine Weile dauern.
+!-->
+The help shown here is not complete done. It will be extended with every
+release.
 </pre>
 
-<h3><a name="toc">Inhaltsverzeichnis</a></h3>
-<a href="#section1">Auftr&auml;ge k&ouml;nnen geb&uuml;hrenpflichtig sein</a><br />
-<a href="#section2">Generelle Hinweise</a><br />
-<a href="#section3">Sammel&uuml;berweisungen</a><br />
-<a href="#section4">Aktualisieren von Dauerauftr&auml;gen und Termin&uuml;berweisungen</a><br />
-<a href="#section5">Nutzung des integrierten Taschenrechners</a><br />
+<h3><a name="toc">Index</a></h3>
+<a href="#section1">Transactions can be chargeable</a><br />
+<a href="#section2">General hints</a><br />
+<a href="#section3">Collective bank transfers</a><br />
+<a href="#section4">Refresh of standing orders and dated transfers</a><br />
+<a href="#section5">Usage of the integrated calculator</a><br />
 
-<h3 id="section1">Auftr&auml;ge k&ouml;nnen geb&uuml;hrenpflichtig sein</h3>
-Bei einigen Kreditinstituten/Banken k&ouml;nnen Geb&uuml;hren f&uuml;r bestimmte
-Auftr&auml;ge (Einrichtung von Dauerauftr&auml;gen, Sammel&uuml;berweisungen,
-etc.) anfallen.<br />
-Bitte informieren Sie sich vorab bei Ihrem Institut / Ihrer Bank welche Kosten
-f&uuml;r welche Auftr&auml;ge anfallen!<br />
+
+<!-- copied from the translation of the dialog box from mainwindow.cpp !-->
+<h3 id="section1">Transactions can be chargeable</h3>
+Some institutions/banks may charge you for specific transactions (creating
+standing orders, collective orders, etc.).<br />
+Please inform yourself about which costs your institution/bank charges for
+transactions prior to using this software!<br />
 <br />
-<b>Ich &Uuml;bernehme keine Haftung f&uuml;r eventuell entstehende Kosten!</b>
+<b>I am not going to be liable for damages!</b>
 <br />
-<a href="#toc">Inhalt</a>
+<a href="#toc">Index</a>
 <br />
 
 
-<h3 id="section2">Generelle Hinweise</h3>
-
+<h3 id="section2">General hints</h3>
+<!--
 Von der Bank wird bekannt gegeben welche Transaktionen (&uuml;berweisung,
 Dauerauftr&auml;ge etc.) unterst&uuml;tzt werden. Wenn eine Transaktion
 durchgef&uuml;hrt werden soll die zwar durch AB-Transfers unterst&uuml;tzt
 wird aber von der Bank nicht wird ein entsprechender Hinweis angezeigt.<br />
+!-->
+Supported transactions (transfers, standing orders etc.) are reported by
+the bank. If a transaction should be executed which is supported
+by AB-Transfers but not by the bank a corresponding hint will be shown.<br />
+<!--
 Au&szlig;erdem werden von der Bank Limitierungen, bez&uuml;glich der Daten
 die in den einzelnen Transaktionen eingegeben werden d&uuml;rfen vorgegeben.
 Auch diese Limitierungen werden von AB-Transfers ausgewertet und in den
 meisten F&auml;llen sind dann nur Eingaben erlaubt die zu diesen Limitierungen
-konsistent sind. Dies geschieht einerseits bereits bei der Eingabe der Daten,
+konsistent sind.
+!-->
+In addition there are limitations relating to the data in the individually
+created transaction, these are also reported by the bank. These limitations
+would be checked by AB-Transfers and in the majority of cases an input is
+inhibited if it would violate the limitations.
+<!--
+Dies geschieht einerseits bereits bei der Eingabe der Daten,
 zus&auml;tzlich aber nochmals beim Einstellen der Transaktion in den Ausgang
 (dort werden dann insbesondere Eingaben gepr&uuml;ft die w&auml;hrend der
 Eingabe nur schwer zu kontrollieren sind).
+!-->
+These checks are done twice, once at the time of input and anothertime when the
+transaction is put into the outbox (inputs that are difficult to check at input
+time would be checked in detail at this time).
 <br />
-<a href="#toc">Inhalt</a>
+<a href="#toc">Index</a>
 <br />
 
 
-<h3 id="section3">Sammel&uuml;berweisungen</h3>
+<h3 id="section3">collective bank transfers</h3>
 
+<!--
 AB-Transfers hat keinen Einfluss darauf ob Sammel&uuml;berweisungen
 durchgef&uuml;hrt werden oder nicht. Dies ist abh&auml;ngig vom verwendeten
 Backend in AqBanking und davon ob dies von der Bank unterst&uuml;tzt wird.<br />
+!-->
+AB-Transfers can not control if collective bank transfers should be executed
+or not. This is dependent by the used backend of AqBanking and if it is
+supported by the bank.<br />
+<!--
 In AqBanking existiert die M&ouml;glichkeit dem Backend mitzuteilen das
 einzelne &uuml;berweisungen den Sammel&uuml;berweisungen bevorzugt werden
 sollen ("PreferSingleTransfer"). Dies kann z.B. &uuml;ber den Befehl
+!-->
+AqBanking supports the option to tell the backend that it should prefer single
+bank transfers prior to collective bank transfers. This could be set by the
+following command:
 <pre>
-aqhbci-tool4 addaccountflags -a <i>KONTONUMMER</i> -f "preferSingleTransfer"
+aqhbci-tool4 addaccountflags -a <i>ACCOUNTNUMBER</i> -f "preferSingleTransfer"
 </pre>
-eingestellt werden (Details siehe Hilfe von AqBanking).
+(For details see the help of AqBanking).
 <br />
-<a href="#toc">Inhalt</a>
+<a href="#toc">Index</a>
 <br />
 
 
-<h3 id="section4">Aktualisieren von Dauerauftr&auml;gen und Termin&uuml;berweisungen</h3>
-
+<h3 id="section4">Refresh of standing orders and dated transfers</h3>
+<!--
 Die Schaltfl&auml;chen zum Aktualisieren von Dauerauftragen bzw.
 Termin&uuml;berweisungen beziehen sich immer auf das in "Online-Konten"
 gew&auml;hlte Konto.<br />
+!-->
+The buttons for downloading the standing orders resprectivly dated transfers
+are always refer to the account currently selected in "Online accounts".<br />
+<!--
 Wenn also die Dauerauftr&auml;ge aktualisiert werden sollen muss zuerst das
 Konto ausgew&auml;hlt und dann auf "Aktualiseren" geklickt werden. Um die
 Dauerauftr&auml;ge f&uuml;r alle Konten zu Aktualisieren muss dies f&uuml;r
 jedes Konto durchgef&uuml;hrt werden und danach im Ausgang auf "Ausf&uuml;hren"
 geklickt werden.<br />
+!-->
+So, if the actual standing orders should be downloaded the account in
+"Online accounts" must be selected first and then the button for "download
+standing orders" could be selected. To refresh all standing orders for all
+accounts this must be repeated for each account in "Online accounts".<br />
+<!--
 Irgendwann wird sich das Layout der &uuml;bersichtsseite aber noch &auml;ndern,
 wie genau die Darstellung dann erfolgen wird weiß ich zur Zeit aber auch
 noch nicht. Wenn jemand dazu einen Vorschlag hat wie dies besser gestaltet
 werden k&ouml;nnte, dies bitte als E-Mail an mich "Patrick Wacker"
 &lt;schmufu.s@gmx.de&gt; schicken. Vielen Dank.
+!-->
+Some day the layout of the overview page would be changed. I don't know how in
+detail yet, if anybody has any suggestion for improvement this could be mailed
+to me "Patrick Wacker" &lt;schmufu.s@gmx.de&gt;, thanking you in anticipation.
 <br />
-<a href="#toc">Inhalt</a>
+<a href="#toc">Index</a>
 <br />
 
 
-<h3 id="section5">Nutzung des integrierten Taschenrechners</h3>
-
+<h3 id="section5">Usage of the integrated calculator</h3>
+<!--
 Der Taschenrechner kann entweder direkt durch einen Klick auf die Schaltfl&auml;che
 neben dem Eingabefeld f&uuml;r den Betrag aufgerufen werden oder auch automatisch
 bei der Eingabe.<br />
+!-->
+The calculator could be called by either clicking on the button beside the
+value field or automatically at input.<br />
+<!--
 Wenn bereits ein Betrag eingegeben wurde kann durch die Eingabe von +, -, *, /
 automatisch der Taschenrechner aufgerufen werden. Dabei wird der vorhandene
 Betrag als erster Operand gesetzt und auch die zu verwendende Operation
 eingestellt. Es kann also gleich der zweite Operand eingegeben werden und durch
 bet&auml;tigen von "Enter" das Ergebnis als Betrag &uuml;bernommen werden.<br />
-<i>Beispiel:</i><br />
-&nbsp;&nbsp;&nbsp;&nbsp;Betrag: 12,50<br />
-&nbsp;&nbsp;&nbsp;&nbsp;Eingabe: &lt;*&gt; &lt;2&gt; &lt;Enter&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;Ergebnis: 25,00
+!-->
+If a value is already supplied, the calculator could be called by pressing
++, -, * or /. When using this, the actual value is used as the first operand
+and the supplied operation (+,-,*,/) is evaluated with the supplied second
+operand.
+Therefore the second operand could be supplied immediate and the result is
+assumed by pressing "Enter".<br />
+<i>Example:</i><br />
+&nbsp;&nbsp;&nbsp;&nbsp;Value: 12,50<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Input: &lt;*&gt; &lt;2&gt; &lt;Enter&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Result: 25,00
 <br />
-<a href="#toc">Inhalt</a>
+<a href="#toc">Index</a>
 <br />

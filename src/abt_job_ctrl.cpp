@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011-2012 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -1588,6 +1588,25 @@ void abt_job_ctrl::execQueuedTransactions()
 	//analyze the retrieved information and set it in the corresponding
 	//accounts
 	abt_parser::parse_ctx(ctx, this->m_allAccounts);
+
+	if (settings->autoExportEnabled()) {
+		qDebug() << Q_FUNC_INFO << "executing automated export of ctx";
+		int err = 0;
+		err = AB_Banking_ExportToFile(banking->getAqBanking(),
+					      ctx,
+					      settings->autoExportPluginName().toUtf8(),
+					      settings->autoExportProfileName().toUtf8(),
+					      settings->autoExportFilename().toUtf8());
+
+		if (err != 0) {
+			qWarning() << Q_FUNC_INFO
+				   << "automatic export with plugin (profile):"
+				   << settings->autoExportPluginName()
+				   << "(" << settings->autoExportProfileName() << ")"
+				   << "to file:" << settings->autoExportFilename()
+				   << "failed with error code" << err;
+		}
+	}
 
 	this->addlog(tr("Alle Jobs übertragen und Antworten ausgewertet"));
 
