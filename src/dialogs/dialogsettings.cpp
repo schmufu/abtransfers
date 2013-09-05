@@ -152,6 +152,7 @@ void DialogSettings::loadFromSettings()
 
 	this->ui->checkBox_autoAddNewRecipients->setChecked(this->settings->autoAddNewRecipients());
 	this->ui->checkBox_autoExport->setChecked(this->settings->autoExportEnabled());
+	this->ui->checkBox_autoExportAsTransaction->setChecked(this->settings->autoExportAsTransaction());
 	this->ui->lineEdit_autoExportFilename->setText(this->settings->autoExportFilename());
 
 	//update enable/disabled state of corresponding widgets
@@ -201,6 +202,7 @@ void DialogSettings::saveToSettings()
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 
 	this->settings->setAutoExportEnabled(this->ui->checkBox_autoExport->isChecked());
+	this->settings->setAutoExportAsTransaction(this->ui->checkBox_autoExportAsTransaction->isChecked());
 	this->settings->setAutoExportPluginName(this->ui->comboBox_plugin->currentText());
 	this->settings->setAutoExportProfileName(this->ui->comboBox_profile->currentText());
 	this->settings->setAutoExportFilename(this->ui->lineEdit_autoExportFilename->text());
@@ -1066,6 +1068,7 @@ CURRENT_INDEX_CHANGED_SET_INDEX:
 void DialogSettings::on_checkBox_autoExport_toggled(bool checked)
 {
 	this->ui->lineEdit_autoExportFilename->setEnabled(checked);
+	this->ui->checkBox_autoExportAsTransaction->setEnabled(checked);
 	this->ui->comboBox_plugin->setEnabled(checked);
 	this->ui->comboBox_profile->setEnabled(checked);
 	this->ui->toolButton_selectAutoExportFilename->setEnabled(checked);

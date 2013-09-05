@@ -307,7 +307,7 @@ hinzugefügt.</string>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_11">
                <property name="spacing">
-                <number>0</number>
+                <number>1</number>
                </property>
                <item>
                 <widget class="QCheckBox" name="checkBox_autoExport">
@@ -322,6 +322,30 @@ Export verwendet.</string>
                   <string>Automatischer Export von durchgeführten Aufträgen</string>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="leftMargin">
+                  <number>24</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>8</number>
+                 </property>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_autoExportAsTransaction">
+                   <property name="toolTip">
+                    <string>Die meisten Export Plugins/Profile unterstützen nur den
+Export von Buchungen (transactions).
+Wenn diese Option gesetzt ist werden unter anderem
+Überweisungen, Daueraufträge etc. in eine Buchung
+umgewandelt damit diese auch Exportiert werden.</string>
+                   </property>
+                   <property name="text">
+                    <string>Aufträge immer als &quot;Buchung&quot; exportieren</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
