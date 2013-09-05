@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011-2013 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -115,6 +115,8 @@ private:
 	int getSupposedJobqueue_NextDatedPos(int firstDatedPos,
 					     int lastPos) const;
 	int getSupposedJobqueuePos(const abt_jobInfo *job) const;
+
+	bool exportImExporterContext(AB_IMEXPORTER_CONTEXT *ctx) const;
 
 public:
 	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,

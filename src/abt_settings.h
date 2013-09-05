@@ -106,6 +106,8 @@ public:
 	void setAutoExportProfileName(const QString name) const;
 	const QString autoExportPluginName() const;
 	void setAutoExportPluginName(const QString name) const;
+	bool autoExportAsTransaction() const;
+	void setAutoExportAsTransaction(bool value);
 
 	QStringList getAllProfileFavorites() const;
 	bool isProfileFavorit(const QString &name) const;

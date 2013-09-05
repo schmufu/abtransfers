@@ -435,6 +435,18 @@ void abt_settings::setAutoExportPluginName(const QString name) const
 	this->settings->setValue("Options/autoExportPluginName", name);
 }
 
+//public
+bool abt_settings::autoExportAsTransaction() const
+{
+	return this->settings->value("Main/AutoExportAsTransaction", true).toBool();
+}
+
+//public
+void abt_settings::setAutoExportAsTransaction(bool value)
+{
+	this->settings->setValue("Main/AutoExportAsTransaction", value);
+}
+
 /**
  * @brief reads all entrys for Im-/Exporter favorites from the settings
  *

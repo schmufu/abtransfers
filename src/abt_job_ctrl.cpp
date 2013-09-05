@@ -753,6 +753,147 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 
 }
 
+//private
+/** \brief if autoExport is selected this function should be used to export the supplied ctx
+ */
+bool abt_job_ctrl::exportImExporterContext(AB_IMEXPORTER_CONTEXT *ctx) const
+{
+	qDebug() << Q_FUNC_INFO
+		 << "automatic export of just performed transfers";
+
+	bool expTrans = settings->autoExportAsTransaction();
+	AB_IMEXPORTER_CONTEXT *ctx_export = AB_ImExporterContext_new();
+
+	//we must recreate a IE-Context were all jobs are stored
+	//as transaction (not as transfer, datedTransfer etc).
+	//Because most export plugins are only capable of exporting
+	//transactions and nothing else.
+	qDebug() << Q_FUNC_INFO
+		 << "creating copy of context for export with transactions"
+		 << "only (" << expTrans << ")";
+
+	AB_MESSAGE *msg;
+	msg = AB_ImExporterContext_GetFirstMessage(ctx);
+	while (msg) {
+		msg = AB_Message_dup(msg);
+		AB_ImExporterContext_AddMessage(ctx_export, msg);
+		msg = AB_ImExporterContext_GetNextMessage(ctx);
+	}
+
+	AB_SECURITY *security;
+	security = AB_ImExporterContext_GetFirstSecurity(ctx);
+	while (security) {
+		security = AB_Security_dup(security);
+		AB_ImExporterContext_AddSecurity(ctx_export, security);
+		security = AB_ImExporterContext_GetNextSecurity(ctx);
+	}
+
+	AB_IMEXPORTER_ACCOUNTINFO *ai;
+	ai = AB_ImExporterContext_GetFirstAccountInfo(ctx);
+	while (ai) {
+		AB_IMEXPORTER_ACCOUNTINFO *ai_exp;
+		ai_exp = AB_ImExporterAccountInfo_dup(ai);
+		AB_ImExporterAccountInfo_ClearTransactions(ai_exp);
+
+		AB_ACCOUNT_STATUS *ais;
+		ais = AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
+		while (ais) {
+			ais = AB_AccountStatus_dup(ais);
+			AB_ImExporterAccountInfo_AddAccountStatus(ai_exp, ais);
+			ais = AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
+		}
+
+		AB_TRANSACTION *t;
+		t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
+		while (t) {
+			//create duplicate for new account info transaction
+			t = AB_Transaction_dup(t);
+			if (expTrans) {
+				AB_ImExporterAccountInfo_AddTransaction(ai_exp, t);
+			} else {
+				AB_ImExporterAccountInfo_AddDatedTransfer(ai_exp, t);
+			}
+			t = AB_ImExporterAccountInfo_GetNextDatedTransfer(ai);
+		}
+
+		t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
+		while (t) {
+			//create duplicate for new account info transaction
+			t = AB_Transaction_dup(t);
+			if (expTrans) {
+				AB_ImExporterAccountInfo_AddTransaction(ai_exp, t);
+			} else {
+				AB_ImExporterAccountInfo_AddNotedTransaction(ai_exp, t);
+			}
+			t = AB_ImExporterAccountInfo_GetNextNotedTransaction(ai);
+		}
+
+		t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
+		while (t) {
+			//create duplicate for new account info transaction
+			t = AB_Transaction_dup(t);
+			if (expTrans) {
+				AB_ImExporterAccountInfo_AddTransaction(ai_exp, t);
+			} else {
+				AB_ImExporterAccountInfo_AddStandingOrder(ai_exp, t);
+			}
+			t = AB_ImExporterAccountInfo_GetNextStandingOrder(ai);
+		}
+
+		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
+		while (t) {
+			//create duplicate for new account info transaction
+			t = AB_Transaction_dup(t);
+			if (expTrans) {
+				AB_ImExporterAccountInfo_AddTransaction(ai_exp, t);
+			} else {
+				AB_ImExporterAccountInfo_AddTransfer(ai_exp, t);
+			}
+			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
+		}
+
+		t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
+		while (t) {
+			//create duplicate for new account info transaction
+			t = AB_Transaction_dup(t);
+			AB_ImExporterAccountInfo_AddTransaction(ai_exp, t);
+			t = AB_ImExporterAccountInfo_GetNextTransaction(ai);
+		}
+
+		AB_ImExporterContext_AddAccountInfo(ctx_export, ai_exp);
+		ai = AB_ImExporterContext_GetNextAccountInfo(ctx);
+	}
+
+	int ret = 0;
+	//try to fill gaps (e.g. account-id)
+	ret = AB_Banking_FillGapsInImExporterContext(banking->getAqBanking(),
+						     ctx_export);
+	if (ret != 0) {
+		qWarning() << Q_FUNC_INFO << "ERROR =" << ret
+			   << " -- something went wrong on filling the gaps"
+			   << "(this is not an serious error)";
+	}
+
+	ret = AB_Banking_ExportToFile(banking->getAqBanking(),
+				      ctx_export,
+				      settings->autoExportPluginName().toUtf8(),
+				      settings->autoExportProfileName().toUtf8(),
+				      settings->autoExportFilename().toUtf8());
+
+	if (ret != 0) {
+		qWarning() << Q_FUNC_INFO
+			   << "automatic export with plugin (profile):"
+			   << settings->autoExportPluginName()
+			   << "(" << settings->autoExportProfileName() << ")"
+			   << "to file:" << settings->autoExportFilename()
+			   << "failed with error code" << ret;
+	}
+
+	AB_ImExporterContext_Clear(ctx_export);
+	AB_ImExporterContext_free(ctx_export);
+
+	return ret == 0;
+}
 
 //public slot
 /**
@@ -1590,21 +1731,10 @@ void abt_job_ctrl::execQueuedTransactions()
 	abt_parser::parse_ctx(ctx, this->m_allAccounts);
 
 	if (settings->autoExportEnabled()) {
-		qDebug() << Q_FUNC_INFO << "executing automated export of ctx";
-		int err = 0;
-		err = AB_Banking_ExportToFile(banking->getAqBanking(),
-					      ctx,
-					      settings->autoExportPluginName().toUtf8(),
-					      settings->autoExportProfileName().toUtf8(),
-					      settings->autoExportFilename().toUtf8());
-
-		if (err != 0) {
-			qWarning() << Q_FUNC_INFO
-				   << "automatic export with plugin (profile):"
-				   << settings->autoExportPluginName()
-				   << "(" << settings->autoExportProfileName() << ")"
-				   << "to file:" << settings->autoExportFilename()
-				   << "failed with error code" << err;
+		bool ret = this->exportImExporterContext(ctx);
+		if (!ret) {
+			qWarning() << "Automatic export was not successfull."
+				   << "Please check the messages above.";
 		}
 	}
 
