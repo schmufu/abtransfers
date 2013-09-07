@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	bool ret = false;
 	ui->setupUi(this);
 
 	//at first set the wanted language, so that all later created objects
@@ -102,19 +103,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	langMenu->setText(tr("Sprache"));
 
 
-	QByteArray ba;
-	ba = settings->loadWindowGeometry();
-	if (!ba.isEmpty())
-		this->restoreGeometry(ba);
+	ret = this->restoreGeometry(settings->loadWindowGeometry());
+	qDebug() << "restore geometry" << ret;
 
 	//we need to set the gemoetry manually when the window is maximized.
 	//Otherwise the dockWidgets are created with a too small geometry set!
 	if (this->windowState() & Qt::WindowMaximized)
 		this->setGeometry(QApplication::desktop()->availableGeometry(this));
-
-	ba = settings->loadWindowState();
-	if (!ba.isEmpty())
-		this->restoreState(ba, 1);
 
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
@@ -179,6 +174,11 @@ MainWindow::MainWindow(QWidget *parent) :
 		this, SLOT(deleteHistoryItems(QList<abt_jobInfo*>)));
 	connect(this->pageHistory, SIGNAL(showSettingsForImExpFavorite()),
 		this, SLOT(on_actionEinstellungen_triggered()));
+
+
+	//we need to restore the state after the widgets are created
+	ret = this->restoreState(settings->loadWindowState(), 1);
+	qDebug() << "restore state:" << ret;
 
 
 	//Always show the summary as start page, regardless of the .ui setting
@@ -627,7 +627,8 @@ void MainWindow::createDockBankAccountWidget()
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
 
 	//restore widget state to the previous settings
-	this->restoreDockWidget(this->dock_Accounts);
+	bool ret = this->restoreDockWidget(this->dock_Accounts);
+	qDebug() << "restored dockWidget accounts:" << ret;
 }
 
 //private
@@ -662,7 +663,8 @@ void MainWindow::createDockKnownRecipients()
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
 
 	//restore widget state to the previous settings
-	this->restoreDockWidget(this->dock_KnownRecipient);
+	bool ret = this->restoreDockWidget(this->dock_KnownRecipient);
+	qDebug() << "restored dockWidget knownRecipients:" << ret;
 }
 
 //private
@@ -714,7 +716,8 @@ void MainWindow::createDockStandingOrders()
 	this->dock_KnownStandingOrders = dock;
 
 	//restore widget state to the previous settings
-	this->restoreDockWidget(this->dock_KnownStandingOrders);
+	bool ret = this->restoreDockWidget(this->dock_KnownStandingOrders);
+	qDebug() << "restored dockWidget standingOrders:" << ret;
 
 	this->dockStandingOrdersSetAccounts();
 }
@@ -792,7 +795,8 @@ void MainWindow::createDockDatedTransfers()
 	this->dock_KnownDatedTransfers = dock;
 
 	//restore widget state to the previous settings
-	this->restoreDockWidget(this->dock_KnownDatedTransfers);
+	bool ret = this->restoreDockWidget(this->dock_KnownDatedTransfers);
+	qDebug() << "restored dockWidget datedTransfers:" << ret;
 
 	this->dockDatedTransfersSetAccounts();
 }
