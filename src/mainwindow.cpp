@@ -44,6 +44,7 @@
 #include <QAction>
 #include <QIcon>
 #include <QTimer>
+#include <QDesktopWidget>
 
 #if defined(USE_QT_WEBKIT)
 	#include <QWebView>
@@ -99,6 +100,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	QAction *langMenu = this->ui->menuEinstellungen->addMenu(
 					this->translations->languageMenu());
 	langMenu->setText(tr("Sprache"));
+
+
+	QByteArray ba;
+	ba = settings->loadWindowGeometry();
+	if (!ba.isEmpty())
+		this->restoreGeometry(ba);
+
+	//we need to set the gemoetry manually when the window is maximized.
+	//Otherwise the dockWidgets are created with a too small geometry set!
+	if (this->windowState() & Qt::WindowMaximized)
+		this->setGeometry(QApplication::desktop()->availableGeometry(this));
+
+	ba = settings->loadWindowState();
+	if (!ba.isEmpty())
+		this->restoreState(ba, 1);
 
 
 	this->accounts = new aqb_Accounts(banking->getAqBanking());
@@ -609,6 +625,9 @@ void MainWindow::createDockBankAccountWidget()
 	/** Connection for the ContextMenu is established. */
 	connect(baw, SIGNAL(customContextMenuRequested(QPoint)),
 		this, SLOT(onAccountWidgetContextMenuRequest(QPoint)));
+
+	//restore widget state to the previous settings
+	this->restoreDockWidget(this->dock_Accounts);
 }
 
 //private
@@ -641,6 +660,9 @@ void MainWindow::createDockKnownRecipients()
 	this->dock_KnownRecipient->hide();
 	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
+
+	//restore widget state to the previous settings
+	this->restoreDockWidget(this->dock_KnownRecipient);
 }
 
 //private
@@ -690,6 +712,9 @@ void MainWindow::createDockStandingOrders()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownStandingOrders = dock;
+
+	//restore widget state to the previous settings
+	this->restoreDockWidget(this->dock_KnownStandingOrders);
 
 	this->dockStandingOrdersSetAccounts();
 }
@@ -765,6 +790,9 @@ void MainWindow::createDockDatedTransfers()
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownDatedTransfers = dock;
+
+	//restore widget state to the previous settings
+	this->restoreDockWidget(this->dock_KnownDatedTransfers);
 
 	this->dockDatedTransfersSetAccounts();
 }
