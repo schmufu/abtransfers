@@ -143,12 +143,6 @@ int main(int argc, char *argv[])
 
 	MainWindow *w = new MainWindow();
 
-	qDebug("RESTORING LAST STATE");
-	QByteArray ba = settings->loadWindowGeometry();
-	if (!ba.isEmpty()) w->restoreGeometry(ba);
-	ba = settings->loadWindowState();
-	if (!ba.isEmpty()) w->restoreState(ba, 1);
-
 	qDebug("BEFORE SHOW");
 	w->show();
 	qDebug("AFTER SHOW");
