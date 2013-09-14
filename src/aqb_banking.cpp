@@ -112,8 +112,65 @@ aqb_banking::~aqb_banking()
 
 	qDebug() << "AqBanking successfully deinitialized";
 
-	GWEN_Gui_SetGui(NULL); //otherwise gwen tries to use this->gui
-	delete this->gui; //delete the created GWEN_Qt4_GUI
+
+	/* Now we need to do something tricky to workaround a possible bug in GWEN_GUI
+	 *
+	 * see http://devel.aqbanking.de/svn/gwenhywfar/trunk/src/gui/gui.c for
+	 * the GWEN_Gui_* functions referenced here.
+	 *
+	 * this->gui is a QT4_Gui* which handles all then GWEN_Gui_* C functions
+	 * for us. It should be enough to write "delete this->gui;" but its not!
+	 *
+	 * GWEN_GUI uses an internal static var "GWEN_GUI *gwenhywfar_gui" that
+	 * points to the current used GWEN_GUI Object.
+	 * QT4_Gui uses GWEN_Gui_new() to create a new GWEN_GUI instance and the
+	 * GWEN_GUI internal var "gwenhywfar_gui" is set in our constructor by
+	 * GWEN_Gui_SetGui() [see abgui.h from aqbanking for the the example
+	 * code that is used here].
+	 *
+	 * Until now everything is fine and all is running as expected!
+	 *
+	 * The trouble comes into account when the objects should be deleted and
+	 * especially when the environment variable GWEN_LOGLEVEL is set.
+	 *
+	 * What happens:
+	 * After a "delete this->gui;" the GWEN_GUI internal variable
+	 * *gwenhywfar_gui is still set to a no longer existing GWEN_GUI (not set
+	 * to "NULL" after freeing) [could be verified with GWEN_Gui_GetGui()].
+	 * When the debug function from gwen wants to display a message the gui
+	 * is found and it tries to use it, this unexpectedly finishes the
+	 * program.
+	 *
+	 * What we do now:
+	 * With GWEN_Gui_Attach the reference counter of the GWEN_GUI is
+	 * increased and therefore the "delete this->gui;" only decreases
+	 * the reference counter and the GWEN_GUI is finally deleted and set
+	 * to NULL with GWEN_Gui_SetGui(NULL);
+	 */
+
+	if (GWEN_Gui_GetGui() != this->gui->getCInterface()) {
+		//gui used by gwen is not ours, we simple delete our gui
+		delete this->gui;
+		this->gui = NULL;
+	} else {
+		//increase the refCount of the gwen interal used GWEN_GUI* pointer
+		GWEN_Gui_Attach(this->gui->getCInterface());
+		//delete the created QT4_Gui (decreases only the internal refCount
+		//but not frees the internal GWEN_GUI*)
+		delete this->gui;
+		this->gui = NULL;
+		//Set the used GWEN_GUI to NULL. This decreases the internal
+		//refCount and frees it (if refCount == 0) and also sets the
+		//internal used gwenhywfar_gui* to NULL ;)
+		GWEN_Gui_SetGui(NULL);
+
+		if (GWEN_Gui_GetGui()) {
+			qWarning() << Q_FUNC_INFO
+				   << "gwenhywfar internal GWEN_GUI is not NULL!"
+				   << "this will probably cause a crash when the"
+				   << "GWEN_LOGLEVEL environment variable is set.";
+		}
+	}
 }
 
 //public
