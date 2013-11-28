@@ -768,7 +768,7 @@ Also a change of a job&apos;s position may have influence on the position where 
 <context>
     <name>MainWindow</name>
     <message utf8="true">
-        <location filename="../src/mainwindow.ui" line="+94"/>
+        <location filename="../src/mainwindow.ui" line="+97"/>
         <location line="+68"/>
         <source>Übersicht</source>
         <translation>Overview</translation>
@@ -795,7 +795,7 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/mainwindow.cpp" line="+377"/>
+        <location filename="../src/mainwindow.cpp" line="+393"/>
         <source>National</source>
         <translation></translation>
     </message>
@@ -829,14 +829,14 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location filename="../src/mainwindow.cpp" line="-128"/>
         <location line="+228"/>
-        <location line="+151"/>
+        <location line="+159"/>
         <source>DauerauftrÃ¤ge</source>
         <translation>Standing orders</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="-183"/>
         <location line="+42"/>
-        <location filename="../src/mainwindow.cpp" line="-244"/>
+        <location filename="../src/mainwindow.cpp" line="-252"/>
         <location line="+14"/>
         <source>Anlegen</source>
         <translation>Create</translation>
@@ -850,7 +850,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+2162"/>
+        <location filename="../src/mainwindow.cpp" line="+2185"/>
         <source>TerminÃ¼berweisung</source>
         <translation>Scheduled transfers</translation>
     </message>
@@ -897,19 +897,19 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/mainwindow.cpp" line="-1510"/>
+        <location filename="../src/mainwindow.cpp" line="-1512"/>
         <source>Hilfe / FAQ</source>
         <translation>Help / FAQ</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/mainwindow.cpp" line="+1537"/>
+        <location filename="../src/mainwindow.cpp" line="+1539"/>
         <source>AqBanking einrichten ...</source>
         <translation>Configure AqBanking...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="-2514"/>
-        <location line="+179"/>
+        <location filename="../src/mainwindow.cpp" line="-2551"/>
+        <location line="+193"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
@@ -971,12 +971,12 @@ Also a change of a job&apos;s position may have influence on the position where 
     <message>
         <location line="-225"/>
         <location line="+233"/>
-        <location line="+222"/>
+        <location line="+234"/>
         <source>TerminÃ¼berweisungen</source>
         <translation>Scheduled transfers</translation>
     </message>
     <message>
-        <location line="-199"/>
+        <location line="-211"/>
         <source>Dock Toolbar</source>
         <translation></translation>
     </message>
@@ -998,20 +998,20 @@ Also a change of a job&apos;s position may have influence on the position where 
     </message>
     <message>
         <location line="-327"/>
-        <location line="+355"/>
+        <location line="+359"/>
         <source>Bekannte EmpfÃ¤nger</source>
         <translation>Known addressees</translation>
     </message>
     <message>
-        <location line="-350"/>
+        <location line="-354"/>
         <location line="+3"/>
-        <location line="+377"/>
-        <location line="+74"/>
+        <location line="+385"/>
+        <location line="+78"/>
         <source>Konto</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+200"/>
         <source>Auftrag &quot;%1&quot; zum Ausgang hinzugefÃ¼gt</source>
         <translation>Job &quot;%1&quot; added to outbox</translation>
     </message>
@@ -1026,7 +1026,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>The Job &quot;%1&quot; was successfully added to the outbox</translation>
     </message>
     <message>
-        <location line="-595"/>
+        <location line="-616"/>
         <source>Eventuelle Kosten</source>
         <translation>Possible charges</translation>
     </message>
@@ -1041,7 +1041,7 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Translations of already opened orders are currently not supported.&lt;br /&gt;Only if you create a new order the form will be displayed using the new language.&lt;br /&gt;&lt;br /&gt;&lt;i&gt;Orders currently opened for editing can still further be edited and executed.&lt;/i&gt;</translation>
     </message>
     <message>
-        <location line="+656"/>
+        <location line="+677"/>
         <source>Ãber %1</source>
         <translation>About %1</translation>
     </message>
@@ -1062,7 +1062,12 @@ Also a change of a job&apos;s position may have influence on the position where 
         <translation>Close</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+14"/>
+        <source>&lt;b&gt;AB-Transfers&lt;/b&gt;&lt;br&gt;&lt;br&gt;Dieses Programm nutzt die Bibliothek AqBanking um Online-Banking-&lt;br&gt;Transaktionen durchzufÃ¼hren.&lt;br&gt;&lt;br&gt;Es sind alle wesentlichen VorgÃ¤nge von AqBanking implementiert,&lt;br&gt;u.a. auch Ãberweisungen, Lastschriften, DauerauftrÃ¤ge usw.,&lt;br&gt;sowie eine selbstimplementierte Verwaltung von DauerauftrÃ¤gen&lt;br&gt;und terminierten Ãberweisungen.</source>
+        <translation type="unfinished">&lt;b&gt;AB-Transfers&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;This program uses the AqBanking library for Online-Banking&lt;br /&gt;transactions.&lt;br&gt;&lt;br&gt;All essential transactions from AqBanking are implemented,&lt;br /&gt;amongst others transfers, debit notes, standing orders etc.,&lt;br /&gt; as well as a self implemented management of standing orders&lt;br /&gt;and dated transfers.    </translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Website: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
         <translation></translation>
     </message>
@@ -1238,7 +1243,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>Do not show this message again (not reversible!).</translation>
     </message>
     <message>
-        <location line="+387"/>
+        <location line="+389"/>
         <source>&lt;tr&gt;&lt;td&gt;BegÃ¼nstigter:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr&gt;&lt;td&gt;Addressee:&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
@@ -1441,7 +1446,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/aqb_banking.cpp" line="+194"/>
+        <location filename="../src/aqb_banking.cpp" line="+251"/>
         <location line="+118"/>
         <source>OK</source>
         <translation></translation>
@@ -1865,7 +1870,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>*********************************************** E R R O R                               **** Error at AB_Banking_ExecuteJobs().    **** return value = %1                       ****                                         **** Execution cancelled   **** no further processing!    ***********************************************</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+51"/>
         <source>Alle Jobs Ã¼bertragen und Antworten ausgewertet</source>
         <translation>All jobs executed and responses analysed</translation>
     </message>
@@ -1880,7 +1885,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <translation>&lt;b&gt;The jobs were not successfully executed!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;All failed jobs are still in the outbox. They can be edited and corrected using the context menu (right mouse-click) or deleted.&lt;br /&gt;Please note the messages in the &quot;Log&quot;-window in order to gain insight into why the execution failed.</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+82"/>
         <source>&lt;b&gt;AusfÃ¼hrung von &apos;%1&apos; erfolgreich.&lt;/b&gt; Der Auftrag wurde zur Historie hinzugefÃ¼gt</source>
         <translation>&lt;b&gt;Execution of &apos;%1&apos; successful.&lt;/b&gt; The job was added to the history</translation>
     </message>
