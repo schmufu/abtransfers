@@ -1027,7 +1027,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	img->setMaximumSize(100, 100);
 	hbox->addWidget(img);
 
-	QLabel *text1 = new QLabel(QString::fromUtf8("<b>AB-Transfers</b><br><br>"
+	QLabel *text1 = new QLabel(tr("<b>AB-Transfers</b><br><br>"
 			     "Dieses Programm nutzt die Bibliothek AqBanking um Online-Banking-<br>"
 			     "Transaktionen durchzuführen.<br><br>"
 			     "Es sind alle wesentlichen Vorgänge von AqBanking implementiert,<br>"
