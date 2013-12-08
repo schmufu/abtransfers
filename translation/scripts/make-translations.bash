@@ -13,14 +13,14 @@
 
 
 if [ `uname` = "Darwin" ]; then
-	PREFIX=/opt/macports-test
+	PREFIX=/opt/local
 else
 	PREFIX=/usr
 fi
 
 BIN=${PREFIX}/bin
 TC_APPNAME=abtransfers
-APP_RESOURCES=../abtransfers-build-Qt_4_8_4_macports_test-Release/build/AB-Transfers.app/Contents/Resources/
+APP_RESOURCES=../build-abtransfers-Desktop-Release/build/AB-Transfers.app/Contents/Resources/
 LANGS="en_GB"
 
 if [ "$1" == "up" ]
