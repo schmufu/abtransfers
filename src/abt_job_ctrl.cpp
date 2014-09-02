@@ -56,6 +56,17 @@
 #include <aqbanking/jobdeletesto.h>
 #include <aqbanking/jobgetstandingorders.h>
 
+#include <aqbanking/version.h> // for version depended compiling
+/***** INFO
+ * as with aqbanking git 33ea5e5910cb2cbe2afc4f69a56fab38747d58ad from
+ * 2013-12-30 the ...Get- and ...SetTransaction() functions for each single job
+ * are marked obsolete, and be replaced with a single AB_Job[Set|Get]Transaction()
+ * function.
+ * Therefore this code was reworked to work with both versions.
+ * If AqBanking >= 5.3.0, the new functions are used, otherwise the old
+ * functions.
+ *****/
+
 #include "abt_parser.h"
 
 #include "globalvars.h"
@@ -114,7 +125,6 @@ void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 {
 	Q_ASSERT(hash != NULL);
 	AB_JOB *j = NULL;
-
 	j = AB_JobCreateDatedTransfer_new(a);
 	hash->insert(AB_Job_TypeCreateDatedTransfer, AB_Job_CheckAvailability(j) == 0);
 	AB_Job_free(j);
@@ -213,8 +223,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job SingleTransfer not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobSingleTransfer_SetTransaction(j, t);
 		tl = AB_JobSingleTransfer_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeTransfer, limits);
@@ -229,8 +244,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job SingleDebitNote not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobSingleDebitNote_SetTransaction(j, t);
 		tl = AB_JobSingleDebitNote_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeDebitNote, limits);
@@ -247,8 +267,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job InternalTransfer not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobInternalTransfer_SetTransaction(j, t);
 		tl = AB_JobInternalTransfer_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeInternalTransfer, limits);
@@ -263,8 +288,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job SepaTransfer not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobSepaTransfer_SetTransaction(j, t);
 		tl = AB_JobSepaTransfer_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeSepaTransfer, limits);
@@ -279,8 +309,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job CreateDatedTransfer not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobCreateDatedTransfer_SetTransaction(j, t);
 		tl = AB_JobCreateDatedTransfer_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeCreateDatedTransfer, limits);
@@ -295,8 +330,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job ModifyDatedTransfer not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobModifyDatedTransfer_SetTransaction(j, t);
 		tl = AB_JobModifyDatedTransfer_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeModifyDatedTransfer, limits);
@@ -311,8 +351,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job CreateStandingOrder not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobCreateStandingOrder_SetTransaction(j, t);
 		tl = AB_JobCreateStandingOrder_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeCreateStandingOrder, limits);
@@ -327,8 +372,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job ModifyStandingOrder not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobModifyStandingOrder_SetTransaction(j, t);
 		tl = AB_JobModifyStandingOrder_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeModifyStandingOrder, limits);
@@ -361,8 +411,13 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	if (AB_Job_CheckAvailability(j)) {
 		qDebug("Job SepaDebitNote not available");
 	} else {
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+#else
 		AB_JobSepaDebitNote_SetTransaction(j, t);
 		tl = AB_JobSepaDebitNote_GetFieldLimits(j);
+#endif
 		if (tl) {
 			abt_transactionLimits *limits = new abt_transactionLimits(tl);
 			ah->insert(AB_Job_TypeSepaDebitNote, limits);
@@ -928,7 +983,11 @@ void abt_job_ctrl::addNewSingleTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobSingleTransfer_SetTransaction(job, t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -974,7 +1033,11 @@ void abt_job_ctrl::addNewSingleDebitNote(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobSingleDebitNote_SetTransaction(job, t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1066,7 +1129,11 @@ void abt_job_ctrl::addNewInternalTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobInternalTransfer_SetTransaction(job, t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1112,7 +1179,11 @@ void abt_job_ctrl::addNewSepaTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobSepaTransfer_SetTransaction(job, t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1162,8 +1233,12 @@ void abt_job_ctrl::addCreateDatedTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobCreateDatedTransfer_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1224,8 +1299,12 @@ void abt_job_ctrl::addModifyDatedTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobModifyDatedTransfer_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1278,8 +1357,12 @@ void abt_job_ctrl::addDeleteDatedTransfer(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobDeleteDatedTransfer_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1389,8 +1472,12 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobCreateStandingOrder_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1450,8 +1537,12 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobModifyStandingOrder_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1504,8 +1595,12 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc,
 	}
 
 	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
 	rv = AB_JobDeleteStandingOrder_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
 
@@ -1884,14 +1979,22 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeDeleteDatedTransfer:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+				t = AB_Job_GetTransaction(j);
+#else
 				t = AB_JobDeleteDatedTransfer_GetTransaction(j);
+#endif
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
 				break;
 
 			case AB_Job_TypeModifyDatedTransfer:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+				t = AB_Job_GetTransaction(j);
+#else
 				t = AB_JobModifyDatedTransfer_GetTransaction(j);
+#endif
 				dt = new abt_datedTransferInfo(t);
 				acc->removeDatedTransfer(dt);
 				delete dt;
@@ -1903,14 +2006,22 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeDeleteStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+				t = AB_Job_GetTransaction(j);
+#else
 				t = AB_JobDeleteStandingOrder_GetTransaction(j);
+#endif
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;
 				break;
 
 			case AB_Job_TypeModifyStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+				t = AB_Job_GetTransaction(j);
+#else
 				t = AB_JobModifyStandingOrder_GetTransaction(j);
+#endif
 				so = new abt_standingOrderInfo(t);
 				acc->removeStandingOrder(so);
 				delete so;

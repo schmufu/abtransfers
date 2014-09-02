@@ -54,6 +54,17 @@
 #include "aqb_accountinfo.h"
 #include "abt_transaction_base.h"
 
+#include <aqbanking/version.h> // for version depended compiling
+/***** INFO
+ * as with aqbanking git 33ea5e5910cb2cbe2afc4f69a56fab38747d58ad from
+ * 2013-12-30 the ...Get- and ...SetTransaction() functions for each single job
+ * are marked obsolete, and be replaced with a single AB_Job[Set|Get]Transaction()
+ * function.
+ * Therefore this code was reworked to work with both versions.
+ * If AqBanking >= 5.3.0, the new functions are used, otherwise the old
+ * functions.
+ *****/
+
 
 
 abt_jobInfo::abt_jobInfo(AB_JOB *j)
@@ -106,6 +117,11 @@ void abt_jobInfo::setMyTransactionFromJob()
 {
 	const AB_TRANSACTION *AB_Trans = NULL;
 
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	//much more simplified with the new API
+	AB_Trans = AB_Job_GetTransaction(this->m_job);
+#else
+	//with the old API we need to call a seperate function for each job type
 	switch (this->getAbJobType()) {
 	case AB_Job_TypeCreateDatedTransfer:
 		AB_Trans = AB_JobCreateDatedTransfer_GetTransaction(this->m_job);
@@ -157,6 +173,7 @@ void abt_jobInfo::setMyTransactionFromJob()
 		AB_Trans = NULL;
 		break;
 	}
+#endif
 
 	if (AB_Trans == NULL) {
 		//the job does not have a transaction, so do i
@@ -288,7 +305,8 @@ void abt_jobInfo::createJobInfoStringList(QStringList *strList) const
 	case AB_Job_TypeTransfer:
 		this->createJobInfoStringList_Transfer(strList);
 		break;
-	case AB_Job_TypeUnknown:
+	case AB_Job_TypeUnknown: // fall through
+	default:
 		this->createJobInfoStringList_Unknown(strList);
 		break;
 	}

@@ -110,10 +110,10 @@ const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
 	case AB_Job_TypeUnknown :
 		return (QObject::tr("AqBanking Typ unbekannt"));
 		break;
+	default: //if no type matches
+		return QObject::tr("ab_transfers Typ unbekannt");
+		break;
 	}
-
-	//default if no type match
-	return QObject::tr("ab_transfers Typ unbekannt");
 }
 
 //static
