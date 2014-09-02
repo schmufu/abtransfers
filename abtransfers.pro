@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.4.1
+VERSION = 0.0.5.0
 !macx:TARGET = abtransfers
 macx:TARGET = "AB-Transfers"
 DESTDIR = build
@@ -159,8 +159,8 @@ HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: 
 # MVW_VERSION=\\\"$${VERSION}\\\" \ # MVW_VERSION_EXTRA=\"\\\"'development-version-test test-test'\\\"\" #damit auch space möglich ist
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
-    ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
-    ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
+    ABTRANSFER_VERSION=\\\"$${VERSION}\\\"
+
 
 # NO_DEBUG
 # QT_NO_DEBUG \

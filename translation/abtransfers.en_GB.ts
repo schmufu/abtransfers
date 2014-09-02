@@ -1807,7 +1807,7 @@ Sollen diese Ãnderungen verworfen werden?</source>
         <location line="+25"/>
         <source>APP_VERSION</source>
         <extracomment>The version of the application for which this translation is. This number is used to verify that the translation is for the used version of the application.</extracomment>
-        <translation>0.0.4.1</translation>
+        <translation>0.0.5.0</translation>
     </message>
     <message>
         <location line="+361"/>
