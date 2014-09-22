@@ -30,15 +30,16 @@
 
 #include "widgetaccountdata.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QVariant>
-#include <QtGui/QLayout>
-#include <QtGui/QDragEnterEvent>
-#include <QtGui/QDropEvent>
-#include <QtGui/QLabel>
-#include <QtGui/QComboBox>
+#include <QDebug>
+#include <QVariant>
+#include <QLayout>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QLabel>
+#include <QComboBox>
+#include <QMimeData>
 
-#include <QtCore/QCoreApplication> //um qApp verwenden zu können
+#include <QCoreApplication> //to use qApp
 
 #include "widgetlineeditwithlabel.h"
 #include "widgetaccountcombobox.h"

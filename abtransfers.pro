@@ -7,10 +7,21 @@ macx:TARGET = "AB-Transfers"
 DESTDIR = build
 TEMPLATE = app
 
+QT += gui
+#check for Qt5 or greater
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets #needed for Qt5
+}
+
 USEWEBKIT=$$system(pkg-config QtWebKit && echo "available")
 contains(USEWEBKIT, "available") {
     message("QtWebKit available")
-    QT += webkit
+    greaterThan(QT_MAJOR_VERSION, 4) {
+	QT += webkitwidgets #needed for Qt5
+    } else {
+	QT += webkit #needed for Qt4
+    }
+
     DEFINES += USE_QT_WEBKIT
 } else {
     message("QtWebKit not available, using QLabel")

@@ -33,9 +33,9 @@
 #include "ui_page_history.h"
 
 #include <QMessageBox>
-#include <QtGui/QMenu>
-#include <QtGui/QFileDialog>
-#include <QtCore/QDebug>
+#include <QMenu>
+#include <QFileDialog>
+#include <QDebug>
 
 #include "../dialogs/abt_dialog.h"
 #include "../abt_history.h"

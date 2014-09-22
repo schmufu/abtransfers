@@ -30,9 +30,9 @@
 
 #include "widgetlineeditwithlabel.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtCore/QDebug>
+#include <QLabel>
+#include <QLayout>
+#include <QDebug>
 
 widgetLineEditWithLabel::widgetLineEditWithLabel(const QString &labelText,
 						 const QString &editText,

@@ -28,7 +28,7 @@
  *
  ******************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QTextCodec>
 #include <QSharedMemory>
 #include <QMessageBox>
@@ -47,7 +47,11 @@
 
 
 /** a message handler to display qDebug(), qWarning() etc. in the debug-Dialog */
+#if QT_VERSION >= 0x050000
+void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+#else
 void myMessageHandler(QtMsgType type, const char *msg);
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -68,8 +72,11 @@ int main(int argc, char *argv[])
 	//create the DebugDialogWidget, that displays all qDebug(), qWarning()
 	//etc. messages and install the MsgHandler that redirect the messages.
 	debugDialog = new DebugDialogWidget();
+#if QT_VERSION >= 0x050000
+	qInstallMessageHandler(myMessageHandler);
+#else
 	qInstallMsgHandler(myMessageHandler);
-
+#endif
 
 	#ifdef ABTRANSFER_VERSION
 		app.setApplicationVersion(ABTRANSFER_VERSION);
@@ -121,7 +128,11 @@ int main(int argc, char *argv[])
 
 			if (msgRet != QMessageBox::Yes) {
 				//cleanup and cancel execution
+#if QT_VERSION >= 0x050000
+				qInstallMessageHandler(NULL);
+#else
 				qInstallMsgHandler(NULL);
+#endif
 				delete debugDialog;
 				return 9;
 			}
@@ -159,14 +170,42 @@ int main(int argc, char *argv[])
 	//free all created GWEN_STRINGLIST and GWEN_TIME objects
 	abt_conv::freeAllGwenLists();
 
-
+#if QT_VERSION >= 0x050000
+	qInstallMessageHandler(NULL);
+#else
 	qInstallMsgHandler(NULL); //uninstall the MsgHandler
+#endif
 	delete debugDialog; //and the corresponding dialog
 
 	return apprv;
 }
 
+#if QT_VERSION >= 0x050000
+void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+	//always show the messages at stderr
+	fprintf(stderr, "[%s] %s\n", context.function, msg.toStdString().c_str());
 
+	//only show the messages if wanted
+	//! @todo implement the option to deactivate debug messges
+	//if (!settings->displayDebugMessages()) return;
+
+	switch(type) {
+	case QtDebugMsg:
+		debugDialog->appendMsg(QString("DEBUG: ").append(msg.toLatin1()));
+		break;
+	case QtWarningMsg:
+		debugDialog->appendMsg(QString("WARNING: ").append(msg.toLatin1()));
+		break;
+	case QtCriticalMsg:
+		debugDialog->appendMsg(QString("CRITICAL: ").append(msg.toLatin1()));
+		break;
+	case QtFatalMsg:
+		fprintf(stderr, "Fatal: %s\n", msg.toStdString().c_str());
+		abort();
+	}
+}
+#else
 void myMessageHandler(QtMsgType type, const char *msg)
 {
 	fprintf(stderr, "%s\n", msg); //always show the messages at stderr
@@ -190,3 +229,4 @@ void myMessageHandler(QtMsgType type, const char *msg)
 		abort();
 	}
 }
+#endif

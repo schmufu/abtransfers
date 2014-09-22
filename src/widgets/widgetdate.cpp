@@ -30,11 +30,11 @@
 
 #include "widgetdate.h"
 
-#include <QtGui/QLayout>
-#include <QtGui/QCalendarWidget>
-#include <QtGui/QTextCharFormat>
+#include <QLayout>
+#include <QCalendarWidget>
+#include <QTextCharFormat>
 
-#include <QtCore/QDebug>
+#include <QDebug>
 
 widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget *parent) :
 	QWidget(parent)

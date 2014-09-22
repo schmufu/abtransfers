@@ -32,10 +32,10 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-#include <QtCore/QDebug>
-#include <QtGui/QFileDialog>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
+#include <QDebug>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include "../abt_settings.h"
 #include "../dialogs/abt_dialog.h"

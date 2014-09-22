@@ -32,9 +32,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QDockWidget>
-#include <QtGui/QToolBar>
+#include <QListWidgetItem>
+#include <QDockWidget>
+#include <QToolBar>
 
 #include "aqb_accounts.h"
 #include "abt_job_ctrl.h"

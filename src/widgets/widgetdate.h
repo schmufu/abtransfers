@@ -32,10 +32,10 @@
 #define WIDGETDATE_H
 
 #include <QWidget>
-#include <QtGui/QDateEdit>
-#include <QtGui/QLabel>
+#include <QDateEdit>
+#include <QLabel>
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 /** \brief Widget zur Anzeige und Einstellung eines Datums
  *

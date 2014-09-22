@@ -32,8 +32,8 @@
 #ifndef PAGE_HISTORY_H
 #define PAGE_HISTORY_H
 
-#include <QtGui/QFrame>
-#include <QtGui/QTreeWidgetItem>
+#include <QFrame>
+#include <QTreeWidgetItem>
 
 #include "../abt_jobinfo.h"
 

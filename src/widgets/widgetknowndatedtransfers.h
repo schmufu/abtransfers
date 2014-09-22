@@ -32,8 +32,8 @@
 #define WIDGETKNOWNDATEDTRANSFERS_H
 
 #include <QWidget>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QAction>
+#include <QTreeWidget>
+#include <QAction>
 
 class aqb_AccountInfo;
 class abt_datedTransferInfo;

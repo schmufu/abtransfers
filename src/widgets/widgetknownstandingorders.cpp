@@ -30,9 +30,9 @@
  ******************************************************************************/
 
 #include "widgetknownstandingorders.h"
-#include <QtGui/QLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QTreeWidget>
+#include <QLayout>
+#include <QMenu>
+#include <QTreeWidget>
 #include <QEvent>
 
 #include "../aqb_accountinfo.h"

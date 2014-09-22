@@ -30,9 +30,9 @@
 
 #include "widgetpurpose.h"
 
-#include <QtCore/QDebug>
-#include <QtGui/QLayout>
-#include <QtGui/QTextBlock>
+#include <QDebug>
+#include <QLayout>
+#include <QTextBlock>
 
 
 /*! \bug

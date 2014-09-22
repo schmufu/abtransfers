@@ -28,12 +28,14 @@
  *
  ******************************************************************************/
 
+/** \todo translation of documentation and comments needed */
+
 #include "widgetrecurrence.h"
 
-#include <QtCore/QDebug>
+#include <QDebug>
 
-#include <QtGui/QLayout>
-#include <QtGui/QLabel>
+#include <QLayout>
+#include <QLabel>
 
 widgetRecurrence::widgetRecurrence(QWidget *parent) :
 	QWidget(parent)

@@ -312,7 +312,7 @@ bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
 	for(int i=0; i<4; i++) {
 		if (iban.at(i).isLetter()) {
 			//A=10, B=11, C=12 etc.
-			int value = iban.at(i).toUpper().toAscii()-55;
+			int value = iban.at(i).toUpper().toLatin1()-55;
 			pp_substitution.append(QString::number(value));
 		} else {
 			pp_substitution.append(iban.at(i));
@@ -324,7 +324,7 @@ bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
 	QString sIban;
 	for(int i=4; i<iban.size(); i++) {
 		if (iban.at(i).isLetter()) {
-			int value = iban.at(i).toUpper().toAscii()-55;
+			int value = iban.at(i).toUpper().toLatin1()-55;
 			sIban.append(QString::number(value));
 		} else {
 			sIban.append(iban.at(i));

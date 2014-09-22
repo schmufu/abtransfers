@@ -28,9 +28,11 @@
  *
  ******************************************************************************/
 
+/** \todo translation of documentation and comments needed */
+
 #include "widgetknowndatedtransfers.h"
-#include <QtGui/QLayout>
-#include <QtGui/QMenu>
+#include <QLayout>
+#include <QMenu>
 #include <QEvent>
 
 #include "../aqb_accountinfo.h"

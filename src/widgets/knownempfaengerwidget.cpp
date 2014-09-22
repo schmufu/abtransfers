@@ -41,6 +41,8 @@
 #include <QDialog>
 #include <QLayout>
 #include <QPushButton>
+#include <QDrag>
+#include <QMimeData>
 
 KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent) :
     QGroupBox(parent),
@@ -156,7 +158,7 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	qDebug() << result;
 	//Nur dieselbe Instanz darf diesen Pointer verwenden!
 	QString mimetype = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
-	mimeData->setData(mimetype, QByteArray(result.toAscii()));
+	mimeData->setData(mimetype, QByteArray(result.toLatin1()));
 	//mimeData->setData("text/plain", info);
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/knownEmpfaenger"));

@@ -32,8 +32,8 @@
 #define WIDGETVALUE_H
 
 #include <QWidget>
-#include <QtGui/QLineEdit>
-#include <QtCore/QDebug>
+#include <QLineEdit>
+#include <QDebug>
 
 #include "../abt_conv.h"
 #include "widgetcalculator.h"

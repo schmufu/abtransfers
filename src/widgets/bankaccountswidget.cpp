@@ -35,6 +35,8 @@
 #include <QTreeWidgetItem>
 #include <QStringList>
 #include <QMouseEvent>
+#include <QDrag>
+#include <QMimeData>
 
 #include <QDebug>
 
@@ -152,7 +154,7 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	qDebug() << result;
 	//Nur dieselbe Instanz darf diesen Pointer verwenden!
 	QString mimetype = QString("application/x-abBanking_%1_AccountInfo").arg(app);
-	mimeData->setData(mimetype, QByteArray(result.toAscii()));
+	mimeData->setData(mimetype, QByteArray(result.toLatin1()));
 	drag->setMimeData(mimeData);
 	drag->setPixmap(QPixmap(":/icons/bank-icon"));
 

@@ -30,7 +30,7 @@
 
 #include "widgetvalue.h"
 
-#include <QtGui/QLayout>
+#include <QLayout>
 #include <QApplication>
 #include <QDesktopWidget>
 

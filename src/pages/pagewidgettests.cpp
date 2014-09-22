@@ -31,6 +31,8 @@
 #include "pagewidgettests.h"
 
 #include <QList>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 
 pageWidgetTests::pageWidgetTests(aqb_Accounts *accs, QWidget *parent) :

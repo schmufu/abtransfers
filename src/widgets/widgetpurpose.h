@@ -33,9 +33,9 @@
 
 #include <QWidget>
 
-#include <QtGui/QPlainTextEdit>
-#include <QtGui/QTextEdit>
-#include <QtGui/QLabel>
+#include <QPlainTextEdit>
+#include <QTextEdit>
+#include <QLabel>
 
 
 /** \brief Widget zur Darstellung und Eingabe des Verwendungszwecks

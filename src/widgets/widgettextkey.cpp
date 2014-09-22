@@ -30,10 +30,10 @@
 
 #include "widgettextkey.h"
 
-#include <QtGui/QComboBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtCore/QDebug>
+#include <QComboBox>
+#include <QLabel>
+#include <QLayout>
+#include <QDebug>
 
 #include "../globalvars.h"
 

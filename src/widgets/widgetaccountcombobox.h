@@ -32,7 +32,7 @@
 #define WIDGETACCOUNTCOMBOBOX_H
 
 #include <QWidget>
-#include <QtGui/QComboBox>
+#include <QComboBox>
 
 class aqb_AccountInfo;
 class aqb_Accounts;

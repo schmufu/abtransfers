@@ -32,11 +32,11 @@
 #define WIDGETRECURRENCE_H
 
 #include <QWidget>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QRadioButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QCheckBox>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QCheckBox>
 
 
 #include <aqbanking/transaction.h>

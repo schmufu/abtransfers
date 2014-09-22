@@ -33,7 +33,7 @@
 
 #include <QWidget>
 
-#include <QtGui/QLineEdit>
+#include <QLineEdit>
 
 class QLabel;
 class QLayout;

@@ -28,8 +28,10 @@
  *
  ******************************************************************************/
 
+/** \todo translation of documentation and comments needed */
+
 #include "widgetaccountcombobox.h"
-#include <QtGui/QLayout>
+#include <QLayout>
 
 #include "../aqb_accounts.h"
 #include "../aqb_accountinfo.h"

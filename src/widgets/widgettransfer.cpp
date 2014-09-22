@@ -28,14 +28,16 @@
  *
  ******************************************************************************/
 
+/** \todo translation of documentation and comments needed */
+
 #include "widgettransfer.h"
 
-#include <QtGui/QLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QPushButton>
 
-#include <QtCore/QDebug>
+#include <QDebug>
 
 #include "../aqb_accountinfo.h"
 #include "../globalvars.h"	//for the global "banking" object

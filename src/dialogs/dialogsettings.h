@@ -32,9 +32,9 @@
 #ifndef DIALOGSETTINGS_H
 #define DIALOGSETTINGS_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QAbstractButton>
-#include <QtGui/QTableWidgetItem>
+#include <QDialog>
+#include <QAbstractButton>
+#include <QTableWidgetItem>
 
 #include "../aqb_imexporters.h"
 

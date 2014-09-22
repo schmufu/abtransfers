@@ -28,11 +28,13 @@
  *
  ******************************************************************************/
 
+/** \todo translation of documentation and comments needed */
+
 #ifndef PAGEWIDGETTESTS_H
 #define PAGEWIDGETTESTS_H
 
-#include <QtGui>
-#include <QtCore>
+#include <QPlainTextEdit>
+#include <QDebug>
 
 #include <aqbanking/job.h>
 #include <aqbanking/transaction.h>
@@ -60,6 +62,7 @@
 #include "../globalvars.h"
 #include "../abt_conv.h"
 #include "../aqb_accounts.h"
+
 
 /*! \brief NUR FÜR TESTZECKE!
  *
