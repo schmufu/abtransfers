@@ -596,6 +596,13 @@ int abt_settings::supportedByAbtransfers(const AB_JOB_TYPE type)
 	case AB_Job_TypeDebitNote :
 	case AB_Job_TypeSepaDebitNote :
 	case AB_Job_TypeLoadCellPhone :
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaFlashDebitNote :
+	case AB_Job_TypeSepaCreateStandingOrder :
+	case AB_Job_TypeSepaDeleteStandingOrder :
+	case AB_Job_TypeSepaModifyStandingOrder :
+	case AB_Job_TypeSepaGetStandingOrders :
+#endif
 		ret = 2; //not supported yet
 		break;
 

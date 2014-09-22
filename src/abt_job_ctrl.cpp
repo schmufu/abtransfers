@@ -33,6 +33,7 @@
 #include <QDebug>
 #include <QMessageBox>
 
+#include <aqbanking/version.h> // for version depended compiling
 #include <aqbanking/job.h>
 #include <aqbanking/transaction.h>
 
@@ -55,8 +56,11 @@
 #include <aqbanking/jobmodifysto.h>
 #include <aqbanking/jobdeletesto.h>
 #include <aqbanking/jobgetstandingorders.h>
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+#include <aqbanking/jobsepagetstandingorders.h>
+#include <aqbanking/jobsepaflashdebitnote.h>
+#endif
 
-#include <aqbanking/version.h> // for version depended compiling
 /***** INFO
  * as with aqbanking git 33ea5e5910cb2cbe2afc4f69a56fab38747d58ad from
  * 2013-12-30 the ...Get- and ...SetTransaction() functions for each single job
@@ -193,6 +197,18 @@ void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 	hash->insert(AB_Job_TypeTransfer, AB_Job_CheckAvailability(j) == 0);
 	AB_Job_free(j);
 
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	//check for newly added SEPA transfers
+
+	j = AB_JobSepaGetStandingOrders_new(a);
+	hash->insert(AB_Job_TypeSepaGetStandingOrders, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSepaFlashDebitNote_new(a);
+	hash->insert(AB_Job_TypeSepaFlashDebitNote, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+#endif
 }
 
 //static public
@@ -750,7 +766,11 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 		wantedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
 		break;
 	}
-	case AB_Job_TypeGetStandingOrders: {
+	case AB_Job_TypeGetStandingOrders:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaGetStandingOrders:
+#endif
+	{
 		//the update of standingOrders should be after the standingOrder changes
 		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
 		//the update of standingOrders should be direct after the last
@@ -1681,7 +1701,68 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc,
 
 }
 
+//public slot
+/** @brief adds a get sepa standing orders to the jobqueue
+ *
+ * AqBanking >= 5.5.0 is needed for this type of job!
+ */
+void abt_job_ctrl::addGetSepaStandingOrders(const aqb_AccountInfo *acc,
+					    bool withoutInfo /*=false*/)
+{
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	int rv;
 
+	if (acc == NULL) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job AB_Job_TypeGetSepaStandingOrders is not"
+			   << "available (no valid account [NULL])";
+		emit jobNotAvailable(AB_Job_TypeSepaGetStandingOrders);
+		return; //abort
+	}
+
+	//this jobtype should only be send once
+	if (this->isJobTypeInQueue(AB_Job_TypeSepaGetStandingOrders,
+				   acc->get_AB_ACCOUNT())) {
+		return; //already in queue, nothing to do
+	}
+
+
+	AB_JOB *job = AB_JobSepaGetStandingOrders_new(acc->get_AB_ACCOUNT());
+
+	rv = AB_Job_CheckAvailability(job);
+
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
+		emit jobNotAvailable(AB_Job_TypeSepaGetStandingOrders);
+		return; //cancel adding
+	}
+
+	abt_jobInfo *ji = new abt_jobInfo(job);
+
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
+	int pos = this->getSupposedJobqueuePos(ji);
+	this->jobqueue->insert(pos, ji);
+
+	if (!withoutInfo) { //only emit a jobAdded() signal if wanted
+		emit this->jobAdded(ji);
+	}
+
+	emit this->jobQueueListChanged();
+
+	//Das zuständige AccountInfo Object darüber informieren wenn wir
+	//mit dem parsen fertig sind (damit dies die SOs neu laden kann)
+	//--> wird jetzt direkt beim parsen erledigt!
+//	connect(this, SIGNAL(standingOrdersParsed()),
+//		acc, SLOT(loadKnownStandingOrders()));
+#else
+	//getSepaStandingOrders not supported by AqBanking version!
+	emit jobNotAvailable(AB_Job_TypeUnknown);
+	return; //cancel further processing
+#endif
+}
 
 //public slot
 /**

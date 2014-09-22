@@ -1262,6 +1262,8 @@ void MainWindow::onActionStandingUpdateTriggered()
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	if (!acc) return; //cancel if no BankAccountsWidget was found
 	this->jobctrl->addGetStandingOrders(acc->getSelectedAccount());
+	//disable above and enable below to test the SEPA StandingOrders
+	//this->jobctrl->addGetSepaStandingOrders(acc->getSelectedAccount());
 }
 
 //private slot

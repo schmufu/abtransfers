@@ -107,6 +107,24 @@ const QString abt_conv::JobTypeToQString(AB_JOB_TYPE type)
 	case AB_Job_TypeTransfer :
 		return (QObject::tr("Überweisung durchführen"));
 		break;
+
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaCreateStandingOrder :
+		return (QObject::tr("SEPA Dauerauftrag anlegen"));
+		break;
+	case AB_Job_TypeSepaModifyStandingOrder :
+		return (QObject::tr("SEPA Dauerauftrag ändern"));
+		break;
+	case AB_Job_TypeSepaDeleteStandingOrder :
+		return (QObject::tr("SEPA Dauerauftrag löschen"));
+		break;
+	case AB_Job_TypeSepaGetStandingOrders :
+		return (QObject::tr("SEPA Daueraufträge abfragen"));
+		break;
+	case AB_Job_TypeSepaFlashDebitNote :
+		return (QObject::tr("SEPA Lastschrift anlegen (flash)"));
+		break;
+#endif
 	case AB_Job_TypeUnknown :
 		return (QObject::tr("AqBanking Typ unbekannt"));
 		break;

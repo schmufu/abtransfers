@@ -158,6 +158,7 @@ public slots:
 	void addModifyStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addDeleteStandingOrder(const aqb_AccountInfo *acc, const abt_transaction *t);
 	void addGetStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo = false);
+	void addGetSepaStandingOrders(const aqb_AccountInfo *acc, bool withoutInfo = false);
 
 	void addGetBalance(const aqb_AccountInfo *acc, bool withoutInfo = false);
 
