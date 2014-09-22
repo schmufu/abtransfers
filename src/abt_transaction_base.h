@@ -176,8 +176,8 @@ public:
 	const QString getMandateReference() const;
 	void setMandateReference(const QString &MandateReference);
 
-	const QString getCreditorIdentifier() const;
-	void setCreditorIdentifier(const QString &CreditorIdentifier);
+	const QString getCreditorSchemeId() const;
+	void setCreditorSchemeId(const QString &CreditorIdentifier);
 
 	const QString getOriginatorIdentifier() const;
 	void setOriginatorIdentifier(const QString &OriginatorIdentifier);

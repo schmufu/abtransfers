@@ -547,29 +547,42 @@ const QString abt_transaction::getMandateReference() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetMandateReference(this->aqb_transaction_C));
+		//removed in aqBanking > 5.5.0 because it is not used yet in
+		//abtransfers, we simple replace this with an equal function!
+		//AB_Transaction_GetMandateReference(this->aqb_transaction_C));
+		AB_Transaction_GetMandateId(this->aqb_transaction_C));
 	return ret;
 }
 
 void abt_transaction::setMandateReference(const QString &MandateReference)
 {
-	AB_Transaction_SetMandateReference(this->aqb_transaction,
-					   MandateReference.toUtf8());
+	//removed in aqBanking > 5.5.0 because it is not used yet in
+	//abtransfers, we simple replace this with an equal function!
+	//AB_Transaction_SetMandateReference(this->aqb_transaction,
+	//				   MandateReference.toUtf8());
+	AB_Transaction_SetMandateId(this->aqb_transaction,
+				    MandateReference.toUtf8());
 }
 
 
-const QString abt_transaction::getCreditorIdentifier() const
+//was getCreditorIdentifier()
+//removed in aqBanking > 5.5.0, because it is not used yet in abtransfers, we
+//simple replace this with an equal function!
+const QString abt_transaction::getCreditorSchemeId() const
 {
 	QString ret;
 	ret = QString::fromUtf8(
-		AB_Transaction_GetCreditorIdentifier(this->aqb_transaction_C));
+		AB_Transaction_GetCreditorSchemeId(this->aqb_transaction_C));
 	return ret;
 }
 
-void abt_transaction::setCreditorIdentifier(const QString &CreditorIdentifier)
+//was setCreditorIdentifier()
+//removed in aqBanking > 5.5.0, because it is not used yet in abtransfers, we
+//simple replace this with an equal function!
+void abt_transaction::setCreditorSchemeId(const QString &CreditorIdentifier)
 {
-	AB_Transaction_SetCreditorIdentifier(this->aqb_transaction,
-					     CreditorIdentifier.toUtf8());
+	AB_Transaction_SetCreditorSchemeId(this->aqb_transaction,
+					   CreditorIdentifier.toUtf8());
 }
 
 
