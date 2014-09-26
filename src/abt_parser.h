@@ -103,7 +103,7 @@ private:
 	static int parse_ctx_messages(AB_IMEXPORTER_CONTEXT *iec);
 	static int parse_ctx_securities(AB_IMEXPORTER_CONTEXT *iec);
 	static int parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
-					  aqb_Accounts *allAccounts,
+					  const aqb_Accounts *allAccounts,
 					  abt_history *history = NULL);
 
 	static int parse_ctx_ai_status(AB_IMEXPORTER_ACCOUNTINFO *ai,
@@ -151,7 +151,7 @@ public:
 	 *         data to the matching accounts at \a allAccounts
 	 */
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
-			      aqb_Accounts *allAccounts,
+			      const aqb_Accounts *allAccounts,
 			      abt_history *history = NULL);
 
 };

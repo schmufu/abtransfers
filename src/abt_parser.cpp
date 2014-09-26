@@ -230,7 +230,7 @@ int abt_parser::parse_ctx_securities(AB_IMEXPORTER_CONTEXT *iec)
 //private static
 /** \brief parses all account infos of the supplied context \a iec. */
 int abt_parser::parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
-				       aqb_Accounts *allAccounts,
+				       const aqb_Accounts *allAccounts,
 				       abt_history *history /* = NULL */)
 {
 	AB_IMEXPORTER_ACCOUNTINFO *ai;
@@ -844,7 +844,7 @@ AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccoun
  * If data for the history should be paresed the abt_history object must be
  * supplied as \a history (default is NULL).
  */
-void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts,
+void abt_parser::parse_ctx(AB_IMEXPORTER_CONTEXT *iec, const aqb_Accounts *allAccounts,
 			   abt_history *history /* = NULL */)
 {
 	if (!iec) {
