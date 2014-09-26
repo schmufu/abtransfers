@@ -61,65 +61,98 @@
 #include "abt_history.h"
 
 
-/** \brief parser zum laden der lokal gespeicherten Daten sowie zum Auswerten
-  *        der vom Institut gelieferten Daten.
-  *
-  * Über \ref load_local_ctx() können die Daten einer lokal gespeicherten Datei
-  * in den Context (Rückgabewert) geladen werden.
-  *
-  * Dieser Context [ctx] kann dann über \ref parse_ctx() ausgewertet werden.
-  * \ref parse_ctx() setzt dabei alle Werte die im Context gefunden wurden in
-  * den entsprechenden Objekten.
-  *
-  * Außerdem kann \ref parse_ctx() dazu verwendet werden die gelieferten Daten
-  * des Instituts aus zu werten und die entsprechenden Objekte zu aktualisieren.
-  *
-  */
+#ifndef DEBUG_ABTPARSER
+/** \brief DEBUG_ABTPARSER should be 1 to enable debug output of the parser!
+ *
+ * It could also be set with -DDEBUG_ABTPARSER=1 as a compiler parameter to
+ * enable it for a test compilation only!
+*/
+//disable debug messages if not supplied as compiler define
+#define DEBUG_ABTPARSER 0
+#endif
+
+
+/** \brief parser for the local saved data and for the data retrieved from
+ *         the bank.
+ *
+ * With \ref load_local_ctx() local saved data can be loaded (returned as
+ * AB_IMEXPORTER_CONTEXT).
+ *
+ * Every AB_IMEXPORTER_CONTEXT [ctx] can be parsed with \ref parse_ctx().
+ * \ref parse_ctx() sets all read values from the supplied ctx at the
+ * corresponding objects.
+ *
+ * \ref parse_ctx() could also be used to parse the information retrieved from
+ * the bank and update the corresponding objects.
+ *
+ */
 class abt_parser
 {
 private:
-	//static AB_IMEXPORTER_CONTEXT *ctx;
 	/** \brief reads the type and status from the category field */
 	static void getJobStatesFromTransaction(AB_TRANSACTION *t,
-						AB_JOB_TYPE &jobType,
-						AB_JOB_STATUS &jobStatus);
+						AB_JOB_TYPE *jobType,
+						AB_JOB_STATUS *jobStatus);
+	static void addJobInfoToHistory(abt_history *history,
+					const aqb_Accounts *allAccounts,
+					AB_TRANSACTION *t, AB_JOB_TYPE defType,
+					AB_JOB_STATUS defStatus);
+
+	//private functions to parse the different possible contents of a
+	//AB_IMEXPORTER_CONTEXT object
+	static int parse_ctx_messages(AB_IMEXPORTER_CONTEXT *iec);
+	static int parse_ctx_securities(AB_IMEXPORTER_CONTEXT *iec);
+	static int parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
+					  aqb_Accounts *allAccounts,
+					  abt_history *history = NULL);
+
+	static int parse_ctx_ai_status(AB_IMEXPORTER_ACCOUNTINFO *ai,
+				       aqb_AccountInfo *acc);
+	static int parse_ctx_ai_datedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
+					       aqb_AccountInfo *acc,
+					       abt_history *history = NULL,
+					       const aqb_Accounts *allAccounts = NULL);
+	static int parse_ctx_ai_notedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
+						  aqb_AccountInfo *acc);
+	static int parse_ctx_ai_standingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai,
+					       aqb_AccountInfo *acc,
+					       abt_history *history = NULL,
+					       const aqb_Accounts *allAccounts = NULL);
+	static int parse_ctx_ai_transactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
+					     aqb_AccountInfo *acc);
+	static int parse_ctx_ai_transfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
+					  aqb_AccountInfo *acc,
+					  abt_history *history = NULL,
+					  const aqb_Accounts *allAccounts = NULL);
 
 public:
 	abt_parser();
 
-	/** \brief erstellt einen AB_IMEXPORTER_CONTEXT für alle in aqb_Accounts
-	  * enhaltenen aqb_AccountInfo Objekte
-	  */
+	/** \brief creates an AB_IMEXPORTER_CONTEXT for all aqb_AccountInfo
+	 *         objects of the aqb_Accounts object.
+	 */
 	static AB_IMEXPORTER_CONTEXT *create_ctx_from(const aqb_Accounts *allAccounts);
 
-
-	/** \brief lädt alle Daten der Datei \a filename mit dem Importer
-	  * \a importerName und dem Profile \a profileName in den \return ctx
-	  */
+	/** \brief loads all data from the \a filename with the \a importerName
+	 *         and \a profileName to the returned context.
+	 */
 	static AB_IMEXPORTER_CONTEXT *load_local_ctx(const QString &filename,
 						     const QString &importerName,
 						     const QString &profileName);
 
-	/** \brief speichert alle Daten des IE-Context \a ctx in der Datei
-	  * \a filename mit dem Importer \a importerName und dem Profile
-	  * \a profileName
-	  */
+	/** \brief saves all data of the \a ctx to the given \a filename.
+	 */
 	static void save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
 				   const QString &filename,
 				   const QString &exporterName,
 				   const QString &profileName);
 
-
-	/** \brief parst den Context \a iec und setzt die entsprechenden Werte
-	  * des entsprechenden Accounts
-	  */
-	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec, aqb_Accounts *allAccounts);
-
-	/** \overload zur Verwendung wenn die History geladen werden soll
-	  */
+	/** \brief parses the supplied context \a iec and stores the relevant
+	 *         data to the matching accounts at \a allAccounts
+	 */
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
-			      const aqb_Accounts *allAccounts,
-			      abt_history *history);
+			      aqb_Accounts *allAccounts,
+			      abt_history *history = NULL);
 
 };
 

@@ -144,6 +144,8 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 					  const QString &owner,
 					  const QString &name) const
 {
+	/** \todo should also support iban and bic! */
+
 	aqb_AccountInfo *acc = NULL;
 
 	//Alle Accounts durchgehen
