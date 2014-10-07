@@ -149,6 +149,9 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(
 			this->settings->isAdvancedOptionSet("ManualOutboxRearrange"));
 
+	this->ui->lineEdit_regexPurpose->setText(this->settings->allowedCharsPurposeRegex());
+	this->ui->lineEdit_regexRecipient->setText(this->settings->allowedCharsRecipientRegex());
+
 	this->loadFavoriteImExpFromSettings();
 
 	this->refreshImExPluginListWidget();
@@ -202,6 +205,20 @@ void DialogSettings::saveToSettings()
 
 	this->settings->setAdvancedOption("ManualOutboxRearrange",
 			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
+
+	//save regex values only if they can be used with QRegExp, otherwise
+	//store the default regex value!
+	QString regex;
+	regex = this->ui->lineEdit_regexPurpose->text();
+	if (!QRegExp(regex).isValid())
+		regex = DEFAULT_REGEX_PURPOSE;
+	this->settings->setAdvancedOption("RegexPurpose", regex);
+
+	regex = this->ui->lineEdit_regexRecipient->text();
+	if (!QRegExp(regex).isValid())
+		regex = DEFAULT_REGEX_PURPOSE;
+	this->settings->setAdvancedOption("RegexRecipient",
+					  this->ui->lineEdit_regexRecipient->text());
 
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 

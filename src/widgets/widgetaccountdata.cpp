@@ -169,13 +169,11 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 
 	this->llBankName = new widgetLineEditWithLabel(tr("Kreditinstitut"), "", Qt::AlignTop, this);
 
-	//Nur Zeichen gemäß ZKA-Zeichensatz zulassen
-//	UppercaseValidator *validatorText = new UppercaseValidator(this);
-//	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Z]*", Qt::CaseSensitive));
-
-	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
+	//only allow characters that match the regex from the settings
+	//default: "[-+ .,/*&%0-9A-Za-z]"
 	QRegExpValidator *validatorText = new QRegExpValidator(this);
-	validatorText->setRegExp(QRegExp("[-+ .,/*&%0-9A-Za-z]*", Qt::CaseSensitive));
+	QRegExp regex(settings->allowedCharsRecipientRegex().append("*"), Qt::CaseSensitive);
+	validatorText->setRegExp(regex);
 
 	this->llName->lineEdit->setValidator(validatorText);
 	this->llBankName->lineEdit->setValidator(validatorText);

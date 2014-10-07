@@ -33,6 +33,7 @@
 #include <QDebug>
 #include <QLayout>
 #include <QTextBlock>
+#include "../globalvars.h"
 
 
 /*! \bug
@@ -128,8 +129,9 @@ bool widgetPurpose::eventFilter(QObject *obj, QEvent *event)
 		return true;
 	}
 
-	//Nur Zeichen gemäß ZKA-Zeichensatz, aber auch Kleinbuchstaben, zulassen
-	QRegExp regex("^[-+ .,/*&%0-9A-Za-z]$", Qt::CaseSensitive);
+	//only allow characters that match the regex from the settings
+	//default: "[-+ .,/*&%0-9A-Za-z]"
+	QRegExp regex(settings->allowedCharsPurposeRegex(), Qt::CaseSensitive);
 
 	//ev->setModifiers(Qt::ShiftModifier);
 	if (regex.indexIn(ev->text()) != -1) { //Zeichen ist erlaubt!

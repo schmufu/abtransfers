@@ -42,8 +42,15 @@
 #include "abt_standingorderinfo.h"
 #include "abt_datedtransferinfo.h"
 
-/** \brief saves and restores settings which can be modified by the user */
 
+/** default regular expression for valid characters at the purpose field. */
+QT_STATIC_CONST QString DEFAULT_REGEX_PURPOSE = "[-+ .,/*&%0-9A-Za-z]";
+
+/** default regular expression for valid characters at the recipient and bankname field. */
+QT_STATIC_CONST QString DEFAULT_REGEX_RECIPIENT = "[-+ .,/*&%0-9A-Za-z]";
+
+
+/** \brief saves and restores settings which can be modified by the user */
 class abt_settings : public QObject
 {
 Q_OBJECT
@@ -116,7 +123,12 @@ public:
 
 	bool isAdvancedOptionSet(const QString &option) const;
 	void setAdvancedOption(const QString &option, bool value);
+	void setAdvancedOption(const QString &option, QString value);
+	QString getAdvancedOption(const QString &option, const QString defValue = "") const;
 	void deleteAdvancedOption(const QString &option);
+
+	QString allowedCharsPurposeRegex() const;
+	QString allowedCharsRecipientRegex() const;
 
 	QString language() const;
 
@@ -127,6 +139,7 @@ public:
 	static int supportedByAbtransfers(const AB_JOB_TYPE type);
 
 	static void resizeColToContentsFor(QTreeWidget *w);
+
 
 signals:
 	void recipientsListChanged();

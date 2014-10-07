@@ -511,11 +511,69 @@ void abt_settings::setAdvancedOption(const QString &option, bool value)
 	this->settings->setValue(key, value);
 }
 
+void abt_settings::setAdvancedOption(const QString &option, QString value)
+{
+	QString key = QString("Options/Advanced/").append(option);
+	this->settings->setValue(key, value);
+}
+
+QString abt_settings::getAdvancedOption(const QString &option, const QString defValue) const
+{
+	QString key = QString("Options/Advanced/").append(option);
+	return this->settings->value(key, defValue).toString();
+}
+
 void abt_settings::deleteAdvancedOption(const QString &option)
 {
 	this->settings->beginGroup("Options/Advanced/");
 	this->settings->remove(option);
 	this->settings->endGroup();
+}
+
+//public
+/** \brief returns the regular expression for the purpose field.
+ *
+ * Additional checks are performed to be sure the returned value could be
+ * used as a regular expression.
+ *
+ * If the stored regex is empty or an invalid regex, the default value is
+ * returned.
+ */
+QString abt_settings::allowedCharsPurposeRegex() const
+{
+	QString regex = this->getAdvancedOption("RegexPurpose",
+						DEFAULT_REGEX_PURPOSE);
+
+	if (regex.isEmpty())
+		regex = DEFAULT_REGEX_PURPOSE;
+
+	if (!QRegExp(regex).isValid())
+		regex = DEFAULT_REGEX_PURPOSE;
+
+	return regex;
+}
+
+//public
+/** \brief returns the regular expression for the recipient name / bankname field.
+ *
+ * Additional checks are performed to be sure the returned value could be
+ * used as a regular expression.
+ *
+ * If the stored regex is empty or an invalid regex, the default value is
+ * returned.
+ */
+QString abt_settings::allowedCharsRecipientRegex() const
+{
+	QString regex = this->getAdvancedOption("RegexRecipient",
+						DEFAULT_REGEX_RECIPIENT);
+
+	if (regex.isEmpty())
+		regex = DEFAULT_REGEX_RECIPIENT;
+
+	if (!QRegExp(regex).isValid())
+		regex = DEFAULT_REGEX_RECIPIENT;
+
+	return regex;
 }
 
 //public
@@ -557,7 +615,6 @@ void abt_settings::resizeColToContentsFor(QTreeWidget *w)
 		w->resizeColumnToContents(i);
 	}
 }
-
 
 /**
  * @returns -1: error (not handled \a type passed)
