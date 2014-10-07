@@ -309,9 +309,12 @@ void page_history::onActDeleteSelected()
  * @returns a context-menu which can be used for user-selection
  */
 //private
-QMenu *page_history::createExportContextMenu(QWidget *parent, const aqb_imexporters *iep) const
+QMenu *page_history::createExportContextMenu(QWidget* /* parent */,
+					     const aqb_imexporters *iep) const
 {
-	QMenu *menu = new QMenu(parent);
+	//when we set the parent of the created menu, the program crashes
+	//when it is closed!
+	QMenu *menu = new QMenu();
 
 	QMenu *preferredMenu = new QMenu(tr("Favorit"), menu);
 
@@ -497,7 +500,8 @@ ONACTEXPORTSELECTED_CLEANUP:
 		//we must free the ctx after using it
 		AB_ImExporterContext_free(ctx);
 	}
-	delete exportConextMenu; //menu and all childs no longer needed
+	//The following deletion lets the program crash. Why? I dont know.
+	//delete exportConextMenu; //menu and all childs no longer needed
 	delete iep; //also deletes ALL childs objects from aqb_imexporters!
 }
 
