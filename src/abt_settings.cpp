@@ -498,31 +498,91 @@ void abt_settings::deleteProfileFavorit(const QString &name)
 	this->settings->endGroup();
 }
 
-
-bool abt_settings::isAdvancedOptionSet(const QString &option) const
+//public
+/** \brief sets the advanced options enabled flag.
+ *
+ * This function must be used to alter the enable flag for the advanced options!
+ *
+ * The setAdvancedOption() function would not save anything when the
+ * advanced options are disabled!
+ */
+void abt_settings::setAdvancedOptionEnabled(bool enable)
 {
-	QString key = QString("Options/Advanced/").append(option);
+	this->settings->setValue("Options/Advanced/enabled", enable);
+}
+
+//public
+/** \brief checks if the advanced options are enabled or not
+ *
+ * \returns true if enabled
+ * \returns false if disabled
+ */
+bool abt_settings::isAdvancedEnabled() const
+{
+	QString key = "Options/Advanced/enabled";
 	return this->settings->value(key, false).toBool();
 }
 
+//public
+/** \brief checks if the advanced options are enabled and returns the value
+ *        of the wanted \a option.
+ *
+ * If the advanced options are not enabled, false is returned always!
+ * Otherwise the value of the supplied \a option.
+ */
+bool abt_settings::isAdvancedOptionSet(const QString &option) const
+{
+	bool ret = false;
+
+	if (this->isAdvancedEnabled()) {
+		QString key = QString("Options/Advanced/").append(option);
+		ret = this->settings->value(key, false).toBool();
+	}
+	return ret;
+}
+
+//public
+/** \brief stores the \a value for the \a \option
+ *
+ * The value is only stored when the advanced options are enabled!
+ */
 void abt_settings::setAdvancedOption(const QString &option, bool value)
 {
-	QString key = QString("Options/Advanced/").append(option);
-	this->settings->setValue(key, value);
+	if (this->isAdvancedEnabled()) {
+		QString key = QString("Options/Advanced/").append(option);
+		this->settings->setValue(key, value);
+	}
 }
 
+//public
+/** \overload */
 void abt_settings::setAdvancedOption(const QString &option, QString value)
 {
-	QString key = QString("Options/Advanced/").append(option);
-	this->settings->setValue(key, value);
+	if (this->isAdvancedEnabled()) {
+		QString key = QString("Options/Advanced/").append(option);
+		this->settings->setValue(key, value);
+	}
 }
 
+//public
+/** \brief gets the value for the \a option from the advanced options
+ *
+ * If the advanced options are not enabled or if the \a option is not stored
+ * at the settings file, the \a defValue is returned.
+ *
+ * Otherwise the read string from the settings file is returned.
+ */
 QString abt_settings::getAdvancedOption(const QString &option, const QString defValue) const
 {
-	QString key = QString("Options/Advanced/").append(option);
-	return this->settings->value(key, defValue).toString();
+	if (this->isAdvancedEnabled()) {
+		QString key = QString("Options/Advanced/").append(option);
+		return this->settings->value(key, defValue).toString();
+	}
+	return defValue;
 }
 
+//public
+/** \brief deletes an advanced option from the settings file */
 void abt_settings::deleteAdvancedOption(const QString &option)
 {
 	this->settings->beginGroup("Options/Advanced/");
@@ -544,10 +604,7 @@ QString abt_settings::allowedCharsPurposeRegex() const
 	QString regex = this->getAdvancedOption("RegexPurpose",
 						DEFAULT_REGEX_PURPOSE);
 
-	if (regex.isEmpty())
-		regex = DEFAULT_REGEX_PURPOSE;
-
-	if (!QRegExp(regex).isValid())
+	if (regex.isEmpty() || !QRegExp(regex).isValid())
 		regex = DEFAULT_REGEX_PURPOSE;
 
 	return regex;
@@ -567,10 +624,7 @@ QString abt_settings::allowedCharsRecipientRegex() const
 	QString regex = this->getAdvancedOption("RegexRecipient",
 						DEFAULT_REGEX_RECIPIENT);
 
-	if (regex.isEmpty())
-		regex = DEFAULT_REGEX_RECIPIENT;
-
-	if (!QRegExp(regex).isValid())
+	if (regex.isEmpty() || !QRegExp(regex).isValid())
 		regex = DEFAULT_REGEX_RECIPIENT;
 
 	return regex;

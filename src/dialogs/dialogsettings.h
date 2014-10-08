@@ -66,6 +66,7 @@ private:
 
 	void loadFromSettings();
 	void saveToSettings();
+	void loadAdvancedSettings(bool updateState = true);
 
 	void loadFavoriteImExpFromSettings();
 	void saveFavoriteImExpToSettings();
@@ -74,6 +75,8 @@ private:
 	void refreshImExPluginListWidget();
 	void refreshImExProfileTableWidget();
 	void refreshAutoExportComboBoxPlugin();
+
+	void setAdvancedOptionState(bool enabled);
 
 	/** @brief set @a plugin and @a profile to the selected values (or NULL) */
 	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
@@ -103,6 +106,7 @@ private slots:
 	void on_actionDeleteProfile_triggered();
 	void on_comboBox_plugin_currentIndexChanged(const QString &arg1);
 	void on_checkBox_autoExport_toggled(bool checked);
+	void on_checkBox_adv_iKnowWhatIDo_toggled(bool checked);
 };
 
 #endif // DIALOGSETTINGS_H

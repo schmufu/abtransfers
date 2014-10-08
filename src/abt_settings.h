@@ -121,6 +121,8 @@ public:
 	void setProfileFavorit(const QString &name, bool favorit);
 	void deleteProfileFavorit(const QString &name);
 
+	void setAdvancedOptionEnabled(bool enable);
+	bool isAdvancedEnabled() const;
 	bool isAdvancedOptionSet(const QString &option) const;
 	void setAdvancedOption(const QString &option, bool value);
 	void setAdvancedOption(const QString &option, QString value);

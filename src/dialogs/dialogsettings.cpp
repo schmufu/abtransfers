@@ -146,11 +146,7 @@ void DialogSettings::loadFromSettings()
 	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
 	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
 
-	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(
-			this->settings->isAdvancedOptionSet("ManualOutboxRearrange"));
-
-	this->ui->lineEdit_regexPurpose->setText(this->settings->allowedCharsPurposeRegex());
-	this->ui->lineEdit_regexRecipient->setText(this->settings->allowedCharsRecipientRegex());
+	this->loadAdvancedSettings();
 
 	this->loadFavoriteImExpFromSettings();
 
@@ -181,7 +177,6 @@ void DialogSettings::loadFromSettings()
 			break;
 		}
 	}
-
 }
 
 //private
@@ -203,6 +198,8 @@ void DialogSettings::saveToSettings()
 	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
 	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
 
+	//Hint: the advanced options are only saved by this->settings if the
+	//      advanced options are enabled!
 	this->settings->setAdvancedOption("ManualOutboxRearrange",
 			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
 
@@ -220,6 +217,7 @@ void DialogSettings::saveToSettings()
 	this->settings->setAdvancedOption("RegexRecipient",
 					  this->ui->lineEdit_regexRecipient->text());
 
+
 	this->settings->setAutoAddNewRecipients(this->ui->checkBox_autoAddNewRecipients->isChecked());
 
 	this->settings->setAutoExportEnabled(this->ui->checkBox_autoExport->isChecked());
@@ -230,6 +228,25 @@ void DialogSettings::saveToSettings()
 
 	this->saveFavoriteImExpToSettings();
 
+}
+
+//private
+/** \brief only loads and updates the advanced settings options! */
+void DialogSettings::loadAdvancedSettings(bool updateState /* = true */)
+{
+	bool checked;
+
+	checked = this->settings->isAdvancedEnabled();
+	this->ui->checkBox_adv_iKnowWhatIDo->setChecked(checked);
+
+	if (updateState)
+		this->setAdvancedOptionState(checked);
+
+	checked = this->settings->isAdvancedOptionSet("ManualOutboxRearrange");
+	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(checked);
+
+	this->ui->lineEdit_regexPurpose->setText(this->settings->allowedCharsPurposeRegex());
+	this->ui->lineEdit_regexRecipient->setText(this->settings->allowedCharsRecipientRegex());
 }
 
 void DialogSettings::loadFavoriteImExpFromSettings()
@@ -461,6 +478,25 @@ void DialogSettings::refreshAutoExportComboBoxPlugin()
 
 	//restore previous selected entry
 	this->ui->comboBox_plugin->setCurrentIndex(idx);
+}
+
+//private
+/** \brief sets the advanced options state
+ *
+ * Enables or disables the input to the the advanced option fields depending
+ * on the supplied \a enabled value.
+ */
+void DialogSettings::setAdvancedOptionState(bool enabled)
+{
+	this->ui->checkBox_adv_manualOutboxRearrange->setEnabled(enabled);
+	this->ui->lineEdit_regexPurpose->setEnabled(enabled);
+	this->ui->label_12->setEnabled(enabled);
+	this->ui->lineEdit_regexRecipient->setEnabled(enabled);
+	this->ui->label_13->setEnabled(enabled);
+
+	//the state is set already, do not update it. Otherwise we get a
+	//circular calling!
+	this->loadAdvancedSettings(false);
 }
 
 //private
@@ -1097,4 +1133,18 @@ void DialogSettings::on_checkBox_autoExport_toggled(bool checked)
 	this->ui->label_9->setEnabled(checked);
 	this->ui->label_10->setEnabled(checked);
 	this->ui->label_11->setEnabled(checked);
+}
+
+//private slot
+/** \brief gets called when the checked value is changed.
+ *
+ * Saves the value immediately so that others functions can use this to
+ * evaluate if edits are allowed or not.
+ *
+ * Also update the enabled options for the advanced edits.
+*/
+void DialogSettings::on_checkBox_adv_iKnowWhatIDo_toggled(bool checked)
+{
+	this->settings->setAdvancedOptionEnabled(checked);
+	this->setAdvancedOptionState(checked);
 }

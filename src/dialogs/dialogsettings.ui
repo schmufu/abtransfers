@@ -937,6 +937,20 @@ nach dem Starten zum Institut übertragen.</string>
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkBox_adv_iKnowWhatIDo">
+         <property name="text">
+          <string>Ich weiß was ich mache. Änderungen zulassen!</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="checkBox_adv_manualOutboxRearrange">
          <property name="whatsThis">
           <string>Wenn diese Option aktiviert ist können die Aufträge im Ausgang in der vorgegebenen Reihenfolge verändert werden.
