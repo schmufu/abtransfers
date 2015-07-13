@@ -49,31 +49,31 @@
  *  application executeable is used (TARGET from .pro file), otherwise the
  *  name defined here.
  */
-QT_STATIC_CONST QString TC_APPNAME = "abtransfers";
+static const QString TC_APPNAME = "abtransfers";
 
 /** default language (tr() in the source is used with this language) */
-QT_STATIC_CONST QString TC_DEFAULT_LANGUAGE = "Deutsch";
+static const QString TC_DEFAULT_LANGUAGE = "Deutsch";
 /** default locale for TC_DEFAULT_LANGUAGE */
-QT_STATIC_CONST QString TC_DEFAULT_LOCALE = "de_DE";
+static const QString TC_DEFAULT_LOCALE = "de_DE";
 /** default translation verison number (if none is supplied by the translator) */
-QT_STATIC_CONST double TC_DEFAULT_VERSION_NR = 0.0;
+static const double TC_DEFAULT_VERSION_NR = 0.0;
 
 /** directory in the resources under which the *.qm files are */
-QT_STATIC_CONST QString TC_TRANS_RESOURCE_DIRNAME = "translation/";
+static const QString TC_TRANS_RESOURCE_DIRNAME = "translation/";
 /** addional directory for nearly every path */
-QT_STATIC_CONST QString TC_TRANSLATION_DIRNAME = "translation/";
+static const QString TC_TRANSLATION_DIRNAME = "translation/";
 /** directory for system wide shared data (mainly used under Linux) */
-QT_STATIC_CONST QString TC_SYSTEM_SHARED = "/usr/share/";
+static const QString TC_SYSTEM_SHARED = "/usr/share/";
 /** directory for Mac OS resources within an Application package
  *  (only supported unter Mac OS) */
-QT_STATIC_CONST QString TC_RESOURCES_MAC = "/../Resources/";
+static const QString TC_RESOURCES_MAC = "/../Resources/";
 
 /** convenient access to TC_TRANS_RESOURCE_DIRNAME */
-QT_STATIC_CONST QString TC_TRANS_RESOURCE_STRING =
+static const QString TC_TRANS_RESOURCE_STRING =
 				QString(":/").append(TC_TRANS_RESOURCE_DIRNAME);
 
 /** directory for translations within the users home directory */
-QT_STATIC_CONST QString APP_SETTINGS_DIRNAME = "/.abtransfers/";
+static const QString APP_SETTINGS_DIRNAME = "/.abtransfers/";
 
 
 /** \brief data class that is only used within the TranslationChooser class.
