@@ -44,10 +44,10 @@
 
 
 /** default regular expression for valid characters at the purpose field. */
-QT_STATIC_CONST QString DEFAULT_REGEX_PURPOSE = "[-+ .,/*&%0-9A-Za-z]";
+static const QString DEFAULT_REGEX_PURPOSE = "[-+ .,/*&%0-9A-Za-z]";
 
 /** default regular expression for valid characters at the recipient and bankname field. */
-QT_STATIC_CONST QString DEFAULT_REGEX_RECIPIENT = "[-+ .,/*&%0-9A-Za-z]";
+static const QString DEFAULT_REGEX_RECIPIENT = "[-+ .,/*&%0-9A-Za-z]";
 
 
 /** \brief saves and restores settings which can be modified by the user */

@@ -45,7 +45,7 @@
 #include "pages/page_history.h"
 
 //uncomment the following if access to pagewidgettests.cpp is wanted
-//#define TESTWIDGETACCESS
+#define TESTWIDGETACCESS
 
 class widgetTransfer;
 class widgetRecurrence;

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011-2013 Patrick Wacker
+ * Copyright (C) 2011-2015 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -30,6 +30,7 @@
 
 #include "abt_conv.h"
 #include <QDebug>
+#include <QTextCodec>
 #include <string>
 #include <stdio.h>
 
@@ -249,13 +250,18 @@ const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 }
 
 //static
-const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList)
+const QStringList abt_conv::GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList,
+							bool fromImport /* = false */)
 {
 	Q_ASSERT(gwenList);
 	QStringList ret;
 
 	for (unsigned int i=0; i<GWEN_StringList_Count(gwenList); ++i) {
-		ret.append(QString::fromUtf8(GWEN_StringList_StringAt(gwenList, i)));
+		if (fromImport) {
+			ret.append(encodeFromAb(GWEN_StringList_StringAt(gwenList, i)));
+		} else {
+			ret.append(QString::fromUtf8(GWEN_StringList_StringAt(gwenList, i)));
+		}
 	}
 
 	return ret;
@@ -273,17 +279,35 @@ const GWEN_STRINGLIST* abt_conv::QStringListToGwenStringList(const QStringList &
 
 	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
 	for (int i=0; i<l.size(); ++i) {
-		QString s = l.at(i);
+		std::string s = l.at(i).toStdString();
 		//we allocate memory for a normal c string, so that
 		//GWEN_StringList_free() can free it
-		char *c = (char*)malloc(sizeof(char)*s.toStdString().length()+1);
-		strcpy(c, s.toStdString().c_str());
+		char *c = (char*)malloc(sizeof(char) * s.length() + 1);
+		strcpy(c, s.c_str());
 		//GWEN_StringList_free() will also free the allocated c string
 		GWEN_StringList_AppendString(gwl, c, 1, 0);
 	}
 	//remember the GWEN_STRINGLIST, so that freeAllGwenLists() can delete it
 	abt_conv::gwen_strlist->append(gwl);
 	return gwl;
+
+//	GWEN_STRINGLIST *gwl = GWEN_StringList_new();
+//	for (int i=0; i<l.size(); ++i) {
+//		//QString s = l.at(i);
+//		const char* str = encodeToAb(l.at(i));
+//		//const char* str = l.at(i).toStdString().c_str();
+//		//we allocate memory for a normal c string, so that
+//		//GWEN_StringList_free() can free it
+//		qDebug() << str;
+//		int len = strlen(str);
+//		char *c = (char*)malloc(sizeof(char) * len + 1);
+//		strcpy(c, str);
+//		//GWEN_StringList_free() will also free the allocated c string
+//		GWEN_StringList_AppendString(gwl, c, 1, 0);
+//	}
+//	//remember the GWEN_STRINGLIST, so that freeAllGwenLists() can delete it
+//	abt_conv::gwen_strlist->append(gwl);
+//	return gwl;
 }
 
 //static
@@ -305,9 +329,9 @@ const QString abt_conv::ABValueToString(const AB_VALUE *value, bool asDecimal)
 	} else {
 		GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
 		AB_Value_toString(value, buf);
-		std::string result(GWEN_Buffer_GetStart(buf));
+		QString ret = encodeFromAb(GWEN_Buffer_GetStart(buf));
 		GWEN_Buffer_free(buf);
-		return QString::fromStdString(result);
+		return ret;
 	}
 }
 
@@ -328,16 +352,51 @@ AB_VALUE* abt_conv::ABValueFromString(const QString &str, const QString &currenc
 		return NULL;
 	}
 
-	std::string s = str.toStdString();
 	AB_VALUE *val;
-	val = AB_Value_fromString(s.c_str());
-	QString cur = currency.toUtf8();
-	std::string c = cur.toStdString();
-	AB_Value_SetCurrency(val, c.c_str());
+	val = AB_Value_fromString(str.toStdString().c_str());
+	AB_Value_SetCurrency(val, currency.toStdString().c_str());
 	//remember the AB_VALUE, so that freeAllGwenLists() can delete it
 	abt_conv::gwen_abvlist->append(val);
 	return val;
 }
+
+//static
+/** \brief converts a QString (Unicode) to a value that the Im-/Exporter of
+ *	   AqBanking can handle.
+ *
+ */
+const char* abt_conv::encodeToAb(const QString &str)
+{
+	return str.toStdString().c_str();
+	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+	QByteArray encodedStr = codec->fromUnicode(str);
+	return encodedStr;
+}
+
+//static
+/** \brief converts a const char* from the Im-/Exporter of AqBanking to a
+ *	   QString.
+ *
+ */
+const QString abt_conv::encodeFromAb(const char* str)
+{
+	if (QTextCodec::codecForCStrings() != NULL) {
+		qWarning() << Q_FUNC_INFO
+			   << "WARNING QTextCodec::codecForCString() is set!"
+			   << "This results to a doulbe conversion from UTF-8!";
+		return QString::fromUtf8(str);
+	}
+
+	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+	QString ret;
+
+	ret = codec->toUnicode(str);
+//	qDebug() << Q_FUNC_INFO << "1:" << ret;
+	ret = QString::fromUtf8(ret.toStdString().c_str());
+	qDebug() << Q_FUNC_INFO << "returning:" << ret;
+	return ret;
+}
+
 
 /** @brief must be called at the termination of the program so that ALL created
  *  list are deleted.

@@ -250,7 +250,7 @@ void aqb_AccountInfo::setAccountStatus(AB_ACCOUNT_STATUS *as)
 //protected
 AB_IMEXPORTER_CONTEXT *aqb_AccountInfo::getContext() const
 {
-	//Dadurch das die aufrugende Funktion über AB_ImExporterContext_free()
+	//Dadurch das die aufrufende Funktion über AB_ImExporterContext_free()
 	//den Context wieder freigibt dürfen wir nur kopien unserer Daten in den
 	//Context einfügen, ansonsten würden die Daten in unserem Objekt
 	//gelöscht werden.

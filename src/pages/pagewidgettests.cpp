@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 Patrick Wacker
+ * Copyright (C) 2011, 2014-2015 Patrick Wacker
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -33,6 +33,8 @@
 #include <QList>
 #include <QHBoxLayout>
 #include <QPushButton>
+
+#include <QTextCodec>
 
 
 pageWidgetTests::pageWidgetTests(aqb_Accounts *accs, QWidget *parent) :
@@ -92,7 +94,7 @@ void pageWidgetTests::onButton1Clicked()
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
 
-	aqb_AccountInfo *acc = this->accounts->getAccount(5);
+	aqb_AccountInfo *acc = this->accounts->getAccount("1234567891");
 
 	if (acc == NULL) {
 		this->textEdit->appendPlainText("Account == NULL --> abort");
@@ -103,10 +105,10 @@ void pageWidgetTests::onButton1Clicked()
 	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
 	t->setRemoteAccountNumber("123456");
 	t->setRemoteBankCode("29050101");
-	t->setRemoteBankName("Sparkasse Bremen");
-	t->setRemoteName(QStringList("Test User"));
+	t->setRemoteBankName(QString::fromUtf8("Sparkasse Brämen"));
+	t->setRemoteName(QStringList("Test Üser"));
 	t->setValue(abt_conv::ABValueFromString("5.44", "EUR"));
-	t->setPurpose(QStringList("Verwendungszweck Test1"));
+	t->setPurpose(QStringList("Überweisung Öfter"));
 	t->setTextKey(51);
 
 
@@ -119,11 +121,26 @@ void pageWidgetTests::onButton1Clicked()
 	AB_ImExporterContext_AddAccountInfo(this->iec1, this->iea1);
 	const QList<abt_standingOrderInfo*> *stos;
 	stos = acc->getKnownStandingOrders();
-	for (int i=0; i<stos->size(); i++) {
-		AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
+	if (stos != NULL) {
+		for (int i=0; i<stos->size(); i++) {
+			AB_ImExporterContext_AddStandingOrder(this->iec1, AB_Transaction_dup(stos->at(i)->getTransaction()->getAB_Transaction()));
+		}
 	}
 
+	AB_TRANSACTION *t2 = AB_Transaction_dup(t->getAB_Transaction());
 
+	QString bn = "Sparkasse AeÄ UeÜ OeÖ aeä ueü oeö";
+	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+	QByteArray encodedString = codec->fromUnicode(bn);
+	qDebug() << encodedString;
+	qDebug() << bn;
+
+
+
+//	AB_Transaction_SetRemoteBankName(t2, abt_conv::encodeToAb(bn));
+	AB_Transaction_SetRemoteBankName(t2, bn.toStdString().c_str());
+	AB_Transaction_SetPurpose(t2, abt_conv::QStringListToGwenStringList(QStringList("AeÄ UeÜ OeÖ aeä ueü oeö")));
+	AB_ImExporterContext_AddTransfer(this->iec1, t2);
 
 
 //	int 	AB_Banking_FillGapsInImExporterContext (AB_BANKING *ab, AB_IMEXPORTER_CONTEXT *iec)
@@ -137,7 +154,7 @@ void pageWidgetTests::onButton1Clicked()
 
 	int ret = AB_Banking_ExportToFile(banking->getAqBanking(), this->iec1, "ctxfile", "default", "/tmp/exporterFilename.ctx");
 
-	this->textEdit->appendPlainText(QString("%1").arg(ret));
+	this->textEdit->appendPlainText(QString("/tmp/exporterFilename.ctx saved (0=OK): %1").arg(ret));
 
 
 	delete t;
@@ -173,6 +190,21 @@ void pageWidgetTests::onButton3Clicked()
 {
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
 
+
+	QString t1 = "Grün Weiß";
+	addlog(t1);
+	addlog(t1.toStdString().c_str());
+	addlog(QString::fromUtf8("Grün Weiß"));
+	//qDebug() << QTextCodec::codecForCStrings()->availableCodecs());
+	addlog(QTextCodec::codecForLocale()->name());
+	addlog(QTextCodec::codecForUtfText(QByteArray("Mäüö"))->name());
+	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+	addlog(codec->toUnicode(QByteArray::fromPercentEncoding("Gr%C3%BCn Wei%C3%9F")));
+	addlog(QString::fromUtf8(QByteArray::fromPercentEncoding("Gr%C3%BCn Wei%C3%9F")));
+	t1 = QString::fromUtf8("Gr%C3%BCn Wei%C3%9F");
+	addlog(t1);
+	QByteArray a = QByteArray::fromRawData(t1.toStdString().c_str(), t1.length());
+	addlog(QString("%1 - %2").arg(t1).arg(QString(a.toPercentEncoding())));
 
 
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
@@ -217,9 +249,15 @@ void pageWidgetTests::onButton7Clicked()
 void pageWidgetTests::onButton8Clicked()
 {
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" started"));
-
-
-
+	qDebug() << "\n" << "AVAILABLE CODECS:";
+	qDebug() << QTextCodec::availableCodecs();
+	qDebug() << "\n";
+//	qDebug() << "for CStrings:" << QTextCodec::codecForCStrings();
+	qDebug() << "for Locale  :" << QTextCodec::codecForLocale()->name();
+//	qDebug() << "for Tr()    :" << QTextCodec::codecForTr()->name();
+	qDebug() << "for UtfText :" << QTextCodec::codecForUtfText(QByteArray("Sparkasse Brämen"))->name();
+	qDebug() << "for System  :" << QTextCodec::codecForName("System")->name();
+	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" printed supported codecs at stdout"));
 	this->textEdit->appendPlainText(QString(Q_FUNC_INFO).append(" ended"));
 }
 
@@ -587,6 +625,87 @@ void pageWidgetTests::parseContext(AB_IMEXPORTER_CONTEXT *ctx)
 
 		t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);
 		while (t) {
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << AB_Transaction_GetRemoteBankName(t);
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString(QByteArray::fromPercentEncoding(AB_Transaction_GetRemoteBankName(t)));
+//			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromAscii(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromLatin1(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromLocal8Bit(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromStdString(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromUtf8(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QByteArray::fromPercentEncoding(QString::fromLatin1(AB_Transaction_GetRemoteBankName(t)).toLatin1());
+			qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QString::fromUtf8(QByteArray::fromPercentEncoding(AB_Transaction_GetRemoteBankName(t)));
+
+			QByteArray encodedString = AB_Transaction_GetRemoteBankName(t);
+			QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+			qDebug() << Q_FUNC_INFO << "1" << codec->name();
+			qDebug() << Q_FUNC_INFO << "1 Should always work1:" << codec->toUnicode(encodedString);
+			qDebug() << Q_FUNC_INFO << "1 Should always work2:" << codec->toUnicode(AB_Transaction_GetRemoteBankName(t));
+			codec = QTextCodec::codecForCStrings();
+			if (codec) {
+				qDebug() << Q_FUNC_INFO << "2" << codec->name();
+				qDebug() << Q_FUNC_INFO << "2 Should always work1:" << codec->toUnicode(encodedString);
+				qDebug() << Q_FUNC_INFO << "2 Should always work2:" << codec->toUnicode(AB_Transaction_GetRemoteBankName(t));
+			}
+			codec = QTextCodec::codecForLocale();
+			qDebug() << Q_FUNC_INFO << "3" << codec->name();
+			qDebug() << Q_FUNC_INFO << "3 Should always work1:" << QString(codec->toUnicode(encodedString).toStdString().c_str());
+			qDebug() << Q_FUNC_INFO << "3 Should always work2:" << QString::fromAscii(codec->toUnicode(encodedString).toStdString().c_str());
+			qDebug() << Q_FUNC_INFO << "3 Should always work3:" << QString::fromUtf8(codec->toUnicode(encodedString).toStdString().c_str());
+			qDebug() << Q_FUNC_INFO << "3 Should always work4:" << codec->toUnicode(AB_Transaction_GetRemoteBankName(t));
+			qDebug() << Q_FUNC_INFO << "3 Should always work5:" << QString::fromUtf8(AB_Transaction_GetRemoteBankName(t));
+			codec = QTextCodec::codecForUtfText(encodedString);
+			qDebug() << Q_FUNC_INFO << "4" << codec->name();
+			qDebug() << Q_FUNC_INFO << "4 Should always work1:" << codec->toUnicode(encodedString);
+			qDebug() << Q_FUNC_INFO << "4 Should always work2:" << codec->toUnicode(AB_Transaction_GetRemoteBankName(t));
+
+			qDebug() << Q_FUNC_INFO << "WORKS!:" << abt_conv::encodeFromAb(AB_Transaction_GetRemoteBankName(t));
+
+			const char* str = AB_Transaction_GetRemoteBankName(t);
+			while (*str != 0) {
+				qDebug("*str = 0x%4X = %c", *str, *str);
+				fprintf(stdout, "0x%4X ", *str);
+				str++;
+			}
+			fprintf(stdout, "\n");
+
+			//qDebug() << Q_FUNC_INFO << "RemoteBankName:" << QByteArray::fromRawData(str);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			QString s = QString("%1").arg(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(s);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			QString bankName = abt_conv::encodeFromAb(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = AB_Transaction_GetRemoteBankName(t);
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = QString::fromLocal8Bit(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = QString::fromUtf8(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = QString::fromAscii(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = QString::fromLatin1(AB_Transaction_GetRemoteBankName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
 			logmsg2 = QString("Purpose:\t");
 			l = AB_Transaction_GetPurpose(t);
 			strList = abt_conv::GwenStringListToQStringList(l);
@@ -595,6 +714,7 @@ void pageWidgetTests::parseContext(AB_IMEXPORTER_CONTEXT *ctx)
 
 			logmsg2 = QString("Value:\t");
 			v = AB_Transaction_GetValue(t);
+			qDebug() << Q_FUNC_INFO << "Value:" << abt_conv::ABValueToString(v);
 			logmsg2.append(QString("%1").arg(AB_Value_GetValueAsDouble(v)));
 			this->addlog(logmsg + logmsg2);
 
@@ -603,6 +723,25 @@ void pageWidgetTests::parseContext(AB_IMEXPORTER_CONTEXT *ctx)
 			strList = abt_conv::GwenStringListToQStringList(l);
 			logmsg2.append(strList.join(" - "));
 			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("LocalName:\t");
+			bankName = QString::fromUtf8(AB_Transaction_GetLocalName(t));
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			abt_transaction trans(t);
+			this->addlog("----- abt_transaction usage below -----");
+
+			logmsg2 = QString("LocalName:\t");
+			bankName = trans.getLocalName();
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
+			logmsg2 = QString("RemoteBankName:\t");
+			bankName = trans.getRemoteBankName();
+			logmsg2.append(bankName);
+			this->addlog(logmsg + logmsg2);
+
 
 			t = AB_ImExporterAccountInfo_GetNextTransfer(ai);
 		}

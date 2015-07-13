@@ -196,11 +196,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->timer->setSingleShot(true);
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(TimerTimeOut()));
 	this->timer->start(10);
-
-#ifdef TESTWIDGETACCESS
-	this->ui->menuBar->addAction(this->actTestWidgetAccess);
-#endif
-
 }
 
 MainWindow::~MainWindow()
@@ -472,8 +467,10 @@ void MainWindow::createActions()
 
 
 #ifdef TESTWIDGETACCESS
-	actTestWidgetAccess = new QAction(tr("TestWidget"), this);
+	actTestWidgetAccess = new QAction(this);
+	actTestWidgetAccess->setText(tr("TestWidget"));
 	connect(actTestWidgetAccess, SIGNAL(triggered()), this, SLOT(onActionTestWidgetAccessTriggered()));
+	this->ui->menuBar->addAction(this->actTestWidgetAccess);
 #endif
 
 

@@ -173,10 +173,10 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const
 {
 	Q_ASSERT(a);
-	QString kto = AB_Account_GetAccountNumber(a);
-	QString blz = AB_Account_GetBankCode(a);
-	QString name = AB_Account_GetAccountName(a);
-	QString owner = AB_Account_GetOwnerName(a);
+	QString kto = QString::fromUtf8(AB_Account_GetAccountNumber(a));
+	QString blz = QString::fromUtf8(AB_Account_GetBankCode(a));
+	QString name = QString::fromUtf8(AB_Account_GetAccountName(a));
+	QString owner = QString::fromUtf8(AB_Account_GetOwnerName(a));
 
 	return this->getAccount(kto, blz, owner, name);
 }

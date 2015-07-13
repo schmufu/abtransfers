@@ -126,7 +126,7 @@ public:
 	/** \brief gibt den enthaltenen AB_Job zurück (could be NULL!) */
 	AB_JOB *getJob() const;
 
-	const abt_transaction* getTransaction() const { return this->m_trans; };
+	const abt_transaction* getTransaction() const { return this->m_trans; }
 
 	const AB_ACCOUNT* getAbAccount() const;
 
@@ -135,7 +135,7 @@ public:
 	int getAccountID() const;
 };
 
-Q_DECLARE_METATYPE(abt_jobInfo*);
-Q_DECLARE_METATYPE(const abt_jobInfo*);
+Q_DECLARE_METATYPE(abt_jobInfo*)
+Q_DECLARE_METATYPE(const abt_jobInfo*)
 
 #endif // ABT_JOBINFO_H

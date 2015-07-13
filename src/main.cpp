@@ -64,10 +64,10 @@ int main(int argc, char *argv[])
 	//setCodecForTr() and setCodedForCString() are removed in Qt 5.0.0
 	//see http://qt-project.org/doc/qt-5.0/qtdoc/sourcebreaks.html
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+	//QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 #endif
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 	//create the DebugDialogWidget, that displays all qDebug(), qWarning()
 	//etc. messages and install the MsgHandler that redirect the messages.

@@ -195,7 +195,7 @@ QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 {
 	AB_BANKINFO *bankinfo;
 	QString Institute = "NO INFORMATION";
-	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BLZ.toUtf8());
+	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BLZ.toStdString().c_str());
 
 	if (bankinfo) {
 		Institute = QString::fromUtf8(AB_BankInfo_GetBankName(bankinfo));
@@ -244,8 +244,10 @@ bool aqb_banking::checkAccount(const QString &country, const QString &branchId,
 {
 	AB_BANKINFO_CHECKRESULT res;
 	res = AB_Banking_CheckAccount(this->ab,
-				      country.toUtf8(), branchId.toUtf8(),
-				      bankId.toUtf8(), accountId.toUtf8());
+				      country.toStdString().c_str(),
+				      branchId.toStdString().c_str(),
+				      bankId.toStdString().c_str(),
+				      accountId.toStdString().c_str());
 	switch (res) {
 	case AB_BankInfoCheckResult_Ok:
 		result = QObject::tr("OK");

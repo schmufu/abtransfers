@@ -71,11 +71,14 @@ public:
 	static const QDate GwenTimeToQDate(const GWEN_TIME *gwen_time);
 	static const GWEN_TIME* QDateToGwenTime(const QDate &date);
 
-	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList);
+	static const QStringList GwenStringListToQStringList(const GWEN_STRINGLIST *gwenList, bool fromImport = false);
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
 	static const QString ABValueToString(const AB_VALUE *value, bool asDecimal=false);
 	static AB_VALUE* ABValueFromString(const QString &str, const QString &currency = "EUR");
+
+	static const char* encodeToAb(const QString &str);
+	static const QString encodeFromAb(const char* str);
 
 	static void freeAllGwenLists();
 
