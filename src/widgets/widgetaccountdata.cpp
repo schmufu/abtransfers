@@ -110,17 +110,17 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 	QHBoxLayout *hl_acc = new QHBoxLayout(); // layout for kto, blz
 	QHBoxLayout *hl_sepa = new QHBoxLayout(); // layout for iban, bic
 
-	validatorAccNr->setRegExp(QRegExp("\\d*", Qt::CaseSensitive));
-	validatorBLZ->setRegExp(QRegExp("\\d{3} ?\\d{3} ?\\d{2}", Qt::CaseSensitive));
-	validatorIBAN->setRegExp(QRegExp("[a-zA-Z]{2}[0-9]{2} ?[a-zA-Z0-9]{4} ?[0-9]{4} ?[0-9]{3}([a-zA-Z0-9]?){0,1} ?([ a-zA-Z0-9]?){0,15}", Qt::CaseSensitive));
-	validatorBIC->setRegExp(QRegExp("([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)", Qt::CaseSensitive));
+	validatorAccNr->setRegExp(QRegExp(QString::fromUtf8("\\d*"), Qt::CaseSensitive));
+	validatorBLZ->setRegExp(QRegExp(QString::fromUtf8("\\d{3} ?\\d{3} ?\\d{2}"), Qt::CaseSensitive));
+	validatorIBAN->setRegExp(QRegExp(QString::fromUtf8("[a-zA-Z]{2}[0-9]{2} ?[a-zA-Z0-9]{4} ?[0-9]{4} ?[0-9]{3}([a-zA-Z0-9]?){0,1} ?([ a-zA-Z0-9]?){0,15}"), Qt::CaseSensitive));
+	validatorBIC->setRegExp(QRegExp(QString::fromUtf8("([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)"), Qt::CaseSensitive));
 
-	this->llName = new widgetLineEditWithLabel(tr("Name"), "", Qt::AlignTop, this);
+	this->llName = new widgetLineEditWithLabel(tr("Name"), QString(), Qt::AlignTop, this);
 
 	if (!sepaFields || recipientInput) {
-		this->llAccountNumber = new widgetLineEditWithLabel(tr("Kontonummer"), "", Qt::AlignTop, this);
+		this->llAccountNumber = new widgetLineEditWithLabel(tr("Kontonummer"), QString(), Qt::AlignTop, this);
 		this->llAccountNumber->lineEdit->setMinimumWidth(170);
-		this->llBankCode = new widgetLineEditWithLabel(tr("Bankleitzahl"), "", Qt::AlignTop, this);
+		this->llBankCode = new widgetLineEditWithLabel(tr("Bankleitzahl"), QString(), Qt::AlignTop, this);
 		this->llBankCode->lineEdit->setMinimumWidth(110);
 		this->llAccountNumber->lineEdit->setValidator(validatorAccNr);
 		this->llBankCode->lineEdit->setValidator(validatorBLZ);
@@ -141,9 +141,9 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 			this, SLOT(lineEditBankCode_editingFinished()));
 	}
 	if (sepaFields) {
-		this->llIBAN = new widgetLineEditWithLabel(tr("IBAN"), "", Qt::AlignTop, this);
+		this->llIBAN = new widgetLineEditWithLabel(tr("IBAN"), QString(), Qt::AlignTop, this);
 		this->llIBAN->lineEdit->setMinimumWidth(170);
-		this->llBIC = new widgetLineEditWithLabel(tr("BIC"), "", Qt::AlignTop, this);
+		this->llBIC = new widgetLineEditWithLabel(tr("BIC"), QString(), Qt::AlignTop, this);
 		this->llBIC->lineEdit->setMinimumWidth(110);
 		this->llIBAN->lineEdit->setValidator(validatorIBAN);
 		this->llBIC->lineEdit->setValidator(validatorBIC);
@@ -167,12 +167,12 @@ void widgetAccountData::createRemoteAccountWidget(bool sepaFields, bool recipien
 	hl_acc->setSpacing(0);
 	hl_sepa->setSpacing(0);
 
-	this->llBankName = new widgetLineEditWithLabel(tr("Kreditinstitut"), "", Qt::AlignTop, this);
+	this->llBankName = new widgetLineEditWithLabel(tr("Kreditinstitut"), QString(), Qt::AlignTop, this);
 
 	//only allow characters that match the regex from the settings
 	//default: "[-+ .,/*&%0-9A-Za-z]"
 	QRegExpValidator *validatorText = new QRegExpValidator(this);
-	QRegExp regex(settings->allowedCharsRecipientRegex().append("*"), Qt::CaseSensitive);
+	QRegExp regex(settings->allowedCharsRecipientRegex().append(QString::fromUtf8("*")), Qt::CaseSensitive);
 	validatorText->setRegExp(regex);
 
 	this->llName->lineEdit->setValidator(validatorText);
@@ -564,7 +564,7 @@ QString widgetAccountData::getName() const
 	if (this->llName->isEnabled()) {
 		return this->llName->lineEdit->text();
 	} else {
-		return QString("");
+		return QString();
 	}
 }
 
@@ -581,7 +581,7 @@ QString widgetAccountData::getAccountNumber() const
 	if (this->llAccountNumber->isEnabled()) {
 		return this->llAccountNumber->lineEdit->text();
 	} else {
-		return QString("");
+		return QString();
 	}
 }
 
@@ -596,9 +596,10 @@ QString widgetAccountData::getIBAN() const
 	}
 
 	if (this->llIBAN->isEnabled()) {
-		return this->llIBAN->lineEdit->text().replace(" ", "");
+		return this->llIBAN->lineEdit->text().replace(QString::fromUtf8(" "),
+							      QString::fromUtf8(""));
 	} else {
-		return QString("");
+		return QString();
 	}
 }
 
@@ -623,12 +624,13 @@ QString widgetAccountData::getBankCode() const
 	if (this->llBankCode->isEnabled()) {
 		//Eingabe ist durch die "Limits" erlaubt.
 		//Wir geben eine BLZ ohne Leerzeichen zurück.
-		return this->llBankCode->lineEdit->text().replace(" ", "");
+		return this->llBankCode->lineEdit->text().replace(QString::fromUtf8(" "),
+								  QString::fromUtf8(""));
 	}
 
 	//Wir sind kein "localAccount" und die Eingabe als "remoteAccount" ist
 	//nicht erlaubt. Wir geben einen leeren String zurück.
-	return QString("");
+	return QString();
 
 }
 
@@ -653,12 +655,13 @@ QString widgetAccountData::getBIC() const
 	if (this->llBIC->isEnabled()) {
 		//Eingabe ist durch die "Limits" erlaubt.
 		//Wir geben eine BIC ohne Leerzeichen zurück.
-		return this->llBIC->lineEdit->text().replace(" ", "");
+		return this->llBIC->lineEdit->text().replace(QString::fromUtf8(" "),
+							     QString::fromUtf8(""));
 	}
 
 	//Wir sind kein "localAccount" und die Eingabe als "remoteAccount" ist
 	//nicht erlaubt. Wir geben einen leeren String zurück.
-	return QString("");
+	return QString();
 
 }
 
@@ -675,7 +678,7 @@ QString widgetAccountData::getBankName() const
 	if (this->llBankName->isEnabled()) {
 		return this->llBankName->lineEdit->text();
 	} else {
-		return QString("");
+		return QString();
 	}
 }
 
@@ -731,8 +734,8 @@ void widgetAccountData::dragEnterEvent(QDragEnterEvent *event)
 	 */
 
 	qulonglong app = (qulonglong)qApp;
-	QString mimetypeRecipient = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
-	QString mimetypeAccount = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+	QString mimetypeRecipient = QString::fromUtf8("application/x-abBanking_%1_KnownRecipient").arg(app);
+	QString mimetypeAccount = QString::fromUtf8("application/x-abBanking_%1_AccountInfo").arg(app);
 
 
 	//qDebug() << "dragEnterEvent: Format =" << event->mimeData()->formats();
@@ -765,8 +768,8 @@ void widgetAccountData::dropEvent(QDropEvent *event)
 	//Über den mimeType wird auch sichergestellt das nur dieselbe Instanz
 	//den übergebenen Pointer verwendet!
 	qulonglong app = (qulonglong)qApp;
-	QString mimetypeRecipient = QString("application/x-abBanking_%1_KnownRecipient").arg(app);
-	QString mimetypeAccount = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+	QString mimetypeRecipient = QString::fromUtf8("application/x-abBanking_%1_KnownRecipient").arg(app);
+	QString mimetypeAccount = QString::fromUtf8("application/x-abBanking_%1_AccountInfo").arg(app);
 
 	if (event->mimeData()->hasFormat(mimetypeRecipient)) {
 		QByteArray encoded = event->mimeData()->data(mimetypeRecipient);

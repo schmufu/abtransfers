@@ -182,8 +182,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeDeleteDatedTransfer:
 			//append a dated transfer to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
-			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
-			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddDatedTransfer(iea, t);
 			break;
 		case AB_Job_TypeCreateStandingOrder:
@@ -191,8 +191,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeDeleteStandingOrder:
 			//append a standing order to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
-			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
-			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddStandingOrder(iea, t);
 			break;
 		case AB_Job_TypeTransfer:
@@ -204,8 +204,8 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		case AB_Job_TypeSepaTransfer:
 			//append a transfer to the history
 			t = AB_Transaction_dup(job->getTransaction()->getAB_Transaction());
-			AB_Transaction_AddCategory(t, QString("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
-			AB_Transaction_AddCategory(t, QString("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobStatus: %1").arg(job->getAbJobStatus()).toUtf8(), 1);
+			AB_Transaction_AddCategory(t, QString::fromUtf8("JobType: %1").arg(job->getAbJobType()).toUtf8(), 1);
 			AB_ImExporterAccountInfo_AddTransfer(iea, t);
 			break;
 

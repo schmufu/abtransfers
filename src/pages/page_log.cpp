@@ -57,7 +57,7 @@ void page_log::changeEvent(QEvent *e)
 
 void page_log::setLogText(const QStringList *strList)
 {
-	this->ui->textEdit->setHtml(strList->join("<br />"));
+	this->ui->textEdit->setHtml(strList->join(QString::fromUtf8("<br />")));
 }
 
 void page_log::appendLogText(const QString &str)

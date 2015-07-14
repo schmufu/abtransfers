@@ -65,9 +65,9 @@ public:
 
 	/** \brief returns the account that matches or NULL */
 	aqb_AccountInfo* getAccount(const QString &kontonummer,
-				    const QString &blz = "",
-				    const QString &owner = "",
-				    const QString &name = "") const;
+				    const QString &blz = QString(),
+				    const QString &owner = QString(),
+				    const QString &name = QString()) const;
 	/** \overload */
 	aqb_AccountInfo* getAccount(const AB_ACCOUNT *a) const;
 

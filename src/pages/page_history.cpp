@@ -56,11 +56,14 @@ page_history::page_history(const abt_history *history, QWidget *parent) :
 	ui->setupUi(this);
 
 	QIcon ico;
-	ico = QIcon::fromTheme("document-new", QIcon(":/icons/document-new"));
+	ico = QIcon::fromTheme(QString::fromUtf8("document-new"),
+			       QIcon(QString::fromUtf8(":/icons/document-new")));
 	this->ui->toolButton_new->setIcon(ico);
-	ico = QIcon::fromTheme("document-export", QIcon(":/icons/document-export"));
+	ico = QIcon::fromTheme(QString::fromUtf8("document-export"),
+			       QIcon(QString::fromUtf8(":/icons/document-export")));
 	this->ui->toolButton_export->setIcon(ico);
-	ico = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+	ico = QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+			       QIcon(QString::fromUtf8(":/icons/delete")));
 	this->ui->toolButton_delete->setIcon(ico);
 
 	this->history = history;
@@ -130,15 +133,15 @@ void page_history::setTreeWidgetColWidths()
 	if (ui->treeWidget->isHeaderHidden())
 		return; //do nothing! No items shown.
 
-	int width = settings->getColWidth("history", 0, 210);
+	int width = settings->getColWidth(QString::fromUtf8("history"), 0, 210);
 	ui->treeWidget->setColumnWidth(0, width); //type
-	width = settings->getColWidth("history", 1, 135);
+	width = settings->getColWidth(QString::fromUtf8("history"), 1, 135);
 	ui->treeWidget->setColumnWidth(1, width); //recipient
-	width = settings->getColWidth("history", 2, 200);
+	width = settings->getColWidth(QString::fromUtf8("history"), 2, 200);
 	ui->treeWidget->setColumnWidth(2, width); //purpose
-	width = settings->getColWidth("history", 3, 90);
+	width = settings->getColWidth(QString::fromUtf8("history"), 3, 90);
 	ui->treeWidget->setColumnWidth(3, width); //value
-	width = settings->getColWidth("history", 4, 105);
+	width = settings->getColWidth(QString::fromUtf8("history"), 4, 105);
 	ui->treeWidget->setColumnWidth(4, width); //date
 }
 
@@ -284,7 +287,7 @@ void page_history::onActDeleteSelected()
 	abt_dialog dialog(this, msgTitle, msgText,
 			  QDialogButtonBox::Yes | QDialogButtonBox::No,
 			  QDialogButtonBox::Yes, QMessageBox::Question,
-			  "HistoryConfirmDelete");
+			  QString::fromUtf8("HistoryConfirmDelete"));
 	int ret = dialog.exec();
 
 	if (ret != QDialogButtonBox::Yes) {
@@ -332,7 +335,7 @@ QMenu *page_history::createExportContextMenu(QWidget* /* parent */,
 		foreach (aqb_ieProfile *profile, *plugin->getProfiles()) {
 			//if this is not an export-profile, we cant use it.
 			//Therefore, export must exist and must be unequal 0
-			if (!profile->getNames()->contains("export") ||
+			if (!profile->getNames()->contains(QString::fromUtf8("export")) ||
 			    profile->getValue("export").toInt() == 0) {
 				continue; //next profile
 			}
@@ -349,12 +352,12 @@ QMenu *page_history::createExportContextMenu(QWidget* /* parent */,
 			//check if the profile is favorite and add it to the
 			//preferred submenu with the plugin-name as prefix
 			QString key = plugin->getName();
-			key.append("/");
+			key.append(QString::fromUtf8("/"));
 			key.append(profile->getValue("name").toString());
 			if (settings->isProfileFavorit(key)) {
 				QAction *prefItem = new QAction(preferredMenu);
 				QString itemText = item->text();
-				itemText.prepend(" - ");
+				itemText.prepend(QString::fromUtf8(" - "));
 				itemText.prepend(plugin->getName());
 				prefItem->setText(itemText);
 				prefItem->setUserData(0,
@@ -403,9 +406,10 @@ void page_history::onActExportSelected()
 	AB_IMEXPORTER_CONTEXT *ctx = NULL;
 	aqb_iePlugin *plugin = NULL;
 	aqb_ieProfile *profile = NULL;
-	QString saveFilename = "";
-	QString dialogTitle = "";
-	QString tmpstr = "";
+	QString saveFilename = QString();
+	QString dialogTitle = QString();
+	QString tmpstr = QString();
+	QString profileName = QString();
 
 	aqb_imexporters *iep = new aqb_imexporters(banking->getAqBanking());
 	QMenu *exportConextMenu = this->createExportContextMenu(this, iep);
@@ -451,13 +455,14 @@ void page_history::onActExportSelected()
 		goto ONACTEXPORTSELECTED_CLEANUP;
 	}
 
+	profileName = profile->getValue("name").toString();
 	qDebug() << Q_FUNC_INFO << "selected Plugin :" << plugin->getName();
-	qDebug() << Q_FUNC_INFO << "selected Profile:" << profile->getValue("name").toString();
+	qDebug() << Q_FUNC_INFO << "selected Profile:" << profileName;
 
 	//Now we need to know where to store the data
 	dialogTitle = tr("(%1 / %2) Export ...")
 		      .arg(plugin->getName())
-		      .arg(profile->getValue("name").toString());
+		      .arg(profileName);
 	saveFilename = QFileDialog::getSaveFileName(this, dialogTitle,
 						    settings->getDataDir());
 
@@ -471,10 +476,10 @@ void page_history::onActExportSelected()
 	}
 
 	if (ctx) {
-		err = AB_Banking_ExportToFile(banking->getAqBanking(),
-					      ctx, plugin->getName(),
-					      profile->getValue("name").toString().toUtf8(),
-					      saveFilename.toUtf8());
+		err = AB_Banking_ExportToFile(banking->getAqBanking(), ctx,
+					      plugin->getName().toStdString().c_str(),
+					      profileName.toStdString().c_str(),
+					      saveFilename.toStdString().c_str());
 	} else {
 		err = 99; //no ctx available!
 	}
@@ -562,7 +567,7 @@ void page_history::refreshTreeWidget(const abt_history *hist)
 		topItem->setData(2, Qt::DisplayRole, trans->getPurpose().at(0));
 
 		QString value = abt_conv::ABValueToString(trans->getValue(), true);
-		value.append(" EUR");
+		value.append(QString::fromUtf8(" EUR"));
 		topItem->setData(3, Qt::DisplayRole, value);
 
 		//the idForApplication is the unix timestamp of the creation
@@ -645,7 +650,7 @@ void page_history::onTreeWidgetColumnResized(int column, int /* oldSize */, int 
 	if (!this->ui->treeWidget->isHeaderHidden()) {
 		//if no header is displayed there are no columns.
 		//Only save the width when headers are visible.
-		settings->saveColWidth("history", column, newSize);
+		settings->saveColWidth(QString::fromUtf8("history"), column, newSize);
 	}
 }
 

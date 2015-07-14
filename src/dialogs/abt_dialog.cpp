@@ -69,7 +69,7 @@ abt_dialog::abt_dialog(QWidget *parent,
 	}
 
 	//Icon entsprechend der vorgabe einstellen
-	this->ui->label_Icon->setText(""); //keine Beschriftung
+	this->ui->label_Icon->setText(QString()); //keine Beschriftung
 	QIcon tmpIcon;
 	QStyle *style = parent ? parent->style() : QApplication::style();
 	int iconSize = style->pixelMetric(QStyle::PM_MessageBoxIconSize, 0, parent);

@@ -103,19 +103,22 @@ void widgetKnownStandingOrders::createAllActions()
 	actDelete = new QAction(this);
 	actDelete->setText(tr("Löschen"));
 	actDelete->setToolTip(tr("Ausgewählten Dauerauftrag löschen"));
-	actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
+	actDelete->setIcon(QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+					    QIcon(QString::fromUtf8(":/icons/delete"))));
 	connect(actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
 	actEdit= new QAction(this);
 	actEdit->setText(tr("Ändern"));
 	actEdit->setToolTip(tr("Ausgewählten Dauerauftrag bearbeiten"));
-	actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
+	actEdit->setIcon(QIcon::fromTheme(QString::fromUtf8("document-edit"),
+					  QIcon(QString::fromUtf8(":/icons/document-edit"))));
 	connect(actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 
 	actRefresh= new QAction(this);
 	actRefresh->setText(tr("Aktualisieren"));
 	actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten Daueraufträge"));
-	actRefresh->setIcon(QIcon::fromTheme("edit-redo", QIcon(":/icons/edit-redo")));
+	actRefresh->setIcon(QIcon::fromTheme(QString::fromUtf8("edit-redo"),
+					     QIcon(QString::fromUtf8(":/icons/edit-redo"))));
 	connect(actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
 }
 
@@ -145,10 +148,10 @@ void widgetKnownStandingOrders::setItemInformation(QTreeWidgetItem *item,
 	item->setData(2, Qt::DisplayRole, t->getRemoteName().at(0));
 
 	const AB_VALUE *v = t->getValue();
-	QString amount = "";
+	QString amount = QString();
 	if (v != NULL) {
 		amount = abt_conv::ABValueToString(v, true);
-		amount.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+		amount.append(QString::fromUtf8(" %1").arg(QString::fromUtf8(AB_Value_GetCurrency(v))));
 	}
 	item->setData(3, Qt::DisplayRole, amount);
 

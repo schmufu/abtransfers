@@ -100,7 +100,7 @@ abt_transactionLimits::abt_transactionLimits(const AB_TRANSACTION_LIMITS *el)
 //	} else {
 //		this->TextKeys = "Not available";
 //	}
-	this->TextKeys = "not used by AB-Transfers, yet.";
+	this->TextKeys = QString::fromUtf8("not used by AB-Transfers, yet.");
 
 	this->MaxLenCustomerReference = AB_TransactionLimits_GetMaxLenCustomerReference(el);
 	this->MinLenCustomerReference = AB_TransactionLimits_GetMinLenCustomerReference(el);

@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	//QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 #endif
 	QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+	//QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 	//create the DebugDialogWidget, that displays all qDebug(), qWarning()
 	//etc. messages and install the MsgHandler that redirect the messages.
@@ -79,13 +79,13 @@ int main(int argc, char *argv[])
 #endif
 
 	#ifdef ABTRANSFER_VERSION
-		app.setApplicationVersion(ABTRANSFER_VERSION);
+		app.setApplicationVersion(QString::fromUtf8(ABTRANSFER_VERSION));
 	#else
 	#warning "ABTRANSFER_VERSION not set! Compiling without version information!"
 	#endif
-	app.setOrganizationName("Patrick Wacker");
-	app.setOrganizationDomain("schmufu.dyndns.org");
-	app.setApplicationName("AB-Transfers");
+	app.setOrganizationName(QString::fromUtf8("Patrick Wacker"));
+	app.setOrganizationDomain(QString::fromUtf8("schmufu.dyndns.org"));
+	app.setApplicationName(QString::fromUtf8("AB-Transfers"));
 
 	//On MacOS the QSharedMemory seems not to work as assumed.
 	//Therefore, as a fast workaround, we do not use the protection on MacOS.
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	//As key for the sharedMemory the program name and the "Key-ID" from
 	//my the PGP-Key is used (Patrick Wacker <schmufu.s@gmx.net>)
 	QString smKey = app.applicationName();
-	smKey.append("-49E8D03B0700F6C4"); //PGP-Key-ID from Patrick Wacker
+	smKey.append(QString::fromUtf8("-49E8D03B0700F6C4")); //PGP-Key-ID from Patrick Wacker
 	QSharedMemory myMem(smKey);
 	if ( !myMem.create(sizeof(int)) ) {
 		qDebug() << Q_FUNC_INFO << "SharedMemoryError:" << myMem.errorString();
@@ -192,13 +192,13 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 
 	switch(type) {
 	case QtDebugMsg:
-		debugDialog->appendMsg(QString("DEBUG: ").append(msg.toLatin1()));
+		debugDialog->appendMsg(QString::fromUtf8("DEBUG: ").append(msg);
 		break;
 	case QtWarningMsg:
-		debugDialog->appendMsg(QString("WARNING: ").append(msg.toLatin1()));
+		debugDialog->appendMsg(QString::fromUtf8("WARNING: ").append(msg);
 		break;
 	case QtCriticalMsg:
-		debugDialog->appendMsg(QString("CRITICAL: ").append(msg.toLatin1()));
+		debugDialog->appendMsg(QString::fromUtf8("CRITICAL: ").append(msg);
 		break;
 	case QtFatalMsg:
 		fprintf(stderr, "Fatal: %s\n", msg.toStdString().c_str());
@@ -208,7 +208,8 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 #else
 void myMessageHandler(QtMsgType type, const char *msg)
 {
-	fprintf(stderr, "%s\n", msg); //always show the messages at stderr
+	//always show the messages at stderr
+	fprintf(stderr, "%s\n", QString::fromUtf8(msg).toStdString().c_str());
 
 	//only show the messages if wanted
 	//! @todo implement the option to deactivate debug messges
@@ -216,13 +217,16 @@ void myMessageHandler(QtMsgType type, const char *msg)
 
 	switch(type) {
 	case QtDebugMsg:
-		debugDialog->appendMsg(QString("DEBUG: ").append(msg));
+		debugDialog->appendMsg(QString::fromUtf8("DEBUG: ").
+				       append(QString::fromUtf8(msg)));
 		break;
 	case QtWarningMsg:
-		debugDialog->appendMsg(QString("WARNING: ").append(msg));
+		debugDialog->appendMsg(QString::fromUtf8("WARNING: ").
+				       append(QString::fromUtf8(msg)));
 		break;
 	case QtCriticalMsg:
-		debugDialog->appendMsg(QString("CRITICAL: ").append(msg));
+		debugDialog->appendMsg(QString::fromUtf8("CRITICAL: ").
+				       append(QString::fromUtf8(msg)));
 		break;
 	case QtFatalMsg:
 		fprintf(stderr, "Fatal: %s\n", msg);

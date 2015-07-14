@@ -138,14 +138,14 @@ protected:
 	int loadProfiles(AB_BANKING *ab);
 
 public:
-	const char *getName() const { return this->name; }
-	const char *getType() const { return this->type; }
-	const char *getDescShort() const { return this->desc_short; }
-	const char *getDescLong() const { return this->desc_long; }
-	const char *getFilename() const { return this->filename; }
-	const char *getPath() const { return this->path; }
-	const char *getAuthor() const { return this->author; }
-	const char *getVersion() const { return this->version; }
+	const QString getName() const { return QString::fromUtf8(this->name); }
+	const QString getType() const { return QString::fromUtf8(this->type); }
+	const QString getDescShort() const { return QString::fromUtf8(this->desc_short); }
+	const QString getDescLong() const { return QString::fromUtf8(this->desc_long); }
+	const QString getFilename() const { return QString::fromUtf8(this->filename); }
+	const QString getPath() const { return QString::fromUtf8(this->path); }
+	const QString getAuthor() const { return QString::fromUtf8(this->author); }
+	const QString getVersion() const { return QString::fromUtf8(this->version); }
 
 	const GWEN_PLUGIN_DESCRIPTION *getPD() const { return this->pd; }
 

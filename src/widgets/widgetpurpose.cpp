@@ -231,7 +231,7 @@ void widgetPurpose::setPurpose(const QString &text)
 //public slot
 void widgetPurpose::setPurpose(const QStringList &text)
 {
-	this->setPurpose(text.join("\n"));
+	this->setPurpose(text.join(QString::fromUtf8("\n")));
 }
 
 //public slot

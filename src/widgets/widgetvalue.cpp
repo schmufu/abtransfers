@@ -49,9 +49,10 @@ widgetValue::widgetValue(QWidget *parent) :
 	this->calcFrame->hide();
 
 	BetragValidator *validatorBetrag = new BetragValidator(this);
-	validatorBetrag->setRegExp(QRegExp("[0-9]+,[0-9][0-9]", Qt::CaseSensitive));
+	validatorBetrag->setRegExp(QRegExp(QString::fromUtf8("[0-9]+,[0-9][0-9]"),
+					   Qt::CaseSensitive));
 
-	this->currency->setText("EUR");
+	this->currency->setText(QString::fromUtf8("EUR"));
 	this->currency->setReadOnly(true);
 	this->currency->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 	this->currency->setMaximumWidth(45);
@@ -63,8 +64,9 @@ widgetValue::widgetValue(QWidget *parent) :
 	this->value->installEventFilter(this);
 
 	QHBoxLayout *layout = new QHBoxLayout();
-	QIcon ico = QIcon::fromTheme("accessories-calculator", QIcon(":/icons/calculator"));
-	QPushButton *calcBtn = new QPushButton(ico, "", this);
+	QIcon ico = QIcon::fromTheme(QString::fromUtf8("accessories-calculator"),
+				     QIcon(QString::fromUtf8(":/icons/calculator")));
+	QPushButton *calcBtn = new QPushButton(ico, QString(), this);
 	calcBtn->setFocusProxy(this->value);
 	connect(calcBtn, SIGNAL(clicked()), this, SLOT(showCalculator()));
 
@@ -111,7 +113,7 @@ bool widgetValue::eventFilter(QObject * /*o*/, QEvent *e)
 			// no '-' sign at the first position.
 			if (k->key() == Qt::Key_Minus) {
 				if (this->value->cursorPosition() == 0 &&
-				    this->value->text()[0] != '-') {
+				    this->value->text()[0] != QChar::fromLatin1('-')) {
 					rc = false;
 					break;
 				}
@@ -220,13 +222,15 @@ void widgetValue::showCalculator(QKeyEvent *e)
 	if (!this->calcFrame)
 		this->createCalcFrame();
 
-	/* only works when the comma is set to ',' regardless of the comma
+	/* TODO: only works when the comma is set to ',' regardless of the comma
 	 * character the comma in the value text must be replaced with a
 	 * period. This should be further investigated, but for the moment
 	 * this works.
 	 */
-	this->calculator->setComma(',');
-	this->calculator->setInitialValues(this->value->text().replace(',','.'), e);
+	this->calculator->setComma(QChar::fromLatin1(','));
+	this->calculator->setInitialValues(this->value->text().replace(
+						   QChar::fromLatin1(','),
+						   QChar::fromLatin1('.')), e);
 
 	int h = this->calcFrame->height();
 	int w = this->calcFrame->width();

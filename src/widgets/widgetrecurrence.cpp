@@ -69,7 +69,7 @@ widgetRecurrence::widgetRecurrence(QWidget *parent) :
 		this, SLOT(spinBoxValueChanged(int)));
 
 	//Beschreibendes Label erstellen
-	this->label_week_month = new QLabel("Monat", this);
+	this->label_week_month = new QLabel(QString::fromUtf8("Monat"), this);
 	this->label_week_month->setMinimumWidth(60);
 	this->label_week_month->setAlignment(Qt::AlignCenter);
 	QLabel *labelAt = new QLabel(tr("am"), this);
@@ -252,8 +252,8 @@ void widgetRecurrence::updateComboBoxItems(int period)
 				itemhint = tr("Immer 2 Tage vor dem letzten des Monats");
 				break;
 			default:
-				itemtext = QString("%1").arg(day);
-				itemhint = QString("Immer am %1. des Monats").arg(day);
+				itemtext = QString::fromUtf8("%1").arg(day);
+				itemhint = QString::fromUtf8("Immer am %1. des Monats").arg(day);
 				break;
 			}
 

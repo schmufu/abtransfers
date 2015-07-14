@@ -80,26 +80,26 @@ WidgetCalculator::WidgetCalculator(QWidget* parent) :
 	this->display->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	grid->addWidget(display, 0, 0, 1, 5);
 
-	this->buttons[0] = new QPushButton("0", this);
-	this->buttons[1] = new QPushButton("1", this);
-	this->buttons[2] = new QPushButton("2", this);
-	this->buttons[3] = new QPushButton("3", this);
-	this->buttons[4] = new QPushButton("4", this);
-	this->buttons[5] = new QPushButton("5", this);
-	this->buttons[6] = new QPushButton("6", this);
-	this->buttons[7] = new QPushButton("7", this);
-	this->buttons[8] = new QPushButton("8", this);
-	this->buttons[9] = new QPushButton("9", this);
-	this->buttons[PLUS] = new QPushButton("+", this);
-	this->buttons[MINUS] = new QPushButton("-", this);
-	this->buttons[STAR] = new QPushButton("X", this);
+	this->buttons[0] = new QPushButton(QString::fromUtf8("0"), this);
+	this->buttons[1] = new QPushButton(QString::fromUtf8("1"), this);
+	this->buttons[2] = new QPushButton(QString::fromUtf8("2"), this);
+	this->buttons[3] = new QPushButton(QString::fromUtf8("3"), this);
+	this->buttons[4] = new QPushButton(QString::fromUtf8("4"), this);
+	this->buttons[5] = new QPushButton(QString::fromUtf8("5"), this);
+	this->buttons[6] = new QPushButton(QString::fromUtf8("6"), this);
+	this->buttons[7] = new QPushButton(QString::fromUtf8("7"), this);
+	this->buttons[8] = new QPushButton(QString::fromUtf8("8"), this);
+	this->buttons[9] = new QPushButton(QString::fromUtf8("9"), this);
+	this->buttons[PLUS] = new QPushButton(QString::fromUtf8("+"), this);
+	this->buttons[MINUS] = new QPushButton(QString::fromUtf8("-"), this);
+	this->buttons[STAR] = new QPushButton(QString::fromUtf8("X"), this);
 	this->buttons[COMMA] = new QPushButton(comma, this);
-	this->buttons[EQUAL] = new QPushButton("=", this);
-	this->buttons[SLASH] = new QPushButton("/", this);
-	this->buttons[CLEAR] = new QPushButton("C", this);
-	this->buttons[CLEARALL] = new QPushButton("AC", this);
-	this->buttons[PLUSMINUS] = new QPushButton("+-", this);
-	this->buttons[PERCENT] = new QPushButton("%", this);
+	this->buttons[EQUAL] = new QPushButton(QString::fromUtf8("="), this);
+	this->buttons[SLASH] = new QPushButton(QString::fromUtf8("/"), this);
+	this->buttons[CLEAR] = new QPushButton(QString::fromUtf8("C"), this);
+	this->buttons[CLEARALL] = new QPushButton(QString::fromUtf8("AC"), this);
+	this->buttons[PLUSMINUS] = new QPushButton(QString::fromUtf8("+-"), this);
+	this->buttons[PERCENT] = new QPushButton(QString::fromUtf8("%"), this);
 
 	grid->addWidget(buttons[7], 1, 0);
 	grid->addWidget(buttons[8], 1, 1);
@@ -128,7 +128,7 @@ WidgetCalculator::WidgetCalculator(QWidget* parent) :
 	this->op1 = 0.0;
 	this->stackedOp = op = 0;
 	this->operand.clear();
-	this->changeDisplay("0");
+	this->changeDisplay(QString::fromUtf8("0"));
 
 	// connect the digit signals through a signal mapper
 	QSignalMapper* mapper = new QSignalMapper(this);
@@ -193,9 +193,9 @@ void WidgetCalculator::digitClicked(int button)
 void WidgetCalculator::commaClicked(void)
 {
 	if (this->operand.length() == 0)
-		this->operand = '0';
-	if (this->operand.contains('.', Qt::CaseInsensitive) == 0)
-		this->operand.append('.');
+		this->operand = QString::fromUtf8("0");
+	if (this->operand.contains(QString::fromUtf8("."), Qt::CaseInsensitive) == 0)
+		this->operand.append(QString::fromUtf8("."));
 
 	if (this->operand.length() > 16)
 		this->operand = operand.left(16);
@@ -212,10 +212,10 @@ void WidgetCalculator::plusminusClicked(void)
 	}
 
 	if (this->operand.length() > 0) {
-		if (this->operand.indexOf('-') != -1) {
-			this->operand.remove('-');
+		if (this->operand.indexOf(QString::fromUtf8("-")) != -1) {
+			this->operand.remove(QString::fromUtf8("-"));
 		} else {
-			this->operand.prepend('-');
+			this->operand.prepend(QString::fromUtf8("-"));
 		}
 		this->changeDisplay(operand);
 	}
@@ -281,7 +281,7 @@ void WidgetCalculator::calculationClicked(int button)
 
 		if (error) {
 			this->op = 0;
-			this->changeDisplay("Error");
+			this->changeDisplay(QString::fromUtf8("Error"));
 			this->operand.clear();
 		} else {
 			this->op1 = op2;
@@ -315,14 +315,14 @@ QString WidgetCalculator::normalizeString(const double& val)
 	QString str;
 	str.setNum(val, 'f');
 	int i = str.length();
-	while (i > 1 && str[i-1] == '0') {
+	while (i > 1 && str.at(i-1) == QChar::fromLatin1('0')) {
 		--i;
 	}
 	// cut off trailing 0's
 	str.remove(i, str.length());
 	if (str.length() > 0) {
 		// possibly remove trailing period
-		if (str[str.length()-1] == '.') {
+		if (str[str.length()-1] == QChar::fromLatin1('.')) {
 			str.remove(str.length() - 1, 1);
 		}
 	}
@@ -337,7 +337,7 @@ void WidgetCalculator::clearClicked(void)
 		this->operand = this->operand.left(this->operand.length() - 1);
 	}
 	if (this->operand.length() == 0)
-		this->changeDisplay("0");
+		this->changeDisplay(QString::fromUtf8("0"));
 	else
 		this->changeDisplay(this->operand);
 }
@@ -348,7 +348,7 @@ void WidgetCalculator::clearAllClicked(void)
 {
 	this->operand.clear();
 	this->op = 0;
-	this->changeDisplay("0");
+	this->changeDisplay(QString::fromUtf8("0"));
 }
 
 //protected slot
@@ -384,12 +384,12 @@ void WidgetCalculator::percentClicked(void)
 const QString WidgetCalculator::result(void) const
 {
 	QString txt = lastResult;
-	txt.replace(QRegExp("\\."), this->comma);
-	if (txt[0] == '-') {
+	txt.replace(QRegExp(QString::fromUtf8("\\.")), this->comma);
+	if (txt[0] == QChar::fromLatin1('-')) {
 		txt = txt.mid(1); // get rid of the minus sign
 		QString mask;
 		mask = QLocale::system().negativeSign();
-		mask.append("%1");
+		mask.append(QString::fromUtf8("%1"));
 		txt = QString(mask).arg(txt);
 	}
 	return txt;
@@ -425,8 +425,9 @@ const QString WidgetCalculator::result(void) const
 void WidgetCalculator::changeDisplay(const QString& str)
 {
 	QString txt = str;
-	txt.replace(QRegExp("\\."), comma);
-	this->display->setText("<b>" + txt + "</b>");
+	txt.replace(QRegExp(QString::fromUtf8("\\.")), comma);
+	this->display->setText(QString::fromUtf8("<b>") + txt +
+			       QString::fromUtf8("</b>"));
 }
 
 //protected
@@ -522,20 +523,21 @@ void WidgetCalculator::setInitialValues(const QString &value, QKeyEvent *ev)
 	  */
 	//operand.replace(QRegExp(QString('\\') + KGlobal::locale()->thousandsSeparator()), QChar());
 	//this->operand.replace(QRegExp(QString('\\') + QLocale::system().groupSeparator()), QChar());
-	this->operand.replace(QRegExp(QString('\\') + this->comma), ".");
-	if (this->operand.contains('(')) {
+	this->operand.replace(QRegExp(QString::fromUtf8("\\") + this->comma),
+			      QString::fromUtf8("."));
+	if (this->operand.contains(QString::fromUtf8("("))) {
 		negative = true;
-		this->operand.remove('(');
-		this->operand.remove(')');
+		this->operand.remove(QString::fromUtf8("("));
+		this->operand.remove(QString::fromUtf8(")"));
 	}
-	if (this->operand.contains('-')) {
+	if (this->operand.contains(QString::fromUtf8("-"))) {
 		negative = true;
-		this->operand.remove('-');
+		this->operand.remove(QString::fromUtf8("-"));
 	}
 	if (this->operand.isEmpty())
-		this->operand = '0';
+		this->operand = QString::fromUtf8("0");
 	else if (negative)
-		this->operand = QString("-%1").arg(operand);
+		this->operand = QString::fromUtf8("-%1").arg(operand);
 
 	this->changeDisplay(this->operand);
 

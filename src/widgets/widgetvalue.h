@@ -80,7 +80,7 @@ public slots:
 	void setValue(const AB_VALUE *abv);
 	void setCurrency(const QString &currency);
 	//void setValueCurrency(const AB_VALUE *abv);
-	void setValueCurrency(const QString &value, const QString &currency = "EUR");
+	void setValueCurrency(const QString &value, const QString &currency = QString::fromUtf8("EUR"));
 
 	void setLimitAllowChange(int b);
 

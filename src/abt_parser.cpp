@@ -73,12 +73,12 @@ void abt_parser::getJobStatesFromTransaction(AB_TRANSACTION *t, AB_JOB_TYPE *job
 
 	for (unsigned int i=0; i<GWEN_StringList_Count(sl); i++) {
 		QString s = QString::fromUtf8(GWEN_StringList_StringAt(sl, i));
-		QString search = "JobType: ";
+		QString search = QString::fromUtf8("JobType: ");
 		if (s.startsWith(search)) {
 			*jobType = AB_JOB_TYPE(s.right(s.length() - search.length()).toInt());
 			AB_Transaction_RemoveCategory(t, s.toUtf8());
 		}
-		search = "JobStatus: ";
+		search = QString::fromUtf8("JobStatus: ");
 		if (s.startsWith(search)) {
 			*jobStatus = AB_JOB_STATUS(s.right(s.length() - search.length()).toInt());
 			AB_Transaction_RemoveCategory(t, s.toUtf8());
@@ -104,8 +104,8 @@ void abt_parser::addJobInfoToHistory(abt_history *history,
 				     AB_TRANSACTION *t, AB_JOB_TYPE defType,
 				     AB_JOB_STATUS defStatus)
 {
-	QString t_kto = AB_Transaction_GetLocalAccountNumber(t);
-	QString t_blz = AB_Transaction_GetLocalBankCode(t);
+	QString t_kto = QString::fromUtf8(AB_Transaction_GetLocalAccountNumber(t));
+	QString t_blz = QString::fromUtf8(AB_Transaction_GetLocalBankCode(t));
 	const aqb_AccountInfo *acc = allAccounts->getAccount(t_kto, t_blz);
 	if (!acc) {
 		//no matching account
@@ -175,7 +175,7 @@ int abt_parser::parse_ctx_messages(AB_IMEXPORTER_CONTEXT *iec)
 		cnt++;
 	}
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	return cnt;
@@ -221,7 +221,7 @@ int abt_parser::parse_ctx_securities(AB_IMEXPORTER_CONTEXT *iec)
 		cnt++;
 	}
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	return cnt;
@@ -247,11 +247,12 @@ int abt_parser::parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
 		QString bic = QString::fromUtf8(AB_ImExporterAccountInfo_GetBic(ai));
 		QString owner = QString::fromUtf8(AB_ImExporterAccountInfo_GetOwner(ai));
 		QString name = QString::fromUtf8(AB_ImExporterAccountInfo_GetAccountName(ai));
-		QString id = QString("%1").arg(AB_ImExporterAccountInfo_GetAccountId(ai));
+		QString id = QString::fromUtf8("%1").arg(AB_ImExporterAccountInfo_GetAccountId(ai));
 
 		//check if we parse data for the "history account"
-		if (history && (accnr == "0000000000") && (blz == "00000000") &&
-		    (owner == "AB-Transfers")) {
+		if (history && (accnr == QString::fromUtf8("0000000000")) &&
+		    (blz == QString::fromUtf8("00000000")) &&
+		    (owner == QString::fromUtf8("AB-Transfers"))) {
 			//we should parse data for the history!
 			acc = NULL;
 			parseHistory = history;
@@ -274,8 +275,9 @@ int abt_parser::parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
 			}
 		}
 
-		QString tmp = QString("%1 (%3) [%2] Owner: %4 ID: %5 (IBAN: %6 BIC: %7)").arg(
-				      accnr, blz, name, owner, id, iban, bic);
+		QString tmp = QString::fromUtf8(
+				"%1 (%3) [%2] Owner: %4 ID: %5 (IBAN: %6 BIC: %7)")
+			      .arg(accnr, blz, name, owner, id, iban, bic);
 		qDebug() << logmsg << tmp;
 
 		if (parseHistory) {
@@ -380,7 +382,7 @@ int abt_parser::parse_ctx_ai_status(AB_IMEXPORTER_ACCOUNTINFO *ai,
 		cnt++;
 	}
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	return cnt;
@@ -408,7 +410,7 @@ int abt_parser::parse_ctx_ai_datedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
 
 	int cnt = AB_ImExporterAccountInfo_GetDatedTransferCount(ai);
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	t = AB_ImExporterAccountInfo_GetFirstDatedTransfer(ai);
@@ -487,7 +489,7 @@ int abt_parser::parse_ctx_ai_notedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
 
 	int cnt = AB_ImExporterAccountInfo_GetNotedTransactionCount(ai);
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	t = AB_ImExporterAccountInfo_GetFirstNotedTransaction(ai);
@@ -549,7 +551,7 @@ int abt_parser::parse_ctx_ai_standingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai,
 
 	int cnt = AB_ImExporterAccountInfo_GetStandingOrderCount(ai);
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	t = AB_ImExporterAccountInfo_GetFirstStandingOrder(ai);
@@ -623,7 +625,7 @@ int abt_parser::parse_ctx_ai_transactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
 	QString tmp;
 
 	int cnt = AB_ImExporterAccountInfo_GetTransactionCount(ai);
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	t = AB_ImExporterAccountInfo_GetFirstTransaction(ai);
@@ -688,7 +690,7 @@ int abt_parser::parse_ctx_ai_transfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
 
 	int cnt = AB_ImExporterAccountInfo_GetTransferCount(ai);
 
-	tmp = QString("Count: %1").arg(cnt);
+	tmp = QString::fromUtf8("Count: %1").arg(cnt);
 	qDebug() << logmsg << tmp;
 
 	t = AB_ImExporterAccountInfo_GetFirstTransfer(ai);

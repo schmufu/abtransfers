@@ -160,11 +160,14 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->setAllLimits(this->m_limits);
 
 	QIcon ico;
-	ico = QIcon::fromTheme("edit-undo", QIcon(":/icons/edit-undo"));
+	ico = QIcon::fromTheme(QString::fromUtf8("edit-undo"),
+			       QIcon(QString::fromUtf8(":/icons/edit-undo")));
 	this->pushButtonRevert = new QPushButton(ico, tr("Rückgängig"), this);
-	ico = QIcon::fromTheme("dialog-close", QIcon(":/icons/dialog-close"));
+	ico = QIcon::fromTheme(QString::fromUtf8("dialog-close"),
+			       QIcon(QString::fromUtf8(":/icons/dialog-close")));
 	this->pushButtonCancel = new QPushButton(ico, tr("Abbrechen"), this);
-	ico = QIcon::fromTheme("dialog-ok-apply", QIcon(":/icons/ok"));
+	ico = QIcon::fromTheme(QString::fromUtf8("dialog-ok-apply"),
+			       QIcon(QString::fromUtf8(":/icons/ok")));
 	this->pushButtonOK = new QPushButton(ico, tr("Senden"), this);
 	connect(this->pushButtonOK, SIGNAL(clicked()),
 		this, SLOT(onOkButtonPressed()));
@@ -221,10 +224,10 @@ void widgetTransfer::my_createNotAvailableJobText()
 		BankName = tr("unbekannt");
 		KontoName = tr("unbekannt");
 	} else {
-		BankName = QString("%1 [%2]").arg(
+		BankName = QString::fromUtf8("%1 [%2]").arg(
 				   this->m_accountAtCreation->BankName(),
 				   this->m_accountAtCreation->BankCode());
-		KontoName = QString("%1 [%2]").arg(
+		KontoName = QString::fromUtf8("%1 [%2]").arg(
 				    this->m_accountAtCreation->Name(),
 				    this->m_accountAtCreation->Number());
 	}
@@ -769,9 +772,9 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			QString colNum;
 			for(int i=0; i<tooLong.size(); ++i) {
 				if (i == tooLong.size()-1) {
-					colNum.append(QString("%1").arg(tooLong.at(i)));
+					colNum.append(QString::fromUtf8("%1").arg(tooLong.at(i)));
 				} else {
-					colNum.append(QString("%1, ").arg(tooLong.at(i)));
+					colNum.append(QString::fromUtf8("%1, ").arg(tooLong.at(i)));
 				}
 			}
 
@@ -793,7 +796,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 
 	if (this->textKey != NULL) {
 		if (!this->m_limits->ValuesTextKey.contains(
-				QString("%1").arg(this->textKey->getTextKey()))) {
+				QString::fromUtf8("%1").arg(this->textKey->getTextKey()))) {
 			errorMsg.append(tr(" - Textschlüssel nicht erlaubt<br />"));
 		}
 	}
@@ -1125,7 +1128,7 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 	if (this->value != NULL) {
 		this->value->setValue(t->getValue());
 		//! \todo currency der Transaction verwenden
-		this->value->setCurrency("EUR");
+		this->value->setCurrency(QString::fromUtf8("EUR"));
 	}
 
 	if (this->purpose != NULL) {

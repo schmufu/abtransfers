@@ -319,7 +319,7 @@ void MainWindow::retranslateCppCode()
 				QDialogButtonBox::Ok,
 				QDialogButtonBox::Ok,
 				QMessageBox::Information,
-				"RuntimeLanguageChange");
+				QString::fromUtf8("RuntimeLanguageChange"));
 		 dia.exec();
 	}
 }
@@ -352,24 +352,24 @@ void MainWindow::TimerTimeOut()
 		       QDialogButtonBox::Ok,
 		       QDialogButtonBox::Ok,
 		       QMessageBox::Information,
-		       "WarnCosts");
+		       QString::fromUtf8("WarnCosts"));
 	dia.exec();
 
 	//check if jobs should be put in the outbox and if the should be
 	//executed at start.
-	if (settings->appendJobToOutbox("getBalance")) {
+	if (settings->appendJobToOutbox(QString::fromUtf8("getBalance"))) {
 		this->appendGetBalanceToOutbox();
 	}
 
-	if (settings->appendJobToOutbox("getDatedTransfers")) {
+	if (settings->appendJobToOutbox(QString::fromUtf8("getDatedTransfers"))) {
 		this->appendGetDatedTransfersToOutbox();
 	}
 
-	if (settings->appendJobToOutbox("getStandingOrders")) {
+	if (settings->appendJobToOutbox(QString::fromUtf8("getStandingOrders"))) {
 		this->appendGetStandingOrdersToOutbox();
 	}
 
-	if (settings->appendJobToOutbox("executeAtStart")) {
+	if (settings->appendJobToOutbox(QString::fromUtf8("executeAtStart"))) {
 		this->jobctrl->execQueuedTransactions();
 	}
 
@@ -386,90 +386,105 @@ void MainWindow::createActions()
 {
 	actTransferNational = new QAction(this);
 	actTransferNational->setText(tr("National"));
-	actTransferNational->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferNational, SIGNAL(triggered()), this, SLOT(onActionTransferNationalTriggered()));
+	actTransferNational->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actTransferNational, SIGNAL(triggered()),
+		this, SLOT(onActionTransferNationalTriggered()));
 	connect(this->ui->pushButton_transferNational, SIGNAL(clicked()),
 		this->actTransferNational, SLOT(trigger()));
 
 	actTransferInternational = new QAction(this);
 	actTransferInternational->setText(tr("International"));
-	actTransferInternational->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferInternational, SIGNAL(triggered()), this, SLOT(onActionTransferInternationalTriggered()));
+	actTransferInternational->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actTransferInternational, SIGNAL(triggered()),
+		this, SLOT(onActionTransferInternationalTriggered()));
 	connect(this->ui->pushButton_transferInternational, SIGNAL(clicked()),
 		this->actTransferInternational, SLOT(trigger()));
 
 	actTransferSepa = new QAction(this);
 	actTransferSepa->setText(tr("SEPA (EU weit)"));
-	actTransferSepa->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferSepa, SIGNAL(triggered()), this, SLOT(onActionTransferSepaTriggered()));
+	actTransferSepa->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actTransferSepa, SIGNAL(triggered()),
+		this, SLOT(onActionTransferSepaTriggered()));
 	connect(this->ui->pushButton_transferSepa, SIGNAL(clicked()),
 		this->actTransferSepa, SLOT(trigger()));
 
 	actTransferInternal = new QAction(this);
 	actTransferInternal->setText(tr("Umbuchung"));
-	actTransferInternal->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actTransferInternal, SIGNAL(triggered()), this, SLOT(onActionTransferInternalTriggered()));
+	actTransferInternal->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actTransferInternal, SIGNAL(triggered()),
+		this, SLOT(onActionTransferInternalTriggered()));
 	connect(this->ui->pushButton_transferInternal, SIGNAL(clicked()),
 		this->actTransferInternal, SLOT(trigger()));
 
 	actDatedNew = new QAction(this);
 	actDatedNew->setText(tr("Anlegen"));
-	actDatedNew->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedNew, SIGNAL(triggered()), this, SLOT(onActionDatedNewTriggered()));
+	actDatedNew->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actDatedNew, SIGNAL(triggered()),
+		this, SLOT(onActionDatedNewTriggered()));
 	connect(this->ui->pushButton_datedNew, SIGNAL(clicked()),
 		this->actDatedNew, SLOT(trigger()));
 
 	actDatedUpdate = new QAction(this);
 	actDatedUpdate->setText(tr("Aktualisieren"));
-	actDatedUpdate->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDatedUpdate, SIGNAL(triggered()), this, SLOT(onActionDatedUpdateTriggered()));
+	actDatedUpdate->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actDatedUpdate, SIGNAL(triggered()),
+		this, SLOT(onActionDatedUpdateTriggered()));
 	connect(this->ui->pushButton_datedUpdate, SIGNAL(clicked()),
 		this->actDatedUpdate, SLOT(trigger()));
 
 	actStandingNew = new QAction(this);
 	actStandingNew->setText(tr("Anlegen"));
-	actStandingNew->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingNew, SIGNAL(triggered()), this, SLOT(onActionStandingNewTriggered()));
+	actStandingNew->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actStandingNew, SIGNAL(triggered()),
+		this, SLOT(onActionStandingNewTriggered()));
 	connect(this->ui->pushButton_standingNew, SIGNAL(clicked()),
 		this->actStandingNew, SLOT(trigger()));
 
 	actStandingUpdate = new QAction(this);
 	actStandingUpdate->setText(tr("Aktualisieren"));
-	actStandingUpdate->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actStandingUpdate, SIGNAL(triggered()), this, SLOT(onActionStandingUpdateTriggered()));
+	actStandingUpdate->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actStandingUpdate, SIGNAL(triggered()),
+		this, SLOT(onActionStandingUpdateTriggered()));
 	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
 		this->actStandingUpdate, SLOT(trigger()));
 
 	actDebitNote = new QAction(this);
 	actDebitNote->setText(tr("Lastschrift"));
-	actDebitNote->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDebitNote, SIGNAL(triggered()), this, SLOT(onActionDebitNoteTriggered()));
+	actDebitNote->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actDebitNote, SIGNAL(triggered()),
+		this, SLOT(onActionDebitNoteTriggered()));
 
 	actDebitNoteSepa = new QAction(this);
 	actDebitNoteSepa->setText(tr("SEPA-Lastschrift (EU weit)"));
-	actDebitNoteSepa->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actDebitNoteSepa, SIGNAL(triggered()), this, SLOT(onActionDebitNoteSepaTriggered()));
+	actDebitNoteSepa->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actDebitNoteSepa, SIGNAL(triggered()),
+		this, SLOT(onActionDebitNoteSepaTriggered()));
 
 	actUpdateBalance = new QAction(this);
 	actUpdateBalance->setText(tr("Kontostand aktualisieren"));
-	actUpdateBalance->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actUpdateBalance, SIGNAL(triggered()), this, SLOT(onActionUpdateBalanceTriggered()));
+	actUpdateBalance->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actUpdateBalance, SIGNAL(triggered()),
+		this, SLOT(onActionUpdateBalanceTriggered()));
 
 	actShowAvailableJobs = new QAction(this);
 	actShowAvailableJobs->setText(tr("Unterstütze Aufträge"));
-	actShowAvailableJobs->setIcon(QIcon(":/icons/bank-icon"));
-	connect(actShowAvailableJobs, SIGNAL(triggered()), this, SLOT(onActionShowAvailableJobsTriggered()));
+	actShowAvailableJobs->setIcon(QIcon(QString::fromUtf8(":/icons/bank-icon")));
+	connect(actShowAvailableJobs, SIGNAL(triggered()),
+		this, SLOT(onActionShowAvailableJobsTriggered()));
 
 	actSaveAllData = new QAction(this);
 	actSaveAllData->setText(tr("Speichern"));
-	actSaveAllData->setIcon(QIcon::fromTheme("document-save", QIcon(":/icons/document-save")));
-	connect(actSaveAllData, SIGNAL(triggered()), this, SLOT(onActionSaveAllDataTriggered()));
+	actSaveAllData->setIcon(QIcon::fromTheme(QString::fromUtf8("document-save"),
+						 QIcon(QString::fromUtf8(":/icons/document-save"))));
+	connect(actSaveAllData, SIGNAL(triggered()),
+		this, SLOT(onActionSaveAllDataTriggered()));
 
 
 #ifdef TESTWIDGETACCESS
 	actTestWidgetAccess = new QAction(this);
 	actTestWidgetAccess->setText(tr("TestWidget"));
-	connect(actTestWidgetAccess, SIGNAL(triggered()), this, SLOT(onActionTestWidgetAccessTriggered()));
+	connect(actTestWidgetAccess, SIGNAL(triggered()),
+		this, SLOT(onActionTestWidgetAccessTriggered()));
 	this->ui->menuBar->addAction(this->actTestWidgetAccess);
 #endif
 
@@ -535,7 +550,7 @@ void MainWindow::deleteMenus()
 void MainWindow::createDockToolbar()
 {
 	this->dockToolbar = new QToolBar(tr("Dock Toolbar"),this);
-	this->dockToolbar->setObjectName("dockToolbar");
+	this->dockToolbar->setObjectName(QString::fromUtf8("dockToolbar"));
 	this->dockToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 	this->dockToolbar->addAction(this->dock_Accounts->toggleViewAction());
 	this->dockToolbar->addAction(this->dock_KnownRecipient->toggleViewAction());
@@ -607,7 +622,7 @@ void MainWindow::createDockBankAccountWidget()
 {
 	/** create a new QDockWidget ("Online Konten"). */
 	this->dock_Accounts = new QDockWidget(tr("Online Konten"),this);
-	this->dock_Accounts->setObjectName("OnlineAccounts");
+	this->dock_Accounts->setObjectName(QString::fromUtf8("OnlineAccounts"));
 	qDebug() << "creating bankAccountsWidget";
 	/** A new BankAccountsWidget is set as the new widget in der QDockWidget. */
 	BankAccountsWidget *baw = new BankAccountsWidget(this->accounts, this->dock_Accounts);
@@ -616,7 +631,8 @@ void MainWindow::createDockBankAccountWidget()
 	this->dock_Accounts->setAllowedAreas(Qt::AllDockWidgetAreas);
 	this->dock_Accounts->setFloating(false);
 	this->dock_Accounts->hide();
-	this->dock_Accounts->toggleViewAction()->setIcon(QIcon(":/icons/bank-icon"));
+	QIcon ico = QIcon(QString::fromUtf8(":/icons/bank-icon"));
+	this->dock_Accounts->toggleViewAction()->setIcon(ico);
 	/** Add the DockWidget topDockWidgetArea of the MainWindow. */
 	this->addDockWidget(Qt::TopDockWidgetArea, this->dock_Accounts);
 	/** Connection for the ContextMenu is established. */
@@ -639,7 +655,7 @@ void MainWindow::createDockBankAccountWidget()
 void MainWindow::createDockKnownRecipients()
 {
 	this->dock_KnownRecipient = new QDockWidget(tr("Bekannte Empfänger"),this);
-	this->dock_KnownRecipient->setObjectName("KnownRecipients");
+	this->dock_KnownRecipient->setObjectName(QString::fromUtf8("KnownRecipients"));
 	qDebug() << "creating knownEmpfaengerWidget";
 	KnownEmpfaengerWidget *kew = new KnownEmpfaengerWidget(settings->loadKnownEmpfaenger(), this->dock_KnownRecipient);
 	//Changes of the known recipients must be send to the widget
@@ -656,7 +672,8 @@ void MainWindow::createDockKnownRecipients()
 	this->dock_KnownRecipient->setAllowedAreas(Qt::AllDockWidgetAreas);
 	this->dock_KnownRecipient->setFloating(false);
 	this->dock_KnownRecipient->hide();
-	this->dock_KnownRecipient->toggleViewAction()->setIcon(QIcon(":/icons/knownEmpfaenger"));
+	QIcon ico = QIcon(QString::fromUtf8(":/icons/knownEmpfaenger"));
+	this->dock_KnownRecipient->toggleViewAction()->setIcon(ico);
 	this->addDockWidget(Qt::RightDockWidgetArea, this->dock_KnownRecipient);
 
 	//restore widget state to the previous settings
@@ -668,7 +685,7 @@ void MainWindow::createDockKnownRecipients()
 void MainWindow::createDockStandingOrders()
 {
 	QDockWidget *dock = new QDockWidget(tr("Daueraufträge"), this);
-	dock->setObjectName("dockStandingOrders");
+	dock->setObjectName(QString::fromUtf8("dockStandingOrders"));
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
@@ -707,7 +724,7 @@ void MainWindow::createDockStandingOrders()
 	dock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	dock->setFloating(false);
 	dock->hide();
-	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
+	dock->toggleViewAction()->setIcon(QIcon(QString::fromUtf8(":/icons/dauerauftrag")));
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownStandingOrders = dock;
@@ -730,7 +747,7 @@ void MainWindow::dockStandingOrdersSetAccounts()
 	}
 
 	//get the last selected account (from settings)
-	int selAccID = settings->loadSelAccountInWidget("StandingOrders");
+	int selAccID = settings->loadSelAccountInWidget(QString::fromUtf8("StandingOrders"));
 	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
 
 	//set all known accounts in the ComboBox
@@ -746,7 +763,7 @@ void MainWindow::dockStandingOrdersSetAccounts()
 void MainWindow::createDockDatedTransfers()
 {
 	QDockWidget *dock = new QDockWidget(tr("Terminüberweisungen"), this);
-	dock->setObjectName("dockDatedTransfers");
+	dock->setObjectName(QString::fromUtf8("dockDatedTransfers"));
 
 	QVBoxLayout *layoutDock = new QVBoxLayout();
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
@@ -786,7 +803,7 @@ void MainWindow::createDockDatedTransfers()
 	dock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	dock->setFloating(false);
 	dock->hide();
-	dock->toggleViewAction()->setIcon(QIcon(":/icons/dauerauftrag"));
+	dock->toggleViewAction()->setIcon(QIcon(QString::fromUtf8(":/icons/dauerauftrag")));
 	this->addDockWidget(Qt::RightDockWidgetArea, dock);
 
 	this->dock_KnownDatedTransfers = dock;
@@ -809,7 +826,7 @@ void MainWindow::dockDatedTransfersSetAccounts()
 	}
 
 	//get the last selected account (from settings)
-	int selAccID = settings->loadSelAccountInWidget("DatedTransfers");
+	int selAccID = settings->loadSelAccountInWidget(QString::fromUtf8("DatedTransfers"));
 	const aqb_AccountInfo *lastAcc = this->accounts->getAccount(selAccID);
 
 	//set all known accounts in the ComboBox
@@ -881,7 +898,8 @@ void MainWindow::loadAccountData()
 
 	//get all account data from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getAccountDataFilename(),
-					 "ctxfile", "default");
+					 QString::fromUtf8("ctxfile"),
+					 QString::fromUtf8("default"));
 	abt_parser::parse_ctx(ctx, this->accounts);
 	AB_ImExporterContext_free(ctx); //ctx no longer needed, all loaded
 }
@@ -899,7 +917,8 @@ void MainWindow::saveAccountData()
 	if (!ctx) return; //if no ctx created, we have nothing to save
 
 	abt_parser::save_local_ctx(ctx, settings->getAccountDataFilename(),
-				   "ctxfile", "default");
+				   QString::fromUtf8("ctxfile"),
+				   QString::fromUtf8("default"));
 	AB_ImExporterContext_free(ctx);
 }
 
@@ -916,7 +935,8 @@ void MainWindow::loadHistoryData()
 
 	//load all history items from the relevant file
 	ctx = abt_parser::load_local_ctx(settings->getHistoryFilename(),
-					 "ctxfile", "default");
+					 QString::fromUtf8("ctxfile"),
+					 QString::fromUtf8("default"));
 	abt_parser::parse_ctx(ctx, this->accounts, this->history);
 	AB_ImExporterContext_free(ctx);
 }
@@ -932,7 +952,8 @@ void MainWindow::saveHistoryData()
 	//get the AB_IMEXPORTER_CONTEXT for the history and save it to file
 	ctx = this->history->getContext();
 	abt_parser::save_local_ctx(ctx, settings->getHistoryFilename(),
-				   "ctxfile", "default");
+				   QString::fromUtf8("ctxfile"),
+				   QString::fromUtf8("default"));
 	AB_ImExporterContext_free(ctx);
 }
 
@@ -959,7 +980,7 @@ void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 		       tr("Der Auftrag \"%1\" wurde erfolgreich zum "
 			  "Ausgangskorb hinzugefügt").arg(ji->getType()),
 		       QDialogButtonBox::Ok, QDialogButtonBox::Ok,
-		       QMessageBox::Information, "JobAddOutput");
+		       QMessageBox::Information, QString::fromUtf8("JobAddOutput"));
 	dia.exec();
 }
 
@@ -993,18 +1014,20 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	QString lt = "Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
-		     "This program is free software; you can redistribute it and/or<br />"
-		     "modify it under the terms of the GNU General Public License<br />"
-		     "as published by the Free Software Foundation; either version 2<br />"
-		     "of the License, or (at your option) any later version.<br /><br />"
-		     "This program is distributed in the hope that it will be useful,<br />"
-		     "but WITHOUT ANY WARRANTY; without even the implied warranty of<br />"
-		     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br />"
-		     "GNU General Public License for more details.<br /><br />"
-		     "You should have received a copy of the GNU General Public License<br />"
-		     "along with this program; if not, write to the Free Software<br />"
-		     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.<br /><br />";
+	QString lt = QString::fromUtf8(
+		"Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
+		"This program is free software; you can redistribute it and/or<br />"
+		"modify it under the terms of the GNU General Public License<br />"
+		"as published by the Free Software Foundation; either version 2<br />"
+		"of the License, or (at your option) any later version.<br /><br />"
+		"This program is distributed in the hope that it will be useful,<br />"
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of<br />"
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br />"
+		"GNU General Public License for more details.<br /><br />"
+		"You should have received a copy of the GNU General Public License<br />"
+		"along with this program; if not, write to the Free Software<br />"
+		"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.<br /><br />"
+		);
 	lt.append(tr("siehe auch <a href=\"http://www.gnu.de/documents/gpl-2.0.de.html\">http://www.gnu.de/documents/gpl-2.0.de.html</a>"));
 	licenseText->setText(lt);
 	licenseText->setOpenExternalLinks(true);
@@ -1018,7 +1041,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QHBoxLayout *hbox = new QHBoxLayout();
 	//Icon-Image as graphic top left
 	QLabel *img = new QLabel(about);
-	QPixmap *iconpic = new QPixmap(":/icons/bank-icon");
+	QPixmap *iconpic = new QPixmap(QString::fromUtf8(":/icons/bank-icon"));
 	img->setPixmap(*iconpic);
 	img->setScaledContents(true);
 	img->setMaximumSize(100, 100);
@@ -1038,31 +1061,31 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 
 	vbox->addSpacing(16);
 
-	QLabel *author = new QLabel(QString("Author: Patrick Wacker"));
+	QLabel *author = new QLabel(QString::fromUtf8("Author: Patrick Wacker"));
 	vbox->addWidget(author, 0, Qt::AlignCenter);
-	QLabel *version = new QLabel(QString("Version: %1").arg(qApp->applicationVersion()));
+	QLabel *version = new QLabel(QString::fromUtf8("Version: %1").arg(qApp->applicationVersion()));
 	vbox->addWidget(version, 0, Qt::AlignCenter);
 #ifdef ABTRANSFER_VERSION_EXTRA
-	QLabel *versionExtra = new QLabel(QString("<b>%1</b>").arg(ABTRANSFER_VERSION_EXTRA));
+	QLabel *versionExtra = new QLabel(QString::fromUtf8("<b>%1</b>").arg(QString::fromUtf8(ABTRANSFER_VERSION_EXTRA)));
 	vbox->addWidget(versionExtra, 0, Qt::AlignCenter);
 #endif
-	QLabel *versionSVN = new QLabel(QString("svn revision: %1").arg(ABTRANSFER_SVN_REVISION));
+	QLabel *versionSVN = new QLabel(QString::fromUtf8("svn revision: %1").arg(QString::fromUtf8(ABTRANSFER_SVN_REVISION)));
 	vbox->addWidget(versionSVN, 0, Qt::AlignCenter);
 
 	vbox->addSpacing(10);
 
 
-	QLabel *webURL = new QLabel(tr("Website: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/dokuwiki/ab_transfer:start"));
+	QLabel *webURL = new QLabel(tr("Website: <a href=\"%1\">%1</a>").arg(QString::fromUtf8("http://schmufu.dyndns.org/dokuwiki/ab_transfer:start")));
 	webURL->setOpenExternalLinks(true);
 	webURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	vbox->addWidget(webURL, 0, Qt::AlignLeft);
 
-	QLabel *svnURL = new QLabel(tr("svn repo: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/svn/ab_transfers/"));
+	QLabel *svnURL = new QLabel(tr("svn repo: <a href=\"%1\">%1</a>").arg(QString::fromUtf8("http://schmufu.dyndns.org/svn/ab_transfers/")));
 	svnURL->setOpenExternalLinks(true);
 	svnURL->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	vbox->addWidget(svnURL, 0, Qt::AlignLeft);
 
-	QLabel *tracUrl = new QLabel(tr("trac: <a href=\"%1\">%1</a>").arg("http://schmufu.dyndns.org/trac/abtransfers/"));
+	QLabel *tracUrl = new QLabel(tr("trac: <a href=\"%1\">%1</a>").arg(QString::fromUtf8("http://schmufu.dyndns.org/trac/abtransfers/")));
 	tracUrl->setOpenExternalLinks(true);
 	tracUrl->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
 	vbox->addWidget(tracUrl, 0, Qt::AlignLeft);
@@ -1083,11 +1106,12 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	QLabel *usedImages = new QLabel(tr("<b>genutzte Grafiken:</b>"));
 	vbox->addWidget(usedImages, 0, Qt::AlignLeft);
 
-	QLabel *iconsUrl = new QLabel(QString("Icons used from Oxygen <a href=\"%1\">%1</a><br />"
-					      "and from 'Ecommerce Business icon pack'<br />"
-					      "<a href=\"%2\">%2</a>")
-					      .arg("http://www.oxygen-icons.org")
-					      .arg("http://www.iconspedia.com/pack/ecommerce-business-icons-4074"));
+	QLabel *iconsUrl = new QLabel(QString::fromUtf8(
+			"Icons used from Oxygen <a href=\"%1\">%1</a><br />"
+			"and from 'Ecommerce Business icon pack'<br />"
+			"<a href=\"%2\">%2</a>")
+			.arg(QString::fromUtf8("http://www.oxygen-icons.org"))
+			.arg(QString::fromUtf8("http://www.iconspedia.com/pack/ecommerce-business-icons-4074")));
 	iconsUrl->setOpenExternalLinks(true);
 	iconsUrl->setAlignment(Qt::AlignHCenter);
 	iconsUrl->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
@@ -1138,7 +1162,7 @@ void MainWindow::on_actionHelp_triggered()
 	}
 #else //QtWebKit is available, we use a QWebView. (supporting 'local links')
 	QWebView *view = new QWebView();
-	view->settings()->setDefaultTextEncoding("utf-8");
+	view->settings()->setDefaultTextEncoding(QString::fromUtf8("utf-8"));
 	view->setMinimumSize(520, 600);
 
 	if (helpText.open(QFile::ReadOnly)) {
@@ -1167,8 +1191,8 @@ void MainWindow::on_actionEinstellungen_triggered()
 {
 	DialogSettings DiaSettings(settings, banking->getAqBanking(), this);
 
-	QString classname = QObject::sender()->metaObject()->className();
-	if (classname == "page_history") {
+	QString classname = QString::fromUtf8(QObject::sender()->metaObject()->className());
+	if (classname == QString::fromUtf8("page_history")) {
 		//we were called from the history page
 		DiaSettings.setActiveTab(1); //set im-/export as active tab
 	}
@@ -1199,14 +1223,14 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
 {
 	if (acc == NULL) return; //cancel if no account is supplied
-	settings->saveSelAccountInWidget("StandingOrders", acc);
+	settings->saveSelAccountInWidget(QString::fromUtf8("StandingOrders"), acc);
 }
 
 //private slot
 void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
 {
 	if (acc == NULL) return; //cancel if no account is supplied
-	settings->saveSelAccountInWidget("DatedTransfers", acc);
+	settings->saveSelAccountInWidget(QString::fromUtf8("DatedTransfers"), acc);
 }
 
 //private slot
@@ -1307,8 +1331,10 @@ void MainWindow::onActionShowAvailableJobsTriggered()
 	gl->setRowMinimumHeight(1, 12); //one row as seperator
 
 	//prepare used icons
-	QIcon icoSup = QIcon::fromTheme("dialog-ok-apply", QIcon(":/icons/ok"));
-	QIcon icoNotSup = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+	QIcon icoSup = QIcon::fromTheme(QString::fromUtf8("dialog-ok-apply"),
+					QIcon(QString::fromUtf8(":/icons/ok")));
+	QIcon icoNotSup = QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+					   QIcon(QString::fromUtf8(":/icons/delete")));
 	const QPixmap pixSup = icoSup.pixmap(16, QIcon::Normal); //supported
 	const QPixmap pixNotSup = icoNotSup.pixmap(16, QIcon::Normal); //not supported
 	const QPixmap pixLatSup = icoSup.pixmap(16, QIcon::Disabled); //later supported
@@ -1844,9 +1870,11 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		break;
 	} //switch(period)
 
-	QString strFirstDate = correctFirstDate.toString("ddd dd.MM.yyyy");
-	QString strLastDate = correctLastDate.isValid() ? correctLastDate.toString("ddd dd.MM.yyyy") : tr("Bis auf weiteres");
-	QString strNextDate = correctNextDate.toString("ddd dd.MM.yyyy");
+	QString strFirstDate = correctFirstDate.toString(QString::fromUtf8("ddd dd.MM.yyyy"));
+	QString strLastDate = correctLastDate.isValid() ?
+		correctLastDate.toString(QString::fromUtf8("ddd dd.MM.yyyy")) :
+		tr("Bis auf weiteres");
+	QString strNextDate = correctNextDate.toString(QString::fromUtf8("ddd dd.MM.yyyy"));
 
 	int ret;
 	ret = QMessageBox::question(
@@ -2097,8 +2125,10 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
 
 	QString jobAccBankcode, jobAccNumber;
-	jobAccBankcode = AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob()));
-	jobAccNumber =AB_Account_GetAccountNumber(AB_Job_GetAccount(job->getJob()));
+	jobAccBankcode = QString::fromUtf8(
+		AB_Account_GetBankCode(AB_Job_GetAccount(job->getJob())));
+	jobAccNumber = QString::fromUtf8(
+		AB_Account_GetAccountNumber(AB_Job_GetAccount(job->getJob())));
 
 	//get the account that matches the local transaction data
 	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
@@ -2181,7 +2211,7 @@ void MainWindow::checkTranslationVersion()
 
 	const QString langFile = this->translations->currentLanguageFile();
 
-	if (langFile.startsWith(":") || langFile.isEmpty()) {
+	if (langFile.startsWith(QChar::fromLatin1(':')) || langFile.isEmpty()) {
 		//language file from embedded resource or the default language
 		//(German) is selected. Everthing fine ;)
 		return;
@@ -2211,8 +2241,9 @@ void MainWindow::checkTranslationVersion()
 		       .arg(langFile),
 		       QDialogButtonBox::Ok, QDialogButtonBox::Ok,
 		       QMessageBox::Warning,
-		       QString("WarnTrans_%1-%2").arg(this->translations->currentLanguage())
-						 .arg(appVersion),
+		       QString::fromUtf8("WarnTrans_%1-%2")
+				.arg(this->translations->currentLanguage())
+				.arg(appVersion),
 		       true, tr("Diese Meldung nicht wieder anzeigen "
 				"(nicht reaktivierbar!)."));
 	dia.exec();
@@ -2261,7 +2292,7 @@ void MainWindow::createAndSendTransfer(const widgetTransfer *sender)
 void MainWindow::createAndSendEUTransfer(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create EU Transfer not implemented yet!";
-	this->statusBar()->showMessage("create EU Transfer not implemented yet!");
+	this->statusBar()->showMessage(QString::fromUtf8("create EU Transfer not implemented yet!"));
 	return;
 
 //	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2468,7 +2499,7 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 void MainWindow::createAndSendDebitNote(const widgetTransfer *sender)
 {
 	qWarning() << "create Debit Note not implemented yet!";
-	this->statusBar()->showMessage("create Debit Note not implemented yet!");
+	this->statusBar()->showMessage(QString::fromUtf8("create Debit Note not implemented yet!"));
 	return;
 
 	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2532,7 +2563,7 @@ void MainWindow::createAndSendInternalTransfer(const widgetTransfer *sender)
 void MainWindow::createAndSendSepaDebitNote(const widgetTransfer* /* not used yet: sender */)
 {
 	qWarning() << "create SEPA Debit Note not implemented yet!";
-	this->statusBar()->showMessage("create SEPA Debit Note not implemented yet!");
+	this->statusBar()->showMessage(QString::fromUtf8("create SEPA Debit Note not implemented yet!"));
 	return;
 
 //	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
@@ -2594,18 +2625,18 @@ void MainWindow::appendGetStandingOrdersToOutbox() const
 //private
 void MainWindow::checkReachedDatedTransfers()
 {
-	QString msgText = "";
+	QString msgText = QString();
 	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		//next account if this account does not have a datedTransfers-List
 		if (acc->getKnownDatedTransfers() == NULL) continue;
 		for(int i=0; i < acc->getKnownDatedTransfers()->size(); ++i) {
 			abt_datedTransferInfo *dt = acc->getKnownDatedTransfers()->at(i);
 			if (dt->getTransaction()->getDate() <= QDate::currentDate()) {
-				msgText.append("<table>");
+				msgText.append(QString::fromUtf8("<table>"));
 				msgText.append(tr("<tr><td>Begünstigter:</td><td>%1</td></tr>").arg(dt->getTransaction()->getRemoteName().at(0)));
 				msgText.append(tr("<tr><td>Betrag:</td><td>%1</td></tr>").arg(abt_conv::ABValueToString(dt->getTransaction()->getValue(), true)));
 				msgText.append(tr("<tr><td><b>Ausführen am:</b></td><td>%1</td></tr>").arg(dt->getTransaction()->getDate().toString(Qt::SystemLocaleShortDate)));
-				msgText.append("</table>");
+				msgText.append(QString::fromUtf8("</table>"));
 			}
 		}
 	}

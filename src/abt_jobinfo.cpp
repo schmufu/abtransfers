@@ -370,7 +370,7 @@ void abt_jobInfo::createJobInfoStringList_Append_Purpose(QStringList *strList) c
 
 	strList->append(QObject::tr("Verwendungszweck:"));
 	for (int i=0; i<this->m_trans->getPurpose().size(); ++i) {
-		strList->append("    " + this->m_trans->getPurpose().at(i));
+		strList->append(QString::fromUtf8("    ") + this->m_trans->getPurpose().at(i));
 	}
 }
 
@@ -383,7 +383,7 @@ void abt_jobInfo::createJobInfoStringList_Append_Value(QStringList *strList) con
 
 	if (v) { //Betrag und Währung enthalten
 		info = QObject::tr("Betrag: %1 %2").arg(abt_conv::ABValueToString(v, true),
-						AB_Value_GetCurrency(v));
+						QString::fromUtf8(AB_Value_GetCurrency(v)));
 	} else { //Kein AB_VALUE vorhanden
 		info = QObject::tr("Betrag: NICHT VORHANDEN (sollte nicht vorkommen)");
 	}
@@ -420,7 +420,7 @@ void abt_jobInfo::createJobInfoStringList_ForStandingOrders(QStringList *strList
 	const abt_transaction *t = this->m_trans;
 
 	this->createJobInfoStringList_Standard_Text(strList);
-	strList->append(""); //leere Zeile
+	strList->append(QString::fromUtf8("")); //leere Zeile
 
 	int cycle = t->getCycle();
 	AB_TRANSACTION_PERIOD period = t->getPeriod();
@@ -514,24 +514,24 @@ void abt_jobInfo::createJobInfoStringList_GetBalance(QStringList *strList) const
 {
 	strList->append(QObject::tr("Aktualisiert den aktuellen Saldo für das"));
 	strList->append(QObject::tr("Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(this->m_ABAccount),
-			AB_Account_GetAccountName(this->m_ABAccount)));
+			QString::fromUtf8(AB_Account_GetAccountNumber(this->m_ABAccount)),
+			QString::fromUtf8(AB_Account_GetAccountName(this->m_ABAccount))));
 }
 
 void abt_jobInfo::createJobInfoStringList_GetDatedTransfers(QStringList *strList) const
 {
 	strList->append(QObject::tr("Holt alle noch nicht ausgeführten terminierten Überweisungen"));
 	strList->append(QObject::tr("für das Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(this->m_ABAccount),
-			AB_Account_GetAccountName(this->m_ABAccount)));
+			QString::fromUtf8(AB_Account_GetAccountNumber(this->m_ABAccount)),
+			QString::fromUtf8(AB_Account_GetAccountName(this->m_ABAccount))));
 }
 
 void abt_jobInfo::createJobInfoStringList_GetStandingOrders(QStringList *strList) const
 {
 	strList->append(QObject::tr("Holt alle bei der Bank hinterlegten Daueraufträge"));
 	strList->append(QObject::tr("für das Konto %1 (%2)").arg(
-			AB_Account_GetAccountNumber(this->m_ABAccount),
-			AB_Account_GetAccountName(this->m_ABAccount)));
+			QString::fromUtf8(AB_Account_GetAccountNumber(this->m_ABAccount)),
+			QString::fromUtf8(AB_Account_GetAccountName(this->m_ABAccount))));
 
 }
 

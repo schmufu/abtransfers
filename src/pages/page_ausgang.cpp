@@ -101,7 +101,8 @@ void Page_Ausgang::createAllActions()
 	this->actDelete = new QAction(this);
 	this->actDelete->setText(tr("Löschen"));
 	this->actDelete->setToolTip(tr("Ausgewählten Job löschen"));
-	this->actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
+	this->actDelete->setIcon(QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+						  QIcon(QString::fromUtf8(":/icons/delete"))));
 	connect(this->ui->pushButton_del, SIGNAL(clicked()),
 		this->actDelete, SLOT(trigger()));
 	connect(this->actDelete, SIGNAL(triggered()),
@@ -110,14 +111,15 @@ void Page_Ausgang::createAllActions()
 	this->actEdit = new QAction(this);
 	this->actEdit->setText(tr("Bearbeiten"));
 	this->actEdit->setToolTip(tr("Ausgewählten Job bearbeiten"));
-	this->actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
+	this->actEdit->setIcon(QIcon::fromTheme(QString::fromUtf8("document-edit"),
+						QIcon(QString::fromUtf8(":/icons/document-edit"))));
 	connect(this->actEdit, SIGNAL(triggered()),
 		this, SLOT(onActionEditTriggered()));
 
 	this->actUp = new QAction(this);
 	this->actUp->setText(tr("Auf"));
 	this->actUp->setToolTip(tr("Ausgewählten Job nach oben verschieben"));
-	this->actUp->setIcon(QIcon(":/icons/up"));
+	this->actUp->setIcon(QIcon(QString::fromUtf8(":/icons/up")));
 	connect(this->ui->pushButton_up, SIGNAL(clicked()),
 		this->actUp, SLOT(trigger()));
 	connect(this->actUp, SIGNAL(triggered()),
@@ -126,7 +128,7 @@ void Page_Ausgang::createAllActions()
 	this->actDown = new QAction(this);
 	this->actDown->setText(tr("Ab"));
 	this->actDown->setToolTip(tr("Ausgewählten Job nach unten verschieben"));
-	this->actDown->setIcon(QIcon(":/icons/down"));
+	this->actDown->setIcon(QIcon(QString::fromUtf8(":/icons/down")));
 	connect(this->actDown, SIGNAL(triggered()),
 		this, SLOT(onActionDownTriggered()));
 	connect(this->ui->pushButton_down, SIGNAL(clicked()),
@@ -214,7 +216,7 @@ void Page_Ausgang::refreshTreeWidget(const abt_job_ctrl *jobctrl)
 		JobInfo = jql->at(i)->getInfo();
 		for (int j=0; j<JobInfo->size(); j++) {
 			item = new QTreeWidgetItem();
-			item->setData(0, Qt::DisplayRole, "");
+			item->setData(0, Qt::DisplayRole, QString());
 			item->setData(1, Qt::DisplayRole, JobInfo->at(j));
 			item->setFlags(Qt::NoItemFlags);
 			topItem->addChild(item);
@@ -245,7 +247,8 @@ void Page_Ausgang::on_treeWidget_itemSelectionChanged()
 {
 	bool enabled = (this->ui->treeWidget->selectedItems().size() > 0);
 	bool one_selected = (this->ui->treeWidget->selectedItems().size() == 1);
-	bool adv_wanted = this->settings->isAdvancedOptionSet("ManualOutboxRearrange");
+	bool adv_wanted = this->settings->isAdvancedOptionSet(
+				  QString::fromUtf8("ManualOutboxRearrange"));
 
 	this->ui->pushButton_del->setEnabled(enabled);
 	this->ui->pushButton_up->setEnabled(one_selected && adv_wanted);

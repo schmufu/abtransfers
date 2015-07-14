@@ -78,7 +78,7 @@ void widgetAccountComboBox::fillComboBox()
 	this->comboBox->setDisabled(false); //es sind Accounts vorhanden
 
 	foreach(const aqb_AccountInfo *account, this->m_allAccounts->getAccountHash().values()) {
-		QString cbText = QString("%1").arg(account->Name());
+		QString cbText = QString::fromUtf8("%1").arg(account->Name());
 		this->comboBox->addItem(cbText, QVariant::fromValue(account));
 	}
 }

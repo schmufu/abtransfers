@@ -48,7 +48,7 @@ class widgetLineEditWithLabel : public QWidget
 	Q_OBJECT
 public:
 	explicit widgetLineEditWithLabel(const QString &labelText,
-					 const QString &editText = "",
+					 const QString &editText = QString(),
 					 Qt::Alignment labelAt = Qt::AlignTop,
 					 QWidget *parent = 0);
 	~widgetLineEditWithLabel();

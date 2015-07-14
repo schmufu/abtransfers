@@ -96,19 +96,22 @@ void widgetKnownDatedTransfers::createAllActions()
 	actDelete = new QAction(this);
 	actDelete->setText(tr("Löschen"));
 	actDelete->setToolTip(tr("Ausgewählte terminierte Überweisung löschen"));
-	actDelete->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete")));
+	actDelete->setIcon(QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+					    QIcon(QString::fromUtf8(":/icons/delete"))));
 	connect(actDelete, SIGNAL(triggered()), this, SLOT(onActionDeleteTriggered()));
 
 	actEdit= new QAction(this);
 	actEdit->setText(tr("Ändern"));
 	actEdit->setToolTip(tr("Ausgewählte terminierte Überweisung bearbeiten"));
-	actEdit->setIcon(QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit")));
+	actEdit->setIcon(QIcon::fromTheme(QString::fromUtf8("document-edit"),
+					  QIcon(QString::fromUtf8(":/icons/document-edit"))));
 	connect(actEdit, SIGNAL(triggered()), this, SLOT(onActionEditTriggered()));
 
 	actRefresh= new QAction(this);
 	actRefresh->setText(tr("Aktualisieren"));
 	actRefresh->setToolTip(tr("Holt alle beim Institut hinterlegten terminierten Überweisungen"));
-	actRefresh->setIcon(QIcon::fromTheme("edit-redo", QIcon(":/icons/edit-redo")));
+	actRefresh->setIcon(QIcon::fromTheme(QString::fromUtf8("edit-redo"),
+					     QIcon(QString::fromUtf8(":/icons/edit-redo"))));
 	connect(actRefresh, SIGNAL(triggered()), this, SLOT(onActionRefreshTriggered()));
 
 }
@@ -180,9 +183,9 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 		v = trans->getValue();
 		//abt_conv::ABValueToString() gibt "" zurück wenn v == NULL!
 		QString Betrag = abt_conv::ABValueToString(v, true);
-		if (v) Betrag.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
+		if (v) Betrag.append(QString::fromUtf8(" %1").arg(QString::fromUtf8(AB_Value_GetCurrency(v))));
 		Item->setData(3, Qt::DisplayRole, Betrag);
-		Item->setData(4, Qt::DisplayRole, trans->getDate().toString("dd.MM.yyyy"));
+		Item->setData(4, Qt::DisplayRole, trans->getDate().toString(QString::fromUtf8("dd.MM.yyyy")));
 		this->treeWidget->addTopLevelItem(Item);
 	}
 

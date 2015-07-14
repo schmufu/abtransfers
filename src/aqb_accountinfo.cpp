@@ -101,18 +101,18 @@ void aqb_AccountInfo::freeAllInternalData()
 	this->m_availableJobs = NULL;
 
 	this->m_ID = 0;
-	this->m_BankCode = "";
-	this->m_BankName = "";
-	this->m_Number = "";
-	this->m_Name = "";
-	this->m_BackendName = "";
-	this->m_SubAccountId = "";
-	this->m_IBAN = "";
-	this->m_BIC = "";
-	this->m_OwnerName = "";
-	this->m_Currency = "";
-	this->m_Country = "";
-	this->m_AccountType = "";
+	this->m_BankCode = QString();
+	this->m_BankName = QString();
+	this->m_Number = QString();
+	this->m_Name = QString();
+	this->m_BackendName = QString();
+	this->m_SubAccountId = QString();
+	this->m_IBAN = QString();
+	this->m_BIC = QString();
+	this->m_OwnerName = QString();
+	this->m_Currency = QString();
+	this->m_Country = QString();
+	this->m_AccountType = QString();
 
 
 	//geblockte Signale wieder auf den vorherigen Zustand setzen
@@ -388,11 +388,11 @@ QString aqb_AccountInfo::getBankLine() const
 	if (!this->account_status) return QString();
 
 	const AB_VALUE *v;
-	QString value = ""; //empty string als default
+	QString value = QString(); //empty string als default
 
 	v = AB_AccountStatus_GetBankLine(this->account_status);
 	if (v) {
-		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+		value = QString::fromUtf8("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
 
 	return value;
@@ -405,13 +405,13 @@ QString aqb_AccountInfo::getNotedBalance() const
 
 	const AB_VALUE *v;
 	const AB_BALANCE *b;
-	QString value = ""; //empty string als default
+	QString value = QString(); //empty string als default
 
 	b = AB_AccountStatus_GetNotedBalance(this->account_status);
 	if (b) {
 		v = AB_Balance_GetValue(b);
 		if (v) {
-			value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+			value = QString::fromUtf8("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 		}
 	}
 
@@ -425,13 +425,13 @@ QString aqb_AccountInfo::getBookedBalance() const
 
 	const AB_VALUE *v;
 	const AB_BALANCE *b;
-	QString value = ""; //empty string als default
+	QString value = QString(); //empty string als default
 
 	b = AB_AccountStatus_GetBookedBalance(this->account_status);
 	if (b) {
 		v = AB_Balance_GetValue(b);
 		if (v) {
-			value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+			value = QString::fromUtf8("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 		}
 	}
 
@@ -444,11 +444,11 @@ QString aqb_AccountInfo::getDisposable() const
 	if (!this->account_status) return QString();
 
 	const AB_VALUE *v;
-	QString value = ""; //empty string als default
+	QString value = QString(); //empty string als default
 
 	v = AB_AccountStatus_GetDisposable(this->account_status);
 	if (v) {
-		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+		value = QString::fromUtf8("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
 
 	return value;
@@ -460,11 +460,11 @@ QString aqb_AccountInfo::getDisposed() const
 	if (!this->account_status) return QString();
 
 	const AB_VALUE *v;
-	QString value = ""; //empty string als default
+	QString value = QString(); //empty string als default
 
 	v = AB_AccountStatus_GetDisposed(this->account_status);
 	if (v) {
-		value = QString("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
+		value = QString::fromUtf8("%1").arg(AB_Value_GetValueAsDouble(v), 0, 'f', 2);
 	}
 
 	return value;

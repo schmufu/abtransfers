@@ -49,31 +49,31 @@
  *  application executeable is used (TARGET from .pro file), otherwise the
  *  name defined here.
  */
-static const QString TC_APPNAME = "abtransfers";
+static const QString TC_APPNAME = QString::fromUtf8("abtransfers");
 
 /** default language (tr() in the source is used with this language) */
-static const QString TC_DEFAULT_LANGUAGE = "Deutsch";
+static const QString TC_DEFAULT_LANGUAGE = QString::fromUtf8("Deutsch");
 /** default locale for TC_DEFAULT_LANGUAGE */
-static const QString TC_DEFAULT_LOCALE = "de_DE";
+static const QString TC_DEFAULT_LOCALE = QString::fromUtf8("de_DE");
 /** default translation verison number (if none is supplied by the translator) */
 static const double TC_DEFAULT_VERSION_NR = 0.0;
 
 /** directory in the resources under which the *.qm files are */
-static const QString TC_TRANS_RESOURCE_DIRNAME = "translation/";
+static const QString TC_TRANS_RESOURCE_DIRNAME = QString::fromUtf8("translation/");
 /** addional directory for nearly every path */
-static const QString TC_TRANSLATION_DIRNAME = "translation/";
+static const QString TC_TRANSLATION_DIRNAME = QString::fromUtf8("translation/");
 /** directory for system wide shared data (mainly used under Linux) */
-static const QString TC_SYSTEM_SHARED = "/usr/share/";
+static const QString TC_SYSTEM_SHARED = QString::fromUtf8("/usr/share/");
 /** directory for Mac OS resources within an Application package
  *  (only supported unter Mac OS) */
-static const QString TC_RESOURCES_MAC = "/../Resources/";
+static const QString TC_RESOURCES_MAC = QString::fromUtf8("/../Resources/");
 
 /** convenient access to TC_TRANS_RESOURCE_DIRNAME */
 static const QString TC_TRANS_RESOURCE_STRING =
-				QString(":/").append(TC_TRANS_RESOURCE_DIRNAME);
+		QString::fromUtf8(":/").append(TC_TRANS_RESOURCE_DIRNAME);
 
 /** directory for translations within the users home directory */
-static const QString APP_SETTINGS_DIRNAME = "/.abtransfers/";
+static const QString APP_SETTINGS_DIRNAME = QString::fromUtf8("/.abtransfers/");
 
 
 /** \brief data class that is only used within the TranslationChooser class.
@@ -167,7 +167,7 @@ TranslationChooser::TranslationChooser(QString language /* = QString() */,
 		this->appFilename = TC_APPNAME;
 
 	this->activeTranslators.clear();
-	this->activeLanguageName = ""; //is updated by setLanguage();
+	this->activeLanguageName = QString::fromUtf8(""); //updated by setLanguage();
 	this->langMenu = NULL;
 
 	//the calling order is important!
@@ -206,7 +206,7 @@ void TranslationChooser::loadSupportedTranslations()
 		qDebug() << "Translations -"
 			 << "searching:" << location;
 		QDir dir(location);
-		QString nameFilter = this->appFilename + QString("*.qm");
+		QString nameFilter = this->appFilename + QString::fromUtf8("*.qm");
 		QStringList fileNames = dir.entryList(QStringList(nameFilter),
 						      QDir::Files, QDir::Name);
 
@@ -288,12 +288,14 @@ QStringList TranslationChooser::fileLocations() const
 	locations.append(TC_TRANS_RESOURCE_STRING);
 
 	//e.g.: /usr/share/APPNAME/
-	locations.append(TC_SYSTEM_SHARED + appName + QString("/"));;
+	locations.append(TC_SYSTEM_SHARED + appName + QString::fromUtf8("/"));;
 	 //e.g.: /usr/share/APPNAME/translation
-	locations.append(TC_SYSTEM_SHARED + appName + QString("/") + TC_TRANSLATION_DIRNAME);
+	locations.append(TC_SYSTEM_SHARED + appName + QString::fromUtf8("/") +
+			 TC_TRANSLATION_DIRNAME);
 
 	locations.append(appPath); //app dir
-	locations.append(appPath + QString("/") + TC_TRANSLATION_DIRNAME);
+	locations.append(appPath + QString::fromUtf8("/") +
+			 TC_TRANSLATION_DIRNAME);
 
 #if defined(Q_OS_MAC)
 	locations.append(appPath + TC_RESOURCES_MAC);
@@ -366,7 +368,7 @@ QString TranslationChooser::languageAppVersion(const QString &qmFile)
 	//: used version of the application.
 	appVersion = translator.translate("TranslationChooser", "APP_VERSION");
 
-	if (appVersion == "APP_VERSION") {
+	if (appVersion == QString::fromUtf8("APP_VERSION")) {
 		//translator did not set any version
 		appVersion = QString(); //use an empty strings
 	}
@@ -394,7 +396,7 @@ QString TranslationChooser::localeName(const QString &qmFile) const
 {
 	QString localeStr;
 	localeStr = QFileInfo(qmFile).fileName().remove(this->appFilename);
-	localeStr = localeStr.remove(".qm", Qt::CaseInsensitive);
+	localeStr = localeStr.remove(QString::fromUtf8(".qm"), Qt::CaseInsensitive);
 	//there must be _one_ separation between program name and locale
 	localeStr = localeStr.remove(0, 1);
 	return localeStr;
@@ -431,8 +433,8 @@ void TranslationChooser::installQtTranslation(const QString &locale)
 {
 	QTranslator *qtTranslator = new QTranslator();
 	QString libDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-	if (!qtTranslator->load("qt_" + locale, libDir)) {
-		if (!locale.startsWith("en")) {
+	if (!qtTranslator->load(QString::fromUtf8("qt_") + locale, libDir)) {
+		if (!locale.startsWith(QString::fromUtf8("en"))) {
 			//the locale en is built in qt, this could not be loaded
 			qWarning() << Q_FUNC_INFO << "could not load qt"
 				   << "translations for locale" << locale;
@@ -544,8 +546,8 @@ QStringList TranslationChooser::supportedLanguages() const
  */
 void TranslationChooser::setLanguage(const QString &language)
 {
-	QString qtLocale = "";
-	QString qmFile = "";
+	QString qtLocale = QString();
+	QString qmFile = QString();
 	const TranslationChooserData *tData;
 	tData = this->supportedTranslations.value(language, NULL);
 
@@ -605,8 +607,8 @@ void TranslationChooser::setLanguage(const QLocale &locale)
 
 	QStringList localeStrList;
 	localeStrList.append(localeStr);
-	while (localeStr.contains("_")) {
-		int pos = localeStr.lastIndexOf("_");
+	while (localeStr.contains(QString::fromUtf8("_"))) {
+		int pos = localeStr.lastIndexOf(QString::fromUtf8("_"));
 		localeStr.truncate(pos);
 		qDebug() << Q_FUNC_INFO << "localeStr =" << localeStr;
 		localeStrList.append(localeStr);
@@ -678,7 +680,7 @@ const QString TranslationChooser::currentLanguageVersion() const
 	if (!tdata)
 		return QString();
 
-	return QString("%1").arg(tdata->translationVersion);
+	return QString::fromUtf8("%1").arg(tdata->translationVersion);
 }
 
 //public
@@ -721,13 +723,14 @@ const QString TranslationChooser::currentLanguageFile() const
  */
 QString TranslationChooser::helpTextFilename() const
 {
-	static const QString defVal(TC_TRANS_RESOURCE_STRING + "abtransfers-helptext_de.html");
+	static const QString defVal(TC_TRANS_RESOURCE_STRING +
+				    QString::fromUtf8("abtransfers-helptext_de.html"));
 
 	//: The filename of the help text.
 	//: The same directories as for the qm-files are searched!
 	QString helpFilename = tr("HELPTEXTFILENAME");
 
-	if (helpFilename == "HELPTEXTFILENAME") {
+	if (helpFilename == QString::fromUtf8("HELPTEXTFILENAME")) {
 		//no translation supplied, use default (german)
 		return defVal;
 	}

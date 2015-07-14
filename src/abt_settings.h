@@ -44,10 +44,10 @@
 
 
 /** default regular expression for valid characters at the purpose field. */
-static const QString DEFAULT_REGEX_PURPOSE = "[-+ .,/*&%0-9A-Za-z]";
+static const QString DEFAULT_REGEX_PURPOSE = QString::fromUtf8("[-+ .,/*&%0-9A-Za-z]");
 
 /** default regular expression for valid characters at the recipient and bankname field. */
-static const QString DEFAULT_REGEX_RECIPIENT = "[-+ .,/*&%0-9A-Za-z]";
+static const QString DEFAULT_REGEX_RECIPIENT = QString::fromUtf8("[-+ .,/*&%0-9A-Za-z]");
 
 
 /** \brief saves and restores settings which can be modified by the user */
@@ -126,7 +126,8 @@ public:
 	bool isAdvancedOptionSet(const QString &option) const;
 	void setAdvancedOption(const QString &option, bool value);
 	void setAdvancedOption(const QString &option, QString value);
-	QString getAdvancedOption(const QString &option, const QString defValue = "") const;
+	QString getAdvancedOption(const QString &option,
+				  const QString defValue = QString()) const;
 	void deleteAdvancedOption(const QString &option);
 
 	QString allowedCharsPurposeRegex() const;

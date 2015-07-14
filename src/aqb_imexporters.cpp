@@ -274,7 +274,7 @@ aqb_ieProfile::aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent) :
 	this->names = new QStringList();
 	GWEN_DB_NODE *nvars = GWEN_DB_GetFirstVar(this->dbnode);
 	while (nvars) {
-		const char *varname = GWEN_DB_VariableName(nvars);
+		QString varname = QString::fromUtf8(GWEN_DB_VariableName(nvars));
 		this->names->append(varname);
 
 		nvars = GWEN_DB_GetNextVar(nvars);
@@ -302,7 +302,7 @@ aqb_ieProfile::~aqb_ieProfile()
 QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 {
 	QVariant value = QVariant::Invalid;
-	if (!this->names->contains(varname)) {
+	if (!this->names->contains(QString::fromUtf8(varname))) {
 		qWarning() << Q_FUNC_INFO << this << "does not contain a var" << varname;
 		return value;
 	}
@@ -311,7 +311,8 @@ QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 
 	switch(vartype) {
 	case GWEN_DB_NodeType_ValueChar:
-		value = GWEN_DB_GetCharValue(this->dbnode, varname, idx, "");
+		value = QString::fromUtf8(GWEN_DB_GetCharValue(
+						this->dbnode, varname, idx, ""));
 		break;
 	case GWEN_DB_NodeType_ValueInt:
 		value = GWEN_DB_GetIntValue(this->dbnode, varname, idx, 0);

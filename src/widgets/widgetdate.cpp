@@ -51,7 +51,7 @@ widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget 
 	this->allowedWeekDays.clear(); //Alle Wochentage erlaubt
 
 	this->dateEdit = new QDateEdit(this);
-	this->dateEdit->setDisplayFormat("ddd dd.MM.yyyy"); //z.B. Mi. 07.09.2011
+	this->dateEdit->setDisplayFormat(QString::fromUtf8("ddd dd.MM.yyyy")); //z.B. Mi. 07.09.2011
 	this->dateEdit->setCalendarPopup(true);
 	this->dateEdit->calendarWidget()->setFirstDayOfWeek(Qt::Monday);
 	this->dateEdit->setDate(QDate::currentDate());
@@ -244,7 +244,7 @@ void widgetDate::setLimitAllowChange(int b)
  */
 void widgetDate::setLimitValuesExecutionDayWeek(const QStringList &execWeekdays)
 {
-	if (execWeekdays.isEmpty() || execWeekdays.contains("0")) {
+	if (execWeekdays.isEmpty() || execWeekdays.contains(QString::fromUtf8("0"))) {
 		this->allowedWeekDays.clear(); //Alle Tage erlaubt
 		return; //Fertig
 	}

@@ -460,8 +460,8 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 void abt_job_ctrl::addlog(const QString &str)
 {
 	static QString time;
-	time = QTime::currentTime().toString("HH:mm:ss.zzz");
-	time.append(": ");
+	time = QTime::currentTime().toString(QString::fromUtf8("HH:mm:ss.zzz"));
+	time.append(QString::fromUtf8(": "));
 	time.append(str);
 
 	emit this->log(time);
@@ -492,29 +492,33 @@ QStringList abt_job_ctrl::getParsedJobLogs(const AB_JOB *j) const
 		GWEN_StringList_free(gwenStrList);
 	}
 
+	/*
+	 * FIXME: check the encoding and use the apropriate functions!
+	 */
+
 	//preprocess the logs from AqBanking (UTF8 to ASCII)
 	//replace %22 by "
-	strList.replaceInStrings("%22", "\"", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%22"), QString::fromUtf8("\""), Qt::CaseSensitive);
 	//replace %28 by (
-	strList.replaceInStrings("%28", "(", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%28"), QString::fromUtf8("("), Qt::CaseSensitive);
 	//replace %29 by )
-	strList.replaceInStrings("%29", ")", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%29"), QString::fromUtf8(")"), Qt::CaseSensitive);
 	//replace %3A by :
-	strList.replaceInStrings("%3A", ":", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%3A"), QString::fromUtf8(":"), Qt::CaseSensitive);
 	//replace %C3%A4 by ä
-	strList.replaceInStrings("%C3%A4", "ä", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%A4"), QString::fromUtf8("ä"), Qt::CaseSensitive);
 	//replace %C3%84 by Ä
-	strList.replaceInStrings("%C3%84", "Ä", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%84"), QString::fromUtf8("Ä"), Qt::CaseSensitive);
 	//replace %C3%BC by ü
-	strList.replaceInStrings("%C3%BC", "ü", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%BC"), QString::fromUtf8("ü"), Qt::CaseSensitive);
 	//replace %C3%9C by Ü
-	strList.replaceInStrings("%C3%9C", "Ü", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%9C"), QString::fromUtf8("Ü"), Qt::CaseSensitive);
 	//replace %C3%B6 by ö
-	strList.replaceInStrings("%C3%B6", "ö", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%B6"), QString::fromUtf8("ö"), Qt::CaseSensitive);
 	//replace %C3%96 by Ö
-	strList.replaceInStrings("%C3%96", "Ö", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%C3%96"), QString::fromUtf8("Ö"), Qt::CaseSensitive);
 	//replace %3D by =
-	strList.replaceInStrings("%3D", "=", Qt::CaseSensitive);
+	strList.replaceInStrings(QString::fromUtf8("%3D"), QString::fromUtf8("="), Qt::CaseSensitive);
 
 	return strList;
 }
@@ -1986,7 +1990,7 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 	}
 	while (j) {
 		jobType = AB_Job_GetType(j);
-		strType = AB_Job_Type2Char(jobType);
+		strType = QString::fromUtf8(AB_Job_Type2Char(jobType));
 		jobState = AB_Job_GetStatus(j);
 
 		if (jobState == AB_Job_StatusFinished ||

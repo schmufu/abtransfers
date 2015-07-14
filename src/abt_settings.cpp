@@ -45,11 +45,11 @@ abt_settings::abt_settings(QObject *parent) :
 	//there is always the settings.ini
 
 	QString homePath = QDir::homePath();
-	QString iniFilename = homePath + "/.abtransfers/settings.ini";
+	QString iniFilename = homePath + QString::fromUtf8("/.abtransfers/settings.ini");
 	//the path must be useable on all systems
 	iniFilename = QDir::toNativeSeparators(iniFilename);
 	//if the folder does not exist, we create it
-	QDir dataStorage(QDir::toNativeSeparators(homePath + "/.abtransfers"));
+	QDir dataStorage(QDir::toNativeSeparators(homePath + QString::fromUtf8("/.abtransfers")));
 	if (!dataStorage.exists()) {
 		bool ret = dataStorage.mkpath(dataStorage.absolutePath());
 		if (!ret) {
@@ -70,33 +70,38 @@ abt_settings::abt_settings(QObject *parent) :
 	QString defValue;
 
 	//Standard folder to store data
-	defValue = homePath + "/.abtransfers/";
+	defValue = homePath + QString::fromUtf8("/.abtransfers/");
 	defValue = QDir::toNativeSeparators(defValue);
-	this->m_dataDir = this->settings->value("Main/DataDir", defValue).toString();
+	this->m_dataDir = this->settings->value(QString::fromUtf8("Main/DataDir"),
+						defValue).toString();
 
 	//file for known recipients
-	defValue = homePath + "/.abtransfers/recipients.txt";
+	defValue = homePath + QString::fromUtf8("/.abtransfers/recipients.txt");
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_recipientsFilename =
-		this->settings->value("Main/RecipientsFilename", defValue).toString();
+		this->settings->value(QString::fromUtf8("Main/RecipientsFilename"),
+				      defValue).toString();
 
 	//file for account data (balance, standing-/dated-transfers)
-	defValue = homePath + "/.abtransfers/accountdata.ctx";
+	defValue = homePath + QString::fromUtf8("/.abtransfers/accountdata.ctx");
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_accountdataFilename =
-		this->settings->value("Main/AccountDataFilename", defValue).toString();
+		this->settings->value(QString::fromUtf8("Main/AccountDataFilename"),
+				      defValue).toString();
 
 	//file for the history
-	defValue = homePath + "/.abtransfers/history.ctx";
+	defValue = homePath + QString::fromUtf8("/.abtransfers/history.ctx");
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_historyFilename =
-		this->settings->value("Main/HistoryFilename", defValue).toString();
+		this->settings->value(QString::fromUtf8("Main/HistoryFilename"),
+				      defValue).toString();
 
 	//filename for the automatic export
-	defValue = homePath + "/.abtransfers/automatic_export.csv";
+	defValue = homePath + QString::fromUtf8("/.abtransfers/automatic_export.csv");
 	defValue = QDir::toNativeSeparators(defValue);
 	this->m_autoExportFilename =
-		this->settings->value("Main/AutoExportFilename", defValue).toString();
+		this->settings->value(QString::fromUtf8("Main/AutoExportFilename"),
+				      defValue).toString();
 
 	this->m_textKeyDescr = NULL;
 	this->loadTextKeyDescriptions();
@@ -136,22 +141,22 @@ void abt_settings::loadTextKeyDescriptions()
 
 	this->m_textKeyDescr->clear();
 
-	if (!this->settings->childGroups().contains("TextKeyDescriptions")) {
+	if (!this->settings->childGroups().contains(QString::fromUtf8("TextKeyDescriptions"))) {
 		//TextKexDescriptions doesnt exists, use default values
-		this->settings->beginGroup("TextKeyDescriptions");
-		this->settings->setValue("04", "Lastschrift (Abbuchungsauftragsverfahren)");
-		this->settings->setValue("05", "Lastschrift (Einzugsermächtigungsverfahren)");
-		this->settings->setValue("51", "Überweisung");
-		this->settings->setValue("52", "Dauerauftrags-Überweisung");
-		this->settings->setValue("53", "Lohn-, Gehalts-, Renten-Überweisung");
-		this->settings->setValue("54", "Vermögenswirksame Leistung (VL)");
-		this->settings->setValue("56", "Überweisung öffentlicher Kassen");
-		this->settings->setValue("67", "Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)");
-		this->settings->setValue("69", "Spendenüberweisung");
+		this->settings->beginGroup(QString::fromUtf8("TextKeyDescriptions"));
+		this->settings->setValue(QString::fromUtf8("04"), QString::fromUtf8("Lastschrift (Abbuchungsauftragsverfahren)"));
+		this->settings->setValue(QString::fromUtf8("05"), QString::fromUtf8("Lastschrift (Einzugsermächtigungsverfahren)"));
+		this->settings->setValue(QString::fromUtf8("51"), QString::fromUtf8("Überweisung"));
+		this->settings->setValue(QString::fromUtf8("52"), QString::fromUtf8("Dauerauftrags-Überweisung"));
+		this->settings->setValue(QString::fromUtf8("53"), QString::fromUtf8("Lohn-, Gehalts-, Renten-Überweisung"));
+		this->settings->setValue(QString::fromUtf8("54"), QString::fromUtf8("Vermögenswirksame Leistung (VL)"));
+		this->settings->setValue(QString::fromUtf8("56"), QString::fromUtf8("Überweisung öffentlicher Kassen"));
+		this->settings->setValue(QString::fromUtf8("67"), QString::fromUtf8("Überweisung mit prüfziffergesicherten Zuordnungsdaten (BZÜ)"));
+		this->settings->setValue(QString::fromUtf8("69"), QString::fromUtf8("Spendenüberweisung"));
 		this->settings->endGroup();
 	}
 	
-	this->settings->beginGroup("TextKeyDescriptions");
+	this->settings->beginGroup(QString::fromUtf8("TextKeyDescriptions"));
 	//go through all keys and store the values in a QHash
 	foreach (QString key, this->settings->allKeys()) {
 		QString text = this->settings->value(key, tr("Unbekannt")).toString();
@@ -165,7 +170,7 @@ void abt_settings::loadTextKeyDescriptions()
 void abt_settings::setFilePermissions()
 {
 	QString homePath = QDir::homePath();
-	QString iniFilename = homePath + "/.abtransfers/settings.ini";
+	QString iniFilename = homePath + QString::fromUtf8("/.abtransfers/settings.ini");
 	//the path must be useable on all systems
 	iniFilename = QDir::toNativeSeparators(iniFilename);
 
@@ -195,11 +200,11 @@ void abt_settings::setFilePermissions()
 			     << this->getRecipientsFilename() << "failed";
 
 	//also the permissions fpr the folder should be correct
-	ret = QFile::setPermissions(QDir::toNativeSeparators(homePath + "/.abtransfers"),
+	ret = QFile::setPermissions(QDir::toNativeSeparators(homePath + QString::fromUtf8("/.abtransfers")),
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
 				    QFile::ReadUser | QFile::WriteUser | QFile::ExeUser);
 	if (!ret) qWarning() << Q_FUNC_INFO << " setting permissions on folder"
-			     << QDir::toNativeSeparators(homePath + "/.abtransfers") << "failed";
+			     << QDir::toNativeSeparators(homePath + QString::fromUtf8("/.abtransfers")) << "failed";
 
 	ret = QFile::setPermissions(this->getDataDir(),
 				    QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
@@ -227,7 +232,8 @@ const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 	abt_EmpfaengerInfo *recipientInfo;
 	while (!in.atEnd()) {
 		QString line = in.readLine();
-		InfoStringList = line.split("\t", QString::KeepEmptyParts);
+		InfoStringList = line.split(QString::fromUtf8("\t"),
+					    QString::KeepEmptyParts);
 
 		recipientInfo = new abt_EmpfaengerInfo();
 		recipientInfo->setName(InfoStringList.at(0));
@@ -319,7 +325,8 @@ void abt_settings::deleteKnownRecipient(abt_EmpfaengerInfo* recipientInfo)
  */
 void abt_settings::setLanguage(const QString &language)
 {
-	this->settings->setValue("Options/Language", language);
+	this->settings->setValue(QString::fromUtf8("Options/Language"),
+				 language);
 }
 
 
@@ -328,33 +335,37 @@ void abt_settings::setLanguage(const QString &language)
 void abt_settings::saveWindowStateGeometry(QByteArray state,
 					   QByteArray geometry)
 {
-	this->settings->setValue("Main/WindowState", state);
-	this->settings->setValue("Main/WindowGeometry", geometry);
+	this->settings->setValue(QString::fromUtf8("Main/WindowState"), state);
+	this->settings->setValue(QString::fromUtf8("Main/WindowGeometry"),
+				 geometry);
 }
 
 QByteArray abt_settings::loadWindowState() const
 {
-	return this->settings->value("Main/WindowState", QVariant()).toByteArray();
+	return this->settings->value(QString::fromUtf8("Main/WindowState"),
+				     QVariant()).toByteArray();
 }
 
 QByteArray abt_settings::loadWindowGeometry() const
 {
-	return this->settings->value("Main/WindowGeometry", QVariant()).toByteArray();
+	return this->settings->value(QString::fromUtf8("Main/WindowGeometry"),
+				     QVariant()).toByteArray();
 }
 
 
 
 
-void abt_settings::saveSelAccountInWidget(const QString &widgetName, const aqb_AccountInfo *acc)
+void abt_settings::saveSelAccountInWidget(const QString &widgetName,
+					  const aqb_AccountInfo *acc)
 {
-	QString groupname("Main/Widget");
+	QString groupname(QString::fromUtf8("Main/Widget"));
 	groupname.append(widgetName);
 	this->settings->setValue(groupname, acc->get_ID());
 }
 
 int abt_settings::loadSelAccountInWidget(const QString &widgetName) const
 {
-	QString groupname("Main/Widget");
+	QString groupname(QString::fromUtf8("Main/Widget"));
 	groupname.append(widgetName);
 	return this->settings->value(groupname, -1).toInt();
 }
@@ -363,13 +374,14 @@ int abt_settings::loadSelAccountInWidget(const QString &widgetName) const
 
 bool abt_settings::showDialog(const QString &dialogType) const
 {
-	return this->settings->value(QString("Dialogs/Show").append(dialogType),
+	return this->settings->value(QString::fromUtf8("Dialogs/Show").append(dialogType),
 				     true).toBool();
 }
 
 void abt_settings::setShowDialog(const QString &dialogType, bool show)
 {
-	this->settings->setValue(QString("Dialogs/Show").append(dialogType), show);
+	this->settings->setValue(QString::fromUtf8("Dialogs/Show").append(dialogType),
+				 show);
 }
 
 
@@ -377,74 +389,85 @@ void abt_settings::setShowDialog(const QString &dialogType, bool show)
 
 bool abt_settings::appendJobToOutbox(const QString &jobname) const
 {
-	return this->settings->value(QString("LoadAtStart/").append(jobname),
+	return this->settings->value(QString::fromUtf8("LoadAtStart/").append(jobname),
 				     false).toBool();
 }
 
 void abt_settings::setAppendJobToOutbox(const QString &jobname, bool get)
 {
-	this->settings->setValue(QString("LoadAtStart/").append(jobname), get);
+	this->settings->setValue(QString::fromUtf8("LoadAtStart/").append(jobname),
+				 get);
 }
 
 
 //public
 bool abt_settings::autoAddNewRecipients() const
 {
-	return this->settings->value("Options/autoAddNewRecipients", true).toBool();
+	return this->settings->value(QString::fromUtf8("Options/autoAddNewRecipients"),
+				     true).toBool();
 }
 
 //public
 void abt_settings::setAutoAddNewRecipients(bool value)
 {
-	this->settings->setValue("Options/autoAddNewRecipients", value);
+	this->settings->setValue(QString::fromUtf8("Options/autoAddNewRecipients"),
+				 value);
 }
 
 //public
 bool abt_settings::autoExportEnabled() const
 {
-	return this->settings->value("Options/autoExportEnabled", false).toBool();
+	return this->settings->value(QString::fromUtf8("Options/autoExportEnabled"),
+				     false).toBool();
 }
 
 //public
 void abt_settings::setAutoExportEnabled(bool value)
 {
-	this->settings->setValue("Options/autoExportEnabled", value);
+	this->settings->setValue(QString::fromUtf8("Options/autoExportEnabled"),
+				 value);
 }
 
 //public
 const QString abt_settings::autoExportProfileName() const
 {
-	return this->settings->value("Options/autoExportProfileName", "csv").toString();
+	return this->settings->value(QString::fromUtf8("Options/autoExportProfileName"),
+				     QString::fromUtf8("csv")).toString();
 }
 
 //public
 void abt_settings::setAutoExportProfileName(const QString name) const
 {
-	this->settings->setValue("Options/autoExportProfileName", name);
+	this->settings->setValue(QString::fromUtf8("Options/autoExportProfileName"),
+				 name);
 }
 
 //public
 const QString abt_settings::autoExportPluginName() const
 {
-	return this->settings->value("Options/autoExportPluginName", "default").toString();
+	return this->settings->value(QString::fromUtf8("Options/autoExportPluginName"),
+				     QString::fromUtf8("default")).toString();
 }
 
 //public
 void abt_settings::setAutoExportPluginName(const QString name) const
 {
-	this->settings->setValue("Options/autoExportPluginName", name);
+	this->settings->setValue(QString::fromUtf8("Options/autoExportPluginName"),
+				 name);
 }
 
 //public
 bool abt_settings::autoExportAsTransaction() const
 {
-	return this->settings->value("Main/AutoExportAsTransaction", true).toBool();
+	return this->settings->value(QString::fromUtf8("Main/AutoExportAsTransaction"),
+				     true).toBool();
 }
 
 //public
 void abt_settings::setAutoExportAsTransaction(bool value)
 {
-	this->settings->setValue("Main/AutoExportAsTransaction", value);
+	this->settings->setValue(QString::fromUtf8("Main/AutoExportAsTransaction"),
+				 value);
 }
 
 /**
@@ -458,14 +481,16 @@ void abt_settings::setAutoExportAsTransaction(bool value)
  */
 QStringList abt_settings::getAllProfileFavorites() const
 {
-	this->settings->beginGroup("ImExportFavorites");
+	this->settings->beginGroup(QString::fromUtf8("ImExportFavorites"));
 	QStringList retList;
 
 	foreach(const QString group, this->settings->childGroups()) {
 		this->settings->beginGroup(group);
 
 		foreach(const QString key, this->settings->childKeys()) {
-			retList.append(QString(group).append("/").append(key));
+			retList.append(QString(group)
+				       .append(QString::fromUtf8("/"))
+				       .append(key));
 		}
 
 		this->settings->endGroup();
@@ -477,13 +502,13 @@ QStringList abt_settings::getAllProfileFavorites() const
 
 bool abt_settings::isProfileFavorit(const QString &name) const
 {
-	QString key = QString("ImExportFavorites/").append(name);
+	QString key = QString::fromUtf8("ImExportFavorites/").append(name);
 	return this->settings->value(key, false).toBool();
 }
 
 void abt_settings::setProfileFavorit(const QString &name, bool favorit)
 {
-	QString key = QString("ImExportFavorites/").append(name);
+	QString key = QString::fromUtf8("ImExportFavorites/").append(name);
 	this->settings->setValue(key, favorit);
 }
 
@@ -493,7 +518,7 @@ void abt_settings::setProfileFavorit(const QString &name, bool favorit)
  */
 void abt_settings::deleteProfileFavorit(const QString &name)
 {
-	this->settings->beginGroup("ImExportFavorites");
+	this->settings->beginGroup(QString::fromUtf8("ImExportFavorites"));
 	this->settings->remove(name);
 	this->settings->endGroup();
 }
@@ -508,7 +533,8 @@ void abt_settings::deleteProfileFavorit(const QString &name)
  */
 void abt_settings::setAdvancedOptionEnabled(bool enable)
 {
-	this->settings->setValue("Options/Advanced/enabled", enable);
+	this->settings->setValue(QString::fromUtf8("Options/Advanced/enabled"),
+				 enable);
 }
 
 //public
@@ -519,7 +545,7 @@ void abt_settings::setAdvancedOptionEnabled(bool enable)
  */
 bool abt_settings::isAdvancedEnabled() const
 {
-	QString key = "Options/Advanced/enabled";
+	QString key = QString::fromUtf8("Options/Advanced/enabled");
 	return this->settings->value(key, false).toBool();
 }
 
@@ -535,7 +561,7 @@ bool abt_settings::isAdvancedOptionSet(const QString &option) const
 	bool ret = false;
 
 	if (this->isAdvancedEnabled()) {
-		QString key = QString("Options/Advanced/").append(option);
+		QString key = QString::fromUtf8("Options/Advanced/").append(option);
 		ret = this->settings->value(key, false).toBool();
 	}
 	return ret;
@@ -549,7 +575,7 @@ bool abt_settings::isAdvancedOptionSet(const QString &option) const
 void abt_settings::setAdvancedOption(const QString &option, bool value)
 {
 	if (this->isAdvancedEnabled()) {
-		QString key = QString("Options/Advanced/").append(option);
+		QString key = QString::fromUtf8("Options/Advanced/").append(option);
 		this->settings->setValue(key, value);
 	}
 }
@@ -559,7 +585,7 @@ void abt_settings::setAdvancedOption(const QString &option, bool value)
 void abt_settings::setAdvancedOption(const QString &option, QString value)
 {
 	if (this->isAdvancedEnabled()) {
-		QString key = QString("Options/Advanced/").append(option);
+		QString key = QString::fromUtf8("Options/Advanced/").append(option);
 		this->settings->setValue(key, value);
 	}
 }
@@ -572,10 +598,11 @@ void abt_settings::setAdvancedOption(const QString &option, QString value)
  *
  * Otherwise the read string from the settings file is returned.
  */
-QString abt_settings::getAdvancedOption(const QString &option, const QString defValue) const
+QString abt_settings::getAdvancedOption(const QString &option,
+					const QString defValue) const
 {
 	if (this->isAdvancedEnabled()) {
-		QString key = QString("Options/Advanced/").append(option);
+		QString key = QString::fromUtf8("Options/Advanced/").append(option);
 		return this->settings->value(key, defValue).toString();
 	}
 	return defValue;
@@ -585,7 +612,7 @@ QString abt_settings::getAdvancedOption(const QString &option, const QString def
 /** \brief deletes an advanced option from the settings file */
 void abt_settings::deleteAdvancedOption(const QString &option)
 {
-	this->settings->beginGroup("Options/Advanced/");
+	this->settings->beginGroup(QString::fromUtf8("Options/Advanced/"));
 	this->settings->remove(option);
 	this->settings->endGroup();
 }
@@ -601,7 +628,7 @@ void abt_settings::deleteAdvancedOption(const QString &option)
  */
 QString abt_settings::allowedCharsPurposeRegex() const
 {
-	QString regex = this->getAdvancedOption("RegexPurpose",
+	QString regex = this->getAdvancedOption(QString::fromUtf8("RegexPurpose"),
 						DEFAULT_REGEX_PURPOSE);
 
 	if (regex.isEmpty() || !QRegExp(regex).isValid())
@@ -621,7 +648,7 @@ QString abt_settings::allowedCharsPurposeRegex() const
  */
 QString abt_settings::allowedCharsRecipientRegex() const
 {
-	QString regex = this->getAdvancedOption("RegexRecipient",
+	QString regex = this->getAdvancedOption(QString::fromUtf8("RegexRecipient"),
 						DEFAULT_REGEX_RECIPIENT);
 
 	if (regex.isEmpty() || !QRegExp(regex).isValid())
@@ -635,22 +662,23 @@ QString abt_settings::allowedCharsRecipientRegex() const
  */
 QString abt_settings::language() const
 {
-	return this->settings->value("Options/Language", QString("")).toString();
+	return this->settings->value(QString::fromUtf8("Options/Language"),
+				     QString()).toString();
 }
 
 
 void abt_settings::saveColWidth(const QString &name, int col, int width)
 {
-	QString key = QString("Main/").append(name);
-	QString key2 = QString("/col%1").arg(col);
+	QString key = QString::fromUtf8("Main/").append(name);
+	QString key2 = QString::fromUtf8("/col%1").arg(col);
 	key.append(key2);
 	this->settings->setValue(key, width);
 }
 
 int abt_settings::getColWidth(const QString &name, int col, int def)
 {
-	QString key = QString("Main/").append(name);
-	QString key2 = QString("/col%1").arg(col);
+	QString key = QString::fromUtf8("Main/").append(name);
+	QString key2 = QString::fromUtf8("/col%1").arg(col);
 	key.append(key2);
 	bool convOK;
 	int ret = this->settings->value(key, def).toInt(&convOK);
@@ -737,7 +765,8 @@ void abt_settings::setRecipientsFilename(const QString &filename)
 		return; //Abbruch
 	}
 
-	this->settings->setValue("Main/RecipientsFilename", filename);
+	this->settings->setValue(QString::fromUtf8("Main/RecipientsFilename"),
+				 filename);
 
 	this->m_recipientsFilename = filename;
 }
@@ -750,7 +779,8 @@ void abt_settings::setAccountDataFilename(const QString &filename)
 		return; //Abbruch
 	}
 
-	this->settings->setValue("Main/AccountDataFilename", filename);
+	this->settings->setValue(QString::fromUtf8("Main/AccountDataFilename"),
+				 filename);
 
 	this->m_accountdataFilename = filename;
 }
@@ -763,7 +793,8 @@ void abt_settings::setHistoryFilename(const QString &filename)
 		return; //Abbruch
 	}
 
-	this->settings->setValue("Main/HistoryFilename", filename);
+	this->settings->setValue(QString::fromUtf8("Main/HistoryFilename"),
+				 filename);
 
 	this->m_historyFilename = filename;
 }
@@ -776,7 +807,7 @@ void abt_settings::setDataDir(const QString &dirname)
 		return; //Abbruch
 	}
 
-	this->settings->setValue("Main/DataDir", dirname);
+	this->settings->setValue(QString::fromUtf8("Main/DataDir"), dirname);
 
 	this->m_dataDir = dirname;
 }
@@ -789,7 +820,8 @@ void abt_settings::setAutoExportFilename(const QString &filename)
 		return; // cancel
 	}
 
-	this->settings->setValue("Main/AutoExportFilename", filename);
+	this->settings->setValue(QString::fromUtf8("Main/AutoExportFilename"),
+				 filename);
 
 	this->m_autoExportFilename = filename;
 }

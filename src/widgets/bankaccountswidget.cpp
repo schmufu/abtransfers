@@ -153,10 +153,10 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	QTextStream(&result) << a;
 	qDebug() << result;
 	//Nur dieselbe Instanz darf diesen Pointer verwenden!
-	QString mimetype = QString("application/x-abBanking_%1_AccountInfo").arg(app);
+	QString mimetype = QString::fromUtf8("application/x-abBanking_%1_AccountInfo").arg(app);
 	mimeData->setData(mimetype, QByteArray(result.toLatin1()));
 	drag->setMimeData(mimeData);
-	drag->setPixmap(QPixmap(":/icons/bank-icon"));
+	drag->setPixmap(QPixmap(QString::fromUtf8(":/icons/bank-icon")));
 
 	drag->exec(Qt::CopyAction);
 
@@ -278,7 +278,10 @@ void BankAccountsWidget::setValuesForItem(QTreeWidgetItem *item,
 	item->setData(3, Qt::DisplayRole, acc->Currency());
 	item->setData(4, Qt::DisplayRole, acc->getBankLine());
 	item->setData(4, Qt::TextAlignmentRole, Qt::AlignRight); //Dispo rechtsbündig
-	item->setData(5, Qt::DisplayRole, QString("%1").arg(acc->getDate().toString("ddd dd. MMM yyyy")));
+	QDate date = acc->getDate();
+	QString format = QString::fromUtf8("ddd dd. MMM yyyy");
+	QString value = QString::fromUtf8("%1").arg(date.toString(format));
+	item->setData(5, Qt::DisplayRole, value);
 	item->setData(5, Qt::TextAlignmentRole, Qt::AlignHCenter); //Datum mittig
 	item->setData(6, Qt::DisplayRole, acc->AccountType());
 	item->setData(7, Qt::DisplayRole, acc->Country());

@@ -72,9 +72,9 @@ public:
 		   QDialogButtonBox::StandardButtons buttons,
 		   QDialogButtonBox::StandardButton defaultButton = QDialogButtonBox::NoButton,
 		   QMessageBox::Icon Icon = QMessageBox::NoIcon,
-		   QString dialogName = "",
+		   QString dialogName = QString(),
 		   bool showCheckBox = true,
-		   QString checkBoxText = "");
+		   QString checkBoxText = QString());
 
 	~abt_dialog();
 

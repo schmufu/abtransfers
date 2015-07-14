@@ -60,7 +60,7 @@ aqb_banking::aqb_banking()
 	}
 
 	AB_Banking_GetVersion(&this->major, &this->minor, &this->patch, &this->build);
-	this->aqbanking_version = QString("%1.%2.%3.%4")
+	this->aqbanking_version = QString::fromUtf8("%1.%2.%3.%4")
 					.arg(this->major)
 					.arg(this->minor)
 					.arg(this->patch)
@@ -185,7 +185,7 @@ bool aqb_banking::isLastDateSupported() const
 	/** \todo: Adjust the version label when AqBanking supports setting
 	 *         the last date.
 	 */
-	return !(this->aqbanking_version < "9.9.9");
+	return !(this->aqbanking_version < QString::fromUtf8("9.9.9"));
 }
 
 
@@ -194,7 +194,7 @@ bool aqb_banking::isLastDateSupported() const
 QString aqb_banking::getInstituteFromBLZ(const QString &BLZ) const
 {
 	AB_BANKINFO *bankinfo;
-	QString Institute = "NO INFORMATION";
+	QString Institute = QString::fromUtf8("NO INFORMATION");
 	bankinfo = AB_Banking_GetBankInfo(this->ab, "de", "", BLZ.toStdString().c_str());
 
 	if (bankinfo) {
@@ -291,16 +291,16 @@ bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
 		}
 	}
 
-	QString resStr = "";
+	QString resStr = QString();
 	QString countryCode = iban.left(2);
 	QString pruefziffer = iban.mid(2,2);
 	QString blz = iban.mid(4,8);
 	QString ktonr = iban.mid(12);
 
-	if (countryCode.toUpper() == "DE") {
+	if (countryCode.toUpper() == QString::fromUtf8("DE")) {
 		//the IBAN is for a german bank account, so we can also check
 		//the account-number and bankcode
-		if (!this->checkAccount("de", "", blz, ktonr, resStr)) {
+		if (!this->checkAccount(QString::fromUtf8("de"), QString(), blz, ktonr, resStr)) {
 			result = QObject::tr("Überprüfung von Kontonummer und "
 					     "Bankleitzahl für Deutsches Konto "
 					     "fehlerhaft: %1").arg(resStr);

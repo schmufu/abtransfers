@@ -75,7 +75,8 @@ public:
 	static const GWEN_STRINGLIST* QStringListToGwenStringList(const QStringList &l);
 
 	static const QString ABValueToString(const AB_VALUE *value, bool asDecimal=false);
-	static AB_VALUE* ABValueFromString(const QString &str, const QString &currency = "EUR");
+	static AB_VALUE* ABValueFromString(const QString &str,
+					   const QString &currency = QString::fromUtf8("EUR"));
 
 	static const char* encodeToAb(const QString &str);
 	static const QString encodeFromAb(const char* str);

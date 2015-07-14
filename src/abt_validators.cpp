@@ -43,16 +43,16 @@ QValidator::State BetragValidator::validate(QString &input, int &pos) const
 
 void BetragValidator::fixup(QString &input) const
 {
-	int commapos = input.lastIndexOf(',');
+	int commapos = input.lastIndexOf(QLatin1Char(','));
 	if (commapos == -1) {
-		input.append(",00");
+		input.append(QString::fromUtf8(",00"));
 		return;
 	} else {
 		if (input.length()-1 - commapos == 1) {
-			input.append("0");
+			input.append(QString::fromUtf8("0"));
 			return;
 		} else if (input.length()-1 - commapos == 0) {
-			input.append("00");
+			input.append(QString::fromUtf8("00"));
 			return;
 		}
 	}

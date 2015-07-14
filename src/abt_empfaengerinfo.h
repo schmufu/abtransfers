@@ -51,10 +51,10 @@ private:
 	QString m_Verw;
 public:
 	abt_EmpfaengerInfo();
-	abt_EmpfaengerInfo(const QString &Name, const QString &Kontonummer = "",
-			   const QString &BLZ = "", const QString &IBAN = "",
-			   const QString &BIC = "", const QString &Institut = "",
-			   const QString &Verw = "");
+	abt_EmpfaengerInfo(const QString &Name, const QString &Kontonummer = QString(),
+			   const QString &BLZ = QString(), const QString &IBAN = QString(),
+			   const QString &BIC = QString(), const QString &Institut = QString(),
+			   const QString &Verw = QString());
 	~abt_EmpfaengerInfo();
 
 	const QString &getName() const { return this->m_Name; }

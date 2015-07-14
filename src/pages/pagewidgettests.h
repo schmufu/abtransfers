@@ -34,6 +34,7 @@
 #define PAGEWIDGETTESTS_H
 
 #include <QPlainTextEdit>
+#include <QLineEdit>
 #include <QDebug>
 
 #include <aqbanking/job.h>
@@ -86,6 +87,14 @@ private:
 	QPushButton *button6;
 	QPushButton *button7;
 	QPushButton *button8;
+	QLineEdit *edit1;
+	QLineEdit *edit2;
+	QLineEdit *edit3;
+	QLineEdit *edit4;
+	QLineEdit *edit5;
+	QLineEdit *edit6;
+	QLineEdit *edit7;
+	QLineEdit *edit8;
 	QPlainTextEdit *textEdit;
 
 	aqb_Accounts *accounts;

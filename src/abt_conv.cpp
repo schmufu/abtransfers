@@ -203,7 +203,7 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 		GWEN_Time_toUtcString(gwentime, "YYYYMMDD", gbuf);
 		std::string stdDatetime(GWEN_Buffer_GetStart(gbuf));
 		QString strDate = QString::fromStdString(stdDatetime);
-		date = QDate::fromString(strDate, "yyyyMMdd");
+		date = QDate::fromString(strDate, QString::fromUtf8("yyyyMMdd"));
 		GWEN_Buffer_free(gbuf);
 
 	} else {
@@ -233,12 +233,12 @@ const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 		return NULL;
 	}
 
-	datestr = QString("%1%2%3")
+	datestr = QString::fromUtf8("%1%2%3")
 		  .arg(date.year(), 4, 10, QLatin1Char('0'))
 		  .arg(date.month(), 2, 10, QLatin1Char('0'))
 		  .arg(date.day(), 2, 10, QLatin1Char('0'));
 
-	datestr.append("-12:00");
+	datestr.append(QString::fromUtf8("-12:00"));
 
 	gwt = GWEN_Time_fromUtcString(datestr.toStdString().c_str(), "YYYYMMDD-hh:mm");
 	//gwt = GWEN_Time_new(date.year(), date.month()-1, date.day(), 12, 0, 0, 1);
@@ -325,7 +325,7 @@ const QString abt_conv::ABValueToString(const AB_VALUE *value, bool asDecimal)
 	}
 
 	if (asDecimal) {
-		return QString("%L1").arg(AB_Value_GetValueAsDouble(value),0,'f',2);
+		return QString::fromUtf8("%L1").arg(AB_Value_GetValueAsDouble(value),0,'f',2);
 	} else {
 		GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
 		AB_Value_toString(value, buf);

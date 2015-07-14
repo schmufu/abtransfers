@@ -68,11 +68,16 @@ DialogSettings::DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *
 	this->onCheckBoxRefereshAtStartStateChanged(0);
 
 	QIcon ico;
-	ico = QIcon::fromTheme("document-new", QIcon(":/icons/document-new"));
+	ico = QIcon::fromTheme(QString::fromUtf8("document-new"),
+			       QIcon(QString::fromUtf8(":/icons/document-new")));
 	this->ui->actionNewProfile->setIcon(ico);
-	ico = QIcon::fromTheme("document-edit", QIcon(":/icons/document-edit"));
+
+	ico = QIcon::fromTheme(QString::fromUtf8("document-edit"),
+			       QIcon(QString::fromUtf8(":/icons/document-edit")));
 	this->ui->actionEditProfile->setIcon(ico);
-	ico = QIcon::fromTheme("edit-delete", QIcon(":/icons/delete"));
+
+	ico = QIcon::fromTheme(QString::fromUtf8("edit-delete"),
+			       QIcon(QString::fromUtf8(":/icons/delete")));
 	this->ui->actionDeleteProfile->setIcon(ico);
 
 	connect(this->ui->checkBox_getBalance, SIGNAL(stateChanged(int)),
@@ -135,16 +140,25 @@ void DialogSettings::loadFromSettings()
 	this->ui->lineEdit_history->setText(this->settings->getHistoryFilename());
 	this->ui->lineEdit_recipients->setText(this->settings->getRecipientsFilename());
 
-	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog("WarnCosts"));
-	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog("JobAddOutput"));
-	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog("ProfileConfirmDelete"));
-	this->ui->checkBox_warnDeleteHistory->setChecked(this->settings->showDialog("HistoryConfirmDelete"));
-	this->ui->checkBox_runtimeLanguageChange->setChecked(this->settings->showDialog("RuntimeLanguageChange"));
+	QString name = QString::fromUtf8("WarnCosts");
+	this->ui->checkBox_warnCosts->setChecked(this->settings->showDialog(name));
+	name = QString::fromUtf8("JobAddOutput");
+	this->ui->checkBox_jobAddedToOutput->setChecked(this->settings->showDialog(name));
+	name = QString::fromUtf8("ProfileConfirmDelete");
+	this->ui->checkBox_warnDeleteProfile->setChecked(this->settings->showDialog(name));
+	name = QString::fromUtf8("HistoryConfirmDelete");
+	this->ui->checkBox_warnDeleteHistory->setChecked(this->settings->showDialog(name));
+	name = QString::fromUtf8("RuntimeLanguageChange");
+	this->ui->checkBox_runtimeLanguageChange->setChecked(this->settings->showDialog(name));
 
-	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox("getBalance"));
-	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox("getStandingOrders"));
-	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox("getDatedTransfers"));
-	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox("executeAtStart"));
+	name = QString::fromUtf8("getBalance");
+	this->ui->checkBox_getBalance->setChecked(this->settings->appendJobToOutbox(name));
+	name = QString::fromUtf8("getStandingOrders");
+	this->ui->checkBox_getStandingOrders->setChecked(this->settings->appendJobToOutbox(name));
+	name = QString::fromUtf8("getDatedTransfers");
+	this->ui->checkBox_getDatedTransfers->setChecked(this->settings->appendJobToOutbox(name));
+	name = QString::fromUtf8("executeAtStart");
+	this->ui->checkBox_executeAtStart->setChecked(this->settings->appendJobToOutbox(name));
 
 	this->loadAdvancedSettings();
 
@@ -187,20 +201,29 @@ void DialogSettings::saveToSettings()
 	this->settings->setHistoryFilename(this->ui->lineEdit_history->text());
 	this->settings->setRecipientsFilename(this->ui->lineEdit_recipients->text());
 
-	this->settings->setShowDialog("WarnCosts", this->ui->checkBox_warnCosts->isChecked());
-	this->settings->setShowDialog("JobAddOutput", this->ui->checkBox_jobAddedToOutput->isChecked());
-	this->settings->setShowDialog("ProfileConfirmDelete", this->ui->checkBox_warnDeleteProfile->isChecked());
-	this->settings->setShowDialog("HistoryConfirmDelete", this->ui->checkBox_warnDeleteHistory->isChecked());
-	this->settings->setShowDialog("RuntimeLanguageChange", this->ui->checkBox_runtimeLanguageChange->isChecked());
+	this->settings->setShowDialog(QString::fromUtf8("WarnCosts"),
+				      this->ui->checkBox_warnCosts->isChecked());
+	this->settings->setShowDialog(QString::fromUtf8("JobAddOutput"),
+				      this->ui->checkBox_jobAddedToOutput->isChecked());
+	this->settings->setShowDialog(QString::fromUtf8("ProfileConfirmDelete"),
+				      this->ui->checkBox_warnDeleteProfile->isChecked());
+	this->settings->setShowDialog(QString::fromUtf8("HistoryConfirmDelete"),
+				      this->ui->checkBox_warnDeleteHistory->isChecked());
+	this->settings->setShowDialog(QString::fromUtf8("RuntimeLanguageChange"),
+				      this->ui->checkBox_runtimeLanguageChange->isChecked());
 
-	this->settings->setAppendJobToOutbox("getBalance", this->ui->checkBox_getBalance->isChecked());
-	this->settings->setAppendJobToOutbox("getStandingOrders", this->ui->checkBox_getStandingOrders->isChecked());
-	this->settings->setAppendJobToOutbox("getDatedTransfers", this->ui->checkBox_getDatedTransfers->isChecked());
-	this->settings->setAppendJobToOutbox("executeAtStart", this->ui->checkBox_executeAtStart->isChecked());
+	this->settings->setAppendJobToOutbox(QString::fromUtf8("getBalance"),
+					     this->ui->checkBox_getBalance->isChecked());
+	this->settings->setAppendJobToOutbox(QString::fromUtf8("getStandingOrders"),
+					     this->ui->checkBox_getStandingOrders->isChecked());
+	this->settings->setAppendJobToOutbox(QString::fromUtf8("getDatedTransfers"),
+					     this->ui->checkBox_getDatedTransfers->isChecked());
+	this->settings->setAppendJobToOutbox(QString::fromUtf8("executeAtStart"),
+					     this->ui->checkBox_executeAtStart->isChecked());
 
 	//Hint: the advanced options are only saved by this->settings if the
 	//      advanced options are enabled!
-	this->settings->setAdvancedOption("ManualOutboxRearrange",
+	this->settings->setAdvancedOption(QString::fromUtf8("ManualOutboxRearrange"),
 			this->ui->checkBox_adv_manualOutboxRearrange->isChecked());
 
 	//save regex values only if they can be used with QRegExp, otherwise
@@ -209,12 +232,12 @@ void DialogSettings::saveToSettings()
 	regex = this->ui->lineEdit_regexPurpose->text();
 	if (!QRegExp(regex).isValid())
 		regex = DEFAULT_REGEX_PURPOSE;
-	this->settings->setAdvancedOption("RegexPurpose", regex);
+	this->settings->setAdvancedOption(QString::fromUtf8("RegexPurpose"), regex);
 
 	regex = this->ui->lineEdit_regexRecipient->text();
 	if (!QRegExp(regex).isValid())
 		regex = DEFAULT_REGEX_PURPOSE;
-	this->settings->setAdvancedOption("RegexRecipient",
+	this->settings->setAdvancedOption(QString::fromUtf8("RegexRecipient"),
 					  this->ui->lineEdit_regexRecipient->text());
 
 
@@ -242,7 +265,7 @@ void DialogSettings::loadAdvancedSettings(bool updateState /* = true */)
 	if (updateState)
 		this->setAdvancedOptionState(checked);
 
-	checked = this->settings->isAdvancedOptionSet("ManualOutboxRearrange");
+	checked = this->settings->isAdvancedOptionSet(QString::fromUtf8("ManualOutboxRearrange"));
 	this->ui->checkBox_adv_manualOutboxRearrange->setChecked(checked);
 
 	this->ui->lineEdit_regexPurpose->setText(this->settings->allowedCharsPurposeRegex());
@@ -295,7 +318,7 @@ void DialogSettings::refreshImExPluginListWidget()
 	Q_ASSERT(this->imexp);
 
 	//remember the selected item
-	QString pluginName = "";
+	QString pluginName = QString();
 	int row = this->ui->listWidget_plugins->currentRow();
 	if (row != -1) {
 		pluginName = this->ui->listWidget_plugins->item(row)->text();
@@ -323,7 +346,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 {
 	const aqb_iePlugin *plugin = NULL;
 	int row = this->ui->listWidget_plugins->currentRow();
-	QString pluginName = "";
+	QString pluginName = QString();
 	if (row >= 0)
 		pluginName = this->ui->listWidget_plugins->item(row)->text();
 
@@ -351,7 +374,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		this->ui->tableWidget_profiles->setItem(rowc, 0, item);
 
-		bool selected = this->selection.value(pluginName, "") == item->text();
+		bool selected = this->selection.value(pluginName, QString()) == item->text();
 		//qDebug() << "ROW:" << rowc << "profile" << item->text() << selected;
 
 		item = new QTableWidgetItem();
@@ -397,7 +420,7 @@ void DialogSettings::refreshImExProfileTableWidget()
 
 		//if the profile is a favorite this is stored in the private QHash
 		QString key = pluginName;
-		key.append("/");
+		key.append(QString::fromUtf8("/"));
 		key.append(profile->getValue("name").toString());
 		if (this->imex_favorites->value(key, false)) {
 			checkState = Qt::Checked;
@@ -456,7 +479,7 @@ void DialogSettings::refreshAutoExportComboBoxPlugin()
 		exportsAvailable = false;
 		foreach(aqb_ieProfile *profile, *plugin->getProfiles()) {
 			//the plugin must contain a profile useable for export
-			if (profile->getNames()->contains("export") &&
+			if (profile->getNames()->contains(QString::fromUtf8("export")) &&
 			    profile->getValue("export").toInt() == 1) {
 				exportsAvailable = true;
 				break;
@@ -732,7 +755,7 @@ void DialogSettings::on_tableWidget_profiles_itemChanged(QTableWidgetItem *item)
 	QString key; // in the form of "pluginname/profilename"
 	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
 	key = this->ui->listWidget_plugins->item(listWidgetRow)->text(); //pluginname
-	key.append("/");
+	key.append(QString::fromUtf8("/"));
 	key.append(this->ui->tableWidget_profiles->item(item->row(), 0)->text()); //profilename
 
 	this->imex_favorites->insert(key, checked);
@@ -815,9 +838,9 @@ void DialogSettings::on_actionEditProfile_triggered()
 
 		QString path = banking->getUserDataDir();
 
-		path.append("/imexporters");
-		path.append("/").append(plugin->getName());
-		path.append("/profiles/");
+		path.append(QString::fromUtf8("/imexporters"));
+		path.append(QString::fromUtf8("/")).append(plugin->getName());
+		path.append(QString::fromUtf8("/profiles/"));
 		lclImexpDir.setPath(path);
 
 		if (!lclImexpDir.exists()) {
@@ -840,15 +863,17 @@ void DialogSettings::on_actionEditProfile_triggered()
 
 	}
 
-	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(banking->getAqBanking(),
-								  plugin->getName(),
-								  profileName.toUtf8());
+	GWEN_DB_NODE *dbProfile = AB_Banking_GetImExporterProfile(
+					banking->getAqBanking(),
+					plugin->getName().toStdString().c_str(),
+					profileName.toStdString().c_str());
 
 	QString filename = profile->getValue("fileName").toString();
 
-	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
-							plugin->getName(),
-							filename.toUtf8());
+	int ret = this->imexp->editProfileWithAqbDialog(
+					dbProfile,
+					plugin->getName().toStdString().c_str(),
+					filename.toStdString().c_str());
 
 	if (ret < 0) {
 		//something went wrong
@@ -875,7 +900,7 @@ void DialogSettings::on_actionNewProfile_triggered()
 	newname = QInputDialog::getText(this, tr("Profil Name"),
 					tr("Bitte geben sie einen Namen für "
 					   "das neue Profil ein"),
-					QLineEdit::Normal, "", &inputOk);
+					QLineEdit::Normal, QString(), &inputOk);
 
 	if (!inputOk || newname.isEmpty()) {
 		//no name was given or cancel clicked
@@ -924,7 +949,7 @@ void DialogSettings::on_actionNewProfile_triggered()
 			     newname.toUtf8());
 
 	QString filename = newname;
-	filename.append(".conf");
+	filename.append(QString::fromUtf8(".conf"));
 
 	//the folder for the new local profile must exists, otherwise the
 	//profile could not be saved by aqbanking
@@ -934,9 +959,9 @@ void DialogSettings::on_actionNewProfile_triggered()
 
 	QString path = banking->getUserDataDir();
 
-	path.append("/imexporters");
-	path.append("/").append(selPlugin->getName());
-	path.append("/profiles/");
+	path.append(QString::fromUtf8("/imexporters"));
+	path.append(QString::fromUtf8("/")).append(selPlugin->getName());
+	path.append(QString::fromUtf8("/profiles/"));
 	lclImexpDir.setPath(path);
 
 	if (!lclImexpDir.exists()) {
@@ -957,9 +982,10 @@ void DialogSettings::on_actionNewProfile_triggered()
 		}
 	}
 
-	int ret = this->imexp->editProfileWithAqbDialog(dbProfile,
-							selPlugin->getName(),
-							filename.toUtf8());
+	int ret = this->imexp->editProfileWithAqbDialog(
+					dbProfile,
+					selPlugin->getName().toStdString().c_str(),
+					filename.toStdString().c_str());
 
 	if (ret < 0) {
 		//something went wrong
@@ -1014,9 +1040,10 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 
 	QString path = banking->getUserDataDir();
 
-	path.append("/imexporters");
-	path.append("/").append(selPlugin->getName());
-	path.append("/profiles/");
+	//TODO: used 3 or more times, make a function!
+	path.append(QString::fromUtf8("/imexporters"));
+	path.append(QString::fromUtf8("/")).append(selPlugin->getName());
+	path.append(QString::fromUtf8("/profiles/"));
 	lclImexpDir.setPath(path);
 
 	if (!lclImexpDir.exists()) {
@@ -1035,15 +1062,15 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 				     "werden?").arg(selProfile->getValue("name").toString()),
 				  QDialogButtonBox::Yes | QDialogButtonBox::No,
 				  QDialogButtonBox::Yes, QMessageBox::Question,
-				  "ProfileConfirmDelete");
+				  QString::fromUtf8("ProfileConfirmDelete"));
 		if (delDia.exec() == QDialogButtonBox::Yes) {
 			//remember the key for settings before deletion
 			QString key = selPlugin->getName();
-			key.append("/");
+			key.append(QString::fromUtf8("/"));
 			key.append(selProfile->getValue("name").toString());
 
 			QString file = lclImexpDir.absolutePath();
-			file.append("/").append(profileFilename);
+			file.append(QString::fromUtf8("/")).append(profileFilename);
 			QFile::remove(file);
 			qDebug() << Q_FUNC_INFO << "file" << file << "deleted!";
 
@@ -1105,7 +1132,8 @@ CURRENT_INDEX_CHANGED_SET_INDEX:
 		return;
 	} else {
 		for (int i=0; i<this->ui->comboBox_profile->count(); ++i) {
-			if (this->ui->comboBox_profile->itemText(i) == "default") {
+			if (this->ui->comboBox_profile->itemText(i) ==
+			    QString::fromUtf8("default")) {
 				idx = i;
 				//default idx found, use it
 				goto CURRENT_INDEX_CHANGED_SET_INDEX;
