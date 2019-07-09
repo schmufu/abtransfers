@@ -131,7 +131,13 @@ RESOURCES += src/resources.qrc
 
 unix|macx {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+    #check for Qt5 or greater
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        PKGCONFIG += gwenhywfar gwengui-qt5 aqbanking
+    } else {
+        DEFINES += GWEN_QT4
+        PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+    }
 # Only for tests with the lastest aqbanking version at development!
 #    LIBS += -L/opt/latest_svn/lib -laqbanking -lgwenhywfar -lgwengui-qt4 -lgwengui-cpp
 #    INCLUDEPATH += /opt/latest_svn/include/aqbanking5 \

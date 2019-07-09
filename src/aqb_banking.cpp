@@ -44,7 +44,11 @@ aqb_banking::aqb_banking()
 	//The GUI must be created here, otherwise an error could occur.
 	//(happened ones, at the time were AqBanking data was replaced with
 	//data from another PC)
+#ifdef GWEN_QT4
 	this->gui = new QT4_Gui();
+#else
+	this->gui = new QT5_Gui();
+#endif
 	GWEN_Gui_SetGui(this->gui->getCInterface());
 
 	/* This is the basic init function. It only initializes the minimum (like

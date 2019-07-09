@@ -1,0 +1,8 @@
+*~
+build/
+tmp/
+qrc_resources.cpp
+Makefile
+translation/*.qm
+abtransfers.pro.user
+.qmake.stash

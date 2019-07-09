@@ -32,7 +32,11 @@
 #define AQB_BANKING_H
 
 #include <aqbanking/banking.h>
+#ifdef GWEN_QT4
 #include <gwen-gui-qt4/qt4_gui.hpp>
+#else
+#include <gwen-gui-qt5/qt5_gui.hpp>
+#endif
 
 #include <QString>
 
@@ -45,7 +49,11 @@ class aqb_banking
 {
 private:
 	AB_BANKING *ab;
+#ifdef GWEN_QT4
 	QT4_Gui *gui;
+#else
+	QT5_Gui *gui;
+#endif
 	QString aqbanking_version;
 	int major, minor, patch, build;
 
