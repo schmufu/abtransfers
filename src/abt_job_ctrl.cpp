@@ -128,7 +128,7 @@ void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 					  QHash<AB_JOB_TYPE, bool> *hash)
 {
 	Q_ASSERT(hash != NULL);
-	AB_JOB *j = NULL;
+	AB_JOB *j = nullptr;
 	j = AB_JobCreateDatedTransfer_new(a);
 	hash->insert(AB_Job_TypeCreateDatedTransfer, AB_Job_CheckAvailability(j) == 0);
 	AB_Job_free(j);
@@ -231,8 +231,8 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 	Q_ASSERT(a != NULL);
 
 	AB_TRANSACTION *t = AB_Transaction_new();
-	const AB_TRANSACTION_LIMITS *tl = NULL;
-	AB_JOB *j = NULL;
+	const AB_TRANSACTION_LIMITS *tl = nullptr;
+	AB_JOB *j = nullptr;
 
 
 	j = AB_JobSingleTransfer_new(a);
@@ -809,6 +809,7 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 	case AB_Job_TypeGetBalance: {
 		//the update of the balance should always be the last job
 		wantedPos = lastPos + 1;
+		break;
 	}
 	default:
 		wantedPos = lastPos + 1; //default, after the last one
@@ -1415,7 +1416,7 @@ void abt_job_ctrl::addGetDatedTransfers(const aqb_AccountInfo *acc,
 {
 	int rv;
 
-	if (acc == NULL) { //Job is not available!
+	if (acc == nullptr) { //Job is not available!
 		qWarning() << Q_FUNC_INFO
 			   << "Job AB_Job_TypeGetDatedTransfers is not"
 			   << "available (no valid account [NULL])";
@@ -1653,7 +1654,7 @@ void abt_job_ctrl::addGetStandingOrders(const aqb_AccountInfo *acc,
 {
 	int rv;
 
-	if (acc == NULL) { //Job is not available!
+	if (acc == nullptr) { //Job is not available!
 		qWarning() << Q_FUNC_INFO
 			   << "Job AB_Job_TypeGetStandingOrders is not"
 			   << "available (no valid account [NULL])";
@@ -1712,7 +1713,7 @@ void abt_job_ctrl::addGetSepaStandingOrders(const aqb_AccountInfo *acc,
 #if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
 	int rv;
 
-	if (acc == NULL) { //Job is not available!
+	if (acc == nullptr) { //Job is not available!
 		qWarning() << Q_FUNC_INFO
 			   << "Job AB_Job_TypeGetSepaStandingOrders is not"
 			   << "available (no valid account [NULL])";
@@ -1784,7 +1785,7 @@ void abt_job_ctrl::addGetBalance(const aqb_AccountInfo *acc,
 {
 	int rv;
 
-	if (acc == NULL) { //Job is not available!
+	if (acc == nullptr) { //Job is not available!
 		qWarning() << Q_FUNC_INFO
 			   << "Job AB_Job_TypeGetBalance is not available"
 			   << "(no valid account [NULL])";
@@ -1968,7 +1969,7 @@ void abt_job_ctrl::execQueuedTransactions()
  */
 bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 {
-	AB_JOB *j = NULL;
+	AB_JOB *j = nullptr;
 	AB_JOB_STATUS jobState;
 	AB_JOB_TYPE jobType;
 	QString strType;

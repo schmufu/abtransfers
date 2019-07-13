@@ -42,7 +42,7 @@ widgetValue::widgetValue(QWidget *parent) :
 {
 	this->currency = new QLineEdit(this);
 	this->value = new QLineEdit(this);
-	this->calcFrame = NULL;
+	this->calcFrame = nullptr;
 	//show and hide the calculator, otherwise the first display is not as
 	//expected (shown in the middle and not underneath the widget)
 	this->showCalculator();
@@ -117,6 +117,7 @@ bool widgetValue::eventFilter(QObject * /*o*/, QEvent *e)
 				}
 			}
 			// otherwise, tricky fall through here!
+			[[clang::fallthrough]];
 
 		case Qt::Key_Slash:
 		case Qt::Key_Asterisk:
@@ -211,7 +212,7 @@ void widgetValue::calculatorResult()
 //public slot
 void widgetValue::showCalculator()
 {
-	this->showCalculator(NULL);
+	this->showCalculator(nullptr);
 }
 
 //public slot

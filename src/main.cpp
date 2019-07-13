@@ -194,6 +194,9 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 	case QtDebugMsg:
 		debugDialog->appendMsg(QString("DEBUG: ").append(msg.toLatin1()));
 		break;
+	case QtInfoMsg:
+		debugDialog->appendMsg(QString("INFO: ").append(msg.toLatin1()));
+		break;
 	case QtWarningMsg:
 		debugDialog->appendMsg(QString("WARNING: ").append(msg.toLatin1()));
 		break;

@@ -39,7 +39,8 @@ aqb_banking::aqb_banking()
 {
 	int rv;
 
-	this->ab = AB_Banking_new("abtransfers", NULL, 0);
+	this->ab = AB_Banking_new("abtransfers", nullptr, 0);
+	// the registered FinTS product number is 79BD40393BFA967F957D00B64
 
 	//The GUI must be created here, otherwise an error could occur.
 	//(happened ones, at the time were AqBanking data was replaced with
@@ -155,18 +156,18 @@ aqb_banking::~aqb_banking()
 	if (GWEN_Gui_GetGui() != this->gui->getCInterface()) {
 		//gui used by gwen is not ours, we simple delete our gui
 		delete this->gui;
-		this->gui = NULL;
+		this->gui = nullptr;
 	} else {
 		//increase the refCount of the gwen interal used GWEN_GUI* pointer
 		GWEN_Gui_Attach(this->gui->getCInterface());
 		//delete the created QT4_Gui (decreases only the internal refCount
 		//but not frees the internal GWEN_GUI*)
 		delete this->gui;
-		this->gui = NULL;
+		this->gui = nullptr;
 		//Set the used GWEN_GUI to NULL. This decreases the internal
 		//refCount and frees it (if refCount == 0) and also sets the
 		//internal used gwenhywfar_gui* to NULL ;)
-		GWEN_Gui_SetGui(NULL);
+		GWEN_Gui_SetGui(nullptr);
 
 		if (GWEN_Gui_GetGui()) {
 			qWarning() << Q_FUNC_INFO
@@ -388,7 +389,7 @@ bool aqb_banking::checkIBAN(const QString &iban, QString &result) const
   */
 QString aqb_banking::getUserDataDir() const
 {
-	GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 255, 0, 0);
+	GWEN_BUFFER *buf = GWEN_Buffer_new(nullptr, 255, 0, 0);
 	if (!buf) {
 		qWarning() << Q_FUNC_INFO << "could not get a GWEN_BUFFER!"
 			   << "GWEN_Buffer_new() returned NULL";
