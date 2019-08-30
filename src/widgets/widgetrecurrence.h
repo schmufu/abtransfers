@@ -63,7 +63,7 @@ class widgetRecurrence : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetRecurrence(QWidget *parent = 0);
+	explicit widgetRecurrence(QWidget *parent = nullptr);
 	~widgetRecurrence();
 
 private:

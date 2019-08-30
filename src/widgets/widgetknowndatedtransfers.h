@@ -46,7 +46,7 @@ class widgetKnownDatedTransfers : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetKnownDatedTransfers(QWidget *parent = 0);
+	explicit widgetKnownDatedTransfers(QWidget *parent = nullptr);
 
 protected:
 	void changeEvent(QEvent *e);

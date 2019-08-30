@@ -68,7 +68,7 @@ private:
 	void setFilePermissions();
 
 public:
-	explicit abt_settings(QObject *parent = 0);
+	explicit abt_settings(QObject *parent = nullptr);
 	~abt_settings();
 
 	//get und setter für die Dateinamen

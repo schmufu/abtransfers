@@ -44,7 +44,7 @@ class widgetTextKey : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetTextKey(const QList<int> *keys = NULL, QWidget *parent = 0);
+	explicit widgetTextKey(const QList<int> *keys = nullptr, QWidget *parent = nullptr);
 	~widgetTextKey();
 
 	int getTextKey() const;

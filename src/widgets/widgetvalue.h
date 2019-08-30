@@ -46,7 +46,7 @@ class widgetValue : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetValue(QWidget *parent = 0);
+	explicit widgetValue(QWidget *parent = nullptr);
 	~widgetValue();
 
 protected:

@@ -47,7 +47,7 @@ class widgetDate : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget *parent = 0);
+	explicit widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget *parent = nullptr);
 	~widgetDate();
 
 private:

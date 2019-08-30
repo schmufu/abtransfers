@@ -126,7 +126,7 @@ public:
 	/** \brief gibt den enthaltenen AB_Job zurück (could be NULL!) */
 	AB_JOB *getJob() const;
 
-	const abt_transaction* getTransaction() const { return this->m_trans; };
+	const abt_transaction* getTransaction() const { return this->m_trans; }
 
 	const AB_ACCOUNT* getAbAccount() const;
 

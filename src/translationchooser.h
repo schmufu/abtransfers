@@ -98,8 +98,8 @@ class TranslationChooser: public QObject
 {
 	Q_OBJECT
 public:
-	explicit TranslationChooser(QLocale locale = QLocale(), QObject *parent = 0);
-	explicit TranslationChooser(QString language = QString(), QObject *parent = 0);
+	explicit TranslationChooser(QLocale locale = QLocale(), QObject *parent = nullptr);
+	explicit TranslationChooser(QString language = QString(), QObject *parent = nullptr);
 	~TranslationChooser();
 
 private:

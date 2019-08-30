@@ -51,7 +51,7 @@ class BankAccountsWidget : public QWidget {
 private:
 	const aqb_Accounts *m_accounts;
 public:
-	BankAccountsWidget(const aqb_Accounts *accounts, QWidget *parent = 0);
+	BankAccountsWidget(const aqb_Accounts *accounts, QWidget *parent = nullptr);
 	~BankAccountsWidget();
 
 	aqb_AccountInfo *getSelectedAccount();

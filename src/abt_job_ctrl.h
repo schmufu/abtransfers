@@ -120,7 +120,7 @@ private:
 
 public:
 	explicit abt_job_ctrl(aqb_Accounts *allAccounts, abt_history *history,
-			      QObject *parent = 0);
+			      QObject *parent = nullptr);
 	~abt_job_ctrl();
 
 	const QList<abt_jobInfo*> *jobqueueList() const { return this->jobqueue; }

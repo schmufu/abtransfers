@@ -55,7 +55,7 @@ class widgetKnownStandingOrders : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetKnownStandingOrders(QWidget *parent = 0);
+	explicit widgetKnownStandingOrders(QWidget *parent = nullptr);
 
 protected:
 	void changeEvent(QEvent *e);

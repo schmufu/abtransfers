@@ -64,7 +64,7 @@ namespace Ui {
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 public:
-	MainWindow(QWidget *parent = 0);
+	MainWindow(QWidget *parent = nullptr);
 	~MainWindow();
 
 protected:
@@ -125,7 +125,7 @@ private:
 	void createDockStandingOrders();
 	void createDockDatedTransfers();
 
-	widgetTransfer* createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = NULL);
+	widgetTransfer* createTransferWidgetAndAddTab(AB_JOB_TYPE type, const aqb_AccountInfo* account = nullptr);
 	void deleteTabWidgetAndTab(const widgetTransfer *w);
 	void deleteTabWidgetAndTab(int tabIndex);
 

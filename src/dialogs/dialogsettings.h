@@ -51,7 +51,7 @@ namespace Ui {
 class DialogSettings : public QDialog {
 	Q_OBJECT
 public:
-	DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *parent = 0);
+	DialogSettings(abt_settings *settings, AB_BANKING *ab, QWidget *parent = nullptr);
 	~DialogSettings();
 
 protected:
@@ -79,8 +79,8 @@ private:
 	void setAdvancedOptionState(bool enabled);
 
 	/** @brief set @a plugin and @a profile to the selected values (or NULL) */
-	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = NULL,
-					 const aqb_ieProfile **profile = NULL) const;
+	bool getSelectedPluginAndProfile(const aqb_iePlugin **plugin = nullptr,
+					 const aqb_ieProfile **profile = nullptr) const;
 
 public:
 	void setActiveTab(int tabId);

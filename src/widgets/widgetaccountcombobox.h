@@ -47,7 +47,7 @@ class widgetAccountComboBox : public QWidget
 public:
 	explicit widgetAccountComboBox(const aqb_AccountInfo *acc,
 				       const aqb_Accounts *allAccounts,
-				       QWidget *parent = 0);
+				       QWidget *parent = nullptr);
 
 private:
 	const aqb_AccountInfo *m_startAccount;

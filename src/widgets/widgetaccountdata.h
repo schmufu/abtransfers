@@ -61,8 +61,8 @@ public:
 	 * der Eingabe/Änderung eines bekannten Empfängers.
 	 */
 	explicit widgetAccountData(QWidget *parent = 0,
-				   const aqb_AccountInfo *acc = NULL,
-				   const aqb_Accounts *allAccounts = NULL,
+				   const aqb_AccountInfo *acc = nullptr,
+				   const aqb_Accounts *allAccounts = nullptr,
 				   bool sepaFields = false,
 				   bool recipientInput = false);
 	~widgetAccountData();

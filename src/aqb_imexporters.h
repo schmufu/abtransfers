@@ -65,7 +65,7 @@ class aqb_imexporters : public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_imexporters(AB_BANKING *ab, QObject *parent = 0);
+	explicit aqb_imexporters(AB_BANKING *ab, QObject *parent = nullptr);
 	~aqb_imexporters();
 
 private:
@@ -118,7 +118,7 @@ class aqb_iePlugin: public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent = 0);
+	explicit aqb_iePlugin(AB_BANKING *ab, GWEN_PLUGIN_DESCRIPTION *pd, QObject *parent = nullptr);
 	~aqb_iePlugin();
 
 private:
@@ -173,7 +173,7 @@ class aqb_ieProfile: public QObject
 {
 	Q_OBJECT
 public:
-	explicit aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent = 0);
+	explicit aqb_ieProfile(GWEN_DB_NODE *dbn, QObject *parent = nullptr);
 	~aqb_ieProfile();
 
 private:

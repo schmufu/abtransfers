@@ -81,7 +81,7 @@ class WidgetCalculator : public QFrame
 {
 Q_OBJECT
 public:
-	WidgetCalculator(QWidget* parent = 0);
+	WidgetCalculator(QWidget* parent = nullptr);
 	~WidgetCalculator();
 
 	const QString result(void) const;

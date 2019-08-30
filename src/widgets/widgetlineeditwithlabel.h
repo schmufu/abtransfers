@@ -50,7 +50,7 @@ public:
 	explicit widgetLineEditWithLabel(const QString &labelText,
 					 const QString &editText = "",
 					 Qt::Alignment labelAt = Qt::AlignTop,
-					 QWidget *parent = 0);
+					 QWidget *parent = nullptr);
 	~widgetLineEditWithLabel();
 
 public:

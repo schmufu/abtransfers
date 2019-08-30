@@ -44,7 +44,7 @@ class BetragValidator : public QRegExpValidator
 {
 	Q_OBJECT
 public:
-	explicit BetragValidator(QObject *parent = 0);
+	explicit BetragValidator(QObject *parent = nullptr);
 	virtual QValidator::State validate(QString &input, int &pos) const;
 	virtual void fixup(QString &input) const;
 };
@@ -62,7 +62,7 @@ class UppercaseValidator : public QRegExpValidator
 {
 	Q_OBJECT
 public:
-	UppercaseValidator(QObject *parent=0) :
+	UppercaseValidator(QObject *parent = nullptr) :
 		QRegExpValidator(parent) { }
 	virtual QValidator::State validate(QString &input, int &pos) const;
 	virtual void fixup(QString &input) const;

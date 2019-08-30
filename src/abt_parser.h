@@ -104,26 +104,26 @@ private:
 	static int parse_ctx_securities(AB_IMEXPORTER_CONTEXT *iec);
 	static int parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
 					  const aqb_Accounts *allAccounts,
-					  abt_history *history = NULL);
+					  abt_history *history = nullptr);
 
 	static int parse_ctx_ai_status(AB_IMEXPORTER_ACCOUNTINFO *ai,
 				       aqb_AccountInfo *acc);
 	static int parse_ctx_ai_datedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
 					       aqb_AccountInfo *acc,
-					       abt_history *history = NULL,
-					       const aqb_Accounts *allAccounts = NULL);
+					       abt_history *history = nullptr,
+					       const aqb_Accounts *allAccounts = nullptr);
 	static int parse_ctx_ai_notedTransactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
 						  aqb_AccountInfo *acc);
 	static int parse_ctx_ai_standingOrders(AB_IMEXPORTER_ACCOUNTINFO *ai,
 					       aqb_AccountInfo *acc,
-					       abt_history *history = NULL,
-					       const aqb_Accounts *allAccounts = NULL);
+					       abt_history *history = nullptr,
+					       const aqb_Accounts *allAccounts = nullptr);
 	static int parse_ctx_ai_transactions(AB_IMEXPORTER_ACCOUNTINFO *ai,
 					     aqb_AccountInfo *acc);
 	static int parse_ctx_ai_transfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
 					  aqb_AccountInfo *acc,
-					  abt_history *history = NULL,
-					  const aqb_Accounts *allAccounts = NULL);
+					  abt_history *history = nullptr,
+					  const aqb_Accounts *allAccounts = nullptr);
 
 public:
 	abt_parser();
@@ -152,7 +152,7 @@ public:
 	 */
 	static void parse_ctx(AB_IMEXPORTER_CONTEXT *iec,
 			      const aqb_Accounts *allAccounts,
-			      abt_history *history = NULL);
+			      abt_history *history = nullptr);
 
 };
 

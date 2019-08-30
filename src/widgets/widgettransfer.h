@@ -69,7 +69,7 @@ public:
 	explicit widgetTransfer(AB_JOB_TYPE type,
 				const aqb_AccountInfo *localAccount,
 				const aqb_Accounts *allAccounts,
-				QWidget *parent = 0);
+				QWidget *parent = nullptr);
 	~widgetTransfer();
 
 	widgetAccountData *localAccount;

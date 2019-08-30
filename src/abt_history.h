@@ -55,7 +55,7 @@ class abt_history: public QObject {
 	Q_OBJECT
 
 public:
-	abt_history(/*const aqb_Accounts *allAccounts,*/ QObject *parent = 0);
+	abt_history(/*const aqb_Accounts *allAccounts,*/ QObject *parent = nullptr);
 	~abt_history();
 
 private:

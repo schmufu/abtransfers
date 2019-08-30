@@ -43,8 +43,8 @@ aqb_imexporters::aqb_imexporters(AB_BANKING* ab, QObject *parent) :
 	QObject(parent)
 {
 	//init of private members
-	this->pdl = NULL;
-	this->plugins = NULL;
+	this->pdl = nullptr;
+	this->plugins = nullptr;
 
 	this->m_ab = ab;
 
@@ -63,7 +63,7 @@ void aqb_imexporters::freeAll()
 		delete this->plugins->takeFirst();
 	}
 	delete this->plugins;
-	this->plugins = NULL;
+	this->plugins = nullptr;
 
 	//delete all imexporter Descriptions and the "List2" itself
 	GWEN_PluginDescription_List2_freeAll(this->pdl);
@@ -82,7 +82,7 @@ void aqb_imexporters::loadAll()
 	this->pdl = AB_Banking_GetImExporterDescrs(this->m_ab);
 
 	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
-	GWEN_PLUGIN_DESCRIPTION *pd = NULL;
+	GWEN_PLUGIN_DESCRIPTION *pd = nullptr;
 	pdli = GWEN_PluginDescription_List2_First(this->pdl);
 	if (pdli) {
 		pd = GWEN_PluginDescription_List2Iterator_Data(pdli);
@@ -173,7 +173,7 @@ int aqb_iePlugin::loadProfiles(AB_BANKING* ab)
 const aqb_iePlugin *aqb_imexporters::getPluginByName(const QString &name) const
 {
 	if (name.isEmpty() || name.isNull())
-		return NULL; //a plugin with no name cant be available
+		return nullptr; //a plugin with no name cant be available
 
 	foreach(const aqb_iePlugin *plugin, *this->plugins) {
 		if (plugin->getName() == name) {
@@ -181,7 +181,7 @@ const aqb_iePlugin *aqb_imexporters::getPluginByName(const QString &name) const
 		}
 	}
 
-	return NULL; //no plugin found
+	return nullptr; //no plugin found
 }
 
 const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) const
@@ -192,7 +192,7 @@ const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) cons
 		}
 	}
 
-	return NULL; //no plugin found
+	return nullptr; //no plugin found
 }
 
 /**
@@ -212,14 +212,14 @@ const aqb_iePlugin *aqb_imexporters::getPluginByFilename(QString &filename) cons
 int aqb_imexporters::editProfileWithAqbDialog(GWEN_DB_NODE *dbProfile, const char *pluginName, const char *filename) const
 {
 	int ret; //used to store the return values of AB_xxx functions
-	GWEN_DIALOG *pDlg = NULL;
+	GWEN_DIALOG *pDlg = nullptr;
 
 	//AqBanking remains the owner of 'ie', so we must not free it!
 	AB_IMEXPORTER *ie = AB_Banking_GetImExporter(this->m_ab,
 						     pluginName);
 
 	ret = AB_ImExporter_GetEditProfileDialog(ie, dbProfile, filename, &pDlg);
-	if (pDlg == NULL || ret != 0) {
+	if (pDlg == nullptr || ret != 0) {
 		qWarning() << Q_FUNC_INFO << "AB_ImExporter_GetEditProfileDialog()"
 			   << "returned" << ret;
 		return -1;
@@ -318,7 +318,7 @@ QVariant aqb_ieProfile::getValue(const char *varname, int idx /* = 0 */) const
 		break;
 	case GWEN_DB_NodeType_ValuePtr:
 		value.setValue<void*>(GWEN_DB_GetPtrValue(this->dbnode, varname,
-							  idx, NULL));
+							  idx, nullptr));
 		break;
 	//not used yet, how did we handle this if it must be used?
 	//case GWEN_DB_NodeType_ValueBin:

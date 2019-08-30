@@ -91,7 +91,7 @@ private:
 	void updateAllInternalData();
 
 public:
-	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = 0);
+	aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent = nullptr);
 	~aqb_AccountInfo();
 
 	const QString& BankCode() const { return this->m_BankCode; }

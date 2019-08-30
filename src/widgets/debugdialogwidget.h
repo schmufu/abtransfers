@@ -50,7 +50,7 @@ namespace Ui {
 class DebugDialogWidget : public QDialog {
 	Q_OBJECT
 public:
-	DebugDialogWidget(QWidget *parent = 0);
+	DebugDialogWidget(QWidget *parent = nullptr);
 	~DebugDialogWidget();
 
 protected:

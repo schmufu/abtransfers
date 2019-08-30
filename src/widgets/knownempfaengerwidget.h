@@ -62,7 +62,7 @@ private:
 	QAction *actDelete;
 
 public:
-	KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent = 0);
+	KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *list, QWidget *parent = nullptr);
 	~KnownEmpfaengerWidget();
 
 protected:

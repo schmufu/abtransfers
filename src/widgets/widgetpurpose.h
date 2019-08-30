@@ -48,7 +48,7 @@ class widgetPurpose : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit widgetPurpose(QWidget *parent = 0);
+	explicit widgetPurpose(QWidget *parent = nullptr);
 	~widgetPurpose();
 
 private:

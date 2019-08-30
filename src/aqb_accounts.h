@@ -61,7 +61,7 @@ public:
 	const QHash<int, aqb_AccountInfo*>& getAccountHash() const
 		{ return this->m_accounts; }
 	aqb_AccountInfo* getAccount(int ID) const
-		{ return this->m_accounts.value(ID, NULL); }
+		{ return this->m_accounts.value(ID, nullptr); }
 
 	/** \brief returns the account that matches or NULL */
 	aqb_AccountInfo* getAccount(const QString &kontonummer,
