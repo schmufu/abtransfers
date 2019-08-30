@@ -646,7 +646,7 @@ void TranslationChooser::actionTriggered(QAction *action)
 	if (!action)
 		return;
 
-	this->setLanguage(action->text());
+	this->setLanguage(action->text().replace("&", ""));
 }
 
 //public
