@@ -41,7 +41,7 @@
 abt_transaction::abt_transaction(AB_TRANSACTION *t, bool freeOnDelete)
 {
 	//Constructor for not constant object, which can be modified
-	if (t == NULL) {
+	if (t == nullptr) {
 		//Keine Transaction übergeben, wir erstellen uns selber eine
 		this->aqb_transaction = AB_Transaction_new();
 		//Diese muss zum Schluss durch uns auch wieder gelöscht werden
@@ -71,7 +71,7 @@ abt_transaction::abt_transaction(const AB_TRANSACTION *t)
 	//Constructor for constant object, which can only be read!
 	Q_ASSERT(t != NULL);
 
-	this->aqb_transaction = NULL; //keine Änderbare Transaction vorhanden!
+	this->aqb_transaction = nullptr; //keine Änderbare Transaction vorhanden!
 	//Diese muss zum Schluss auch nicht wieder gelöscht werden
 	this->FreeTransactionOnDelete = false;
 

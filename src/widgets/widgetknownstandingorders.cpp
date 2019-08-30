@@ -47,8 +47,8 @@
 widgetKnownStandingOrders::widgetKnownStandingOrders(QWidget *parent) :
 	QWidget(parent)
 {
-	this->account = NULL;	//init
-	this->standingOrders = NULL; //init
+	this->account = nullptr;	//init
+	this->standingOrders = nullptr; //init
 
 	QHBoxLayout *layoutMain = new QHBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
@@ -146,7 +146,7 @@ void widgetKnownStandingOrders::setItemInformation(QTreeWidgetItem *item,
 
 	const AB_VALUE *v = t->getValue();
 	QString amount = "";
-	if (v != NULL) {
+	if (v != nullptr) {
 		amount = abt_conv::ABValueToString(v, true);
 		amount.append(QString(" %1").arg(AB_Value_GetCurrency(v)));
 	}
@@ -198,7 +198,7 @@ void widgetKnownStandingOrders::refreshDisplayedItems(const aqb_AccountInfo *acc
 
 	this->treeWidget->clear(); //also deletes the item objects
 
-	this->standingOrders = !this->account ? NULL : this->account->getKnownStandingOrders();
+	this->standingOrders = !this->account ? nullptr : this->account->getKnownStandingOrders();
 
 	if (!this->standingOrders || this->standingOrders->size() == 0) {
 		//No known standing orders existent

@@ -42,8 +42,8 @@
 widgetKnownDatedTransfers::widgetKnownDatedTransfers(QWidget *parent) :
 	QWidget(parent)
 {
-	this->m_account = NULL;
-	this->m_DatedTransfers = NULL;
+	this->m_account = nullptr;
+	this->m_DatedTransfers = nullptr;
 
 	QHBoxLayout *layoutMain = new QHBoxLayout();
 	layoutMain->setContentsMargins(0,0,0,0);
@@ -129,14 +129,14 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 	this->treeWidget->clear(); //löscht auch die Objecte!
 
 	//Wenn kein aktueller Account existiert, existieren auch keine DatedTransfers
-	if (this->m_account == NULL) {
-		this->m_DatedTransfers = NULL;
+	if (this->m_account == nullptr) {
+		this->m_DatedTransfers = nullptr;
 	} else {
 		this->m_DatedTransfers = this->m_account->getKnownDatedTransfers();
 	}
 
 	//Alle bekannten DAs des Accounts im treeWidget anzeigen
-	if ((this->m_DatedTransfers == NULL) ||
+	if ((this->m_DatedTransfers == nullptr) ||
 	    (this->m_DatedTransfers->size() == 0)) {
 		//wir brauchen nichts erstellen da nichts existiert!
 
@@ -197,7 +197,7 @@ void widgetKnownDatedTransfers::refreshKnownDatedTransfers(const aqb_AccountInfo
 void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 {
 	//wenn ein vorheriger Account existiert auch die connection von diesem löschen
-	if (this->m_account != NULL) {
+	if (this->m_account != nullptr) {
 		disconnect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
 			   this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));
 	}
@@ -206,7 +206,7 @@ void widgetKnownDatedTransfers::setAccount(const aqb_AccountInfo *account)
 	//DatedTransfers des Accounts anzeigen (bzw. das keine existieren)
 	this->refreshKnownDatedTransfers(account);
 
-	if (account != NULL) {
+	if (account != nullptr) {
 		//darüber informiert werden wenn sich die DTs des accounts ändern
 		connect(this->m_account, SIGNAL(knownDatedTransfersChanged(const aqb_AccountInfo*)),
 			this, SLOT(refreshKnownDatedTransfers(const aqb_AccountInfo*)));

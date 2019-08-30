@@ -75,7 +75,7 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 
 	//Alle weiteren Elemente so setzen als währen wir ohne job aufgerufen
 	//worden, bzw. die benötigten Parameter aus dem Job kopieren
-	this->jobInfoTmp = NULL;
+	this->jobInfoTmp = nullptr;
 	this->m_jobType = AB_Job_GetType(this->m_job);
 	this->m_jobStatus = AB_Job_GetStatus(this->m_job);
 	this->m_ABAccount = AB_Job_GetAccount(this->m_job);
@@ -88,12 +88,12 @@ abt_jobInfo::abt_jobInfo(AB_JOB *j)
 
 abt_jobInfo::abt_jobInfo(AB_JOB_TYPE type, AB_JOB_STATUS status,
 			 const AB_TRANSACTION *t, const AB_ACCOUNT *acc)
-	: m_job(NULL),
+	: m_job(nullptr),
 	  m_ABAccount(acc),
 	  m_jobType(type),
 	  m_jobStatus(status)
 {
-	this->jobInfoTmp = NULL;
+	this->jobInfoTmp = nullptr;
 	//wir speichern eine kopie der AB_TRANSACTION als neue abt_transaction
 	this->m_trans = new abt_transaction(AB_Transaction_dup(t), true);
 
@@ -115,7 +115,7 @@ abt_jobInfo::~abt_jobInfo()
 /** \brief setzt den privaten pointer \a this->trans auf die Transaction des jobs */
 void abt_jobInfo::setMyTransactionFromJob()
 {
-	const AB_TRANSACTION *AB_Trans = NULL;
+	const AB_TRANSACTION *AB_Trans = nullptr;
 
 #if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
 	//much more simplified with the new API
@@ -170,14 +170,14 @@ void abt_jobInfo::setMyTransactionFromJob()
 		AB_Trans = AB_JobSingleTransfer_GetTransaction(this->m_job);
 		break;
 	case AB_Job_TypeUnknown:
-		AB_Trans = NULL;
+		AB_Trans = nullptr;
 		break;
 	}
 #endif
 
-	if (AB_Trans == NULL) {
+	if (AB_Trans == nullptr) {
 		//the job does not have a transaction, so do i
-		this->m_trans = NULL;
+		this->m_trans = nullptr;
 		return;
 	}
 

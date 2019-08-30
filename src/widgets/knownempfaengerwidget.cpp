@@ -54,7 +54,7 @@ KnownEmpfaengerWidget::KnownEmpfaengerWidget(const QList<abt_EmpfaengerInfo*> *l
 	this->DisplayEmpfaenger();
 
 	this->dragStartPos = QPoint(0,0);
-	this->dragObj = NULL;
+	this->dragObj = nullptr;
 //	this->ui->treeWidget->setDragEnabled(true);
 	this->ui->treeWidget->viewport()->installEventFilter(this);
 	this->ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -114,7 +114,7 @@ void KnownEmpfaengerWidget::twMousePressEvent(QMouseEvent *event)
 			this->dragObj = item->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
 			this->dragStartPos = event->pos();
 		} else {
-			this->dragObj = NULL;
+			this->dragObj = nullptr;
 			this->dragStartPos = QPoint(0,0);
 		}
 	}
@@ -138,7 +138,7 @@ void KnownEmpfaengerWidget::twMouseMoveEvent(QMouseEvent *event)
 	if (!(event->buttons() & Qt::LeftButton)) {
 		return;
 	}
-	if (this->dragObj == NULL) {
+	if (this->dragObj == nullptr) {
 		return; //no object to Drag set!
 	}
 	if ((event->pos() - this->dragStartPos).manhattanLength()
@@ -196,13 +196,13 @@ void KnownEmpfaengerWidget::CreateAllActions()
 void KnownEmpfaengerWidget::DisplayEmpfaenger()
 {
 	QStringList headerList;
-	QTreeWidgetItem *Item = NULL;
+	QTreeWidgetItem *Item = nullptr;
 	int ItemCount = 0;
 
 	//alle evt. vorhandenen Einträge löschen
 	this->ui->treeWidget->clear();
 
-	if (this->EmpfaengerList == NULL) {
+	if (this->EmpfaengerList == nullptr) {
 		/* Anzeigen das keine bekannten Empfänger existieren */
 		//kein header und nur eine spalte anzeigen
 		ui->treeWidget->setHeaderHidden(true);
@@ -276,8 +276,8 @@ void KnownEmpfaengerWidget::onContextMenuRequest(const QPoint &pos)
 
 void KnownEmpfaengerWidget::onActionEditTriggered()
 {
-	abt_EmpfaengerInfo *origRecipient = NULL;
-	abt_EmpfaengerInfo *newRecipient = NULL;
+	abt_EmpfaengerInfo *origRecipient = nullptr;
+	abt_EmpfaengerInfo *newRecipient = nullptr;
 
 	//Pointer zum abt_EmpfaengerInfo wurde in der Qt::UserRole gespeichert
 	origRecipient = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
@@ -295,7 +295,7 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	widgetAccountData *acc = new widgetAccountData(d, NULL, NULL, true, true);
+	widgetAccountData *acc = new widgetAccountData(d, nullptr, nullptr, true, true);
 	acc->setAllowDropAccount(false);
 	acc->setAllowDropKnownRecipient(false);
 	acc->setName(origRecipient->getName());
@@ -330,7 +330,7 @@ void KnownEmpfaengerWidget::onActionEditTriggered()
 
 void KnownEmpfaengerWidget::onActionDeleteTriggered()
 {
-	abt_EmpfaengerInfo *Receiver = NULL;
+	abt_EmpfaengerInfo *Receiver = nullptr;
 
 	//Pointer zum abt_EmpfaengerInfo wurde in der Qt::UserRole gespeichert
 	Receiver = this->ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).value<abt_EmpfaengerInfo*>();
@@ -340,7 +340,7 @@ void KnownEmpfaengerWidget::onActionDeleteTriggered()
 
 void KnownEmpfaengerWidget::onActionNewTriggered()
 {
-	abt_EmpfaengerInfo *newRecipient = NULL;
+	abt_EmpfaengerInfo *newRecipient = nullptr;
 
 	QDialog *d = new QDialog(this);
 
@@ -355,7 +355,7 @@ void KnownEmpfaengerWidget::onActionNewTriggered()
 	btnLayout->addWidget(btnCancel, 0, Qt::AlignCenter);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	widgetAccountData *acc = new widgetAccountData(d, NULL, NULL, true, true);
+	widgetAccountData *acc = new widgetAccountData(d, nullptr, nullptr, true, true);
 	acc->setAllowDropAccount(false);
 	acc->setAllowDropKnownRecipient(false);
 

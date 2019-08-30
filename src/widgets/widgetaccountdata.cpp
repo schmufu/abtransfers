@@ -61,24 +61,24 @@ widgetAccountData::widgetAccountData(QWidget *parent,
 	this->readOnly = false;
 	this->sepaFields = sepaFields;
 	//private pointer auf definierten Wert setzen!
-	this->llName = NULL;
-	this->llAccountNumber = NULL;
-	this->llBankCode = NULL;
-	this->llBankName = NULL;
-	this->llIBAN = NULL;
-	this->llBIC = NULL;
-	this->localOwner = NULL;
-	this->localAccountNumber = NULL;
-	this->localBankCode = NULL;
-	this->localBankName = NULL;
-	this->localIBAN = NULL;
-	this->localBIC = NULL;
-	this->comboBoxAccounts = NULL;
+	this->llName = nullptr;
+	this->llAccountNumber = nullptr;
+	this->llBankCode = nullptr;
+	this->llBankName = nullptr;
+	this->llIBAN = nullptr;
+	this->llBIC = nullptr;
+	this->localOwner = nullptr;
+	this->localAccountNumber = nullptr;
+	this->localBankCode = nullptr;
+	this->localBankName = nullptr;
+	this->localIBAN = nullptr;
+	this->localBIC = nullptr;
+	this->comboBoxAccounts = nullptr;
 
 	this->currAccount = acc; //default argument value = NULL !
 	this->allAccounts = allAccounts; //default argument value = NULL !
 
-	if ((this->currAccount == NULL) || (this->allAccounts == NULL)) {
+	if ((this->currAccount == nullptr) || (this->allAccounts == nullptr)) {
 		this->createRemoteAccountWidget(sepaFields, recipientInput);
 	} else {
 		this->createLocalAccountWidget(acc, allAccounts);
@@ -246,7 +246,7 @@ void widgetAccountData::createLocalAccountWidget(const aqb_AccountInfo *acc, con
 //private slot
 void widgetAccountData::comboBoxNewAccountSelected(const aqb_AccountInfo *selAcc)
 {
-	if (selAcc != NULL) {
+	if (selAcc != nullptr) {
 		this->currAccount = selAcc;
 		this->localOwner->setText(selAcc->OwnerName());
 		this->localAccountNumber->setText(selAcc->Number());
@@ -295,7 +295,7 @@ void widgetAccountData::lineEditIBAN_editingFinished()
 //public slot
 void widgetAccountData::setAllowDropAccount(bool b)
 {
-	if ((this->allAccounts != NULL) && (this->currAccount != NULL)) {
+	if ((this->allAccounts != nullptr) && (this->currAccount != nullptr)) {
 		this->allowDropAccount = b;
 	} else {
 		this->allowDropAccount = false;
@@ -306,7 +306,7 @@ void widgetAccountData::setAllowDropAccount(bool b)
 //public slot
 void widgetAccountData::setAllowDropKnownRecipient(bool b)
 {
-	if ((this->allAccounts == NULL) || (this->currAccount == NULL)) {
+	if ((this->allAccounts == nullptr) || (this->currAccount == nullptr)) {
 		this->allowDropKnownRecipient = b;
 	} else {
 		this->allowDropKnownRecipient = false;
@@ -316,7 +316,7 @@ void widgetAccountData::setAllowDropKnownRecipient(bool b)
 //public slot
 void widgetAccountData::setReadOnly(bool b)
 {
-	if ((this->allAccounts == NULL) || (this->currAccount == NULL)) {
+	if ((this->allAccounts == nullptr) || (this->currAccount == nullptr)) {
 		this->readOnly = b;
 		this->setEditAllowed(this->readOnly);
 	} else {
@@ -328,7 +328,7 @@ void widgetAccountData::setReadOnly(bool b)
 void widgetAccountData::clearAllEdits()
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts == NULL) {
+	if (this->comboBoxAccounts == nullptr) {
 		this->llName->lineEdit->clear();
 		this->llName->lineEdit->setModified(false);
 		if (this->llAccountNumber) {
@@ -356,7 +356,7 @@ void widgetAccountData::clearAllEdits()
 void widgetAccountData::setLimitMaxLenName(int maxLen)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
@@ -370,8 +370,8 @@ void widgetAccountData::setLimitMaxLenName(int maxLen)
 void widgetAccountData::setLimitMaxLenAccountNumber(int maxLen)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llAccountNumber == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llAccountNumber == nullptr) return;
 
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
@@ -385,8 +385,8 @@ void widgetAccountData::setLimitMaxLenAccountNumber(int maxLen)
 void widgetAccountData::setLimitMaxLenIban(int maxLen)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llIBAN == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llIBAN == nullptr) return;
 
 
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
@@ -401,8 +401,8 @@ void widgetAccountData::setLimitMaxLenIban(int maxLen)
 void widgetAccountData::setLimitMaxLenBankCode(int maxLen)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llBankCode == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llBankCode == nullptr) return;
 
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
@@ -416,7 +416,7 @@ void widgetAccountData::setLimitMaxLenBankCode(int maxLen)
 void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	//-1 bedeutet Darf in der Transaction nicht gesetzt werden
 	bool allowed = maxLen != -1;
@@ -430,7 +430,7 @@ void widgetAccountData::setLimitMaxLenBankName(int maxLen)
 void widgetAccountData::setLimitAllowChangeName(int b)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	this->llName->lineEdit->setReadOnly(b == -1);
 }
@@ -439,7 +439,7 @@ void widgetAccountData::setLimitAllowChangeName(int b)
 void widgetAccountData::setLimitAllowChangeBankCode(int b)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	if (this->llBankCode)
 		this->llBankCode->lineEdit->setReadOnly(b == -1);
@@ -451,7 +451,7 @@ void widgetAccountData::setLimitAllowChangeBankCode(int b)
 void widgetAccountData::setLimitAllowChangeBankName(int b)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	this->llBankName->lineEdit->setReadOnly(b == -1);
 }
@@ -460,7 +460,7 @@ void widgetAccountData::setLimitAllowChangeBankName(int b)
 void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	if (this->llAccountNumber)
 		this->llAccountNumber->lineEdit->setReadOnly(b == -1);
@@ -472,7 +472,7 @@ void widgetAccountData::setLimitAllowChangeAccountNumber(int b)
 void widgetAccountData::setAccount(const aqb_AccountInfo* account)
 {
 	//Nur wenn wir ein localAccountWidget sind
-	if (this->comboBoxAccounts == NULL) return;
+	if (this->comboBoxAccounts == nullptr) return;
 
 	this->comboBoxAccounts->setSelectedAccount(account);
 }
@@ -481,7 +481,7 @@ void widgetAccountData::setAccount(const aqb_AccountInfo* account)
 void widgetAccountData::setName(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	if ( ! this->llName->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llName->lineEdit->setText(text);
@@ -491,8 +491,8 @@ void widgetAccountData::setName(const QString &text)
 void widgetAccountData::setAccountNumber(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llAccountNumber == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llAccountNumber == nullptr) return;
 
 	if ( ! this->llAccountNumber->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llAccountNumber->lineEdit->setText(text);
@@ -502,8 +502,8 @@ void widgetAccountData::setAccountNumber(const QString &text)
 void widgetAccountData::setBankCode(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llBankCode == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llBankCode == nullptr) return;
 
 	if ( ! this->llBankCode->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llBankCode->lineEdit->setText(text);
@@ -513,8 +513,8 @@ void widgetAccountData::setBankCode(const QString &text)
 void widgetAccountData::setIBAN(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llIBAN == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llIBAN == nullptr) return;
 
 	if ( ! this->llIBAN->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llIBAN->lineEdit->setText(text);
@@ -524,8 +524,8 @@ void widgetAccountData::setIBAN(const QString &text)
 void widgetAccountData::setBIC(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
-	if (this->llBIC == NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
+	if (this->llBIC == nullptr) return;
 
 	if ( ! this->llBIC->isEnabled()) return; //Nur setzen wenn erlaubt
 	this->llBIC->lineEdit->setText(text);
@@ -535,7 +535,7 @@ void widgetAccountData::setBIC(const QString &text)
 void widgetAccountData::setBankName(const QString &text)
 {
 	//Nur wenn wir ein remoteAccountWidget sind
-	if (this->comboBoxAccounts != NULL) return;
+	if (this->comboBoxAccounts != nullptr) return;
 
 	if ( ! this->llBankName->isEnabled()) return; //Nur setzen wenn erlaubt
 
@@ -557,7 +557,7 @@ void widgetAccountData::setBankName(const QString &text)
  */
 QString widgetAccountData::getName() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		return this->currAccount->OwnerName();
 	}
 
@@ -574,7 +574,7 @@ QString widgetAccountData::getName() const
  */
 QString widgetAccountData::getAccountNumber() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		return this->currAccount->Number();
 	}
 
@@ -591,7 +591,7 @@ QString widgetAccountData::getAccountNumber() const
  */
 QString widgetAccountData::getIBAN() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		return this->currAccount->IBAN();
 	}
 
@@ -613,7 +613,7 @@ QString widgetAccountData::getIBAN() const
  */
 QString widgetAccountData::getBankCode() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		//wir sind ein "localAccount", somit holen wir die BLZ aus dem
 		//aktuell gewählten Account-Objekt
 		return this->currAccount->BankCode();
@@ -643,7 +643,7 @@ QString widgetAccountData::getBankCode() const
  */
 QString widgetAccountData::getBIC() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		//wir sind ein "localAccount", somit holen wir die BIC aus dem
 		//aktuell gewählten Account-Objekt
 		return this->currAccount->BIC();
@@ -668,7 +668,7 @@ QString widgetAccountData::getBIC() const
  */
 QString widgetAccountData::getBankName() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		return this->currAccount->BankName();
 	}
 
@@ -682,7 +682,7 @@ QString widgetAccountData::getBankName() const
 //public
 bool widgetAccountData::hasChanges() const
 {
-	if (this->comboBoxAccounts != NULL) {
+	if (this->comboBoxAccounts != nullptr) {
 		return this->comboBoxAccounts->hasChanges();
 	}
 

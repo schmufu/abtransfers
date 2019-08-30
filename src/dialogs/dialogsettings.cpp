@@ -321,7 +321,7 @@ void DialogSettings::refreshImExPluginListWidget()
 //private
 void DialogSettings::refreshImExProfileTableWidget()
 {
-	const aqb_iePlugin *plugin = NULL;
+	const aqb_iePlugin *plugin = nullptr;
 	int row = this->ui->listWidget_plugins->currentRow();
 	QString pluginName = "";
 	if (row >= 0)
@@ -506,8 +506,8 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 	Q_ASSERT(plugin);
 	Q_ASSERT(profile);
 
-	const aqb_iePlugin *selPlugin = NULL;
-	const aqb_ieProfile *selProfile = NULL;
+	const aqb_iePlugin *selPlugin = nullptr;
+	const aqb_ieProfile *selProfile = nullptr;
 
 	QString pluginName;
 	int listWidgetRow = this->ui->listWidget_plugins->currentRow();
@@ -519,8 +519,8 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 	if (!selPlugin) {
 		//we did not found a plugin, we set the pointer to NULL
 		//and return false
-		*plugin = NULL;
-		*profile = NULL; //no plugin -> no profile
+		*plugin = nullptr;
+		*profile = nullptr; //no plugin -> no profile
 		return false;
 	}
 
@@ -544,14 +544,14 @@ bool DialogSettings::getSelectedPluginAndProfile(const aqb_iePlugin **plugin,
 
 	if (!selProfile) {
 		//we did not found a profile
-		*profile = NULL;
+		*profile = nullptr;
 		return false;
 	}
 
 	//we got a selected profile and set the pointer in the supplied var
 	*profile = selProfile;
 
-	return (selPlugin != NULL && selProfile != NULL);
+	return (selPlugin != nullptr && selProfile != nullptr);
 
 }
 
@@ -627,7 +627,7 @@ void DialogSettings::on_toolButton_selectAccountData_clicked()
 						    tr("Aktuelle Daten Speichern in ..."),
 						    this->ui->lineEdit_dataDir->text(),
 						    tr("Context-Dateien (*.ctx);;Alle Dateien (*.*)"),
-						    NULL,
+						    nullptr,
 						    QFileDialog::DontConfirmOverwrite);
 
 	if (!file.isEmpty() || QFile::exists(file)) {
@@ -642,7 +642,7 @@ void DialogSettings::on_toolButton_selectHistory_clicked()
 						    tr("Historie Speichern in ..."),
 						    this->ui->lineEdit_dataDir->text(),
 						    tr("Context-Dateien (*.ctx);;Alle Dateien (*.*)"),
-						    NULL,
+						    nullptr,
 						    QFileDialog::DontConfirmOverwrite);
 
 	if (!file.isEmpty() || QFile::exists(file)) {
@@ -657,7 +657,7 @@ void DialogSettings::on_toolButton_selectRecipients_clicked()
 						    tr("Bekannte Empfänger Speichern in ..."),
 						    this->ui->lineEdit_dataDir->text(),
 						    tr("Text-Dateien (*.txt);;Alle Dateien (*.*)"),
-						    NULL,
+						    nullptr,
 						    QFileDialog::DontConfirmOverwrite);
 
 	if (!file.isEmpty() || QFile::exists(file)) {
@@ -672,7 +672,7 @@ void DialogSettings::on_toolButton_selectAutoExportFilename_clicked()
 						    tr("Automatischen Export Speichern in ..."),
 						    this->ui->lineEdit_dataDir->text(),
 						    tr("Alle Dateien (*.*)"),
-						    NULL);
+						    nullptr);
 
 	if (!file.isEmpty() || QFile::exists(file)) {
 		this->ui->lineEdit_autoExportFilename->setText(file);
@@ -760,7 +760,7 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 	this->ui->actionEditProfile->setEnabled(enabled);
 
 	row = profilesWidget->selectedItems().at(0)->row();
-	if (profilesWidget->item(row, 4) != NULL) {
+	if (profilesWidget->item(row, 4) != nullptr) {
 		//enabled if not a global profile
 		enabled = profilesWidget->item(row, 4)->checkState() == Qt::Unchecked;
 	} else {
@@ -769,7 +769,7 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 	this->ui->actionDeleteProfile->setEnabled(enabled);
 
 	//remember the selection for refresh
-	if (profilesWidget->item(row, 0) != NULL) {
+	if (profilesWidget->item(row, 0) != nullptr) {
 		QString profileName = profilesWidget->item(row, 0)->text();
 		this->selection.insert(pluginName, profileName);
 	}
@@ -778,8 +778,8 @@ void DialogSettings::on_tableWidget_profiles_itemSelectionChanged()
 
 void DialogSettings::on_actionEditProfile_triggered()
 {
-	const aqb_iePlugin *plugin = NULL;
-	const aqb_ieProfile *profile = NULL;
+	const aqb_iePlugin *plugin = nullptr;
+	const aqb_ieProfile *profile = nullptr;
 	bool ok = false;
 
 	ok = this->getSelectedPluginAndProfile(&plugin, &profile);
@@ -884,8 +884,8 @@ void DialogSettings::on_actionNewProfile_triggered()
 
 	//get the current plugin and check if it already contains a profile
 	//with the entered name
-	const aqb_iePlugin *selPlugin = NULL;
-	const aqb_ieProfile *selProfile = NULL;
+	const aqb_iePlugin *selPlugin = nullptr;
+	const aqb_ieProfile *selProfile = nullptr;
 	bool profileExists = false;
 
 	this->getSelectedPluginAndProfile(&selPlugin, &selProfile);
@@ -983,8 +983,8 @@ void DialogSettings::on_actionDeleteProfile_triggered()
 {
 	//get the selected plugin and profile and check if the file could be
 	//deleted.
-	const aqb_iePlugin *selPlugin = NULL;
-	const aqb_ieProfile *selProfile = NULL;
+	const aqb_iePlugin *selPlugin = nullptr;
+	const aqb_ieProfile *selProfile = nullptr;
 	bool ok = false;
 
 	ok = this->getSelectedPluginAndProfile(&selPlugin, &selProfile);
@@ -1069,9 +1069,9 @@ void DialogSettings::on_comboBox_plugin_currentIndexChanged(const QString &arg1)
 	Q_ASSERT(this->imexp);
 	int idx = -1;
 	const QString currText = this->ui->comboBox_profile->currentText();
-	const QList<aqb_ieProfile*> *profiles = NULL;
+	const QList<aqb_ieProfile*> *profiles = nullptr;
 
-	if (this->imexp->getPluginByName(arg1) != NULL) {
+	if (this->imexp->getPluginByName(arg1) != nullptr) {
 		profiles = this->imexp->getPluginByName(arg1)->getProfiles();
 	} else {
 		//no profiles available

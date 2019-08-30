@@ -45,11 +45,11 @@ aqb_AccountInfo::aqb_AccountInfo(AB_ACCOUNT *account, QObject *parent) :
 	QObject(parent)
 {
 	//Initialisierung
-	this->m_standingOrders = NULL;
-	this->m_datedTransfers = NULL;
-	this->m_availableJobs = NULL;
-	this->account_status = NULL;
-	this->m_limits = NULL;
+	this->m_standingOrders = nullptr;
+	this->m_datedTransfers = nullptr;
+	this->m_availableJobs = nullptr;
+	this->account_status = nullptr;
+	this->m_limits = nullptr;
 
 	//account could be NULL, but this is handled by setAccount()
 	this->setAccount(account);
@@ -77,16 +77,16 @@ void aqb_AccountInfo::freeAllInternalData()
 	//der account_status ist eine von uns angelegte Kopie, diese freigeben
 	if (this->account_status) {
 		AB_AccountStatus_free(this->account_status);
-		this->account_status = NULL;
+		this->account_status = nullptr;
 	}
 
 	this->clearStandingOrders(); //Alle StandingOrders wieder freigeben
 	delete this->m_standingOrders; //und liste löschen
-	this->m_standingOrders = NULL;
+	this->m_standingOrders = nullptr;
 
 	this->clearDatedTransfers(); //Alle DatedTransfers wieder freigeben
 	delete this->m_datedTransfers; //und liste löschen
-	this->m_datedTransfers = NULL;
+	this->m_datedTransfers = nullptr;
 
 	//Alle abt_transactionLimit-Objecte und den QHash wieder löschen
 	if (this->m_limits) {
@@ -94,11 +94,11 @@ void aqb_AccountInfo::freeAllInternalData()
 			delete this->m_limits->take(type);
 		}
 		delete this->m_limits;
-		this->m_limits = NULL;
+		this->m_limits = nullptr;
 	}
 
 	delete this->m_availableJobs;
-	this->m_availableJobs = NULL;
+	this->m_availableJobs = nullptr;
 
 	this->m_ID = 0;
 	this->m_BankCode = "";
@@ -228,7 +228,7 @@ void aqb_AccountInfo::updateAllInternalData()
 //public
 const abt_transactionLimits* aqb_AccountInfo::limits(AB_JOB_TYPE type) const
 {
-	return this->m_limits->value(type,NULL);
+	return this->m_limits->value(type, nullptr);
 }
 
 //protected

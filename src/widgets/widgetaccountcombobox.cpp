@@ -69,7 +69,7 @@ void widgetAccountComboBox::fillComboBox()
 {
 	this->comboBox->clear();
 
-	if (this->m_allAccounts == NULL) {
+	if (this->m_allAccounts == nullptr) {
 		//Es existieren keine Accounts
 		this->comboBox->setDisabled(true);
 		return; //nichts zu tun

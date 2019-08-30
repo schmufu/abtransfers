@@ -81,16 +81,16 @@ abt_dialog::abt_dialog(QWidget *parent,
 		this->ui->gridLayout->setHorizontalSpacing(0);
 		break;
 	case QMessageBox::Information:
-		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxInformation, 0, parent);
+		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxInformation, nullptr, parent);
 		break;
 	case QMessageBox::Warning:
-		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxWarning, 0, parent);
+		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxWarning, nullptr, parent);
 		break;
 	case QMessageBox::Critical:
-		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxCritical, 0, parent);
+		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxCritical, nullptr, parent);
 		break;
 	case QMessageBox::Question:
-		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxQuestion, 0, parent);
+		tmpIcon = style->standardIcon(QStyle::SP_MessageBoxQuestion, nullptr, parent);
 		break;
 	default:
 		break;

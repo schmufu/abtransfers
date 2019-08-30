@@ -146,7 +146,7 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 {
 	/** \todo should also support iban and bic! */
 
-	aqb_AccountInfo *acc = NULL;
+	aqb_AccountInfo *acc = nullptr;
 
 	//Alle Accounts durchgehen
 	QHashIterator<int, aqb_AccountInfo*> it(this->m_accounts);
@@ -167,7 +167,7 @@ aqb_AccountInfo* aqb_Accounts::getAccount(const QString &kontonummer,
 
 	//wenn wir hierher kommen wurde kein Account gefunden!
 	qWarning() << Q_FUNC_INFO << "no account matched! returning NULL!";
-	return NULL;
+	return nullptr;
 }
 
 aqb_AccountInfo* aqb_Accounts::getAccount(const AB_ACCOUNT *a) const

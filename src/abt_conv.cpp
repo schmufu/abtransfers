@@ -197,7 +197,7 @@ const QDate abt_conv::GwenTimeToQDate(const GWEN_TIME *gwentime)
 {
 	QDate date;
 	if (gwentime) {
-		GWEN_BUFFER *gbuf = GWEN_Buffer_new(NULL, 100, 0, 0);
+		GWEN_BUFFER *gbuf = GWEN_Buffer_new(nullptr, 100, 0, 0);
 
 		GWEN_Time_toUtcString(gwentime, "YYYYMMDD", gbuf);
 		std::string stdDatetime(GWEN_Buffer_GetStart(gbuf));
@@ -229,7 +229,7 @@ const GWEN_TIME* abt_conv::QDateToGwenTime(const QDate &date)
 	QString datestr;
 
 	if (!date.isValid()) {
-		return NULL;
+		return nullptr;
 	}
 
 	datestr = QString("%1%2%3")
@@ -303,7 +303,7 @@ const QString abt_conv::ABValueToString(const AB_VALUE *value, bool asDecimal)
 	if (asDecimal) {
 		return QString("%L1").arg(AB_Value_GetValueAsDouble(value),0,'f',2);
 	} else {
-		GWEN_BUFFER *buf = GWEN_Buffer_new(NULL, 100, 0, 0);
+		GWEN_BUFFER *buf = GWEN_Buffer_new(nullptr, 100, 0, 0);
 		AB_Value_toString(value, buf);
 		std::string result(GWEN_Buffer_GetStart(buf));
 		GWEN_Buffer_free(buf);
@@ -325,7 +325,7 @@ AB_VALUE* abt_conv::ABValueFromString(const QString &str, const QString &currenc
 	Q_ASSERT(abt_conv::gwen_abvlist);
 
 	if (str.isEmpty()) {
-		return NULL;
+		return nullptr;
 	}
 
 	std::string s = str.toStdString();

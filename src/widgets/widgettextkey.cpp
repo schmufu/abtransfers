@@ -69,7 +69,7 @@ void widgetTextKey::fillTextKeys(const QList<int> *keys)
 {
 	QComboBox *cb = this->comboBox;
 	cb->clear();
-	if (keys == NULL) {
+	if (keys == nullptr) {
 		return; //Abbruch, keine Keys setzen und ComboBox leer lassen
 	}
 

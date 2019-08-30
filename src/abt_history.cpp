@@ -173,7 +173,7 @@ AB_IMEXPORTER_CONTEXT *abt_history::getContext() const
 		//This information is read and removed by the history-parser at
 		//the time where the transaction is loaded from the history file.
 
-		AB_TRANSACTION *t = NULL;
+		AB_TRANSACTION *t = nullptr;
 
 
 		switch(job->getAbJobType()) {

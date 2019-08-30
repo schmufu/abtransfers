@@ -145,7 +145,7 @@ TranslationChooser::TranslationChooser(QLocale locale /* = QLocale() */,
 		this->appFilename = TC_APPNAME;
 
 	this->activeTranslators.clear();
-	this->langMenu = NULL;
+	this->langMenu = nullptr;
 
 	//the calling order is important!
 	this->loadSupportedTranslations();
@@ -168,7 +168,7 @@ TranslationChooser::TranslationChooser(QString language /* = QString() */,
 
 	this->activeTranslators.clear();
 	this->activeLanguageName = ""; //is updated by setLanguage();
-	this->langMenu = NULL;
+	this->langMenu = nullptr;
 
 	//the calling order is important!
 	this->loadSupportedTranslations();
@@ -234,7 +234,7 @@ void TranslationChooser::addTranslation(const QString &qmFile)
 {
 	TranslationChooserData *tData = this->translationData(qmFile);
 
-	if (tData == NULL || !tData->isValid()) {
+	if (tData == nullptr || !tData->isValid()) {
 		delete tData; //its save to delete NULL
 		return;
 	}
@@ -250,8 +250,8 @@ void TranslationChooser::addTranslation(const QString &qmFile)
 	}
 
 	TranslationChooserData *known;
-	known = this->supportedTranslations.value(langName, NULL);
-	if (known != NULL) {
+	known = this->supportedTranslations.value(langName, nullptr);
+	if (known != nullptr) {
 		if (known->translationVersion >= tData->translationVersion) {
 			delete tData;
 			return; //nothing new
@@ -477,7 +477,7 @@ void TranslationChooser::installAppTranslation(const QString &qmFile)
 TranslationChooserData *TranslationChooser::translationData(const QString &qmFile) const
 {
 	if (!QFile::exists(qmFile))
-		return NULL;
+		return nullptr;
 
 	TranslationChooserData *transData = new TranslationChooserData();
 
@@ -501,7 +501,7 @@ const TranslationChooserData *TranslationChooser::activeTranslationChooserData()
 {
 	const QString langName = this->currentLanguage();
 	const TranslationChooserData *tdata =
-			this->supportedTranslations.value(langName, NULL);
+			this->supportedTranslations.value(langName, nullptr);
 
 	return tdata;
 }
@@ -547,7 +547,7 @@ void TranslationChooser::setLanguage(const QString &language)
 	QString qtLocale = "";
 	QString qmFile = "";
 	const TranslationChooserData *tData;
-	tData = this->supportedTranslations.value(language, NULL);
+	tData = this->supportedTranslations.value(language, nullptr);
 
 	bool defaultLang = language.toLower() == TC_DEFAULT_LANGUAGE.toLower();
 

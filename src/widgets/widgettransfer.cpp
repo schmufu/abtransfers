@@ -48,8 +48,8 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 			       QWidget *parent) :
 	QWidget(parent)
 {
-	if (lclAccount == NULL) {
-		this->m_limits = NULL;
+	if (lclAccount == nullptr) {
+		this->m_limits = nullptr;
 	} else {
 		this->m_limits = lclAccount->limits(type);
 	}
@@ -57,17 +57,17 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	this->m_allAccounts = allAccounts; //could be NULL!
 	this->m_accountAtCreation = lclAccount; //could be NULL!
 	this->m_type = type;
-	this->m_origTransaction = NULL;
-	this->localAccount = NULL;
-	this->remoteAccount = NULL;
-	this->value = NULL;
-	this->purpose = NULL;
-	this->recurrence = NULL;
-	this->textKey = NULL;
-	this->datedDate = NULL;
-	this->pushButtonOK = NULL;
-	this->pushButtonCancel = NULL;
-	this->pushButtonRevert = NULL;
+	this->m_origTransaction = nullptr;
+	this->localAccount = nullptr;
+	this->remoteAccount = nullptr;
+	this->value = nullptr;
+	this->purpose = nullptr;
+	this->recurrence = nullptr;
+	this->textKey = nullptr;
+	this->datedDate = nullptr;
+	this->pushButtonOK = nullptr;
+	this->pushButtonCancel = nullptr;
+	this->pushButtonRevert = nullptr;
 	this->layoutMain = new QVBoxLayout(this);
 	this->layoutMain->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
@@ -100,7 +100,7 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 		break;
 	}
 
-	if (this->m_accountAtCreation == NULL ||
+	if (this->m_accountAtCreation == nullptr ||
 	    !this->m_accountAtCreation->isAvailable(this->m_type)) {
 		//es wurde kein Account übergeben oder der vorhandene Job
 		//ist nicht verfügbar.
@@ -217,7 +217,7 @@ void widgetTransfer::my_createNotAvailableJobText()
 	notAvailable->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 	this->layoutMain->addWidget(notAvailable);
 	QString BankName, KontoName;
-	if (this->m_accountAtCreation == NULL) {
+	if (this->m_accountAtCreation == nullptr) {
 		BankName = tr("unbekannt");
 		KontoName = tr("unbekannt");
 	} else {
@@ -384,7 +384,7 @@ void widgetTransfer::my_create_localAccount_groupbox(bool /* newTransfer */,
 {
 	this->groupBoxLocal = new QGroupBox(tr("Absender"));
 	QVBoxLayout *gbll = new QVBoxLayout();
-	this->localAccount = new widgetAccountData(NULL,
+	this->localAccount = new widgetAccountData(nullptr,
 						   this->m_accountAtCreation,
 						   this->m_allAccounts);
 	gbll->addWidget(this->localAccount);
@@ -406,7 +406,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 		//account input as for the local-account input.
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(NULL,
+		this->remoteAccount = new widgetAccountData(nullptr,
 							    this->m_accountAtCreation,
 							    this->m_allAccounts);
 		gbrl->addWidget(this->remoteAccount);
@@ -415,7 +415,7 @@ void widgetTransfer::my_create_remoteAccount_groupbox(bool /* newTransfer */,
 		//Die RemoteKontoEingabe ermöglichen
 		this->groupBoxRemote = new QGroupBox(tr("Empfänger"));
 		QVBoxLayout *gbrl = new QVBoxLayout();
-		this->remoteAccount = new widgetAccountData(NULL, NULL, NULL, sepaFields);
+		this->remoteAccount = new widgetAccountData(nullptr, nullptr, nullptr, sepaFields);
 		this->remoteAccount->setAllowDropAccount(allowLocal);
 		this->remoteAccount->setAllowDropKnownRecipient(allowKnownRecipient);
 		gbrl->addWidget(this->remoteAccount);
@@ -466,7 +466,7 @@ void widgetTransfer::my_create_purpose()
 //private
 void widgetTransfer::my_create_textKey()
 {
-	this->textKey = new widgetTextKey(NULL);
+	this->textKey = new widgetTextKey(nullptr);
 }
 
 //private
@@ -497,7 +497,7 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 {
 	//wenn keine Limits vorhanden sind alle Widgets disablen, da ein Job
 	//ohne Limits von der Bank nicht unterstützt wird!
-	bool dis = limits == NULL;
+	bool dis = limits == nullptr;
 	//local Account so belassen, damit dieser evt. wieder geändert werden
 	//kann und somit limits in kraft treten die wieder verfügbar sind.
 	//if (this->localAccount) this->localAccount->setDisabled(dis);
@@ -515,13 +515,13 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 
 	limits->printAllAsDebug();
 
-	if (this->localAccount != NULL) {
+	if (this->localAccount != nullptr) {
 		this->localAccount->setLimitMaxLenAccountNumber(limits->MaxLenLocalAccountNumber);
 		this->localAccount->setLimitMaxLenBankCode(limits->MaxLenLocalBankCode);
 		this->localAccount->setLimitMaxLenName(limits->MaxLenLocalName);
 	}
 
-	if (this->remoteAccount != NULL) {
+	if (this->remoteAccount != nullptr) {
 		this->remoteAccount->setLimitAllowChangeAccountNumber(limits->AllowChangeRecipientAccount);
 		this->remoteAccount->setLimitAllowChangeBankCode(limits->AllowChangeRecipientAccount);
 		this->remoteAccount->setLimitAllowChangeBankName(limits->AllowChangeRecipientAccount);
@@ -532,17 +532,17 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->remoteAccount->setLimitMaxLenIban(limits->MaxLenRemoteIban);
 	}
 
-	if (this->value != NULL) {
+	if (this->value != nullptr) {
 		this->value->setLimitAllowChange(limits->AllowChangeValue);
 	}
 
-	if (this->purpose != NULL) {
+	if (this->purpose != nullptr) {
 		this->purpose->setLimitAllowChange(limits->AllowChangePurpose);
 		this->purpose->setLimitMaxLines(limits->MaxLinesPurpose);
 		this->purpose->setLimitMaxLen(limits->MaxLenPurpose);
 	}
 
-	if (this->textKey != NULL) {
+	if (this->textKey != nullptr) {
 		int oldKey = this->textKey->getTextKey();
 		QList<int> allowedTextKeys;
 		foreach (QString key, limits->ValuesTextKey) {
@@ -556,7 +556,7 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		this->textKey->setLimitAllowChange(limits->AllowChangeTextKey);
 	}
 
-	if (this->recurrence != NULL) {
+	if (this->recurrence != nullptr) {
 		//Es müssen zwingend zuerst die Werte und danach die AllowChange
 		//Parameter gesetzt werden!
 		this->recurrence->setLimitValuesCycleMonth(limits->ValuesCycleMonth);
@@ -581,7 +581,7 @@ void widgetTransfer::setAllLimits(const abt_transactionLimits *limits)
 		}
 	}
 
-	if (this->datedDate != NULL) {
+	if (this->datedDate != nullptr) {
 		this->datedDate->setLimitValuesExecutionDayMonth(limits->ValuesExecutionDayMonth);
 		this->datedDate->setLimitValuesExecutionDayWeek(limits->ValuesExecutionDayWeek);
 		this->datedDate->setLimitAllowChange(limits->AllowChangeFirstExecutionDate);
@@ -616,36 +616,36 @@ void widgetTransfer::onCancelButtonPressed()
 void widgetTransfer::onRevertButtonPressed()
 {
 	//Wenn wir eine Transaction besitzen die werte dieser setzen
-	if (this->m_origTransaction != NULL) {
+	if (this->m_origTransaction != nullptr) {
 		this->setValuesFromTransaction(this->m_origTransaction);
 	} else { //ansonsten alle Edit-Felder löschen (default-Wert)
-		if (this->remoteAccount != NULL) {
-			if (this->remoteAccount->getAccount() == NULL) {
+		if (this->remoteAccount != nullptr) {
+			if (this->remoteAccount->getAccount() == nullptr) {
 				//remoteAccount muss EingabeWidgets enthalten,
 				//diese löschen
 				this->remoteAccount->clearAllEdits();
 			}
 		}
-		if (this->value != NULL) {
+		if (this->value != nullptr) {
 			this->value->clearAll();;
 		}
-		if (this->purpose != NULL) {
+		if (this->purpose != nullptr) {
 			this->purpose->clearAll();
 		}
-		if (this->recurrence != NULL) {
+		if (this->recurrence != nullptr) {
 			//Default jeden Monat
 			this->recurrence->setCycleMonth(1);
 			this->recurrence->setPeriod(AB_Transaction_PeriodMonthly);
 			//wenn dies geändert wird werden alle anderen Werte
 			//auch entsprechend automatisch aktualisiert!
 		}
-		if (this->textKey != NULL) {
+		if (this->textKey != nullptr) {
 			//Wir setzen einfach einen "unbekannten" Key, somit
 			//stellt sich das Widget automatisch auf den ersten
 			//gültigen Eintrag!
 			this->textKey->setTextKey(-5);
 		}
-		if (this->datedDate != NULL) {
+		if (this->datedDate != nullptr) {
 			//Heute als default
 			this->datedDate->setDate(QDate::currentDate());
 		}
@@ -678,19 +678,19 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		return false;
 	}
 
-	if (this->localAccount != NULL) {
-		if (this->localAccount->getAccount() == NULL) {
+	if (this->localAccount != nullptr) {
+		if (this->localAccount->getAccount() == nullptr) {
 			errorMsg.append(tr(" - Absender Konto unbekannt\n"));
 		}
 	} else {
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> localAccount Widget fehlt!<br />"));
 	}
 
-	if (this->remoteAccount != NULL) {
+	if (this->remoteAccount != nullptr) {
 		//check between internal- and other transfers differ
 		if (this->m_type == AB_Job_TypeInternalTransfer) {
 			//the remoteAccount widget must have a known account!
-			if (this->remoteAccount->getAccount() == NULL) {
+			if (this->remoteAccount->getAccount() == nullptr) {
 				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount->getAccount == NULL<br />"));
 			}
 			//the values of the selected local and remote account
@@ -723,7 +723,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> Empfänger Konto Widget fehlt!<br />"));
 	}
 
-	if (this->value != NULL) {
+	if (this->value != nullptr) {
 		if (this->value->getValue().isEmpty()) {
 			errorMsg.append(tr(" - Überweisungsbetrag fehlt<br />"));
 		} else {
@@ -742,7 +742,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> Betrag Widget fehlt!</b>\n"));
 	}
 
-	if (this->purpose != NULL) {
+	if (this->purpose != nullptr) {
 		const QStringList purpose = this->purpose->getPurpose();
 		//Alle Elemente durchgehen und wenn ALLE leer sind ist kein
 		//Verwendungszweck eingegeben.
@@ -791,7 +791,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 		errorMsg.append(tr(" - <b>Programmierfehler:</b> Verwendungszweck Widget fehlt!<br />"));
 	}
 
-	if (this->textKey != NULL) {
+	if (this->textKey != nullptr) {
 		if (!this->m_limits->ValuesTextKey.contains(
 				QString("%1").arg(this->textKey->getTextKey()))) {
 			errorMsg.append(tr(" - Textschlüssel nicht erlaubt<br />"));
@@ -808,7 +808,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	if (this->m_type == AB_Job_TypeInternalTransfer) {
 		//local- and remoteAccountWidget must exist (NULL Pointer dereference)
 		if (this->localAccount && this->remoteAccount) {
-			if (this->remoteAccount->getAccount() == NULL) {
+			if (this->remoteAccount->getAccount() == nullptr) {
 				errorMsg.append(tr(" - <b>Programmierfehler:</b> remoteAccount muss bei Umbuchung einen Account besitzen!<br />"));
 			} else {
 				const aqb_AccountInfo* la = this->localAccount->getAccount(); //local Account
@@ -843,7 +843,7 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 	//safety check for modifying transfers
 	if ((this->m_type == AB_Job_TypeModifyDatedTransfer) ||
 	    (this->m_type == AB_Job_TypeModifyStandingOrder)) {
-		if (this->m_origTransaction == NULL) {
+		if (this->m_origTransaction == nullptr) {
 			errorMsg.append(tr(" - <b>Programmierfehler:</b> Bei Änderungen muss die Original<br />"
 					   "&nbsp;&nbsp;&nbsp;Transaction gesetzt sein!<br />"));
 		}
@@ -1030,7 +1030,7 @@ bool widgetTransfer::hasChanges() const
 		return true;
 	}
 
-	if (this->textKey != NULL) {
+	if (this->textKey != nullptr) {
 		if (this->textKey->hasChanges()) {
 			return true;
 		}
@@ -1060,13 +1060,13 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 	//transaction is deleted, we have the values.
 	this->m_origTransaction = new abt_transaction(*t);
 
-	if (this->localAccount != NULL) {
+	if (this->localAccount != nullptr) {
 		//den local account suchen der dem Absender in der
 		//abt_transaction entspricht
-		aqb_AccountInfo* acc = NULL;
+		aqb_AccountInfo* acc = nullptr;
 
 		//wenn keine Accounts bekannt, abbrechen
-		if (this->m_allAccounts == NULL) return;
+		if (this->m_allAccounts == nullptr) return;
 
 		const QHash<int, aqb_AccountInfo*> accs = this->m_allAccounts->getAccountHash();
 
@@ -1084,17 +1084,17 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 		this->localAccount->setAccount(acc);
 	}
 
-	if (this->remoteAccount != NULL) {
+	if (this->remoteAccount != nullptr) {
 		if (this->m_type == AB_Job_TypeInternalTransfer) {
 			//the remoteAccountWidget must be a Widget for a
 			//known local Account!
 
 			//den local/remote account suchen der dem Empfänger in
 			//der abt_transaction entspricht
-			aqb_AccountInfo* acc = NULL;
+			aqb_AccountInfo* acc = nullptr;
 
 			//wenn keine Accounts bekannt, abbrechen
-			if (this->m_allAccounts == NULL) return;
+			if (this->m_allAccounts == nullptr) return;
 
 			QHashIterator<int, aqb_AccountInfo*> it(this->m_allAccounts->getAccountHash());
 			it.toFront();
@@ -1122,22 +1122,22 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 	}
 
 
-	if (this->value != NULL) {
+	if (this->value != nullptr) {
 		this->value->setValue(t->getValue());
 		//! \todo currency der Transaction verwenden
 		this->value->setCurrency("EUR");
 	}
 
-	if (this->purpose != NULL) {
+	if (this->purpose != nullptr) {
 		this->purpose->setPurpose(t->getPurpose());
 	}
 
-	if (this->textKey != NULL) {
+	if (this->textKey != nullptr) {
 		this->textKey->setTextKey(t->getTextKey());
 		qDebug() << "widgetTransfer::setValuesFromTransaction(): TextKeyExt =" << t->getTextKeyExt();
 	}
 
-	if (this->recurrence != NULL) {
+	if (this->recurrence != nullptr) {
 		this->recurrence->setCycle(t->getCycle());
 		this->recurrence->setPeriod(t->getPeriod());
 		this->recurrence->setExecutionDay(t->getExecutionDay());
@@ -1146,7 +1146,7 @@ void widgetTransfer::setValuesFromTransaction(const abt_transaction *t)
 		this->recurrence->setNextExecutionDay(t->getNextExecutionDate());
 	}
 
-	if (this->datedDate != NULL) {
+	if (this->datedDate != nullptr) {
 		this->datedDate->setDate(t->getDate());
 	}
 

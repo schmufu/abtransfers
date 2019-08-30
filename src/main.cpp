@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 			//SM is not freed).
 			//We simple ask the user.
 			int msgRet = QMessageBox::critical(
-					NULL,
+					nullptr,
 					QObject::tr("%1 bereits gestartet")
 					     .arg(app.applicationName()),
 					QObject::tr("Es sieht so aus als würde "
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 			if (msgRet != QMessageBox::Yes) {
 				//cleanup and cancel execution
 #if QT_VERSION >= 0x050000
-				qInstallMessageHandler(NULL);
+				qInstallMessageHandler(nullptr);
 #else
 				qInstallMsgHandler(NULL);
 #endif
@@ -171,9 +171,9 @@ int main(int argc, char *argv[])
 	abt_conv::freeAllGwenLists();
 
 #if QT_VERSION >= 0x050000
-	qInstallMessageHandler(NULL);
+	qInstallMessageHandler(nullptr);
 #else
-	qInstallMsgHandler(NULL); //uninstall the MsgHandler
+	qInstallMsgHandler(nullptr); //uninstall the MsgHandler
 #endif
 	delete debugDialog; //and the corresponding dialog
 

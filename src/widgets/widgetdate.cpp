@@ -64,7 +64,7 @@ widgetDate::widgetDate(const QString &labelText, Qt::Alignment labelAt, QWidget 
 
 	this->label = new QLabel(labelText, this);
 
-	QBoxLayout *layout = NULL;
+	QBoxLayout *layout = nullptr;
 	if (labelAt & Qt::AlignTop) {
 		layout = new QVBoxLayout();
 	} else if (labelAt & Qt::AlignLeft) {

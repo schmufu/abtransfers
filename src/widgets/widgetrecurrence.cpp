@@ -339,10 +339,10 @@ void widgetRecurrence::spinBoxValueChanged(int value)
 		list = &this->allowedCycleMonth;
 		break;
 	default:
-		list = NULL;
+		list = nullptr;
 	}
 
-	if (list == NULL) {
+	if (list == nullptr) {
 		//weder weekly noch monthly gewählt, weitere Eingaben unterbinden
 		this->spinBox->setDisabled(true);
 		this->comboBox->setDisabled(true);

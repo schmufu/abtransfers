@@ -1193,7 +1193,7 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 {
 	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
 	//only show the menu when a account is selected
-	if (acc->getSelectedAccount() != NULL) {
+	if (acc->getSelectedAccount() != nullptr) {
 		this->accountContextMenu->exec(this->dock_Accounts->widget()->mapToGlobal(p));
 	}
 }
@@ -1201,14 +1201,14 @@ void MainWindow::onAccountWidgetContextMenuRequest(QPoint p)
 //private slot
 void MainWindow::selectedStandingOrdersAccountChanged(const aqb_AccountInfo* acc)
 {
-	if (acc == NULL) return; //cancel if no account is supplied
+	if (acc == nullptr) return; //cancel if no account is supplied
 	settings->saveSelAccountInWidget("StandingOrders", acc);
 }
 
 //private slot
 void MainWindow::selectedDatedTransfersAccountChanged(const aqb_AccountInfo* acc)
 {
-	if (acc == NULL) return; //cancel if no account is supplied
+	if (acc == nullptr) return; //cancel if no account is supplied
 	settings->saveSelAccountInWidget("DatedTransfers", acc);
 }
 
@@ -1427,7 +1427,7 @@ void MainWindow::onActionTestWidgetAccessTriggered()
 void MainWindow::on_tabWidget_UW_tabCloseRequested(int index)
 {
 	widgetTransfer *transW = dynamic_cast<widgetTransfer*>(this->ui->tabWidget_UW->widget(index));
-	if (transW == NULL) {
+	if (transW == nullptr) {
 		return; //child does not exist, do nothing
 	}
 
@@ -1485,18 +1485,18 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 {
 	BankAccountsWidget *bankAccW;
 	const aqb_AccountInfo *acc;
-	if (account == NULL) {
+	if (account == nullptr) {
 		bankAccW = this->dock_Accounts->findChild<BankAccountsWidget*>();
 		acc = bankAccW->getSelectedAccount();
 	} else {
 		acc = account;
 	}
 
-	if (acc == NULL) {
+	if (acc == nullptr) {
 		this->ui->statusBar->showMessage(tr("Kein Konto vorhanden! "
 						    " -- Ist ein Konto in \"Online "
 						    "Konten\" gewählt?"), 8000);
-		return NULL; //without a account we cant do anything
+		return nullptr; //without a account we cant do anything
 	}
 
 	widgetTransfer *trans = new widgetTransfer(type, acc, this->accounts, this);
@@ -1853,7 +1853,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 
 	int ret;
 	ret = QMessageBox::question(
-		NULL,
+		nullptr,
 		tr("Daten geändert"),
 		tr("Die Daten für den Dauerauftrag sind in sich "
 		   "nicht konsistent und würden auf die folgenden "
@@ -2094,7 +2094,7 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	 */
 
 	widgetTransfer *transW;
-	const aqb_AccountInfo *acc = NULL;
+	const aqb_AccountInfo *acc = nullptr;
 
 	//the itemNr is the position at the JobQueueList
 	abt_jobInfo *job = this->jobctrl->jobqueueList()->at(itemNr);
@@ -2106,7 +2106,7 @@ void MainWindow::onEditJobFromOutbox(int itemNr)
 	//get the account that matches the local transaction data
 	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
 
-	if (acc == NULL) {
+	if (acc == nullptr) {
 		//account not found
 		qWarning() << Q_FUNC_INFO << "account from the job not found, aborting";
 		return;
@@ -2130,7 +2130,7 @@ void MainWindow::onJobCtrlQueueListChanged()
 void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
 {
 	widgetTransfer *transW;
-	const aqb_AccountInfo *acc = NULL;
+	const aqb_AccountInfo *acc = nullptr;
 	QString jobAccBankcode, jobAccNumber;
 
 	jobAccBankcode = ji->getTransaction()->getLocalBankCode();
@@ -2139,7 +2139,7 @@ void MainWindow::createTransferFromJob(const abt_jobInfo *ji)
 	//get the account that matches the local transaction data
 	acc = this->accounts->getAccount(jobAccNumber, jobAccBankcode);
 
-	if (acc == NULL) { //no account found
+	if (acc == nullptr) { //no account found
 		QString msg;
 		msg.append(tr("Kein Account gefunden [%1/%2] - Erstellen nicht möglich")
 			   .arg(jobAccNumber, jobAccBankcode));
@@ -2600,7 +2600,7 @@ void MainWindow::checkReachedDatedTransfers()
 	QString msgText = "";
 	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		//next account if this account does not have a datedTransfers-List
-		if (acc->getKnownDatedTransfers() == NULL) continue;
+		if (acc->getKnownDatedTransfers() == nullptr) continue;
 		for(int i=0; i < acc->getKnownDatedTransfers()->size(); ++i) {
 			abt_datedTransferInfo *dt = acc->getKnownDatedTransfers()->at(i);
 			if (dt->getTransaction()->getDate() <= QDate::currentDate()) {

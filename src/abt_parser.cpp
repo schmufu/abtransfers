@@ -237,7 +237,7 @@ int abt_parser::parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
 	const char *logmsg = "PARSER - Acc-Info: ";
 	int cnt = 0;
 	aqb_AccountInfo *acc;
-	abt_history *parseHistory = NULL;
+	abt_history *parseHistory = nullptr;
 
 	ai = AB_ImExporterContext_GetFirstAccountInfo(iec);
 	while (ai) {
@@ -253,10 +253,10 @@ int abt_parser::parse_ctx_accountInfos(AB_IMEXPORTER_CONTEXT *iec,
 		if (history && (accnr == "0000000000") && (blz == "00000000") &&
 		    (owner == "AB-Transfers")) {
 			//we should parse data for the history!
-			acc = NULL;
+			acc = nullptr;
 			parseHistory = history;
 		} else {
-			parseHistory = NULL;
+			parseHistory = nullptr;
 			//get the internaly used account object (null if not found)
 			acc = allAccounts->getAccount(accnr, blz, owner, name);
 
@@ -399,8 +399,8 @@ int abt_parser::parse_ctx_ai_status(AB_IMEXPORTER_ACCOUNTINFO *ai,
  */
 int abt_parser::parse_ctx_ai_datedTransfers(AB_IMEXPORTER_ACCOUNTINFO *ai,
 					    aqb_AccountInfo *acc,
-					    abt_history *history /* = NULL */,
-					    const aqb_Accounts *allAccounts /* = NULL */)
+					    abt_history *history /* = nullptr */,
+					    const aqb_Accounts *allAccounts /* = nullptr */)
 {
 	AB_TRANSACTION *t;
 	const char *logmsg = "PARSER - DatedTra: ";
@@ -759,7 +759,7 @@ AB_IMEXPORTER_CONTEXT *abt_parser::load_local_ctx(const QString &filename,
 					 importerName.toUtf8(),
 					 ctx,
 					 profileName.toUtf8(),
-					 NULL,
+					 nullptr,
 					 filename.toUtf8());
 
 	//try to fill gaps (e.g. the account id)
@@ -818,7 +818,7 @@ void abt_parser::save_local_ctx(AB_IMEXPORTER_CONTEXT *ctx,
   */
 AB_IMEXPORTER_CONTEXT *abt_parser::create_ctx_from(const aqb_Accounts *allAccounts)
 {
-	if (!allAccounts) return NULL; //no accounts, cant work
+	if (!allAccounts) return nullptr; //no accounts, cant work
 
 	AB_IMEXPORTER_CONTEXT *ctx = AB_ImExporterContext_new();
 

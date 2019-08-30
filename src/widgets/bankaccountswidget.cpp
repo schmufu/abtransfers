@@ -50,7 +50,7 @@ BankAccountsWidget::BankAccountsWidget(const aqb_Accounts *accounts,
 	ui->setupUi(this);
 	this->m_accounts = accounts; //could be NULL!
 	this->dragStartPos = QPoint(0,0);
-	this->dragObj = NULL;
+	this->dragObj = nullptr;
 
 
 	QTreeWidgetItem *headerItem = new QTreeWidgetItem;
@@ -114,7 +114,7 @@ void BankAccountsWidget::twMousePressEvent(QMouseEvent *event)
 			this->dragObj = item->data(0, Qt::UserRole+1).value<aqb_AccountInfo*>();
 			this->dragStartPos = event->pos();
 		} else {
-			this->dragObj = NULL;
+			this->dragObj = nullptr;
 			this->dragStartPos = QPoint(0,0);
 		}
 	}
@@ -134,7 +134,7 @@ void BankAccountsWidget::twMouseMoveEvent(QMouseEvent *event)
 	if (!(event->buttons() & Qt::LeftButton)) {
 		return;
 	}
-	if (this->dragObj == NULL) {
+	if (this->dragObj == nullptr) {
 		return; //no object to Drag set!
 	}
 	if ((event->pos() - this->dragStartPos).manhattanLength()
@@ -176,7 +176,7 @@ void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
 	//kein Drag&Drop mehr verwalten (keine Objecte im treeWidget!)
 	this->ui->treeWidget->viewport()->removeEventFilter(this);
 
-	if (this->m_accounts == NULL) {
+	if (this->m_accounts == nullptr) {
 		//Es existieren keine Accounts, deswegen brauchen wir auch
 		//nichts machen, erst wenn wir mit einem gültigen aqb_Accounts
 		//Objekt aufgerufen werden erstellen wir auch die Daten
@@ -199,9 +199,9 @@ void BankAccountsWidget::setAccounts(const aqb_Accounts *accounts)
 
 	bool doTop = true;
 	int ItemCount = 0;
-	QTreeWidgetItem *topItem = NULL;
-	QTreeWidgetItem *Item = NULL;
-	QTreeWidgetItem *FirstItem = NULL;
+	QTreeWidgetItem *topItem = nullptr;
+	QTreeWidgetItem *Item = nullptr;
+	QTreeWidgetItem *FirstItem = nullptr;
 	//Alle BLZs durchgehen
 	foreach(const QString blz, BLZs) {
 		doTop = true;
@@ -312,10 +312,10 @@ void BankAccountsWidget::setHeaderItemCaptions(QTreeWidgetItem *headerItem) cons
 aqb_AccountInfo *BankAccountsWidget::getSelectedAccount()
 {
 	if (ui->treeWidget->selectedItems().size() == 0) {
-		return NULL;
+		return nullptr;
 	}
 	int AccountID = ui->treeWidget->selectedItems().at(0)->data(0, Qt::UserRole).toInt();
-	return this->m_accounts->getAccountHash().value(AccountID, NULL);
+	return this->m_accounts->getAccountHash().value(AccountID, nullptr);
 }
 
 /** setzt den aktuell ausgewählten Account auf \a account */
@@ -325,7 +325,7 @@ void BankAccountsWidget::setSelectedAccount(const aqb_AccountInfo *account)
 	//haben dieses Auswählen.
 
 	int selectID = -1;
-	if (account != NULL) { //wenn Account übergeben, dessen ID selectieren
+	if (account != nullptr) { //wenn Account übergeben, dessen ID selectieren
 		selectID = account->get_ID();
 	}
 
@@ -350,10 +350,10 @@ void BankAccountsWidget::on_treeWidget_itemSelectionChanged()
 	if (this->ui->treeWidget->selectedItems().size() > 0) {
 		QTreeWidgetItem *selItem = this->ui->treeWidget->selectedItems().at(0);
 		int accountID = selItem->data(0, Qt::UserRole).toInt();
-		aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(accountID, NULL);
+		aqb_AccountInfo *acc = this->m_accounts->getAccountHash().value(accountID, nullptr);
 		emit this->Account_Changed(acc);
 	} else {
-		emit this->Account_Changed(NULL);
+		emit this->Account_Changed(nullptr);
 	}
 }
 
@@ -365,8 +365,8 @@ void BankAccountsWidget::accountChangedUpdateDisplay(const aqb_AccountInfo *acco
 	//die Werte neu.
 
 	//Item enthält in der row 0 als Qt::UserRole+1 die Addresse des Accounts!
-	QTreeWidgetItem *item = NULL;
-	QTreeWidgetItem *wantedItem = NULL;
+	QTreeWidgetItem *item = nullptr;
+	QTreeWidgetItem *wantedItem = nullptr;
 
 	//das Item finden welches für den Account zuständig ist
 	for(int i=0; i<this->ui->treeWidget->topLevelItemCount(); ++i) {

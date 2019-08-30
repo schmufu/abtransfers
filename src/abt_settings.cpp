@@ -98,7 +98,7 @@ abt_settings::abt_settings(QObject *parent) :
 	this->m_autoExportFilename =
 		this->settings->value("Main/AutoExportFilename", defValue).toString();
 
-	this->m_textKeyDescr = NULL;
+	this->m_textKeyDescr = nullptr;
 	this->loadTextKeyDescriptions();
 
 	//ensure that all file permissions are correct
@@ -130,7 +130,7 @@ abt_settings::~abt_settings()
 //private
 void abt_settings::loadTextKeyDescriptions()
 {
-	if (this->m_textKeyDescr == NULL) {
+	if (this->m_textKeyDescr == nullptr) {
 		this->m_textKeyDescr = new QHash<int, QString>;
 	}
 
@@ -220,7 +220,7 @@ const QList<abt_EmpfaengerInfo*>* abt_settings::loadKnownEmpfaenger()
 
 	QFile file(this->m_recipientsFilename);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		return NULL;
+		return nullptr;
 
 	QTextStream in(&file);
 	QStringList InfoStringList;
