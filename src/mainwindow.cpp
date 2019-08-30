@@ -116,10 +116,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->history = new abt_history(this);
 	this->logw = new page_log();
 	this->outbox = new Page_Ausgang(settings);
-	this->dock_KnownRecipient = NULL;
-	this->dock_KnownStandingOrders = NULL;
-	this->dock_KnownDatedTransfers = NULL;
-	this->dock_Accounts = NULL;
+	this->dock_KnownRecipient = nullptr;
+	this->dock_KnownStandingOrders = nullptr;
+	this->dock_KnownDatedTransfers = nullptr;
+	this->dock_Accounts = nullptr;
 
 	//All accounts from AqBanking were created (this->accounts).
 	this->loadAccountData(); //Now the account data can be loaded
@@ -340,7 +340,7 @@ void MainWindow::TimerTimeOut()
 {
 	disconnect(this, SLOT(TimerTimeOut())); //remove connection
 	delete this->timer; //the timer is no longer needed
-	this->timer = NULL;
+	this->timer = nullptr;
 
 	abt_dialog dia(this,
 		       tr("Eventuelle Kosten"),
@@ -677,7 +677,7 @@ void MainWindow::createDockStandingOrders()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(nullptr, nullptr);
 
 	widgetKnownStandingOrders *StandingOrders;
 	//The widgetKnownStandingOrders must be created with the selected
@@ -728,7 +728,7 @@ void MainWindow::dockStandingOrdersSetAccounts()
 	widgetAccountComboBox *accComboBox = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
 	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
 
-	if ((accComboBox == NULL) || (standingOrders == NULL)) {
+	if ((accComboBox == nullptr) || (standingOrders == nullptr)) {
 		return; //one widget missing, cancel
 	}
 
@@ -755,7 +755,7 @@ void MainWindow::createDockDatedTransfers()
 	QHBoxLayout *layoutAcc = new QHBoxLayout();
 	QLabel *accText = new QLabel(tr("Konto"));
 
-	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(NULL, NULL);
+	widgetAccountComboBox *accComboBox = new widgetAccountComboBox(nullptr, nullptr);
 
 	widgetKnownDatedTransfers *DatedTransfers;
 	//The widgetKnownDatedTransfers must be created with the selected
@@ -807,7 +807,7 @@ void MainWindow::dockDatedTransfersSetAccounts()
 	widgetAccountComboBox *accComboBox = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
 	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
 
-	if ((accComboBox == NULL) || (datedTransfers == NULL)) {
+	if ((accComboBox == nullptr) || (datedTransfers == nullptr)) {
 		return; //one widget missing, cancel
 	}
 
@@ -894,7 +894,7 @@ void MainWindow::loadAccountData()
 void MainWindow::saveAccountData()
 {
 	Q_ASSERT(this->accounts); //accounts must exist
-	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+	AB_IMEXPORTER_CONTEXT *ctx = nullptr;
 
 	//create one AB_IMEXPORTER_CONTEXT for all accounts
 	ctx = abt_parser::create_ctx_from(this->accounts);
@@ -930,7 +930,7 @@ void MainWindow::saveHistoryData()
 {
 	Q_ASSERT(this->history); //the history and
 	Q_ASSERT(this->accounts); //accounts must exist
-	AB_IMEXPORTER_CONTEXT *ctx = NULL;
+	AB_IMEXPORTER_CONTEXT *ctx = nullptr;
 
 	//get the AB_IMEXPORTER_CONTEXT for the history and save it to file
 	ctx = this->history->getContext();
@@ -957,7 +957,7 @@ void MainWindow::onJobAddedToJobCtrlList(const abt_jobInfo* ji) const
 					    "hinzugefügt").arg(ji->getType()),
 					 6000);
 
-	abt_dialog dia(NULL,
+	abt_dialog dia(nullptr,
 		       tr("Auftrag zum Ausgang hinzugefügt"),
 		       tr("Der Auftrag \"%1\" wurde erfolgreich zum "
 			  "Ausgangskorb hinzugefügt").arg(ji->getType()),
@@ -1666,7 +1666,7 @@ bool MainWindow::correctRecurrenceDates(widgetRecurrence *recurrence) const
 		//Otherwise we adjust the end date to the right weekday.
 		//In this case, the first weekday that matches with the selected
 		//one before the selected end date.
-		int diffTage  = correctFirstDate.daysTo(correctLastDate);
+		qint64 diffTage  = correctFirstDate.daysTo(correctLastDate);
 		if ( diffTage < (cycle * 7) ) {
 			// - firstDate and lastDate must not be equal
 			// - lastDate must not before firstDate
@@ -2685,17 +2685,17 @@ void MainWindow::on_actionAqBankingSetup_triggered()
 	//all references to accounts are set to NULL, therefore they are
 	//invalid in the corresponding widgets!
 	BankAccountsWidget *baw = this->dock_Accounts->findChild<BankAccountsWidget*>();
-	baw->setAccounts(NULL);
+	baw->setAccounts(nullptr);
 
 	widgetAccountComboBox *accBoxDated = this->dock_KnownDatedTransfers->findChild<widgetAccountComboBox*>();
-	accBoxDated->setAllAccounts(NULL);
+	accBoxDated->setAllAccounts(nullptr);
 	widgetKnownDatedTransfers *datedTransfers = this->dock_KnownDatedTransfers->findChild<widgetKnownDatedTransfers*>();
-	datedTransfers->setAccount(NULL);
+	datedTransfers->setAccount(nullptr);
 
 	widgetAccountComboBox *accBoxStanding = this->dock_KnownStandingOrders->findChild<widgetAccountComboBox*>();
-	accBoxStanding->setAllAccounts(NULL);
+	accBoxStanding->setAllAccounts(nullptr);
 	widgetKnownStandingOrders *standingOrders = this->dock_KnownStandingOrders->findChild<widgetKnownStandingOrders*>();
-	standingOrders->setAccount(NULL);
+	standingOrders->setAccount(nullptr);
 
 	this->saveAccountData(); //save all account data
 
