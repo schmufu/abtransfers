@@ -40,7 +40,11 @@ aqb_banking::aqb_banking()
 	int rv;
 
 	this->ab = AB_Banking_new("abtransfers", nullptr, 0);
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 8 && AQBANKING_VERSION_PATCHLEVEL >= 1
 	// the registered FinTS product number is 79BD40393BFA967F957D00B64
+	AB_Banking_RuntimeConfig_SetCharValue(this->ab, "fintsRegistrationKey", "79BD40393BFA967F957D00B64");
+	AB_Banking_RuntimeConfig_SetCharValue(ab, "fintsApplicationVersionString", ABTRANSFER_VERSION);
+#endif
 
 	//The GUI must be created here, otherwise an error could occur.
 	//(happened ones, at the time were AqBanking data was replaced with
