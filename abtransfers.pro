@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
-VERSION = 0.0.5.0
-ABTRANSFER_FINTS_VER = 0.0.5  # max. 5 characters! (0.2.5)
+VERSION = 0.0.6.0
+ABTRANSFER_FINTS_VER = 0.0.6  # max. 5 characters!
 !macx:TARGET = abtransfers
 macx:TARGET = "AB-Transfers"
 DESTDIR = build
