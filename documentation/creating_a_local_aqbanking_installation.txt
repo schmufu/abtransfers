@@ -1,0 +1,101 @@
+Parallel Install (packaged and locally created)
+###############################################
+
+This description is only for experienced users and not detailed enough if any
+errors occoured during the process.
+
+Creating a paralell installation to the installed system packages of aqbanking
+and gwenhywfar is descriped here for the compilation and usage of AB-Transfers
+(and kMyMmoney) with newer versions of AqBanking than your distribution
+supplies.
+
+.. warning:
+
+    It could break other distribution installed packages!
+
+
+Installation dependencies
+=========================
+
+Depending on your use case the following packages (debian) should be installed
+if you need to use a card reader like the Reiner SCT standard (cyberjack).
+
+    - pcscd
+    - pcsc-tools
+    - libifd-cyberjack6
+
+
+FinTS URL
+---------
+
+Depending on how old your HBCI chipcard is (Mine is from 2001) the at the card
+stored HBCI/FinTS URL might be outdated. See [1] for a recently updated list.
+The currently correct URL should be entered at the AqBanking setup dialog.
+
+
+Configure, build and install the local installations
+====================================================
+
+In this description we use "/opt/aqb" for the prefix, change it if your
+installation must be anywere else and adjust all ocurences to your destination.
+
+
+gwenhywfar 4.20.2
+-----------------
+
+$ ./configure --prefix=/opt/aqb/ --with-guis="cpp qt5"
+
+$ make
+
+$ sudo make install
+
+
+libchipcard 5.1.0beta
+---------------------
+
+$ ./configure --prefix=/opt/aqb/ --with-gwen-dir=/opt/aqb
+
+$ make
+
+$ sudo make install
+
+
+aqbankging 5.8.2
+----------------
+
+$ ./configure --prefix=/opt/aqb/ --with-gwen-dir=/opt/aqb
+
+$ make
+
+$ sudo make install
+
+
+kmymoney 5.0.6
+--------------
+
+See also "README.cmake" of the kmymoney 5.0.6 archive.
+
+
+# A deb-src line must exist at /etc/apt/sources.list
+$ sudo apt-get build-dep kmymoney
+
+
+%mkdir build
+%cd build
+% cmake .. -DCMAKE_INSTALL_PREFIX=/opt/aqb -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DAQBANKING_DIR=/opt/aqb/lib/cmake/aqbanking-5.8 -Dgwengui-cpp_DIR=/opt/aqb/lib/cmake/gwengui-cpp-4.20 -Dgwengui-qt5_DIR=/opt/aqb/lib/cmake/gwengui-qt5-4.20 -Dgwenhywfar_DIR=/opt/aqb/lib/cmake/gwenhywfar-4.20
+
+
+Usage
+=====
+
+To execute any program from /opt/aqb/bin/, previously execute
+
+$ export LD_LIBRARY_PATH="/opt/aqb/lib"
+
+so that the running program use the localy created library.
+
+Or add this extension to the environment of the used IDE.
+
+
+
+[1]: https://github.com/willuhn/hbci4java/blob/master/src/blz.properties
