@@ -2,10 +2,22 @@
 # Project created by QtCreator 2011-07-03T18:32:54
 # -------------------------------------------------
 VERSION = 0.0.5.0
+ABTRANSFER_FINTS_VER = 0.0.5  # max. 5 characters! (0.2.5)
 !macx:TARGET = abtransfers
 macx:TARGET = "AB-Transfers"
 DESTDIR = build
 TEMPLATE = app
+
+# set to "pkg_config" for the package installed at the system
+# or to the path where you installed a local installation
+# AQBANKING_INSTALLATION="/opt/aqb"
+AQBANKING_INSTALLATION="pkg_config"
+
+contains(AQBANKING_INSTALLATION, "pkg_config") {
+    message("Using the AqBanking package from: The system installation")
+} else {
+    message("Using the AqBanking package from: $${AQBANKING_INSTALLATION}")
+}
 
 QT += gui
 #check for Qt5 or greater
@@ -130,18 +142,21 @@ OTHER_FILES += \
 RESOURCES += src/resources.qrc
 
 unix|macx {
-    CONFIG += link_pkgconfig
-    #check for Qt5 or greater
-    greaterThan(QT_MAJOR_VERSION, 4) {
-        PKGCONFIG += gwenhywfar gwengui-qt5 aqbanking
+    contains(AQBANKING_INSTALLATION, "pkg_config") {
+        CONFIG += link_pkgconfig
+        #check for Qt5 or greater
+        greaterThan(QT_MAJOR_VERSION, 4) {
+            PKGCONFIG += gwenhywfar gwengui-qt5 aqbanking
+        } else {
+            DEFINES += GWEN_QT4
+            PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+        }
     } else {
-        DEFINES += GWEN_QT4
-        PKGCONFIG += gwenhywfar gwengui-qt4 aqbanking
+        # For tests with the lastest or locally installed aqbanking version! Requires Qt5!
+        LIBS += -L$${AQBANKING_INSTALLATION}/lib -laqbanking -lgwenhywfar -lgwengui-qt5 -lgwengui-cpp
+        INCLUDEPATH += $${AQBANKING_INSTALLATION}/include/aqbanking5 \
+                       $${AQBANKING_INSTALLATION}/include/gwenhywfar4
     }
-# Only for tests with the lastest aqbanking version at development!
-#    LIBS += -L/opt/latest_svn/lib -laqbanking -lgwenhywfar -lgwengui-qt4 -lgwengui-cpp
-#    INCLUDEPATH += /opt/latest_svn/include/aqbanking5 \
-#		   /opt/latest_svn/include/gwenhywfar4
 } else {
     warning(configuring project for a not tested platform. The LIBS are probably wrong.)
     #The above (CONFIG/PKGCONFIG) could be used if pkg-config is available.
@@ -181,6 +196,7 @@ HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: 
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
+    ABTRANSFER_FINTS_VER=\\\"$${ABTRANSFER_FINTS_VER}\\\" \
     ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # no space possible!
 
 
