@@ -81,9 +81,11 @@ void aqb_imexporters::loadAll()
 	//(we must free this through GWEN_PluginDescription_List2_freeAll())
 	this->pdl = AB_Banking_GetImExporterDescrs(this->m_ab);
 
-	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli;
+	GWEN_PLUGIN_DESCRIPTION_LIST2_ITERATOR *pdli = nullptr;
 	GWEN_PLUGIN_DESCRIPTION *pd = nullptr;
-	pdli = GWEN_PluginDescription_List2_First(this->pdl);
+	if (this->pdl) {
+		pdli = GWEN_PluginDescription_List2_First(this->pdl);
+	}
 	if (pdli) {
 		pd = GWEN_PluginDescription_List2Iterator_Data(pdli);
 	}
