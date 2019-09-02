@@ -196,8 +196,7 @@ HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: 
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
-    ABTRANSFER_FINTS_VER=\\\"$${ABTRANSFER_FINTS_VER}\\\" \
-    ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # no space possible!
+    ABTRANSFER_FINTS_VER=\\\"$${ABTRANSFER_FINTS_VER}\\\"
 
 
 # NO_DEBUG
