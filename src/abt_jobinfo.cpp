@@ -305,6 +305,19 @@ void abt_jobInfo::createJobInfoStringList(QStringList *strList) const
 	case AB_Job_TypeTransfer:
 		this->createJobInfoStringList_Transfer(strList);
 		break;
+	case AB_Job_TypeSepaCreateStandingOrder:
+		this->createJobInfoStringList_SepaCreateStandingOrder(strList);
+		break;
+	case AB_Job_TypeSepaGetStandingOrders:
+		this->createJobInfoStringList_SepaGetStandingOrders(strList);
+		break;
+	case AB_Job_TypeSepaDeleteStandingOrder:
+		this->createJobInfoStringList_SepaDeleteStandingOrder(strList);
+		break;
+	case AB_Job_TypeSepaModifyStandingOrder:
+		this->createJobInfoStringList_SepaModifyStandingOrder(strList);
+		break;
+
 	case AB_Job_TypeUnknown: // fall through
 	default:
 		this->createJobInfoStringList_Unknown(strList);
@@ -404,8 +417,21 @@ void abt_jobInfo::createJobInfoStringList_Append_Value(QStringList *strList) con
   */
 void abt_jobInfo::createJobInfoStringList_Standard_Text(QStringList *strList) const
 {
-	this->createJobInfoStringList_Append_From(strList);
-	this->createJobInfoStringList_Append_To(strList);
+	switch (this->getAbJobType()) {
+	case AB_Job_TypeSepaTransfer:
+	case AB_Job_TypeSepaDebitNote:
+	case AB_Job_TypeSepaFlashDebitNote:
+	case AB_Job_TypeSepaCreateStandingOrder:
+	case AB_Job_TypeSepaDeleteStandingOrder:
+	case AB_Job_TypeSepaModifyStandingOrder:
+		this->createJobInfoStringList_Append_From_Sepa(strList);
+		this->createJobInfoStringList_Append_To_Sepa(strList);
+		break;
+	default:
+		this->createJobInfoStringList_Append_From(strList);
+		this->createJobInfoStringList_Append_To(strList);
+	}
+
 	this->createJobInfoStringList_Append_Purpose(strList);
 	this->createJobInfoStringList_Append_Value(strList);
 }
@@ -583,6 +609,26 @@ void abt_jobInfo::createJobInfoStringList_SepaTransfer(QStringList *strList) con
 void abt_jobInfo::createJobInfoStringList_Transfer(QStringList *strList) const
 {
 	this->createJobInfoStringList_Standard_Text(strList);
+}
+
+void abt_jobInfo::createJobInfoStringList_SepaCreateStandingOrder(QStringList *strList) const
+{
+	this->createJobInfoStringList_ForStandingOrders(strList);
+}
+
+void abt_jobInfo::createJobInfoStringList_SepaGetStandingOrders(QStringList *strList) const
+{
+	this->createJobInfoStringList_ForStandingOrders(strList);
+}
+
+void abt_jobInfo::createJobInfoStringList_SepaModifyStandingOrder(QStringList *strList) const
+{
+	this->createJobInfoStringList_ForStandingOrders(strList);
+}
+
+void abt_jobInfo::createJobInfoStringList_SepaDeleteStandingOrder(QStringList *strList) const
+{
+	this->createJobInfoStringList_ForStandingOrders(strList);
 }
 
 void abt_jobInfo::createJobInfoStringList_Unknown(QStringList *strList) const

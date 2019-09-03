@@ -198,7 +198,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->timer->start(10);
 
 #ifdef TESTWIDGETACCESS
-	this->ui->menuBar->addAction(this->actTestWidgetAccess);
+	QMenu *testMenu = new QMenu("Tests", this);
+	testMenu->addSection("Only for Testing");
+	testMenu->addAction(this->actTestWidgetAccess);
+	this->ui->menuBar->addMenu(testMenu); // addAction(this->actTestWidgetAccess);
 #endif
 
 }
@@ -445,6 +448,20 @@ void MainWindow::createActions()
 	connect(this->ui->pushButton_standingUpdate, SIGNAL(clicked()),
 		this->actStandingUpdate, SLOT(trigger()));
 
+	actStandingSepaNew = new QAction(this);
+	actStandingSepaNew->setText(tr("Anlegen"));
+	actStandingSepaNew->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingSepaNew, SIGNAL(triggered()), this, SLOT(onActionSepaStandingNewTriggered()));
+	connect(this->ui->pushButton_standingSepaNew, SIGNAL(clicked()),
+		this->actStandingSepaNew, SLOT(trigger()));
+
+	actStandingSepaUpdate = new QAction(this);
+	actStandingSepaUpdate->setText(tr("Aktualisieren"));
+	actStandingSepaUpdate->setIcon(QIcon(":/icons/bank-icon"));
+	connect(actStandingSepaUpdate, SIGNAL(triggered()), this, SLOT(onActionSepaStandingUpdateTriggered()));
+	connect(this->ui->pushButton_standingSepaUpdate, SIGNAL(clicked()),
+		this->actStandingSepaUpdate, SLOT(trigger()));
+
 	actDebitNote = new QAction(this);
 	actDebitNote->setText(tr("Lastschrift"));
 	actDebitNote->setIcon(QIcon(":/icons/bank-icon"));
@@ -491,6 +508,8 @@ void MainWindow::deleteActions()
 	delete this->actDatedUpdate;
 	delete this->actStandingNew;
 	delete this->actStandingUpdate;
+	delete this->actStandingSepaNew;
+	delete this->actStandingSepaUpdate;
 	delete this->actDebitNote;
 	delete this->actDebitNoteSepa;
 	delete this->actUpdateBalance;
@@ -514,11 +533,15 @@ void MainWindow::createMenus()
 	QMenu *MenuStanding = new QMenu(tr("Daueraufträge"), this);
 	MenuStanding->addAction(this->actStandingNew);
 	MenuStanding->addAction(this->actStandingUpdate);
+	QMenu *MenuSepaStanding = new QMenu(tr("Daueraufträge (SEPA)"), this);
+	MenuSepaStanding->addAction(this->actStandingSepaNew);
+	MenuSepaStanding->addAction(this->actStandingSepaUpdate);
 	QMenu *MenuDated = new QMenu(tr("Terminüberweisungen"), this);
 	MenuDated->addAction(this->actDatedNew);
 	MenuDated->addAction(this->actDatedUpdate);
 	this->accountContextMenu->addMenu(MenuTransfer);
 	this->accountContextMenu->addMenu(MenuStanding);
+	this->accountContextMenu->addMenu(MenuSepaStanding);
 	this->accountContextMenu->addMenu(MenuDated);
 	this->accountContextMenu->addAction(this->actDebitNote);
 	this->accountContextMenu->addAction(this->actDebitNoteSepa);
@@ -996,7 +1019,7 @@ void MainWindow::on_actionAbout_abTransfers_triggered()
 	licenseDialog->setWindowTitle(tr("Lizenz"));
 	QVBoxLayout *licenseLayout = new QVBoxLayout(licenseDialog);
 	QLabel *licenseText = new QLabel(licenseDialog);
-	QString lt = "Copyright (C) 2011-2013 Patrick Wacker<br /><br />"
+	QString lt = "Copyright (C) 2011-2013, 2019 Patrick Wacker<br /><br />"
 		     "This program is free software; you can redistribute it and/or<br />"
 		     "modify it under the terms of the GNU General Public License<br />"
 		     "as published by the Free Software Foundation; either version 2<br />"
@@ -1267,6 +1290,22 @@ void MainWindow::onActionStandingUpdateTriggered()
 }
 
 //private slot
+void MainWindow::onActionSepaStandingNewTriggered()
+{
+	this->createTransferWidgetAndAddTab(AB_Job_TypeSepaCreateStandingOrder);
+}
+
+//private slot
+void MainWindow::onActionSepaStandingUpdateTriggered()
+{
+	BankAccountsWidget *acc = this->dock_Accounts->findChild<BankAccountsWidget*>();
+	if (!acc) return; //cancel if no BankAccountsWidget was found
+	this->jobctrl->addGetSepaStandingOrders(acc->getSelectedAccount());
+	//disable above and enable below to test the SEPA StandingOrders
+	//this->jobctrl->addGetSepaStandingOrders(acc->getSelectedAccount());
+}
+
+//private slot
 void MainWindow::onActionDebitNoteTriggered()
 {
 	this->createTransferWidgetAndAddTab(AB_Job_TypeDebitNote);
@@ -1505,8 +1544,8 @@ widgetTransfer* MainWindow::createTransferWidgetAndAddTab(AB_JOB_TYPE type,
 	int tabid = this->ui->tabWidget_UW->addTab(trans, abt_conv::JobTypeToQString(type));
 	this->ui->tabWidget_UW->setCurrentIndex(tabid);
 
-	connect(trans, SIGNAL(createTransfer(AB_JOB_TYPE,const widgetTransfer*)),
-		this, SLOT(onWidgetTransferCreateTransfer(AB_JOB_TYPE,const widgetTransfer*)));
+	connect(trans, SIGNAL(createTransfer(AB_JOB_TYPE, const widgetTransfer*)),
+		this, SLOT(onWidgetTransferCreateTransfer(AB_JOB_TYPE, const widgetTransfer*)));
 	connect(trans, SIGNAL(cancelClicked(widgetTransfer*)),
 		this, SLOT(onWidgetTransferCancelClicked(widgetTransfer*)));
 
@@ -1529,8 +1568,14 @@ void MainWindow::onWidgetTransferCancelClicked(widgetTransfer *sender)
 /** @brief is called when a Transfer should be put to the outbox */
 void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTransfer *sender)
 {
-	if (type == AB_Job_TypeCreateStandingOrder ||
-	    type == AB_Job_TypeModifyStandingOrder) {
+	switch (type) {
+	case AB_Job_TypeCreateStandingOrder:
+	case AB_Job_TypeModifyStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 and AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaCreateStandingOrder:
+	case AB_Job_TypeSepaModifyStandingOrder:
+#endif
+	{
 		//check if the inputs to recurrence are ok
 		QString errMsg;
 		bool inputOK = sender->isRecurrenceInputOk(errMsg);
@@ -1540,8 +1585,11 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 				return; //user dont want the correction
 			}
 		}
+		break;
 	}
-
+	default: // nothing to check
+		break;
+	}
 
 	//first we control the input at the Widget
 	QString errMsg;
@@ -1573,6 +1621,14 @@ void MainWindow::onWidgetTransferCreateTransfer(AB_JOB_TYPE type, const widgetTr
 	case AB_Job_TypeModifyStandingOrder :
 		this->createAndSendModifyStandingOrder(sender);
 		break;
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaCreateStandingOrder:
+		this->createAndSendSepaStandingOrder(sender);
+		break;
+	case AB_Job_TypeSepaModifyStandingOrder:
+		this->createAndSendModifySepaStandingOrder(sender);
+		break;
+#endif
 	case AB_Job_TypeDebitNote :
 		this->createAndSendDebitNote(sender);
 		break;
@@ -2363,6 +2419,44 @@ void MainWindow::createAndSendStandingOrder(const widgetTransfer *sender)
 
 //private
 /** must only be called if all inputs are valid */
+void MainWindow::createAndSendSepaStandingOrder(const widgetTransfer *sender)
+{
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	abt_transaction *t = new abt_transaction();
+
+	t->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	t->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
+	t->setRemoteIban(sender->remoteAccount->getIBAN());
+	t->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	t->setRemoteBic(sender->remoteAccount->getBIC());
+	t->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	t->setValue(sender->value->getValueABV());
+
+	t->setPurpose(sender->purpose->getPurpose());
+
+	// t->setTextKey(sender->textKey->getTextKey());  // not at SEPA?
+
+	t->setCycle(sender->recurrence->getCycle());
+	t->setPeriod(sender->recurrence->getPeriod());
+	t->setExecutionDay(sender->recurrence->getExecutionDay());
+	//t->setDate(sender->recurrence->getFirstExecutionDate());
+	//t->setValutaDate(sender->recurrence->getFirstExecutionDate());
+	t->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
+	t->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
+	t->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
+
+	this->jobctrl->addCreateSepaStandingOrder(acc, t);
+
+	delete t;
+}
+
+//private
+/** must only be called if all inputs are valid */
 void MainWindow::createAndSendSepaTransfer(const widgetTransfer* sender)
 {
 	qWarning() << "create SEPA Transfer implemented, but not well tested!";
@@ -2462,6 +2556,45 @@ void MainWindow::createAndSendModifyStandingOrder(const widgetTransfer *sender)
 	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
 
 	this->jobctrl->addModifyStandingOrder(acc, newT);
+
+	delete newT;
+}
+
+//private
+/** must only be called if all inputs are valid */
+void MainWindow::createAndSendModifySepaStandingOrder(const widgetTransfer *sender)
+{
+	const aqb_AccountInfo *acc = sender->localAccount->getAccount();
+	const abt_transaction *origT = sender->getOriginalTransaction();
+
+	//copy the original transaction (because of const)
+	abt_transaction *newT = new abt_transaction(*origT);
+	//and modify the copy instead
+	newT->fillLocalFromAccount(acc->get_AB_ACCOUNT());
+
+	//We use the unix timestamp as our ID, so we can display the
+	//date and time of the creation of the transaction ;)
+	newT->setIdForApplication(QDateTime::currentDateTime().toTime_t());
+
+	newT->setRemoteIban(sender->remoteAccount->getIBAN());
+	newT->setRemoteName(QStringList(sender->remoteAccount->getName()));
+	newT->setRemoteBic(sender->remoteAccount->getBIC());
+	newT->setRemoteBankName(sender->remoteAccount->getBankName());
+
+	newT->setValue(sender->value->getValueABV());
+
+	newT->setPurpose(sender->purpose->getPurpose());
+
+	// newT->setTextKey(sender->textKey->getTextKey()); // not at SEPA?
+
+	newT->setCycle(sender->recurrence->getCycle());
+	newT->setPeriod(sender->recurrence->getPeriod());
+	newT->setExecutionDay(sender->recurrence->getExecutionDay());
+	newT->setFirstExecutionDate(sender->recurrence->getFirstExecutionDate());
+	newT->setLastExecutionDate(sender->recurrence->getLastExecutionDate());
+	newT->setNextExecutionDate(sender->recurrence->getNextExecutionDate());
+
+	this->jobctrl->addModifySepaStandingOrder(acc, newT);
 
 	delete newT;
 }
@@ -2584,6 +2717,7 @@ void MainWindow::appendGetStandingOrdersToOutbox() const
 {
 	foreach(aqb_AccountInfo *acc, this->accounts->getAccountHash().values()) {
 		this->jobctrl->addGetStandingOrders(acc, true);
+		this->jobctrl->addGetSepaStandingOrders(acc, true);
 	}
 }
 

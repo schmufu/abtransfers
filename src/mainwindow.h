@@ -90,6 +90,8 @@ private:
 	QAction *actDatedUpdate;
 	QAction *actStandingNew;
 	QAction *actStandingUpdate;
+	QAction *actStandingSepaNew;
+	QAction *actStandingSepaUpdate;
 	QAction *actDebitNote;
 	QAction *actDebitNoteSepa;
 	QAction *actUpdateBalance;
@@ -133,9 +135,11 @@ private:
 	void createAndSendEUTransfer(const widgetTransfer *sender);
 	void createAndSendDatedTransfer(const widgetTransfer *sender);
 	void createAndSendStandingOrder(const widgetTransfer *sender);
+	void createAndSendSepaStandingOrder(const widgetTransfer *sender);
 	void createAndSendSepaTransfer(const widgetTransfer *sender);
 	void createAndSendModifyDatedTransfer(const widgetTransfer *sender);
 	void createAndSendModifyStandingOrder(const widgetTransfer *sender);
+	void createAndSendModifySepaStandingOrder(const widgetTransfer *sender);
 	void createAndSendDebitNote(const widgetTransfer *sender);
 	void createAndSendInternalTransfer(const widgetTransfer *sender);
 	void createAndSendSepaDebitNote(const widgetTransfer *sender);
@@ -197,6 +201,8 @@ private slots:
 	void onActionDatedUpdateTriggered();
 	void onActionStandingNewTriggered();
 	void onActionStandingUpdateTriggered();
+	void onActionSepaStandingNewTriggered();
+	void onActionSepaStandingUpdateTriggered();
 	void onActionDebitNoteTriggered();
 	void onActionDebitNoteSepaTriggered();
 	void onActionUpdateBalanceTriggered();

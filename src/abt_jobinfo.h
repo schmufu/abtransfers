@@ -109,6 +109,10 @@ private:
 	void createJobInfoStringList_SepaDebitNote(QStringList *strList) const;
 	void createJobInfoStringList_SepaTransfer(QStringList *strList) const;
 	void createJobInfoStringList_Transfer(QStringList *strList) const;
+	void createJobInfoStringList_SepaCreateStandingOrder(QStringList *strList) const;
+	void createJobInfoStringList_SepaGetStandingOrders(QStringList *strList) const;
+	void createJobInfoStringList_SepaDeleteStandingOrder(QStringList *strList) const;
+	void createJobInfoStringList_SepaModifyStandingOrder(QStringList *strList) const;
 	void createJobInfoStringList_Unknown(QStringList *strList) const;
 
 	void setMyTransactionFromJob();

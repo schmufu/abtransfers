@@ -59,6 +59,15 @@
 #if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
 #include <aqbanking/jobsepagetstandingorders.h>
 #include <aqbanking/jobsepaflashdebitnote.h>
+/***** BUG at aqbanking?
+ * The here used files are part of the aqbanking sources but not deployed
+ * during "make install" of aqbanking.
+ * I copied them manually to the "include" dir of the aqbanking
+ * installation folder.
+ *****/
+#include <aqbanking/jobsepacreatesto.h>
+#include <aqbanking/jobsepamodifysto.h>
+#include <aqbanking/jobsepadeletesto.h>
 #endif
 
 /***** INFO
@@ -204,10 +213,17 @@ void abt_job_ctrl::createAvailableHashFor(AB_ACCOUNT *a,
 	hash->insert(AB_Job_TypeSepaGetStandingOrders, AB_Job_CheckAvailability(j) == 0);
 	AB_Job_free(j);
 
-	j = AB_JobSepaFlashDebitNote_new(a);
-	hash->insert(AB_Job_TypeSepaFlashDebitNote, AB_Job_CheckAvailability(j) == 0);
+	j = AB_JobSepaModifyStandingOrder_new(a);
+	hash->insert(AB_Job_TypeSepaModifyStandingOrder, AB_Job_CheckAvailability(j) == 0);
 	AB_Job_free(j);
 
+	j = AB_JobSepaCreateStandingOrder_new(a);
+	hash->insert(AB_Job_TypeSepaCreateStandingOrder, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
+
+	j = AB_JobSepaDeleteStandingOrder_new(a);
+	hash->insert(AB_Job_TypeSepaDeleteStandingOrder, AB_Job_CheckAvailability(j) == 0);
+	AB_Job_free(j);
 #endif
 }
 
@@ -442,6 +458,40 @@ void abt_job_ctrl::createTransactionLimitsFor(AB_ACCOUNT *a,
 		}
 	}
 	AB_Job_free(j);
+
+
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	j = AB_JobSepaCreateStandingOrder_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SepaCreateStandingOrder not available");
+	} else {
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeSepaCreateStandingOrder, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+
+
+	j = AB_JobSepaModifyStandingOrder_new(a);
+	if (AB_Job_CheckAvailability(j)) {
+		qDebug("Job SepaModifyStandingOrder not available");
+	} else {
+		AB_Job_SetTransaction(j, t);
+		tl = AB_Job_GetFieldLimits(j);
+		if (tl) {
+			abt_transactionLimits *limits = new abt_transactionLimits(tl);
+			ah->insert(AB_Job_TypeModifyStandingOrder, limits);
+		} else {
+			qDebug("tl not set!");
+		}
+	}
+	AB_Job_free(j);
+#endif
 
 	AB_Transaction_free(t);
 }
@@ -760,7 +810,13 @@ int abt_job_ctrl::getSupposedJobqueuePos(const abt_jobInfo *job) const
 	}
 	case AB_Job_TypeCreateStandingOrder:
 	case AB_Job_TypeModifyStandingOrder:
-	case AB_Job_TypeDeleteStandingOrder: {
+	case AB_Job_TypeDeleteStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+	case AB_Job_TypeSepaCreateStandingOrder:
+	case AB_Job_TypeSepaModifyStandingOrder:
+	case AB_Job_TypeSepaDeleteStandingOrder:
+#endif
+	{
 		//these job types should be after the transfer jobs
 		int firstStandingPos = this->getSupposedJobqueue_NextTransferPos(firstPos, lastPos);
 		wantedPos = this->getSupposedJobqueue_NextStandingPos(firstStandingPos, lastPos);
@@ -1527,6 +1583,73 @@ void abt_job_ctrl::addCreateStandingOrder(const aqb_AccountInfo *acc,
 
 //public slot
 /**
+ * @brief adds a create sepa standing order to the jobqueue
+ *
+ * AqBanking >= 5.5.0 is needed for this type of job!
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addCreateSepaStandingOrder(const aqb_AccountInfo *acc,
+					      const abt_transaction *t)
+{
+	int rv;
+
+	AB_JOB *job = AB_JobSepaCreateStandingOrder_new(acc->get_AB_ACCOUNT());
+
+	rv = AB_Job_CheckAvailability(job);
+
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
+		emit jobNotAvailable(AB_Job_TypeSepaCreateStandingOrder);
+		return; //cancel adding
+	}
+
+	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
+	rv = AB_JobSepaCreateStandingOrder_SetTransaction(job,
+							  t->getAB_Transaction());
+#endif
+
+	abt_jobInfo *ji = new abt_jobInfo(job);
+
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
+	int pos = this->getSupposedJobqueuePos(ji);
+	this->jobqueue->insert(pos, ji);
+
+	emit this->jobAdded(ji);
+	emit this->jobQueueListChanged();
+
+	/** \todo Muss dies stattfinden? Wenn es durchgeführt wird erscheint
+		  der Dauerauftrag doppelt!
+		  Wobei die transaction aus der aktualisierung unter umständen
+		  Andere Daten enthält als die transaction aus dem job!
+		  Es wurd ein DA mit Letztmalig zur Bank geschickt, bei der
+		  Aktualisierung wurde dieser allerdings ohne Enddatum zurück
+		  gemeldet!
+	*/
+//	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders, ji)) {
+//		//nach dem erstellen muss eine Aktualisierung stattfinden.
+//		this->addGetStandingOrders(acc, true);
+//	}
+
+}
+
+//public slot
+/**
  * @brief adds a modify standing order to the jobqueue
  *
  * Creates a new AB_JOB and checks if it is supported.
@@ -1585,6 +1708,66 @@ void abt_job_ctrl::addModifyStandingOrder(const aqb_AccountInfo *acc,
 
 //public slot
 /**
+ * @brief adds a modify sepa standing order to the jobqueue
+ *
+ * AqBanking >= 5.5.0 is needed for this type of job!
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addModifySepaStandingOrder(const aqb_AccountInfo *acc,
+					      const abt_transaction *t)
+{
+	int rv;
+
+	AB_JOB *job = AB_JobSepaModifyStandingOrder_new(acc->get_AB_ACCOUNT());
+
+	rv = AB_Job_CheckAvailability(job);
+
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
+		emit jobNotAvailable(AB_Job_TypeSepaModifyStandingOrder);
+		return; //cancel adding
+	}
+
+	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
+	rv = AB_JobModifySepaStandingOrder_SetTransaction(job,
+							  t->getAB_Transaction());
+#endif
+
+	abt_jobInfo *ji = new abt_jobInfo(job);
+
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
+	int pos = this->getSupposedJobqueuePos(ji);
+	this->jobqueue->insert(pos, ji);
+
+	emit this->jobAdded(ji);
+	emit this->jobQueueListChanged();
+
+	//after a change, the standing orders must be retrieved from the bank
+	if (!this->isJobTypeInQueue(AB_Job_TypeGetStandingOrders,
+				    ji->getAbAccount())) {
+		this->addGetStandingOrders(acc, true);
+	}
+
+}
+
+//public slot
+/**
  * @brief adds a delete standing order to the jobqueue
  *
  * Creates a new AB_JOB and checks if it is supported.
@@ -1621,6 +1804,59 @@ void abt_job_ctrl::addDeleteStandingOrder(const aqb_AccountInfo *acc,
 #else
 	rv = AB_JobDeleteStandingOrder_SetTransaction(job,
 						      t->getAB_Transaction());
+#endif
+
+	abt_jobInfo *ji = new abt_jobInfo(job);
+
+	//get the right position and insert the job in the jobqueue (at
+	//execution time the AB_JOB_LIST is created from the jobs in the queue)
+	int pos = this->getSupposedJobqueuePos(ji);
+	this->jobqueue->insert(pos, ji);
+
+	emit this->jobAdded(ji);
+	emit this->jobQueueListChanged();
+}
+
+//public slot
+/**
+ * @brief adds a delete sepa standing order to the jobqueue
+ *
+ * AqBanking >= 5.5.0 is needed for this type of job!
+ *
+ * Creates a new AB_JOB and checks if it is supported.
+ *
+ * Depending on the type the job is added at the right position in the jobqueue.
+ *
+ * When everything went fine the signal @ref jobAdded() and
+ * @ref jobQueueListChanged() are emitted, otherwise the signal
+ * @ref jobNotAvailable() is emitted.
+ *
+ * @param acc: the account
+ * @param t: the transaction data
+ */
+void abt_job_ctrl::addDeleteSepaStandingOrder(const aqb_AccountInfo *acc,
+					      const abt_transaction *t)
+{
+	int rv;
+
+	AB_JOB *job = AB_JobSepaDeleteStandingOrder_new(acc->get_AB_ACCOUNT());
+
+	rv = AB_Job_CheckAvailability(job);
+
+	if (rv) { //Job is not available!
+		qWarning() << Q_FUNC_INFO
+			   << "Job is not available -"
+			   << "AB_Job_CheckAvailability returned:" << rv;
+		emit jobNotAvailable(AB_Job_TypeSepaDeleteStandingOrder);
+		return; //cancel adding
+	}
+
+	//add transaction to the job
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
+	rv = AB_Job_SetTransaction(job, t->getAB_Transaction());
+#else
+	rv = AB_JobSepaDeleteStandingOrder_SetTransaction(job,
+							  t->getAB_Transaction());
 #endif
 
 	abt_jobInfo *ji = new abt_jobInfo(job);
@@ -2083,11 +2319,17 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeCreateStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+			case AB_Job_TypeSepaCreateStandingOrder:
+#endif
 				//a new standing order was created, the data
 				//is in the AB_IMEXPORTER_CONTEXT
 				break;
 
 			case AB_Job_TypeDeleteStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+			case AB_Job_TypeSepaDeleteStandingOrder:
+#endif
 #if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
 				t = AB_Job_GetTransaction(j);
 #else
@@ -2099,6 +2341,9 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeModifyStandingOrder:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+			case AB_Job_TypeSepaModifyStandingOrder:
+#endif
 #if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 3
 				t = AB_Job_GetTransaction(j);
 #else
@@ -2117,6 +2362,9 @@ bool abt_job_ctrl::parseExecutedJobs(AB_JOB_LIST2 *jl)
 				break;
 
 			case AB_Job_TypeGetStandingOrders:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+			case AB_Job_TypeSepaGetStandingOrders:
+#endif
 				//all standing orders are updated, the data
 				//is in the AB_IMEXPORTER_CONTEXT and parsed
 				//by the abt_parser

@@ -104,6 +104,7 @@ private:
 	void my_create_sepatransfer_form(bool newTransfer);
 	void my_create_internal_transfer_form(bool newTransfer);
 	void my_create_standing_order_form(bool newTransfer);
+	void my_create_sepa_standing_order_form(bool newTransfer);
 	void my_create_dated_transfer_form(bool newTransfer);
 
 	void my_create_local_remote_horizontal(bool newTransfer,

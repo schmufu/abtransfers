@@ -120,8 +120,14 @@ widgetTransfer::widgetTransfer(AB_JOB_TYPE type,
 	case AB_Job_TypeCreateStandingOrder :
 		this->my_create_standing_order_form(true);
 		break;
+	case AB_Job_TypeSepaCreateStandingOrder :
+		this->my_create_sepa_standing_order_form(true);
+		break;
 	case AB_Job_TypeModifyStandingOrder :
 		this->my_create_standing_order_form(false);
+		break;
+	case AB_Job_TypeSepaModifyStandingOrder :
+		this->my_create_sepa_standing_order_form(false);
 		break;
 	case AB_Job_TypeInternalTransfer :
 		this->my_create_internal_transfer_form(true);
@@ -301,6 +307,25 @@ void widgetTransfer::my_create_standing_order_form(bool newTransfer)
 	this->layoutMain->addLayout(this->layoutPurpose);
 	this->layoutMain->addWidget(this->groubBoxRecurrence);
 	this->layoutMain->addWidget(this->textKey, 0, Qt::AlignRight);
+}
+
+//private
+void widgetTransfer::my_create_sepa_standing_order_form(bool newTransfer)
+{
+	if (newTransfer)
+		this->setWindowTitle(tr("Dauerauftrag anlegen"));
+	else
+		this->setWindowTitle(tr("Dauerauftrag bearbeiten"));
+
+	this->my_create_local_remote_horizontal(newTransfer, true);
+	this->my_create_value_with_label_left();
+	this->my_create_purpose();
+	this->my_create_recurrence();
+
+	this->layoutMain->addLayout(this->layoutAccount);
+	this->layoutMain->addLayout(this->layoutValue);
+	this->layoutMain->addLayout(this->layoutPurpose);
+	this->layoutMain->addWidget(this->groubBoxRecurrence);
 }
 
 //private
@@ -700,14 +725,23 @@ bool widgetTransfer::isGeneralInputOk(QString &errorMsg) const
 			if (this->remoteAccount->getName().isEmpty()) {
 				errorMsg.append(tr(" - Empfängername nicht eingegeben<br />"));
 			}
-			if (this->m_type == AB_Job_TypeSepaTransfer) {
+
+			switch (this->m_type) {
+			case AB_Job_TypeSepaTransfer:
+#if AQBANKING_VERSION_MAJOR >= 5 && AQBANKING_VERSION_MINOR >= 5
+			case AB_Job_TypeSepaCreateStandingOrder:
+			case AB_Job_TypeSepaModifyStandingOrder:
+#endif
+			{
 				if (this->remoteAccount->getIBAN().isEmpty()) {
 					errorMsg.append(tr(" - Empfänger IBAN nicht eingegeben<br />"));
 				}
 				if (this->remoteAccount->getBIC().isEmpty()) {
 					errorMsg.append(tr(" - Empfänger BIC nicht eingegeben<br />"));
 				}
-			} else {
+			}
+				break;
+			default:
 				if (this->remoteAccount->getAccountNumber().isEmpty()) {
 					errorMsg.append(tr(" - Empfänger Kontonummer nicht eingegeben<br />"));
 				}

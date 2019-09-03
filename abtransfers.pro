@@ -10,8 +10,8 @@ TEMPLATE = app
 
 # set to "pkg_config" for the package installed at the system
 # or to the path where you installed a local installation
-# AQBANKING_INSTALLATION="/opt/aqb"
-AQBANKING_INSTALLATION="pkg_config"
+AQBANKING_INSTALLATION="/opt/aqb"
+# AQBANKING_INSTALLATION="pkg_config"
 
 contains(AQBANKING_INSTALLATION, "pkg_config") {
     message("Using the AqBanking package from: The system installation")
@@ -196,7 +196,12 @@ HG_REVISION =  $$system(hg sum 2>/dev/null | grep \"parent:\" | sed \"s/parent: 
 # MVW_VERSION_EXTRA=\\\"development-version\\\" # keine space möglich!
 DEFINES += ABTRANSFER_SVN_REVISION=\\\"$${SVN_REVISION}$${HG_REVISION}\\\" \
     ABTRANSFER_VERSION=\\\"$${VERSION}\\\" \
-    ABTRANSFER_FINTS_VER=\\\"$${ABTRANSFER_FINTS_VER}\\\"
+    ABTRANSFER_FINTS_VER=\\\"$${ABTRANSFER_FINTS_VER}\\\" \
+    ABTRANSFER_VERSION_EXTRA=\\\"development-version\\\" # no space possible!
+
+
+# Only for testing with some more debug output and access to an extra test widget
+DEFINES += DEBUG_ABTPARSER TESTWIDGETACCESS
 
 
 # NO_DEBUG

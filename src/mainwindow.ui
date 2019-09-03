@@ -152,7 +152,16 @@
           <property name="spacing">
            <number>2</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -164,7 +173,7 @@
              <attribute name="title">
               <string>Übersicht</string>
              </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_8" stretch="1,0,10">
+             <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,10">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
@@ -209,6 +218,48 @@
                    </item>
                    <item>
                     <spacer name="verticalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_4">
+                  <property name="minimumSize">
+                   <size>
+                    <width>151</width>
+                    <height>160</height>
+                   </size>
+                  </property>
+                  <property name="title">
+                   <string>Daueraufträge (SEPA)</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_9">
+                   <item>
+                    <widget class="QPushButton" name="pushButton_standingSepaNew">
+                     <property name="text">
+                      <string>Anlegen</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_standingSepaUpdate">
+                     <property name="text">
+                      <string>Aktualisieren</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_5">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
@@ -348,8 +399,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>711</width>
-                   <height>325</height>
+                   <width>702</width>
+                   <height>293</height>
                   </rect>
                  </property>
                 </widget>
@@ -376,12 +427,12 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>19</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Hilfe</string>
+     <string>Hi&amp;lfe</string>
     </property>
     <addaction name="actionDebug_Info"/>
     <addaction name="separator"/>
@@ -392,7 +443,7 @@
    </widget>
    <widget class="QMenu" name="menuEinstellungen">
     <property name="title">
-     <string>Einstellungen</string>
+     <string>Ei&amp;nstellungen</string>
     </property>
     <addaction name="actionEinstellungen"/>
     <addaction name="separator"/>
@@ -411,37 +462,37 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDebug_Info">
    <property name="text">
-    <string>Debug-Info</string>
+    <string>&amp;Debug-Info</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
-    <string>Über Qt</string>
+    <string>&amp;Über Qt</string>
    </property>
   </action>
   <action name="actionAbout_abTransfers">
    <property name="text">
-    <string>Über AB-Transfers</string>
+    <string>Ü&amp;ber AB-Transfers</string>
    </property>
   </action>
   <action name="actionEinstellungen">
    <property name="text">
-    <string>Einstellungen</string>
+    <string>&amp;Einstellungen</string>
    </property>
   </action>
   <action name="actionBeenden">
    <property name="text">
-    <string>Beenden</string>
+    <string>&amp;Beenden</string>
    </property>
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>Hilfe / FAQ</string>
+    <string>&amp;Hilfe / FAQ</string>
    </property>
   </action>
   <action name="actionAqBankingSetup">
    <property name="text">
-    <string>AqBanking einrichten ...</string>
+    <string>&amp;AqBanking einrichten ...</string>
    </property>
   </action>
  </widget>
